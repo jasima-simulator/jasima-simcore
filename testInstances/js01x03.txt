@@ -1,0 +1,33 @@
+# 1 machines, 4 routes, 4 jobs. see Pinedo pp. 341, 384 (example 14.2.1)
+
+#number of machines
+1
+
+#number of routes
+2
+
+# machine orders <machine number(s)>;<setup state> (no space after or before comma/semicolon)
+1
+1
+
+# processing times for each operation on a route
+2
+1
+
+# mach spec
+1
+machineReleaseDates
+2
+
+# job specifications, jobs have to be ordered by release date
+#
+jobs
+
+#number of jobs
+3
+
+# <route number> <release date> <due date> <weight>
+1	1	1	1
+2	2	2	1
+2	5	5	1
+

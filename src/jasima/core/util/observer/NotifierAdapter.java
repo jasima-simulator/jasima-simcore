@@ -1,0 +1,97 @@
+/*******************************************************************************
+ * Copyright 2011, 2012 Torsten Hildebrandt and BIBA - Bremer Institut für Produktion und Logistik GmbH
+ *
+ * This file is part of jasima, v1.0.
+ *
+ * jasima is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jasima is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
+ *******************************************************************************/
+package jasima.core.util.observer;
+
+import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+
+/**
+ * Sample implementation of a Notifier.
+ */
+public class NotifierAdapter<N extends Notifier<N, E>, E> implements
+		Notifier<N, E>, Serializable {
+
+	private static final long serialVersionUID = 72063783838585993L;
+
+	private ArrayList<NotifierListener<N, E>> listeners = new ArrayList<NotifierListener<N, E>>();
+	private ArrayDeque<E> events = null;
+	private final N notifier;
+
+	private Iterator<NotifierListener<N, E>> it;
+
+	public NotifierAdapter(final N notifier) {
+		if (notifier == null)
+			throw new NullPointerException("notifier");
+		this.notifier = notifier;
+	}
+
+	public void addNotifierListener(NotifierListener<N, E> listener) {
+		if (listener == null)
+			throw new NullPointerException("listener");
+		if (it != null) // addNotifierListener() called while firing()
+			throw new ConcurrentModificationException();
+		listeners.add(listener);
+	}
+
+	public void removeNotifierListener(NotifierListener<N, E> listener) {
+		if (listener == null)
+			throw new NullPointerException("listener");
+		if (it != null) {
+			int oldPos = 0;
+			assert (oldPos = listeners.indexOf(listener)) >= 0;
+			it.remove();
+			assert (oldPos != listeners.indexOf(listener));
+		} else
+			listeners.remove(listener);
+	}
+
+	public void fire(E event) {
+		if (it != null) {
+			// already firing, i.e., listener triggered another event
+			if (events == null)
+				events = new ArrayDeque<E>();
+			events.addLast(event);
+		} else {
+			do {
+				it = listeners.iterator();
+				while (it.hasNext()) {
+					it.next().update(this.notifier, event);
+				}
+				it = null;
+
+				event = null;
+				if (events != null && events.size() > 0)
+					event = events.removeFirst();
+			} while (event != null);
+		}
+	}
+
+	public int numListener() {
+		return listeners.size();
+	}
+
+	@Override
+	public NotifierListener<N, E> getNotifierListener(int index) {
+		return listeners.get(index);
+	}
+
+}

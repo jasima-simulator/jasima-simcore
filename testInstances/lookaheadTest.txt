@@ -1,0 +1,23 @@
+#number of machines
+2
+
+#number of routes
+2
+
+# machine orders <machine number(s)>;<setup state> (no space after or before comma/semicolon)
+1	2
+2	1
+
+# processing times for each operation on a route
+10	1
+5	10
+
+# job specifications, jobs have to be ordered by release date
+jobs
+
+#number of jobs
+2
+
+# <route number> <release date> <due date> <weight>
+1	0	0	1
+2	0	0	1

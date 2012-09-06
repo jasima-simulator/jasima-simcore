@@ -1,0 +1,95 @@
+testInstances/js06x06.txt IGF[SPT]	simtime	58.0
+testInstances/js06x06.txt IGF[SPT]	cMax	58.0
+testInstances/js06x06.txt IGF[SPT]	flowtimes	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[SPT]	tardiness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[SPT]	lateness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[FCFS]	simtime	70.0
+testInstances/js06x06.txt IGF[FCFS]	cMax	70.0
+testInstances/js06x06.txt IGF[FCFS]	flowtimes	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[FCFS]	tardiness	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[FCFS]	lateness	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[PTPlusWINQPlusNPT]	simtime	80.0
+testInstances/js06x06.txt IGF[PTPlusWINQPlusNPT]	cMax	80.0
+testInstances/js06x06.txt IGF[PTPlusWINQPlusNPT]	flowtimes	50.83	35.00	80.00	15.64	305.00	6
+testInstances/js06x06.txt IGF[PTPlusWINQPlusNPT]	tardiness	50.83	35.00	80.00	15.64	305.00	6
+testInstances/js06x06.txt IGF[PTPlusWINQPlusNPT]	lateness	50.83	35.00	80.00	15.64	305.00	6
+testInstances/js06x06.txt IGF[WINQ]	simtime	79.0
+testInstances/js06x06.txt IGF[WINQ]	cMax	79.0
+testInstances/js06x06.txt IGF[WINQ]	flowtimes	51.17	42.00	79.00	14.01	307.00	6
+testInstances/js06x06.txt IGF[WINQ]	tardiness	51.17	42.00	79.00	14.01	307.00	6
+testInstances/js06x06.txt IGF[WINQ]	lateness	51.17	42.00	79.00	14.01	307.00	6
+testInstances/js06x06.txt IGF[INV_FCFS]	simtime	67.0
+testInstances/js06x06.txt IGF[INV_FCFS]	cMax	67.0
+testInstances/js06x06.txt IGF[INV_FCFS]	flowtimes	52.00	28.00	67.00	13.31	312.00	6
+testInstances/js06x06.txt IGF[INV_FCFS]	tardiness	52.00	28.00	67.00	13.31	312.00	6
+testInstances/js06x06.txt IGF[INV_FCFS]	lateness	52.00	28.00	67.00	13.31	312.00	6
+testInstances/js06x06.txt IGF[INV_SPT]	simtime	73.0
+testInstances/js06x06.txt IGF[INV_SPT]	cMax	73.0
+testInstances/js06x06.txt IGF[INV_SPT]	flowtimes	53.00	40.00	73.00	12.55	318.00	6
+testInstances/js06x06.txt IGF[INV_SPT]	tardiness	53.00	40.00	73.00	12.55	318.00	6
+testInstances/js06x06.txt IGF[INV_SPT]	lateness	53.00	40.00	73.00	12.55	318.00	6
+testInstances/js06x06.txt IGF[WSPT]	simtime	58.0
+testInstances/js06x06.txt IGF[WSPT]	cMax	58.0
+testInstances/js06x06.txt IGF[WSPT]	flowtimes	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[WSPT]	tardiness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[WSPT]	lateness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[INV_WSPT]	simtime	73.0
+testInstances/js06x06.txt IGF[INV_WSPT]	cMax	73.0
+testInstances/js06x06.txt IGF[INV_WSPT]	flowtimes	53.00	40.00	73.00	12.55	318.00	6
+testInstances/js06x06.txt IGF[INV_WSPT]	tardiness	53.00	40.00	73.00	12.55	318.00	6
+testInstances/js06x06.txt IGF[INV_WSPT]	lateness	53.00	40.00	73.00	12.55	318.00	6
+testInstances/js06x06.txt IGF[EDD]	simtime	70.0
+testInstances/js06x06.txt IGF[EDD]	cMax	70.0
+testInstances/js06x06.txt IGF[EDD]	flowtimes	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[EDD]	tardiness	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[EDD]	lateness	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[FASFS]	simtime	70.0
+testInstances/js06x06.txt IGF[FASFS]	cMax	70.0
+testInstances/js06x06.txt IGF[FASFS]	flowtimes	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[FASFS]	tardiness	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[FASFS]	lateness	57.33	46.00	70.00	8.38	344.00	6
+testInstances/js06x06.txt IGF[SLK]	simtime	60.0
+testInstances/js06x06.txt IGF[SLK]	cMax	60.0
+testInstances/js06x06.txt IGF[SLK]	flowtimes	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[SLK]	tardiness	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[SLK]	lateness	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[INV_CR]	simtime	60.0
+testInstances/js06x06.txt IGF[INV_CR]	cMax	60.0
+testInstances/js06x06.txt IGF[INV_CR]	flowtimes	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[INV_CR]	tardiness	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[INV_CR]	lateness	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[INV_CR_V1]	simtime	81.0
+testInstances/js06x06.txt IGF[INV_CR_V1]	cMax	81.0
+testInstances/js06x06.txt IGF[INV_CR_V1]	flowtimes	47.83	30.00	81.00	18.17	287.00	6
+testInstances/js06x06.txt IGF[INV_CR_V1]	tardiness	47.83	30.00	81.00	18.17	287.00	6
+testInstances/js06x06.txt IGF[INV_CR_V1]	lateness	47.83	30.00	81.00	18.17	287.00	6
+testInstances/js06x06.txt IGF[INV_CR_V2]	simtime	60.0
+testInstances/js06x06.txt IGF[INV_CR_V2]	cMax	60.0
+testInstances/js06x06.txt IGF[INV_CR_V2]	flowtimes	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[INV_CR_V2]	tardiness	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[INV_CR_V2]	lateness	55.17	49.00	60.00	3.97	331.00	6
+testInstances/js06x06.txt IGF[ATC(k=1.0)]	simtime	58.0
+testInstances/js06x06.txt IGF[ATC(k=1.0)]	cMax	58.0
+testInstances/js06x06.txt IGF[ATC(k=1.0)]	flowtimes	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[ATC(k=1.0)]	tardiness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[ATC(k=1.0)]	lateness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt Bremen1	simtime	76.0
+testInstances/js06x06.txt Bremen1	cMax	76.0
+testInstances/js06x06.txt Bremen1	flowtimes	51.17	35.00	76.00	14.23	307.00	6
+testInstances/js06x06.txt Bremen1	tardiness	51.17	35.00	76.00	14.23	307.00	6
+testInstances/js06x06.txt Bremen1	lateness	51.17	35.00	76.00	14.23	307.00	6
+testInstances/js06x06.txt Bremen2	simtime	80.0
+testInstances/js06x06.txt Bremen2	cMax	80.0
+testInstances/js06x06.txt Bremen2	flowtimes	51.00	35.00	80.00	15.52	306.00	6
+testInstances/js06x06.txt Bremen2	tardiness	51.00	35.00	80.00	15.52	306.00	6
+testInstances/js06x06.txt Bremen2	lateness	51.00	35.00	80.00	15.52	306.00	6
+testInstances/js06x06.txt IGF[IFTMinusUITPlusNPT]	simtime	58.0
+testInstances/js06x06.txt IGF[IFTMinusUITPlusNPT]	cMax	58.0
+testInstances/js06x06.txt IGF[IFTMinusUITPlusNPT]	flowtimes	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[IFTMinusUITPlusNPT]	tardiness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt IGF[IFTMinusUITPlusNPT]	lateness	49.83	36.00	58.00	9.75	299.00	6
+testInstances/js06x06.txt XWINQ	simtime	78.0
+testInstances/js06x06.txt XWINQ	cMax	78.0
+testInstances/js06x06.txt XWINQ	flowtimes	56.17	37.00	78.00	16.77	337.00	6
+testInstances/js06x06.txt XWINQ	tardiness	56.17	37.00	78.00	16.77	337.00	6
+testInstances/js06x06.txt XWINQ	lateness	56.17	37.00	78.00	16.77	337.00	6

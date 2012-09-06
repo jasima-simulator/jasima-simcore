@@ -1,0 +1,277 @@
+# MIMAC Fab4r
+#
+#
+#
+# all times are in minutes
+#
+# Problems in data set:
+#  - batch ids in text files lead to only jobs with the same operation being batchable together
+#
+
+# number of machine groups
+31
+
+# number of routes
+2
+
+#
+# machine orders <machine number(s)>;<setup state> (no space after or before comma/semicolon)
+#
+
+# route A: 92 operations, some require setups
+20	9	20	6	25;M1	7	26	21;G1	30	26	20	11	20	17	22	6	25;M2	7	26	19	26	6	25;M3	7	26	21;G2	26	20	12	19	30	20	10	21;G3	18	15	20	22	6	25;M4	7	26	28	26	24	20	13	6	25;M5	7	26	21;G4	26	6	25;M6	7	26	21;G5	8	26	4	27	14	22	6	25;M7	7	26	5	1	26	31	31	6	25;M8	7	26	5	2	23	29	24	16	3	16	6	25;M9	7	26	5	30	29
+
+# route B: 19 operations, some require setups
+20	26	20	17	22	6	25;M10	7	26	27	14	22	6	25;M11	7	26	5	1	26
+
+#
+# processing times, batch id, and max. batch size for each operation on a route
+#
+
+# route A
+6	235;A2;8	6	34	24	64	60;A7;8	14	50	75;A10;8	6	550;A12;8	6	250;A14;8	30	34	54	64	60;A19;8	54	75;A21;8	34	24	64	55;A25;8	14	75;A27;8	6	610;A29;8	54	70	6	370;A33;8	14	310;A35;8	280;A36;8	6	30	34	34	64	60;A42;8	59	75;A44;8	29	6	210;A47;8	34	24	64	55;A51;8	24	75;A53;8	34	24	64	55;A57;8	54	175;A59;8	75;A60;8	200	34	100;A63;8	30	34	84	64	55;A68;8	30	90	75;A71;8	20	90	34	69	64	60;A77;8	30	55	45	45	34	125	85	160	34	54	64	55;A89;8	30	50	45
+
+# route B
+6	75;B2;8	6	250;B4;8	30	34	54	64	60;B9;8	34	100;B11;8	30	34	84	64	55;B16;8	30	90	75;B19;8
+
+
+#
+# machine group configuration
+#
+#
+#
+#
+#
+
+
+# configuration for machine number 1
+1
+
+machineName
+AME135
+
+numInGroup
+1
+
+# machine 2 starts here...
+2
+machineName
+AME46
+numInGroup
+1
+
+3
+machineName
+ANC1
+numInGroup
+1
+
+4
+machineName
+ASM2
+numInGroup
+1
+
+5
+machineName
+BLU1
+numInGroup
+1
+
+6
+machineName
+C1-9
+numInGroup
+2
+
+7
+machineName
+D1-9
+numInGroup
+3
+
+8
+machineName
+DFA1
+numInGroup
+1
+
+9
+machineName
+DFA2
+numInGroup
+1
+
+10
+machineName
+DFA4
+numInGroup
+1
+
+11
+machineName
+DFB1-2
+numInGroup
+1
+
+12
+machineName
+DFB3
+numInGroup
+1
+
+13
+machineName
+DFB4
+numInGroup
+1
+
+14
+machineName
+DFC1
+numInGroup
+1
+
+15
+machineName
+DFC2-3
+numInGroup
+1
+
+16
+machineName
+DFC4
+numInGroup
+1
+
+17
+machineName
+DFE1-2
+numInGroup
+1
+
+18
+machineName
+DFE3-4
+numInGroup
+1
+
+19
+machineName
+DRY1-2
+numInGroup
+1
+
+20
+machineName
+FSI
+numInGroup
+1
+
+21
+machineName
+ION1-3
+numInGroup
+1
+
+setup
+
+# number of setup states (including DEF_SETUP) 
+6
+
+# setup from (row), into (col)
+DEF_SETUP	x	70	70	70	70	70
+G1		60	x	60	60	60	60
+G2		60	60	x	60	60	60
+G3		60	60	60	x	60	60
+G4		60	60	60	60	x	60
+G5		60	60	60	60	60	x
+
+22
+machineName
+LPS1
+numInGroup
+1
+
+23
+machineName
+MEG1-2
+numInGroup
+1
+
+24
+machineName
+OSICD2
+numInGroup
+1
+
+25
+machineName
+PE1-5
+numInGroup
+3
+setup
+12
+DEF_SETUP	x	20	20	20	20	20	20	20	20	20	20	20
+M1		20	x	20	20	20	20	20	20	20	20	20	20	
+M2		20	20	x	20	20	20	20	20	20	20	20	20
+M3		20	20	20	x	20	20	20	20	20	20	20	20
+M4		20	20	20	20	x	20	20	20	20	20	20	20
+M5		20	20	20	20	20	x	20	20	20	20	20	20
+M6		20	20	20	20	20	20	x	20	20	20	20	20
+M7		20	20	20	20	20	20	20	x	20	20	20	20
+M8		20	20	20	20	20	20	20	20	x	20	20	20
+M9		20	20	20	20	20	20	20	20	20	x	20	20
+M10		20	20	20	20	20	20	20	20	20	20	x	20
+M11		20	20	20	20	20	20	20	20	20	20	20	x
+
+26
+machineName
+QLESS
+numInGroup
+1
+
+27
+machineName
+SCRUB
+numInGroup
+1
+
+28
+machineName
+TEG2
+numInGroup
+1
+
+29
+machineName
+WET1
+numInGroup
+1
+
+30
+machineName
+WET3
+numInGroup
+1
+
+31
+machineName
+WET5
+numInGroup
+1
+
+
+# job specifications, jobs have to be ordered by release date
+#
+#jobs
+#
+#number of jobs
+#4
+#
+# <route number> <release date> <due date> <weight>
+#1	0	12	2
+#2	0	37	4
+#3	0	21	2
+#4	0	22	5
+

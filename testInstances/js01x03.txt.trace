@@ -1,0 +1,18 @@
+0.0	sim_start
+1.0	enter_system	Job.0.0#0
+1.0	arrives_at	Job.0.0#0	m0	PROCESSING	0
+2.0	becomes_available	m0	1
+2.0	enter_system	Job.1.1#0
+2.0	arrives_at	Job.1.1#0	m0	IDLE	1
+2.0	start_processing	m0	Job.0.0#0		1
+4.0	finished_processing	m0	Job.0.0#0
+4.0	leave_system	Job.0.0#0
+4.0	unavailable	m0	1
+5.0	becomes_available	m0	1
+5.0	enter_system	Job.1.2#0
+5.0	arrives_at	Job.1.2#0	m0	IDLE	1
+5.0	start_processing	m0	Job.1.1#0		1
+6.0	finished_processing	m0	Job.1.1#0
+6.0	leave_system	Job.1.1#0
+6.0	unavailable	m0	1
+6.0	sim_end
