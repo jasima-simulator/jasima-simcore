@@ -37,6 +37,7 @@ import java.util.Map;
  * a binary file.
  * 
  * Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class ResultSaver extends ExperimentListenerBase {
 
