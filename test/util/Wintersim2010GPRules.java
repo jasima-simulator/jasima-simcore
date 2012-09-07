@@ -27,6 +27,11 @@ import jasima.shopSim.prioRules.gp.GPRuleBase;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class Wintersim2010GPRules {
 
 	public abstract static class Base extends GPRuleBase {

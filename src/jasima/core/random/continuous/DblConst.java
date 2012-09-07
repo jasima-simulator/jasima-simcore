@@ -21,13 +21,16 @@ package jasima.core.random.continuous;
 import java.util.Arrays;
 
 /**
- * A DblStream infinitely returning the numbers of getValues() in exactly this
- * order. After the last value being returned the sequence starts again with the
- * first number.
+ * A DblConst stream infinitely returns the numbers of {@link #getValues()} in
+ * exactly this order. After the last value being returned the sequence starts
+ * again with the first number.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class DblConst extends DblStream {
+
+	private static final long serialVersionUID = -2122011743105354569L;
 
 	private double[] values;
 

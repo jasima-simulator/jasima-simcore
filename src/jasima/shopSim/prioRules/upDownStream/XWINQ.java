@@ -33,6 +33,7 @@ import jasima.shopSim.core.WorkStation;
  * properly.
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public class XWINQ extends PR {
 

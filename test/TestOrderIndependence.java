@@ -27,6 +27,11 @@ import java.io.File;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestOrderIndependence {
 
 	@Test

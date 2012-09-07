@@ -22,10 +22,13 @@
 package jasima.core.util.observer;
 
 /**
- * Simplified version of the Observer-pattern using Java Generics.
+ * NotifierListener are notified by a {@link Notifier} about events. This
+ * implements a simplified version of the Observer-pattern using Java Generics.
  * 
- * used as a reference: http://forum.java.sun.com/thread.jspa?threadID=576544
- * 2008-04-13
+ * Used as a reference: http://forum.java.sun.com/thread.jspa?threadID=576544
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2008-04-13
+ * @version $Id$
  */
 public interface NotifierListener<N extends Notifier<N, E>, E> {
 	public void update(N notifier, E event);

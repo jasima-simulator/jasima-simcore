@@ -27,6 +27,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * taking into account the processing time of a job's next operation.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class PTPlusWINQPlusNPT extends PR {
 

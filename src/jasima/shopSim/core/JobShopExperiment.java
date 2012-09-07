@@ -34,12 +34,13 @@ import java.util.Arrays;
 import java.util.Locale;
 
 /**
- * Base class for shop experiments. This class wraps a JobShop. Derived classes
+ * Base class for shop experiments. This class wraps a {@link JobShop}. Derived classes
  * will typically populate the shop with machines and JobSources and add
  * functionality to collect some statistics and produce appropriate experiment
  * results.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
+ * @version $Id$
  */
 public abstract class JobShopExperiment extends Experiment {
 

@@ -25,7 +25,11 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 /**
- * Sample implementation of a Notifier.
+ * Implementation of a {@link Notifier} functionality. A NotifierAdapter handles
+ * notifier functionality for some real Notifier.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 		Notifier<N, E>, Serializable {

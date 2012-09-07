@@ -35,6 +35,13 @@ import jasima.shopSim.util.JobShopListenerBase;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
+/**
+ * Simulates dynamic job shops and flow shops, based on some parameters. See
+ * Holthaus and Rajendran (1999) for details.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class HolthausExperiment extends JobShopExperiment {
 
 	private static final long serialVersionUID = -7289579178397939550L;

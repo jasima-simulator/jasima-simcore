@@ -25,9 +25,12 @@ import java.util.Random;
  * values. This class just delegates to the underlying method
  * {@link java.util.Random#nextInt()}.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class IntUniformAllInts extends IntStream {
+
+	private static final long serialVersionUID = -2235431750818257710L;
 
 	public IntUniformAllInts() {
 		this(null, null);

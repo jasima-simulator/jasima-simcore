@@ -27,6 +27,7 @@ import java.io.Serializable;
  * using an array-based heap.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-30
+ * @version $Id$
  */
 public final class EventHeap implements EventQueue, Serializable {
 	private static final long serialVersionUID = -7578258752027946114L;

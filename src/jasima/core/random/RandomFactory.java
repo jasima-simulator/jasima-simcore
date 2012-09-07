@@ -41,6 +41,9 @@ import java.util.Random;
  * (default is {@link MersenneTwister}), use the system property
  * {@link #RANDOM_CLASS_PROP_KEY}.
  * </ol>
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class RandomFactory implements Serializable {
 	private static final long serialVersionUID = 4828925858942593527L;
@@ -75,8 +78,8 @@ public class RandomFactory implements Serializable {
 	private Simulation sim;
 
 	/**
-	 * Don't use this constructor, use static method {@link #newInstance(Simulation)}
-	 * instead.
+	 * Don't use this constructor, use static method
+	 * {@link #newInstance(Simulation)} instead.
 	 */
 	protected RandomFactory() {
 		super();
@@ -185,7 +188,8 @@ public class RandomFactory implements Serializable {
 	 * {@link #initNumberStream(DblStream, String)}, just without a default
 	 * name.
 	 * 
-	 * @param stream The {@link DblStream} to configure.
+	 * @param stream
+	 *            The {@link DblStream} to configure.
 	 * @return The stream with random number generator initialized.
 	 */
 	public DblStream initNumberStream(DblStream stream) {

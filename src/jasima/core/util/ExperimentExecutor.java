@@ -35,6 +35,7 @@ import java.util.concurrent.Future;
  * the number of available processors is used.
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public abstract class ExperimentExecutor {
 

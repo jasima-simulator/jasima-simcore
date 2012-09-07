@@ -18,6 +18,16 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import jasima.core.simulation.Simulation.EventQueue;
+
+/**
+ * Abstract base class for all simulation events. Events are sequenced by an
+ * {@link EventQueue} according to their time, priority and event number (to
+ * enforce FIFO order of concurrent events with the same priority).
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public abstract class Event implements Comparable<Event> {
 
 	private static final int PRIO_INCREMENT = Integer.MAX_VALUE / 4;

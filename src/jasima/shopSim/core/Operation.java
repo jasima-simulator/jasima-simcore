@@ -18,6 +18,12 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+/**
+ * Operations specify what to process.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class Operation {
 
 	public WorkStation machine;

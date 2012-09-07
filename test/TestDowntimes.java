@@ -36,6 +36,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestDowntimes extends ExperimentTest {
 
 	@Test

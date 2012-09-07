@@ -29,6 +29,7 @@ import java.util.Random;
  * being selected.
  * 
  * @author Torsten Hildebrandt, 2012-03-08
+ * @version $Id$
  */
 public class RND extends PR {
 

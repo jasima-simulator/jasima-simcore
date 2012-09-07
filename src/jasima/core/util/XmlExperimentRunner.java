@@ -29,6 +29,7 @@ import java.util.Map;
 
 /**
  * Runs an experiment from an XML file and executes it on the command line.
+ * @version $Id$
  */
 public class XmlExperimentRunner {
 	protected boolean optSilent = false;

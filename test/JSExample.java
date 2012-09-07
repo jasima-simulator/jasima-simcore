@@ -30,6 +30,11 @@ import jasima.shopSim.util.WorkStationListenerBase;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class JSExample extends JobShop {
 	final Random streamService = new Random(1234234535);
 	final Random streamInterarrival = new Random(28437);

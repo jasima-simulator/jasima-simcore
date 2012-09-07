@@ -28,6 +28,7 @@ import java.io.Serializable;
  *            Type of the first element.
  * @param <B>
  *            Type of the second element.
+ * @version $Id$
  */
 public class Pair<A, B> implements Cloneable, Serializable {
 

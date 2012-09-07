@@ -26,9 +26,12 @@ import jasima.core.random.continuous.DblStream;
  * in the interval [min(),max()], i.e. including both min() and max(). This is
  * an abstract base class.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public abstract class IntStream extends DblStream {
+
+	private static final long serialVersionUID = -4799011636085252707L;
 
 	public IntStream() {
 		super();

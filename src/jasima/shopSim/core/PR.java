@@ -27,6 +27,7 @@ import java.io.Serializable;
  * PriorityQueue.
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public abstract class PR implements Cloneable, Serializable {
 

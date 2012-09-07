@@ -28,6 +28,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * properly.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class IFTMinusUITPlusNPT extends IFTMinusUIT {
 

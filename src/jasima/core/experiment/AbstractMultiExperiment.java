@@ -40,6 +40,7 @@ import java.util.concurrent.Future;
  * times.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 

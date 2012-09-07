@@ -34,6 +34,7 @@ import java.util.Map;
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
  * @see BasicJobStatCollector
+ * @version $Id$
  */
 public abstract class JobShopListenerBase implements
 		NotifierListener<Simulation, SimEvent>, Serializable, Cloneable {

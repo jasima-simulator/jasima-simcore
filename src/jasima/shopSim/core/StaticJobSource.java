@@ -18,6 +18,13 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+/**
+ * A job source which generates jobs from a static set of job descriptions 
+ * ({@link JobSpec}).
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class StaticJobSource extends JobSource {
 
 	public static class JobSpec {

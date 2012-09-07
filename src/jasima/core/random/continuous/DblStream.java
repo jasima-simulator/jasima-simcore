@@ -27,7 +27,8 @@ import java.util.Random;
  * A stream of double numbers, usually the sequence is produced by a pseudo
  * random number generator.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public abstract class DblStream implements Serializable, Cloneable {
 

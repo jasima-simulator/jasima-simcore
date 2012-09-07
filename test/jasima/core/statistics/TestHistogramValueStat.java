@@ -28,6 +28,11 @@ import org.junit.Test;
 
 import util.FileChecker;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestHistogramValueStat {
 
 	@Test

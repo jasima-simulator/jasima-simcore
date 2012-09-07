@@ -18,6 +18,11 @@
  *******************************************************************************/
 import java.util.Random;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class RandomHelper {
 
 	private RandomHelper() {

@@ -36,6 +36,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * (xml-Serialization using the xstream library).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-07-13
+ * @version $Id$
  */
 public class XmlUtil {
 

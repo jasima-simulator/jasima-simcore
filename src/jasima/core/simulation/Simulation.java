@@ -37,7 +37,8 @@ import java.util.Map;
  * completing a simulation the {@link #done()}-method should be called to
  * perform clean-up, collecting simulation results, etc.
  * 
- * @author Torsten Hildebrandt, 2012-02-08
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-02-08
+ * @version $Id$
  */
 public class Simulation implements Notifier<Simulation, SimEvent> {
 

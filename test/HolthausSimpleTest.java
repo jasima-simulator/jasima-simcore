@@ -35,6 +35,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class HolthausSimpleTest {
 
 	@Before

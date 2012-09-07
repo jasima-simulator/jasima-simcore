@@ -44,6 +44,11 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestMimacFab4Trace {
 
     @BeforeClass

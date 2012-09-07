@@ -31,7 +31,8 @@ import java.util.Random;
  * number of experiments run is usually smaller than the number of possible
  * factor combinations, i.e., only a fraction of possible designs is tested.
  * 
- * Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-06-08
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-06-08
+ * @version $Id$
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 

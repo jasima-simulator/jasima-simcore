@@ -36,8 +36,8 @@ import java.util.Map;
  * This class uses Java's serialization mechanism to save experiment results in
  * a binary file.
  * 
- * Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id: ResultSaver.java 32 2012-09-07 14:36:51Z THildebrandt@gmail.com$
  */
 public class ResultSaver extends ExperimentListenerBase {
 
@@ -100,7 +100,7 @@ public class ResultSaver extends ExperimentListenerBase {
 		// write marker for begin of main results
 		addCell(-3, null);
 		saveExperiment(e, results);
-		
+
 		try {
 			tmpDatOut.close();
 		} catch (IOException ex) {

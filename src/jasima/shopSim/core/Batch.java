@@ -20,6 +20,13 @@ package jasima.shopSim.core;
 
 import java.util.ArrayList;
 
+/**
+ * A batch is a temporary collection of jobs to be processed together in a
+ * single operation.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class Batch extends PrioRuleTarget {
 
 	public final JobShop shop;

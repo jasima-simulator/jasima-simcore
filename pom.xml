@@ -190,13 +190,6 @@
 			</testResource>
 		</testResources>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>localRep</id>
-			<name>Local File Server</name>
-			<url>file:///u:/public_html/maven2</url>
-		</repository>
-	</distributionManagement>
 	<issueManagement>
 		<url>https://code.google.com/p/jasima/issues/list</url>
 		<system>google code</system>

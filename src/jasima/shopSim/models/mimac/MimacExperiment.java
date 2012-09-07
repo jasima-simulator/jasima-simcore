@@ -36,6 +36,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * Implements simulations of the MIMAC Scenarios.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2010-03-12
+ * @version $Id$
  */
 public class MimacExperiment extends JobShopExperiment {
 

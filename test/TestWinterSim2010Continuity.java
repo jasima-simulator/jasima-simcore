@@ -66,6 +66,11 @@ import util.Wintersim2010GPRules.GPRuleSize43;
 import util.Wintersim2010GPRules.GPRuleSize98;
 import util.Wintersim2010GPRules.GPRuleSize99;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestWinterSim2010Continuity {
 
 	public static void main(String[] args) throws Exception {

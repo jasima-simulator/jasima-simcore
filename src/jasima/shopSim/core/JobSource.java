@@ -20,6 +20,12 @@ package jasima.shopSim.core;
 
 import jasima.core.simulation.Event;
 
+/**
+ * A job source is an abstract base class for classes producing {@link Job}s.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public abstract class JobSource {
 
 	// bigger than WorkStation.DEPART_PRIO but smaller than

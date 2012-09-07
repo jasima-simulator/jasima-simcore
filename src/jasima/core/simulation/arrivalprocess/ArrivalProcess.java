@@ -24,6 +24,7 @@ import jasima.core.random.continuous.DblStream;
  * Base class for arrival processes.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
+ * @version $Id$
  */
 public abstract class ArrivalProcess extends DblStream {
 

@@ -34,6 +34,7 @@ import jasima.shopSim.prioRules.setup.ATCS;
  * among batches of different families.
  * 
  * @author Christoph Pickardt, 2011-11-14
+ * @version $Id$
  */
 public class BATCS extends ATCS {
 

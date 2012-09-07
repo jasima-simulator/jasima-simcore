@@ -31,6 +31,7 @@ import java.util.Map;
  * certain number of jobs stated in succession.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
+ * @version $Id$
  */
 public class BatchStatCollector extends JobShopListenerBase {
 

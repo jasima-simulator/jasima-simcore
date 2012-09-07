@@ -26,6 +26,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * job arriving later than a given threshold value.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class FixedLAThreshold extends LookaheadThreshold {
 

@@ -39,6 +39,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class to represent a workstation. A workstation is a collection of identical
+ * {@link IndividualMachine}s sharing a common queue.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 	/** Base class for workstation events. */

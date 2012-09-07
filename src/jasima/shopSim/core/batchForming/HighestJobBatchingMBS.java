@@ -32,6 +32,7 @@ import java.util.List;
  * rule.
  * 
  * @author Christoph Pickardt, 2011-01-14
+ * @version $Id$
  */
 public class HighestJobBatchingMBS extends BatchForming {
 

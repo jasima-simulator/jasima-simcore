@@ -27,6 +27,11 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class FileChecker {
 	private FileChecker() {
 	}

@@ -21,6 +21,11 @@ package jasima.shopSim.prioRules.gp;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class Warwick2 extends GPRuleBase {
 
 	@Override

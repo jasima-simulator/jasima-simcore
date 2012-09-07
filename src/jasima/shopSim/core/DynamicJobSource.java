@@ -22,7 +22,6 @@ import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
-import jasima.core.simulation.arrivalprocess.ArrivalProcess;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 
 /**
@@ -42,6 +41,7 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
  * machine being revisited.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
+ * @version $Id$
  */
 public class DynamicJobSource extends JobSource {
 

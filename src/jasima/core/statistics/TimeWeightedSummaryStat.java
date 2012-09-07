@@ -20,6 +20,9 @@ package jasima.core.statistics;
 
 /**
  * Summary stat which weights values according to the time.  
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class TimeWeightedSummaryStat extends SummaryStat {
 	private static final long serialVersionUID = -2192851354158356984L;

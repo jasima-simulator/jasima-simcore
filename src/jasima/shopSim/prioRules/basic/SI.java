@@ -28,6 +28,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * Jobs within a group are sequenced according to SPT.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class SI extends PR {
 

@@ -28,6 +28,7 @@ import jasima.shopSim.core.PriorityQueue;
  * and Fu (2009), see also Pickardt and Branke (2012).
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class ECR extends PR {
 

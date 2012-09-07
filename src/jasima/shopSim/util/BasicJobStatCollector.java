@@ -28,6 +28,12 @@ import jasima.shopSim.core.WorkStation;
 
 import java.util.Map;
 
+/**
+ * Collects some basic job statistics like flowtime, tardiness, ...
+ *  
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class BasicJobStatCollector extends JobShopListenerBase {
 
 	private static final long serialVersionUID = -6311778884767987852L;

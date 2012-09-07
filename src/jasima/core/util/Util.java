@@ -41,6 +41,7 @@ import java.util.Map;
  * Some static utility methods that don't really fit anywhere else.
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public class Util {
 

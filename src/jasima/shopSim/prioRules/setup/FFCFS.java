@@ -33,6 +33,7 @@ import jasima.shopSim.core.PriorityQueue;
  * selected family.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class FFCFS extends PR {
 

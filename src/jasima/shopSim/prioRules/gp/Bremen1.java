@@ -22,6 +22,11 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class Bremen1 extends GPRuleBase {
 
 	@Override

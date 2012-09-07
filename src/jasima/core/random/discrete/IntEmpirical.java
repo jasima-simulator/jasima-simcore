@@ -25,12 +25,15 @@ import java.util.Random;
 
 /**
  * Returns an integer in the range [0,n]. The probability of each value is
- * determined by the probabilities passed to setProbabilities(), and can be
- * arbitrary positive numbers as long as they sum up to 1.0.
+ * determined by the probabilities passed to {@link #setProbabilities(double[])}
+ * , and can be arbitrary positive numbers as long as they sum up to 1.0.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class IntEmpirical extends IntStream {
+
+	private static final long serialVersionUID = -8591371451592742035L;
 
 	public IntEmpirical() {
 		this(null, null, null, null);

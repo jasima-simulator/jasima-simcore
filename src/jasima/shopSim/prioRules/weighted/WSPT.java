@@ -26,6 +26,7 @@ import jasima.shopSim.core.PriorityQueue;
  * This class implements the Weighted Shortest Processing Time rule.
  * 
  * @author Christoph Pickardt, 2011-11-16
+ * @version $Id$
  */
 public class WSPT extends PR {
 

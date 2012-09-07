@@ -57,10 +57,11 @@ import java.util.Map;
  * experiment's start and completion and can be used by subclasses to provide
  * additional events.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public abstract class Experiment implements Cloneable, Serializable,
-/* Callable<Map<String, Object>>, */Notifier<Experiment, ExperimentEvent> {
+		Notifier<Experiment, ExperimentEvent> {
 
 	private static final long serialVersionUID = -5981694222402234985L;
 

@@ -30,14 +30,15 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * Default implementation of an ExecutorFactory returning an Executor that uses
- * up to Runtime.getRuntime().availableProcessors() threads to execute tasks
- * concurrently. This number of threads can be overridden by setting the system
- * property "jasima.core.ThreadPoolExecutor.numThreads".
+ * up to {@code Runtime.getRuntime().availableProcessors()} threads to execute
+ * tasks concurrently. This number of threads can be overridden by setting the
+ * system property "jasima.core.ThreadPoolExecutor.numThreads".
  * <p />
  * In order to prevent starvation of worker threads waiting for sub-experiments
  * to complete, there is a thread pool for each nesting level of experiments.
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public class ThreadPoolExecutor extends ExperimentExecutor {
 

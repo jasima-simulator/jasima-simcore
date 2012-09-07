@@ -48,8 +48,13 @@ import java.util.ArrayList;
  * <li>if there is another run (i.e. confidence interval too large), another
  * batch of getMinReplications() are performed, i.e. go back to step 1
  * </ol>
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class MultipleReplicationExperiment extends AbstractMultiExperiment {
+
+	private static final long serialVersionUID = -5122164015247766742L;
 
 	private Experiment baseExperiment;
 
@@ -194,6 +199,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		this.baseExperiment = baseExperiment;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public MultipleReplicationExperiment clone()
 			throws CloneNotSupportedException {
@@ -201,7 +207,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 				.clone();
 
 		if (confIntervalMeasure != null)
-			mre.confIntervalMeasure = (ArrayList) confIntervalMeasure.clone();
+			mre.confIntervalMeasure = (ArrayList<String>) confIntervalMeasure.clone();
 
 		if (baseExperiment != null)
 			mre.baseExperiment = (Experiment) baseExperiment.clone();

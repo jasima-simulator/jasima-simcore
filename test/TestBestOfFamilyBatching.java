@@ -43,6 +43,11 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestBestOfFamilyBatching {
 
 	@Before

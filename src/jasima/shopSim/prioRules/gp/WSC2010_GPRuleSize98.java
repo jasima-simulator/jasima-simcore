@@ -26,6 +26,11 @@ import jasima.shopSim.prioRules.basic.SLK;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class WSC2010_GPRuleSize98 extends GPRuleBase {
 
 	private Map<String, Integer> famSizes;

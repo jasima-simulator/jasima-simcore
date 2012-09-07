@@ -56,6 +56,7 @@ import jxl.write.WritableWorkbook;
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
+ * @version $Id$
  */
 public class ExcelSaver extends ResultSaver {
 
@@ -191,6 +192,7 @@ public class ExcelSaver extends ResultSaver {
 						// begin of main results, ignore
 					} else {
 						// end of row marker
+						assert cd.colIdx == -1;
 						row++;
 					}
 				}
@@ -228,6 +230,7 @@ public class ExcelSaver extends ResultSaver {
 					if (cd.colIdx == -1) {// ignore end of record marker
 					} else if (cd.colIdx == -3) { // ignore marker for begin of
 													// main results
+						break; // while
 					} else if (cd.colIdx == -2) { // new column
 						ColumnData col = (ColumnData) cd.value;
 						// column header
@@ -268,7 +271,7 @@ public class ExcelSaver extends ResultSaver {
 				else if (!cd1.isParamColumn && cd2.isParamColumn)
 					return +1;
 				else {
-					return cd1.name.compareTo(cd2.name);
+					return cd1.name.compareToIgnoreCase(cd2.name);
 				}
 			}
 		});

@@ -36,6 +36,7 @@ import java.util.Map;
  * 
  * @author Christoph Pickardt, 2010-09-07
  * @author Torsten Hildebrandt, 2010-09-29
+ * @version $Id$
  */
 public class MostCompleteBatch extends BatchForming {
 

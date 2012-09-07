@@ -18,6 +18,12 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+/**
+ * Main work unit in a shop.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class Job extends PrioRuleTarget implements Cloneable {
 
 	private final JobShop shop;

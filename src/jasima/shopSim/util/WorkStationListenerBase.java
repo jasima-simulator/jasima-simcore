@@ -28,6 +28,14 @@ import jasima.shopSim.core.WorkStation.WorkStationEvent;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * Possible base class for workstation listeners. Delegates all events to
+ * seperate methods. Additional events can be processed by overriding
+ * {@link #handleOther(WorkStation, WorkStationEvent)}.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class WorkStationListenerBase implements
 		NotifierListener<WorkStation, WorkStationEvent>, Serializable,
 		Cloneable {

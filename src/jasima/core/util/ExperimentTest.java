@@ -32,12 +32,13 @@ import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
 
 /**
- * Base class for JUnit tests which check for many results of an Experiment at
- * once. Deriving a test from ExperimentTest and calling
- * {@link #checkResults(Map, Map)} many results of an experiment can be
- * validated with a single method call.
+ * Base class for JUnit tests which check for many results of an
+ * {@link Experiment} at once. Deriving a new test class from
+ * {@code ExperimentTest} and calling {@link #checkResults(Map, Map)} many
+ * results of an experiment can be validated with a single method call.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-08
+ * @version $Id$
  */
 public class ExperimentTest {
 
@@ -97,7 +98,8 @@ public class ExperimentTest {
 			name = "result entry '" + name + "'";
 
 			if (expected instanceof SummaryStat) {
-				checkValueStat(name, (SummaryStat) expected, (SummaryStat) actual);
+				checkValueStat(name, (SummaryStat) expected,
+						(SummaryStat) actual);
 			} else if (expected instanceof Double) {
 				Double exp = (Double) expected;
 				Double act = (Double) actual;

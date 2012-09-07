@@ -25,6 +25,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class TestExperimentAbort {
 
 	private static final int NUM_RUNS = 10;

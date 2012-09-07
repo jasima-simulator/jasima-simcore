@@ -19,6 +19,11 @@
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class,
 		TestStaticInsts.class, TestOrderIndependence.class, TestSetups.class,

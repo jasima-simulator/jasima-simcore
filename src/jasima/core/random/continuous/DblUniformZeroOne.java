@@ -24,9 +24,12 @@ import java.util.Random;
  * Generates uniformly distributed doubles in the range [0,1.0). This class just
  * delegates to the underlying method {@link java.util.Random#nextDouble()}.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class DblUniformZeroOne extends DblStream {
+
+	private static final long serialVersionUID = -5917490656405705668L;
 
 	public DblUniformZeroOne() {
 		this(null, null);

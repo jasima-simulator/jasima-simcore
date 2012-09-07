@@ -26,10 +26,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  * equals SPT for problems with only one work centre.
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
-// TODO unify SPT and SRPT (and weighted versions) by incorporating a depth
-// parameter, up to how many operations to look forward when computing
-// proc times.
 public class SRPT extends PR {
 
 	@Override

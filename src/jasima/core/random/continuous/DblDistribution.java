@@ -24,10 +24,10 @@ import org.apache.commons.math3.distribution.RealDistribution;
 
 /**
  * Returns an arbitrarily distributed random number stream. Its distribution is
- * determined by an arbitrary
- * org.apache.commons.math.distribution.ContinuousDistribution.
+ * determined by an arbitrary {@link RealDistribution}.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class DblDistribution extends DblStream {
 

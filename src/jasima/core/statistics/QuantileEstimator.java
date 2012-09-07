@@ -37,6 +37,7 @@ import java.util.Locale;
  * </ul>
  *  
  * @author Robin Kreis <r.kreis@uni-bremen.de>, 2012-09-07
+ * @version $Id$
  */
 public class QuantileEstimator extends SummaryStat implements
 		Iterable<QuantileEstimator.Bar> {

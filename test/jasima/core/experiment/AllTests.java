@@ -21,6 +21,11 @@ package jasima.core.experiment;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ TestExperimentAbort.class })
 public class AllTests {

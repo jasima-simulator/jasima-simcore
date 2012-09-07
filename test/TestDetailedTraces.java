@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-import static org.junit.Assert.assertEquals;
 import jasima.core.random.RandomFactory;
 import jasima.core.util.ExperimentTest;
 import jasima.shopSim.core.PR;
@@ -40,6 +39,9 @@ import util.FileChecker;
 /**
  * This is basically the same as {@link TestForAllResults}, but checks the
  * complete details of a trace file.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class TestDetailedTraces extends ExperimentTest {
 

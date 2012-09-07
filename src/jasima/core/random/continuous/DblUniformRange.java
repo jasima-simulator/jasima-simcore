@@ -23,9 +23,12 @@ import java.util.Random;
 /**
  * Returns a uniformly distributed real number in the range [min, max).
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class DblUniformRange extends DblStream {
+
+	private static final long serialVersionUID = 7183118564770349548L;
 
 	private double min = 0.0d, max = 1.0d, range = 1.0d;
 

@@ -27,6 +27,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * between the EDD and SRPT rules.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class MDD extends PR {
 

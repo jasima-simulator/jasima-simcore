@@ -25,6 +25,7 @@ import jasima.shopSim.prioRules.setup.ATCS;
  * Morton (1987).
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public class ATC extends ATCS {
 

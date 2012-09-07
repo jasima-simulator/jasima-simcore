@@ -27,6 +27,7 @@ import jasima.shopSim.core.PriorityQueue;
  * see Pickardt and Branke (2012).
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class SNSPT extends PR {
 

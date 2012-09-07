@@ -29,6 +29,7 @@ import jasima.shopSim.core.WorkStation;
  * <p>
  * 
  * @author Torsten Hildebrandt
+ * @version $Id$
  */
 public class Inverse extends PR {
 

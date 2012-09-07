@@ -28,6 +28,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implements a shop simulation. Despite its name the scenario not necessarily
+ * has to be a job shop.
+ * 
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
+ */
 public class JobShop extends Simulation {
 
 	public static class JobShopEvent extends SimEvent {
@@ -155,13 +162,13 @@ public class JobShop extends Simulation {
 	@Override
 	public void produceResults(Map<String, Object> res) {
 		super.produceResults(res);
-		
+
 		res.put("numJobsFinished", jobsFinished);
 		res.put("numJobsStarted", jobsStarted);
 		res.put("numWIP", jobsStarted - jobsFinished);
 
 		res.put("strangePriorities", strangePriorities ? 1 : 0);
-	
+
 		for (WorkStation m : machines) {
 			m.produceResults(res);
 		}

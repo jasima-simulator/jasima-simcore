@@ -32,6 +32,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * 
  * @author Torsten Hildebrandt
  * @see FASFS
+ * @version $Id$
  */
 public class TieBreakerFASFS extends PR {
 

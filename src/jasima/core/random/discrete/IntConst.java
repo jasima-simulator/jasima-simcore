@@ -24,13 +24,16 @@ import java.util.Arrays;
 
 /**
  * Returns a constant set of integer numbers, as passed to the constructor or
- * via setValues(). This value sequence is repeated if all values are returned
- * once. The sequence returned is not random at all, i.e. this class does not
- * use the inherited rndGen.
+ * via {@link #setValues(int...)}. This value sequence is repeated if all values
+ * are returned once. The sequence returned is not random at all, i.e. this
+ * class does not use the inherited rndGen.
  * 
- * @author Torsten Hildebrandt
+ * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @version $Id$
  */
 public class IntConst extends IntStream {
+
+	private static final long serialVersionUID = -3297743869223820992L;
 
 	private int[] values;
 

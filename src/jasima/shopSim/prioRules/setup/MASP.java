@@ -35,6 +35,7 @@ import java.util.Map;
  * selected family.
  * 
  * @author Christoph Pickardt, 2011-11-15
+ * @version $Id$
  */
 public class MASP extends MMS {
 
