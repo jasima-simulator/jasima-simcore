@@ -1,12 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>com.googlecode.jasima</groupId>
 	<artifactId>jasima-main</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>Jasima</name>
 	<description>JAva SImulatior for MAnufacturing and logistics - A framework for discrete event simulation and computer experiments with a main focus on modelling and analyzing logistic/manufacturing systems.</description> <!-- TODO -->
 	<url>http://jasima.googlecode.com/</url> <!-- TODO -->
@@ -17,12 +23,18 @@
 	</organization>
 	<licenses>
 		<license>
-			<name>GNU GPL v3</name> <!-- TODO -->
-			<url>http://www.gnu.org/licenses/gpl.html</url>
+			<name>GNU GPL version 3 or above</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+	<developers>
+		<developer>
+			<id>hil</id>
+			<name>Torsten Hildebrandt</name>
+			<email>jasima@thildebrandt.de</email>
+		</developer>
+	</developers>
 	<dependencies>
 		<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
@@ -54,19 +66,19 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.3</version>
-			<scope>test</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit-dep</artifactId>
 			<version>4.10</version>
-			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>hamcrest-core</artifactId>
 					<groupId>org.hamcrest</groupId>
 				</exclusion>
 			</exclusions>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -92,7 +104,9 @@
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-dependency-plugin</artifactId>
 										<versionRange>2.3</versionRange>
-										<goals><goal>copy-dependencies</goal></goals>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
 									</pluginExecutionFilter>
 									<action>
 										<ignore />
@@ -150,6 +164,12 @@
 					<outputDirectory>${project.build.directory}/lib</outputDirectory>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>https://jasima.googlecode.com/svn/tag/jasima</tagBase>
+				</configuration>
+			</plugin>
 		</plugins>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -170,21 +190,21 @@
 			</testResource>
 		</testResources>
 	</build>
- <distributionManagement>
-   <repository>
-     <id>localRep</id>
-     <name>Local File Server</name>
-     <url>file:///u:/public_html/maven2</url>
-   </repository>
- </distributionManagement>
- <issueManagement>
- 	<url>https://code.google.com/p/jasima/issues/list</url>
- 	<system>google code</system>
- </issueManagement>
- <scm>
- 	<url>http://jasima.googlecode.com/svn/trunk/jasima</url>
- 	<developerConnection>scm:svn:https://jasima.googlecode.com/svn/trunk/jasima</developerConnection>
- 	<connection>scm:svn:http://jasima.googlecode.com/svn/trunk/jasima</connection>
- 	<tag>HEAD</tag>
- </scm>
+	<distributionManagement>
+		<repository>
+			<id>localRep</id>
+			<name>Local File Server</name>
+			<url>file:///u:/public_html/maven2</url>
+		</repository>
+	</distributionManagement>
+	<issueManagement>
+		<url>https://code.google.com/p/jasima/issues/list</url>
+		<system>google code</system>
+	</issueManagement>
+	<scm>
+		<url>http://jasima.googlecode.com/svn/trunk/jasima</url>
+		<developerConnection>scm:svn:https://jasima.googlecode.com/svn/trunk/jasima</developerConnection>
+		<connection>scm:svn:http://jasima.googlecode.com/svn/trunk/jasima</connection>
+		<tag>HEAD</tag>
+	</scm>
 </project>

@@ -27,12 +27,16 @@ import java.util.Locale;
  * Implements the extended P2-Algorithm. To calculate histograms, median values
  * or arbitrary quantiles. This class also collects all statistical values
  * collected by {@link SummaryStat}.
- * 
- * @author Robin Kreis <r.kreis@uni-bremen.de>
- * @see Raj Jain, Imrich Chlamtac: The P2 Algorithm for Dynamic Calculation of
+ * <p />
+ * The method used is based on the following papers:
+ * <ul>
+ * <li> Raj Jain, Imrich Chlamtac: The P2 Algorithm for Dynamic Calculation of
  *      Quantiles and Histograms Without Storing Observations, ACM 28, 10 (1985)
- * @see Kimmo Raatikainen: Simultaneous estimation of several percentiles,
+ * <li> Kimmo Raatikainen: Simultaneous estimation of several percentiles,
  *      Simulations Councils (1987)
+ * </ul>
+ *  
+ * @author Robin Kreis <r.kreis@uni-bremen.de>, 2012-09-07
  */
 public class QuantileEstimator extends SummaryStat implements
 		Iterable<QuantileEstimator.Bar> {
@@ -52,7 +56,7 @@ public class QuantileEstimator extends SummaryStat implements
 	 * estimates the quantiles 0.1, 0.5 (the median) and 0.9 well.
 	 * 
 	 * @param name
-	 *            the name of this {@link ValueStat}
+	 *            the name of this {@link SummaryStat}
 	 */
 	public QuantileEstimator(String name) {
 		super(name);
@@ -67,7 +71,7 @@ public class QuantileEstimator extends SummaryStat implements
 	 * 
 	 * @see #setQuantileList(double...)
 	 * @param name
-	 *            the name of this {@link ValueStat}
+	 *            the name of this {@link SummaryStat}
 	 * @param quantiles
 	 *            a list of quantiles to be estimated
 	 */

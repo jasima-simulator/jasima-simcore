@@ -136,7 +136,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * code called {@link #end()}.
 	 * <p>
 	 * 
-	 * @see Event#isAppEvent()
+	 * @see jasima.core.simulation.Event#isAppEvent()
 	 */
 	public void run() {
 		if (numListener() > 0) {
@@ -262,9 +262,9 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * (optionally) clone the listener (using
 	 * {@link Util#cloneIfPossible(Object)}) before installing it.
 	 * 
-	 * @param listener
+	 * @param l
 	 *            The shop listener to add.
-	 * @param cloneIfPossible
+	 * @param cloneIfPossbile
 	 *            whether to try to clone a new instance for each machine using
 	 *            {@link Util#cloneIfPossible(Object)}.
 	 */

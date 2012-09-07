@@ -141,7 +141,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 	/**
 	 * Static method to prints the results <code>res</code> of an experiment
-	 * <code>e</code> to {@link System.out}.
+	 * <code>e</code> to {@link System#out}.
 	 */
 	public static void printResults(Experiment e, Map<String, Object> res) {
 		PrintWriter pw = new PrintWriter(System.out, true);

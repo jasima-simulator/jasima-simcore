@@ -19,7 +19,6 @@
 package jasima.core.experiment;
 
 import jasima.core.experiment.Experiment.ExperimentEvent;
-import jasima.core.simulation.Simulation.SimMsgCategory;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
@@ -31,7 +30,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * An Experiment is something that produces results depending on various
@@ -62,7 +60,7 @@ import java.util.concurrent.Callable;
  * @author Torsten Hildebrandt
  */
 public abstract class Experiment implements Cloneable, Serializable,
-		/*Callable<Map<String, Object>>,*/ Notifier<Experiment, ExperimentEvent> {
+/* Callable<Map<String, Object>>, */Notifier<Experiment, ExperimentEvent> {
 
 	private static final long serialVersionUID = -5981694222402234985L;
 
@@ -169,7 +167,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 		} finally {
 			runTimeReal = System.currentTimeMillis() - runTimeReal;
 		}
-		
+
 		// build result map
 		resultMap = new UniqueNamesCheckingHashMap<String, Object>();
 		produceResults();
@@ -178,7 +176,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 			fire(EXPERIMENT_COLLECT_RESULTS);
 			results = null;
 		}
-		
+
 		// give experiments and listener a chance to view/modify results
 		finish();
 		if (numListener() > 0) {
@@ -186,7 +184,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 			fire(EXPERIMENT_FINISHING);
 			results = null;
 		}
-		
+
 		// we are done, don't change results any more
 		resultMap = Collections.unmodifiableMap(resultMap);
 		if (numListener() > 0)
@@ -226,7 +224,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * 
 	 * @param message
 	 *            The message to print.
-	 * @see #print(SimMsgCategory, String)
+	 * @see #print(ExpMsgCategory, String)
 	 */
 	public void print(String message) {
 		print(ExpMsgCategory.INFO, message);
@@ -247,7 +245,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	}
 
 	/**
-	 * Prints the results of this experiments to {@link System.out}.
+	 * Prints the results of this experiments to {@link System#out}.
 	 */
 	public final void printResults() {
 		ConsolePrinter.printResults(this, getResults());
@@ -284,15 +282,15 @@ public abstract class Experiment implements Cloneable, Serializable,
 		}
 	}
 
-//	/**
-//	 * Runs the experiment and returns results. This method implements the
-//	 * {@link Callable} interface.
-//	 */
-//	@Override
-//	public Map<String, Object> call() throws Exception {
-//		runExperiment();
-//		return getResults();
-//	}
+	// /**
+	// * Runs the experiment and returns results. This method implements the
+	// * {@link Callable} interface.
+	// */
+	// @Override
+	// public Map<String, Object> call() throws Exception {
+	// runExperiment();
+	// return getResults();
+	// }
 
 	/**
 	 * Sets the nesting level. This method is only for internal purposes.

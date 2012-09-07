@@ -36,7 +36,7 @@ import java.util.Random;
  * Behaviour of this class can be modified in two ways using system properties.
  * <ol>
  * <li>A property {@link #RANDOM_FACTORY_PROP_KEY} can be used to change the
- * class returned by the static method {@link #newInstance()}.
+ * class returned by the static method {@link #newInstance(Simulation)}.
  * <li>If just a different implementation of {@link java.util.Random} is desired
  * (default is {@link MersenneTwister}), use the system property
  * {@link #RANDOM_CLASS_PROP_KEY}.
@@ -75,7 +75,7 @@ public class RandomFactory implements Serializable {
 	private Simulation sim;
 
 	/**
-	 * Don't use this constructor, use static method {@link #newInstance()}
+	 * Don't use this constructor, use static method {@link #newInstance(Simulation)}
 	 * instead.
 	 */
 	protected RandomFactory() {
@@ -185,8 +185,8 @@ public class RandomFactory implements Serializable {
 	 * {@link #initNumberStream(DblStream, String)}, just without a default
 	 * name.
 	 * 
-	 * @param stream
-	 * @return
+	 * @param stream The {@link DblStream} to configure.
+	 * @return The stream with random number generator initialized.
 	 */
 	public DblStream initNumberStream(DblStream stream) {
 		return initNumberStream(stream, null);
