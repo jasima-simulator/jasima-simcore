@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ import java.util.Map;
  * a binary file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: ResultSaver.java 32 2012-09-07 14:36:51Z THildebrandt@gmail.com$
+ * @version $Id:: $
  */
 public class ResultSaver extends ExperimentListenerBase {
 
@@ -68,7 +67,7 @@ public class ResultSaver extends ExperimentListenerBase {
 	private ObjectOutputStream tmpDatOut;
 	private int unsavedResults;
 	private long nextSaveTime;
-	protected List<ColumnData> columns = new ArrayList<ColumnData>();
+	private ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
 
 	@Override
 	protected void starting(Experiment e) {
@@ -99,6 +98,7 @@ public class ResultSaver extends ExperimentListenerBase {
 	protected void finished(Experiment e, Map<String, Object> results) {
 		// write marker for begin of main results
 		addCell(-3, null);
+		columns.clear();
 		saveExperiment(e, results);
 
 		try {
@@ -127,23 +127,19 @@ public class ResultSaver extends ExperimentListenerBase {
 	}
 
 	private void saveExperiment(Experiment e, Map<String, Object> runRes) {
-		try {
-			saveParams("", e);
-			saveData(runRes);
+		saveParams("", e);
+		saveData(runRes);
 
-			// write marker for end of record
-			addCell(-1, null);
+		// write marker for end of record
+		addCell(-1, null);
 
-			unsavedResults++;
+		unsavedResults++;
 
-			if (unsavedResults >= MAX_UNSAVED
-					|| System.currentTimeMillis() > nextSaveTime) {
-				flushTmpFile();
-				unsavedResults = 0;
-				nextSaveTime = System.currentTimeMillis() + SAVE_INTERVAL;
-			}
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+		if (unsavedResults >= MAX_UNSAVED
+				|| System.currentTimeMillis() > nextSaveTime) {
+			flushTmpFile();
+			unsavedResults = 0;
+			nextSaveTime = System.currentTimeMillis() + SAVE_INTERVAL;
 		}
 	}
 
@@ -174,34 +170,30 @@ public class ResultSaver extends ExperimentListenerBase {
 	}
 
 	private void saveData(Map<String, Object> res) {
-		for (String s : res.keySet()) {
-			Object o = res.get(s);
+		for (String name : res.keySet()) {
+			Object value = res.get(name);
 
-			if (o != null && o instanceof Experiment) {
-				String prefix = s + '.';
-				int colIdx = getColumnIndex(s + "className", false);
-				addCell(colIdx, o.getClass().getName());
-				saveExperiment(prefix, (Experiment) o, false);
+			if (value != null && value instanceof Experiment) {
+				saveExperiment(name + '.', (Experiment) value, false);
 			} else {
-				int colIdx = getColumnIndex(s, false);
-				addCell(colIdx, o);
+				int colIdx = getColumnIndex(name, false);
+				addCell(colIdx, value);
 			}
 		}
 	}
 
 	private void saveExperiment(String prefix, Experiment e, boolean isParam) {
-		Map<String, Object> ps = e.getPropsWithValues();
+		// write experiment's class name as a separate column
+		String cn = prefix + "className";
+		int cnIdx = getColumnIndex(cn, isParam);
+		addCell(cnIdx, e.getClass().getName());
 
+		// write all properties
+		Map<String, Object> ps = e.getPropsWithValues();
 		for (String s : ps.keySet()) {
 			Object v = ps.get(s);
 
 			if (v != null && v instanceof Experiment) {
-				// write experiment's class name as a separate column
-				String cn = prefix + s + ".className";
-				int cnIdx = getColumnIndex(cn, isParam);
-
-				addCell(cnIdx, e.getClass().getName());
-
 				saveExperiment(prefix + s + '.', (Experiment) v, isParam);
 			} else {
 				int colIdx = getColumnIndex(prefix + s, isParam);
@@ -213,22 +205,16 @@ public class ResultSaver extends ExperimentListenerBase {
 
 	private Object convertValue(Object v) {
 		// convert everything not Serializable to a String
-		if (v instanceof Serializable) {
+		if (v == null) {
+			return "null";
+		} else if (v instanceof Serializable) {
 			return v;
+		} else if (v.getClass().isArray()) {
+			// an array which is not Serializable, i.e., components are not
+			// Serializable
+			return Util.arrayToString(v);
 		} else
-			return String.valueOf(v);
-		// // convert everything but Numbers and ValueStats to a String
-		// if (v == null) {
-		// return "null";
-		// } else if (v.getClass().isArray()) {
-		// return Util.arrayToString(v);
-		// } else if (v instanceof Number) {
-		// return v;
-		// } else if (v instanceof ValueStat) {
-		// return v;
-		// } else {
-		// return v.toString();
-		// }
+			return v.toString();
 	}
 
 	public String getResultFileName() {

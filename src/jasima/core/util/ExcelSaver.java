@@ -34,14 +34,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.write.Label;
+import jxl.write.NumberFormats;
 import jxl.write.WritableCell;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
@@ -59,6 +62,18 @@ import jxl.write.WritableWorkbook;
  * @version $Id$
  */
 public class ExcelSaver extends ResultSaver {
+
+	private static final String SHEET_NAME_MAIN = "main experiment";
+	private static final String SHEET_NAME_OVERVIEW = "sub-exp. overview";
+	private static final String SHEET_NAME_MEAN = "sub-exp. value|mean";
+	private static final String SHEET_NAME_MIN = "sub-exp. min";
+	private static final String SHEET_NAME_MAX = "sub-exp. max";
+	private static final String SHEET_NAME_SD = "sub-exp. stdDev";
+	private static final String SHEET_NAME_COUNT = "sub-exp. count";
+	private static final String SHEET_NAME_SUM = "sub-exp. sum";
+
+	private static final String[] SUB_RES_SHEETS = { SHEET_NAME_MEAN, SHEET_NAME_MIN, SHEET_NAME_MAX,
+		SHEET_NAME_SD, SHEET_NAME_COUNT, SHEET_NAME_SUM };
 
 	private static final long serialVersionUID = 342144249972918192L;
 
@@ -120,9 +135,6 @@ public class ExcelSaver extends ResultSaver {
 		}
 	}
 
-	private static final String[] sheetNames = { "summary", "min", "max",
-			"stdDev", "count", "sum" };
-
 	public static final int MAX_ROWS = 65536;
 	public static final int MAX_COLUMNS = 256;
 
@@ -131,10 +143,26 @@ public class ExcelSaver extends ResultSaver {
 
 	private WritableWorkbook workbook;
 
-	private Map<String, SortedSet<String>> paramValues;
+	private Map<String, Set<Object>> paramValues;
+
+	private ArrayList<ColumnData> columns;
+	private ArrayList<ColumnData> mainExpColumns;
+
+	private final WritableCellFormat headerCellFormat;
+	private final WritableCellFormat defFormat;
+	private final WritableCellFormat intFormat;
+	private final WritableCellFormat floatFormat;
 
 	public ExcelSaver() {
 		super();
+
+		WritableFont arial10ptBold = new WritableFont(WritableFont.ARIAL, 10,
+				WritableFont.BOLD);
+		headerCellFormat = new WritableCellFormat(arial10ptBold);
+
+		defFormat = new WritableCellFormat(NumberFormats.DEFAULT);
+		intFormat = new WritableCellFormat(NumberFormats.INTEGER);
+		floatFormat = new WritableCellFormat(NumberFormats.FLOAT);
 	}
 
 	@Override
@@ -169,31 +197,30 @@ public class ExcelSaver extends ResultSaver {
 			throw new RuntimeException(e);
 		}
 
-		// read data and add to workbook
+		// read data a second time and add to workbook
 		try {
-			writeColumnHeaders();
+			writeMainExpHeader();
 
+			if (columns.size() > 0)
+				writeSubExpColumnHeaders();
+
+			boolean isSubExp = true;
 			try {
 				int row = 2;
 				while (true) {
 					CellData cd = (CellData) is.readObject();
-					if (cd.colIdx >= 0) {
-						ColumnData col = columns.get(cd.colIdx);
-						if (col.sortedIndex >= 0) {
-							// if (col.isParamColumn)
-							// addCellEachSheet(row, col.sortedIndex, cd.value);
-							// else
-							addCell(sheetNames[0], row, col.sortedIndex,
-									cd.value);
-						}
-					} else if (cd.colIdx == -2) {
-						// column header, ignore
-					} else if (cd.colIdx == -3) {
-						// begin of main results, ignore
+					if (cd.colIdx == -3) {
+						isSubExp = false;
 					} else {
-						// end of row marker
-						assert cd.colIdx == -1;
-						row++;
+						if (isSubExp) {
+							if (cd.colIdx == -1) {
+								row++;
+							} else {
+								handleSubExpData(row, cd);
+							}
+
+						} else
+							handleMainExpData(cd);
 					}
 				}
 			} catch (EOFException ignore) {
@@ -213,16 +240,90 @@ public class ExcelSaver extends ResultSaver {
 		}
 	}
 
+	private void writeMainExpHeader() throws Exception {
+		ArrayList<ColumnData> sortedColumns = new ArrayList<ColumnData>(
+				mainExpColumns);
+		Collections.sort(sortedColumns, new Comparator<ColumnData>() {
+
+			@Override
+			public int compare(ColumnData cd1, ColumnData cd2) {
+				if (cd1.isParamColumn && !cd2.isParamColumn)
+					return -1;
+				else if (!cd1.isParamColumn && cd2.isParamColumn)
+					return +1;
+				else {
+					return cd1.name.compareToIgnoreCase(cd2.name);
+				}
+			}
+		});
+
+		addHeaderCell(SHEET_NAME_MAIN, 0, 0, "parameters:");
+		addHeaderCell(SHEET_NAME_MAIN, 0, 1, "name");
+		addHeaderCell(SHEET_NAME_MAIN, 0, 2, "value");
+
+		boolean params = true;
+		int n = 1;
+		for (int i = 0; i < sortedColumns.size(); i++) {
+			ColumnData cd = sortedColumns.get(i);
+
+			// first result column?
+			if (!cd.isParamColumn && params) {
+				n++;
+				addHeaderCell(SHEET_NAME_MAIN, n, 0, "results:");
+				addHeaderCell(SHEET_NAME_MAIN, n, 1, "name");
+				addHeaderCell(SHEET_NAME_MAIN, n, 2, "value/mean");
+				addHeaderCell(SHEET_NAME_MAIN, n, 3, "min");
+				addHeaderCell(SHEET_NAME_MAIN, n, 4, "max");
+				addHeaderCell(SHEET_NAME_MAIN, n, 5, "stdDev");
+				addHeaderCell(SHEET_NAME_MAIN, n, 6, "count");
+				addHeaderCell(SHEET_NAME_MAIN, n, 7, "sum");
+				n++;
+				params = false;
+			}
+			cd.sortedIndex = n++;
+
+			// write parameter/result name
+			addCell(SHEET_NAME_MAIN, cd.sortedIndex, 1, cd.name);
+		}
+	}
+
+	private void handleMainExpData(CellData cd) throws Exception {
+		if (cd.colIdx >= 0) {
+			// parameter/result values
+			ColumnData col = mainExpColumns.get(cd.colIdx);
+			if (col.sortedIndex >= 0) {
+				if (cd.value instanceof SummaryStat) {
+					SummaryStat s = (SummaryStat) cd.value;
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 2, s.mean());
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 3, s.min());
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 4, s.max());
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 5, s.stdDev());
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 6, s.numObs());
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 7, s.sum());
+				} else {
+					addCell(SHEET_NAME_MAIN, col.sortedIndex, 2, cd.value);
+				}
+			}
+		} else if (cd.colIdx == -2) {
+			// column header, ignore
+		} else {
+			// end of row marker
+			assert cd.colIdx == -1;
+		}
+	}
+
 	/**
 	 * Reads column names and values of parameter columns.
 	 * 
 	 * @param is
-	 *            The input file which is read till the end .
+	 *            The input file which is read till the end.
 	 */
 	protected void readColumns(ObjectInputStream is) {
-		paramValues = new HashMap<String, SortedSet<String>>();
-		columns.clear();
+		paramValues = new HashMap<String, Set<Object>>();
+		columns = new ArrayList<ColumnData>();
+		mainExpColumns = new ArrayList<ColumnData>();
 
+		boolean isSubExp = true;
 		try {
 			try {
 				while (true) {
@@ -230,25 +331,28 @@ public class ExcelSaver extends ResultSaver {
 					if (cd.colIdx == -1) {// ignore end of record marker
 					} else if (cd.colIdx == -3) { // ignore marker for begin of
 													// main results
-						break; // while
+						isSubExp = false;
 					} else if (cd.colIdx == -2) { // new column
-						ColumnData col = (ColumnData) cd.value;
 						// column header
-						columns.add(col);
+						ColumnData col = (ColumnData) cd.value;
+						if (isSubExp)
+							columns.add(col);
+						else
+							mainExpColumns.add(col);
 					} else {
-						ColumnData col = columns.get(cd.colIdx);
-						if (col.isParamColumn) {
-							SortedSet<String> values = (SortedSet<String>) paramValues
-									.get(col.name);
-							if (values == null) {
-								values = new TreeSet<String>();
-								paramValues.put(col.name, values);
+						if (isSubExp) {
+							ColumnData col = columns.get(cd.colIdx);
+							if (col.isParamColumn) {
+								Set<Object> values = (Set<Object>) paramValues
+										.get(col.name);
+								if (values == null) {
+									values = new HashSet<Object>();
+									paramValues.put(col.name, values);
+								}
+								values.add(cd.value);
+							} else {
+								// ignore values
 							}
-
-							String value = String.valueOf(cd.value);
-							values.add(value);
-						} else {
-							// ignore values
 						}
 					}
 				}
@@ -260,7 +364,7 @@ public class ExcelSaver extends ResultSaver {
 		}
 	}
 
-	private void writeColumnHeaders() throws Exception {
+	private void writeSubExpColumnHeaders() throws Exception {
 		ArrayList<ColumnData> sortedColumns = new ArrayList<ColumnData>(columns);
 		Collections.sort(sortedColumns, new Comparator<ColumnData>() {
 
@@ -276,19 +380,19 @@ public class ExcelSaver extends ResultSaver {
 			}
 		});
 
-		addCell("overview", 0, 0,
+		addHeaderCell(SHEET_NAME_OVERVIEW, 0, 0,
 				"parameters used (constant parameters are not shown on other sheets)");
 
-		addCell("overview", 2, 0, "name");
-		addCell("overview", 2, 1, "distinct values");
-		addCell("overview", 2, 2, "value 1");
-		addCell("overview", 2, 3, "value 2");
-		addCell("overview", 2, 4, "...");
+		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 0, "name");
+		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 1, "distinct values");
+		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 2, "value 1");
+		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 3, "value 2");
+		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 4, "...");
 
 		int n = 0;
 		for (int i = 0; i < sortedColumns.size(); i++) {
 			ColumnData cd = sortedColumns.get(i);
-			SortedSet<String> values = paramValues.get(cd.name);
+			Set<Object> values = paramValues.get(cd.name);
 
 			// is parameter not varied in experiments?
 			if (values != null && values.size() == 1) {
@@ -298,18 +402,18 @@ public class ExcelSaver extends ResultSaver {
 			}
 
 			if (cd.isParamColumn) {
-				addCell("overview", i + 3, 0, cd.name);
-				addCell("overview", i + 3, 1, values.size());
+				addCell(SHEET_NAME_OVERVIEW, i + 3, 0, cd.name);
+				addCell(SHEET_NAME_OVERVIEW, i + 3, 1, values.size());
 				int j = 2;
-				for (String v : values) {
-					addCell("overview", i + 3, j++, v);
+				for (Object v : values) {
+					addCell(SHEET_NAME_OVERVIEW, i + 3, j++, v);
 				}
 			}
 		}
 
 		boolean params = true;
 		addCellEachSheet(0, 0, "parameters (only shown on sheet '"
-				+ sheetNames[0] + "')");
+				+ SHEET_NAME_MEAN + "')");
 		for (ColumnData cd : sortedColumns) {
 			if (cd.sortedIndex == -1)
 				continue;
@@ -322,20 +426,50 @@ public class ExcelSaver extends ResultSaver {
 			if (!cd.isParamColumn)
 				addCellEachSheet(1, cd.sortedIndex, cd.name);
 			else
-				addCell(sheetNames[0], 1, cd.sortedIndex, cd.name);
+				addHeaderCell(SHEET_NAME_MEAN, 1, cd.sortedIndex, cd.name);
 		}
 	}
 
-	private void addCellEachSheet(int row0, int col0, Object value)
+	private void handleSubExpData(int row, CellData cd) throws Exception {
+		if (cd.colIdx >= 0) {
+			ColumnData col = columns.get(cd.colIdx);
+			if (col.sortedIndex >= 0) {
+				if (cd.value instanceof SummaryStat) {
+					SummaryStat s = (SummaryStat) cd.value;
+					addCell(SHEET_NAME_MEAN, row, col.sortedIndex, s.mean());
+					addCell(SHEET_NAME_MIN, row, col.sortedIndex, s.min());
+					addCell(SHEET_NAME_MAX, row, col.sortedIndex, s.max());
+					addCell(SHEET_NAME_SD, row, col.sortedIndex, s.stdDev());
+					addCell(SHEET_NAME_COUNT, row, col.sortedIndex, s.numObs());
+					addCell(SHEET_NAME_SUM, row, col.sortedIndex, s.sum());
+				} else
+					addCell(SHEET_NAME_MEAN, row, col.sortedIndex, cd.value);
+			}
+		} else {
+			// column header, ignore
+			assert cd.colIdx == -2;
+		}
+	}
+
+	private void addHeaderCell(String sheetName, int row, int column,
+			String string) throws Exception {
+		addCell0(sheetName, row, column, string, headerCellFormat);
+	}
+
+	private void addCell(String sheetName, int row, int column, Object o)
 			throws Exception {
-		// write to each sheet
-		for (String sheet : sheetNames) {
-			addCell(sheet, row0, col0, value);
+		addCell0(sheetName, row, column, o, defFormat);
+	}
+
+	private void addCellEachSheet(int row0, int col0, String value)
+			throws Exception {
+		for (String sheet : SUB_RES_SHEETS) {
+			addHeaderCell(sheet, row0, col0, value);
 		}
 	}
 
-	protected void addCell(String sheetBaseName, int row0, int col0,
-			Object value) throws Exception {
+	private void addCell0(String sheetBaseName, int row0, int col0,
+			Object value, WritableCellFormat format) throws Exception {
 		int row = row0;
 		int col = col0;
 
@@ -359,22 +493,15 @@ public class ExcelSaver extends ResultSaver {
 		WritableSheet valSheet = getOrCreateSheet(sheetBaseName);
 
 		if (value == null) {
-			valSheet.addCell(new Label(col, row, "null"));
+			valSheet.addCell(new Label(col, row, "null", format));
 		} else if (value instanceof java.lang.Number) {
 			valSheet.addCell(createCell4Number(col, row,
 					(java.lang.Number) value));
-		} else if (value instanceof SummaryStat) {
-			SummaryStat n = (SummaryStat) value;
-			valSheet.addCell(createCell4Number(col, row, n.mean()));
-			addCell("min", row0, col0, n.min());
-			addCell("max", row0, col0, n.max());
-			addCell("stdDev", row0, col0, n.stdDev());
-			addCell("count", row0, col0, n.numObs());
-			addCell("sum", row0, col0, n.sum());
 		} else if (value.getClass().isArray()) {
-			valSheet.addCell(new Label(col, row, Util.arrayToString(value)));
+			valSheet.addCell(new Label(col, row, Util.arrayToString(value),
+					format));
 		} else {
-			valSheet.addCell(new Label(col, row, String.valueOf(value)));
+			valSheet.addCell(new Label(col, row, String.valueOf(value), format));
 		}
 	}
 
@@ -393,7 +520,21 @@ public class ExcelSaver extends ResultSaver {
 		if (Double.NEGATIVE_INFINITY == v)
 			return new Label(col, row, "-INF");
 
-		return new jxl.write.Number(col, row, v);
+		// return long as text to avoid rounding problems
+		if (n.getClass() == Long.class)
+			return new Label(col, row, n.toString());
+		
+		// determine cell format
+		WritableCellFormat f = defFormat;
+		if (n.getClass() == Double.class || n.getClass() == Float.class) {
+			f = floatFormat;
+		} else if (n.getClass() == Integer.class || n.getClass() == Long.class
+				|| n.getClass() == Short.class || n.getClass() == Byte.class) {
+			f = intFormat;
+		}
+
+		// create number cell
+		return new jxl.write.Number(col, row, v, f);
 	}
 
 	private WritableSheet getOrCreateSheet(String sheetBaseName) {
@@ -405,6 +546,8 @@ public class ExcelSaver extends ResultSaver {
 
 		return s;
 	}
+
+	// getter / setter for parameters below
 
 	public void setTranspose(boolean transpose) {
 		this.transpose = transpose;

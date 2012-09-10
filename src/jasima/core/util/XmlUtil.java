@@ -125,6 +125,7 @@ public class XmlUtil {
 	private static XStream getXStream() {
 		XStream xstream = new XStream(new DomDriver());
 		xstream.registerConverter(new MapConverter(xstream.getMapper()) {
+			@SuppressWarnings("rawtypes")
 			@Override
 			public boolean canConvert(Class type) {
 				if (type.equals(UniqueNamesCheckingHashMap.class))

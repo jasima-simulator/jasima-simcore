@@ -138,4 +138,9 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 		res.put("cMax", cMax);
 	}
 
+	@Override
+	public String toString() {
+		return "BasicJobStatCollector";
+	}
+
 }
