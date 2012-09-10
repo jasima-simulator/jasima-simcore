@@ -17,8 +17,8 @@
 
 	<name>Jasima</name>
 	<description>JAva SImulatior for MAnufacturing and logistics - A framework for discrete event simulation and computer experiments with a main focus on modelling and analyzing logistic/manufacturing systems.</description> <!-- TODO -->
-	<url>http://jasima.googlecode.com/</url> <!-- TODO -->
-	<inceptionYear>2011</inceptionYear> <!-- TODO check -->
+	<url>http://jasima.googlecode.com/</url>
+	<inceptionYear>2011</inceptionYear>
 	<organization>
 		<name>BIBA – Bremer Institut für Produktion und Logistik GmbH</name>
 		<url>http://www.biba.uni-bremen.de/</url>

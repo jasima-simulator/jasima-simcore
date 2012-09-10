@@ -60,13 +60,13 @@ public abstract class JobShopListenerBase implements
 			jobFinished(shop, shop.lastJobFinished);
 		} else if (event == Simulation.COLLECT_RESULTS) {
 			produceResults(sim, sim.resultMap);
-		} else if (event == Simulation.SHOP_SIM_START) {
+		} else if (event == Simulation.SIM_START) {
 			shopSimStart(sim);
-		} else if (event == Simulation.SHOP_SIM_END) {
+		} else if (event == Simulation.SIM_END) {
 			shopSimEnd(sim);
-		} else if (event == Simulation.SHOP_INIT) {
+		} else if (event == Simulation.SIM_INIT) {
 			init(sim);
-		} else if (event == Simulation.SHOP_DONE) {
+		} else if (event == Simulation.SIM_DONE) {
 			done(sim);
 		} else if (event instanceof SimPrintEvent) {
 			print(sim, (SimPrintEvent) event);

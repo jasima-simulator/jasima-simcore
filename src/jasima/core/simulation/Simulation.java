@@ -38,7 +38,8 @@ import java.util.Map;
  * perform clean-up, collecting simulation results, etc.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-02-08
- * @version $Id$
+ * @version $Id: Simulation.java 33 2012-09-07 15:36:36Z THildebrandt@gmail.com
+ *          $
  */
 public class Simulation implements Notifier<Simulation, SimEvent> {
 
@@ -50,10 +51,10 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	}
 
 	// constants for default events thrown by a simulation
-	public static final SimEvent SHOP_INIT = new SimEvent();
-	public static final SimEvent SHOP_SIM_START = new SimEvent();
-	public static final SimEvent SHOP_SIM_END = new SimEvent();
-	public static final SimEvent SHOP_DONE = new SimEvent();
+	public static final SimEvent SIM_INIT = new SimEvent();
+	public static final SimEvent SIM_START = new SimEvent();
+	public static final SimEvent SIM_END = new SimEvent();
+	public static final SimEvent SIM_DONE = new SimEvent();
 	public static final SimEvent COLLECT_RESULTS = new SimEvent();
 
 	public enum SimMsgCategory {
@@ -61,7 +62,8 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	}
 
 	public static class SimPrintEvent extends SimEvent {
-		public SimPrintEvent(Simulation sim, SimMsgCategory category, String message) {
+		public SimPrintEvent(Simulation sim, SimMsgCategory category,
+				String message) {
 			super();
 			this.sim = sim;
 			this.category = category;
@@ -106,7 +108,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * {@link #run()}.
 	 */
 	public void init() {
-		eventList = new EventHeap(103);
+		eventList = createEventQueue();
 		simTime = 0.0d;
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
@@ -121,7 +123,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 			});
 
 		if (numListener() > 0) {
-			fire(SHOP_INIT);
+			fire(SIM_INIT);
 		}
 	}
 
@@ -141,7 +143,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 */
 	public void run() {
 		if (numListener() > 0) {
-			fire(SHOP_SIM_START);
+			fire(SIM_START);
 		}
 
 		continueSim = true;
@@ -160,7 +162,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 		}
 
 		if (numListener() > 0) {
-			fire(SHOP_SIM_END);
+			fire(SIM_END);
 		}
 	}
 
@@ -169,7 +171,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 */
 	public void done() {
 		if (numListener() > 0) {
-			fire(SHOP_DONE);
+			fire(SIM_DONE);
 		}
 	}
 
@@ -226,6 +228,15 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 		if (numListener() > 0) {
 			fire(new SimPrintEvent(this, category, message));
 		}
+	}
+
+	/**
+	 * Factory method to create a new event queue.
+	 * 
+	 * @return The event queue to use in this simulation.
+	 */
+	protected EventQueue createEventQueue() {
+		return new EventHeap(103);
 	}
 
 	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
