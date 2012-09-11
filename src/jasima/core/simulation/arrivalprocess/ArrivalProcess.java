@@ -28,6 +28,8 @@ import jasima.core.random.continuous.DblStream;
  */
 public abstract class ArrivalProcess extends DblStream {
 
+	private static final long serialVersionUID = 99456277227340206L;
+
 	protected double state;
 	protected boolean isFirst;
 

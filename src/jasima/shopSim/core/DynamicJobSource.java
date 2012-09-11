@@ -41,35 +41,40 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
  * machine being revisited.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version $Id$
+ * @version $Id: DynamicJobSource.java 33 2012-09-07 15:36:36Z
+ *          THildebrandt@gmail.com $
  */
 public class DynamicJobSource extends JobSource {
 
 	private DblStream arrivalProcess = new ArrivalsStationary();
 	private DblStream dueDateFactors = new DblConst(1.0);
 	private DblStream jobWeights = new DblConst(1.0);
-
-	private Route route = null;
-
 	private IntStream machIdx = null;
 	private DblStream procTimes = null;
 	private IntStream numOps = null;
+	private Route route = null;
 
 	@Override
 	public void init() {
 		String prefix = "source" + index + ".";
-		RandomFactory fact = getShop().getRndStreamFactory();
-
-		fact.initNumberStream(getArrivalProcess(), prefix + "arrivalStream");
-		fact.initNumberStream(getDueDateFactors(), prefix + "dueDateStream");
-		fact.initNumberStream(getJobWeights(), prefix + "weightStream");
-		fact.initNumberStream(getMachIdx(), prefix + "machIdxStream");
-		fact.initNumberStream(getProcTimes(), prefix + "procTimesStream");
-		fact.initNumberStream(getNumOps(), prefix + "numOpsStream");
 
 		super.init();
 
-		getArrivalProcess().init();
+		RandomFactory fact = getShop().getRndStreamFactory();
+		init(getArrivalProcess(), prefix + "arrivalStream", fact);
+		init(getDueDateFactors(), prefix + "dueDateStream", fact);
+		init(getJobWeights(), prefix + "weightStream", fact);
+		init(getMachIdx(), prefix + "machIdxStream", fact);
+		init(getProcTimes(), prefix + "procTimesStream", fact);
+		init(getNumOps(), prefix + "numOpsStream", fact);
+	}
+
+	static protected void init(DblStream dblStream, String streamName,
+			RandomFactory fact) {
+		if (dblStream == null)
+			return;
+		fact.initNumberStream(dblStream, streamName);
+		dblStream.init();
 	}
 
 	@Override

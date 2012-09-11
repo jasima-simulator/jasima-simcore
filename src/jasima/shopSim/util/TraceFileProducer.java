@@ -141,9 +141,12 @@ public class TraceFileProducer extends JobShopListenerBase {
 	}
 
 	@Override
-	protected void shopSimStart(Simulation sim) {
+	protected void init(Simulation sim) {
 		createLogFile();
+	}
 
+	@Override
+	protected void shopSimStart(Simulation sim) {
 		print(sim.simTime() + "\tsim_start");
 
 		JobShop shop = (JobShop) sim;

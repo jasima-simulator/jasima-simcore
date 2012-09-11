@@ -138,7 +138,7 @@ public class JobShop extends Simulation {
 			fire(JOB_FINISHED);
 	}
 
-	protected void startJob(Job nextJob) {
+	public void startJob(Job nextJob) {
 		nextJob.setJobNum(jobsStarted++);
 
 		if (getMaxJobsInSystem() > 0

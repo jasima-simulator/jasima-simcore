@@ -27,6 +27,7 @@ package jasima.shopSim.core;
 public class Job extends PrioRuleTarget implements Cloneable {
 
 	private final JobShop shop;
+	
 	private double arriveTime; // arrival time at current machine
 	private WorkStation currMachine;
 	// when will job finish processing on its current machine (if started)
@@ -35,11 +36,11 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	private double relDate;
 	private double dueDate;
 	private int jobNum; // global number of job in system
-	private JobSource source; // the job source releasing this job
+	private JobSource source; // the job source which released this job
+	private int jobType;
 	private int sourceNum; // number of job by a specific JobSource
 	private double weight = 1.0d;
 	private Operation[] ops;
-	private int jobType;
 	private double[] opDueDates;
 	private boolean isFuture = false;
 	private String name = null;

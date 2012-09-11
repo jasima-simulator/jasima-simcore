@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.simulation.arrivalprocess;
 
+import java.util.Random;
+
 import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
 
@@ -29,9 +31,12 @@ import jasima.core.random.continuous.DblStream;
  * @see DblStream
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
- * @version $Id$
+ * @version $Id: ArrivalsStationary.java 33 2012-09-07 15:36:36Z
+ *          THildebrandt@gmail.com $
  */
 public class ArrivalsStationary extends ArrivalProcess {
+
+	private static final long serialVersionUID = -7877781395872395477L;
 
 	private DblStream interArrivalTimes = null;
 
@@ -56,10 +61,10 @@ public class ArrivalsStationary extends ArrivalProcess {
 	}
 
 	@Override
-	public void init() {
-		super.init();
-
-		interArrivalTimes.setRndGen(rndGen);
+	public void setRndGen(Random rndGen) {
+		super.setRndGen(rndGen);
+		if (interArrivalTimes != null)
+			interArrivalTimes.setRndGen(rndGen);
 	}
 
 	@Override
