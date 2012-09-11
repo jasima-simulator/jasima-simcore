@@ -42,9 +42,12 @@ import java.util.Map;
  */
 public class Simulation implements Notifier<Simulation, SimEvent> {
 
+	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
+	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
+
 	/**
 	 * Base class for notifier events (NOT simulation events, they are not
-	 * handled by the event queue).
+	 * handled by the event queue, just send to listeners).
 	 */
 	public static class SimEvent {
 	}
@@ -235,7 +238,14 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * @return The event queue to use in this simulation.
 	 */
 	protected EventQueue createEventQueue() {
-		return new EventHeap(103);
+		String queueImpl = System.getProperty(QUEUE_IMPL_KEY, QUEUE_IMPL_DEF);
+		Class<?> qClass;
+		try {
+			qClass = Class.forName(queueImpl);
+			return (EventQueue) qClass.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */

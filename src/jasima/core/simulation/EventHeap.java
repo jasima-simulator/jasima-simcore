@@ -37,7 +37,14 @@ public final class EventHeap implements EventQueue, Serializable {
 	private boolean invalidRoot = false;
 
 	/**
-	 * Create a Heap with the given capacity, and relying on natural ordering.
+	 * Create an event heap with an initial capacity of 103.
+	 */
+	public EventHeap() {
+		this(103);
+	}
+
+	/**
+	 * Create an event heap with the given capacity.
 	 * 
 	 * @exception IllegalArgumentException
 	 *                if capacity less or equal to zero

@@ -42,9 +42,9 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	private int jobType;
 	private double[] opDueDates;
 	private boolean isFuture = false;
+	private String name = null;
 	// we cache the value returned by remainingProcTime()
 	private double remProcTime = -1.0d;
-	private String name = null;
 
 	private Job future;
 
@@ -143,7 +143,7 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	 * correct value before this method is called.
 	 */
 	public void notifyNextMachine() {
-		if (!isLastOperation() && shop.enableLookAhead) {
+		if (!isLastOperation() && shop.isEnableLookAhead()) {
 			final Job f = getMyFuture();
 			final WorkStation next = f.ops[f.taskNumber].machine;
 			next.futureArrival(f, getFinishTime());

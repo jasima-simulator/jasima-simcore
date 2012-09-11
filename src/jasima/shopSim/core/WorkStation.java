@@ -109,8 +109,6 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	// reuse select event objects
 	private SelectEvent selectEventCache;
 
-	protected double workContentReal, workContentFuture;
-
 	private final class SelectEvent extends Event {
 		private SelectEvent(double time) {
 			super(time, SELECT_PRIO);
@@ -133,8 +131,9 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 		protected SelectEvent next = null; // linked list, see selectEventCache
 	}
 
+	protected double workContentReal, workContentFuture;
 	private ArrayList<String> setupStateTranslate;
-	private Map<String, List<Job>> jobsPerFamily;
+	private Map<String, List<Job>> jobsPerBatchFamily;
 
 	// the following fields temporarily contain parameters used by listeners
 	public Job justArrived;
@@ -174,7 +173,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 		assert translateSetupState(DEF_SETUP_STR) == DEF_SETUP;
 
 		batchingUsed = false;
-		jobsPerFamily = null;
+		jobsPerBatchFamily = null;
 
 		workContentFuture = workContentReal = 0.0d;
 
@@ -336,7 +335,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 			workContentFuture += o.procTime;
 		}
 
-		if (jobsPerFamily != null)
+		if (jobsPerBatchFamily != null)
 			addJobToBatchFamily(j);
 
 		if (numListener() > 0) {
@@ -361,7 +360,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 			workContentReal -= o.procTime;
 			assert workContentReal >= -1e-6 : "" + workContentReal;
 			assert removeRes;
-			if (jobsPerFamily != null)
+			if (jobsPerBatchFamily != null)
 				removeJobOfBatchFamily(j, o.batchFamily);
 		} else {
 			if (removeRes) {
@@ -369,7 +368,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 				workContentFuture -= o.procTime;
 				assert workContentFuture >= -1e-6 : "" + workContentFuture;
 				numFutures--;
-				if (jobsPerFamily != null)
+				if (jobsPerBatchFamily != null)
 					removeJobOfBatchFamily(j, o.batchFamily);
 			}
 		}
@@ -688,30 +687,30 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	}
 
 	public Map<String, List<Job>> getJobsByFamily() {
-		if (jobsPerFamily == null) {
-			jobsPerFamily = new HashMap<String, List<Job>>();
+		if (jobsPerBatchFamily == null) {
+			jobsPerBatchFamily = new HashMap<String, List<Job>>();
 			for (int i = 0, n = queue.size(); i < n; i++) {
 				Job j = queue.get(i);
 				addJobToBatchFamily(j);
 			}
 		}
-		return jobsPerFamily;
+		return jobsPerBatchFamily;
 	}
 
 	private void addJobToBatchFamily(Job j) {
 		String bf = j.getCurrentOperation().batchFamily;
 
-		List<Job> jobsInFamily = jobsPerFamily.get(bf);
+		List<Job> jobsInFamily = jobsPerBatchFamily.get(bf);
 		if (jobsInFamily == null) {
 			jobsInFamily = new ArrayList<Job>();
-			jobsPerFamily.put(bf, jobsInFamily);
+			jobsPerBatchFamily.put(bf, jobsInFamily);
 		}
 
 		jobsInFamily.add(j);
 	}
 
 	private void removeJobOfBatchFamily(Job j, String bf) {
-		List<Job> jobsInFamily = jobsPerFamily.get(bf);
+		List<Job> jobsInFamily = jobsPerBatchFamily.get(bf);
 		boolean removeRes = jobsInFamily.remove(j);
 		assert removeRes;
 	}

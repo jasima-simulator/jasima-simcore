@@ -21,6 +21,8 @@ package jasima.core.util;
 import jasima.core.experiment.AbstractMultiExperiment;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListenerBase;
+import jasima.core.experiment.FullFactorialExperiment;
+import jasima.core.experiment.MultipleReplicationExperiment;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -44,34 +46,52 @@ public class ResultSaver extends ExperimentListenerBase {
 
 	// save intermediate results after 100 results
 	private static final int MAX_UNSAVED = 100;
-	// or save a copy every 10 minutes
-	private static final long SAVE_INTERVAL = 10 * 60 * 1000;
+	// or save every 5 minutes
+	private static final long SAVE_INTERVAL = 5 * 60 * 1000;
 
 	protected static class ColumnData implements Serializable {
 		private static final long serialVersionUID = 3548750636065811872L;
-
-		public final String name;
-		public final boolean isParamColumn;
-		public int sortedIndex;
 
 		public ColumnData(String name, boolean isParamColumn) {
 			super();
 			this.name = name;
 			this.isParamColumn = isParamColumn;
 		}
+
+		public final String name;
+		public final boolean isParamColumn;
+		public int sortedIndex;
 	}
 
+	protected static class CellData implements Serializable {
+		private static final long serialVersionUID = -1799390860125722470L;
+
+		public CellData(int colIdx, Object value) {
+			super();
+			this.colIdx = colIdx;
+			this.value = value;
+		}
+
+		public final int colIdx;
+		public final Object value;
+	}
+
+	// parameters
+
 	private String resultFileName = null;
+	private boolean saveSubExperiments = true;
+
+	// fields used during run
 
 	protected String tmpFileName;
 	private ObjectOutputStream tmpDatOut;
 	private int unsavedResults;
 	private long nextSaveTime;
-	private ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
+	private ArrayList<ColumnData> columns;
 
 	@Override
 	protected void starting(Experiment e) {
-		columns.clear();
+		columns = new ArrayList<ColumnData>();
 		unsavedResults = 0;
 		nextSaveTime = 0;
 		String s = getResultFileName();
@@ -79,7 +99,7 @@ public class ResultSaver extends ExperimentListenerBase {
 			s = String.format(Locale.ENGLISH,
 					"runResults_%1$tF_%1$tH%1$tM%1$tS",
 					System.currentTimeMillis());
-		tmpFileName = s + ".sav";
+		tmpFileName = s + ".jasBinRes";
 		try {
 			tmpDatOut = new ObjectOutputStream(new BufferedOutputStream(
 					new FileOutputStream(tmpFileName)));
@@ -126,23 +146,6 @@ public class ResultSaver extends ExperimentListenerBase {
 		}
 	}
 
-	private void saveExperiment(Experiment e, Map<String, Object> runRes) {
-		saveParams("", e);
-		saveData(runRes);
-
-		// write marker for end of record
-		addCell(-1, null);
-
-		unsavedResults++;
-
-		if (unsavedResults >= MAX_UNSAVED
-				|| System.currentTimeMillis() > nextSaveTime) {
-			flushTmpFile();
-			unsavedResults = 0;
-			nextSaveTime = System.currentTimeMillis() + SAVE_INTERVAL;
-		}
-	}
-
 	private int getColumnIndex(String s, boolean isParamColumn) {
 		int res = -1;
 
@@ -165,8 +168,23 @@ public class ResultSaver extends ExperimentListenerBase {
 		return res;
 	}
 
-	private void saveParams(String prefix, Experiment e) {
-		saveExperiment(prefix, e, true);
+	private void saveExperiment(Experiment e, Map<String, Object> runRes) {
+		// save parameters
+		saveExperiment("", e, true);
+		// save results
+		saveData(runRes);
+
+		// write marker for end of record
+		addCell(-1, null);
+
+		unsavedResults++;
+
+		if (unsavedResults >= MAX_UNSAVED
+				|| System.currentTimeMillis() > nextSaveTime) {
+			flushTmpFile();
+			unsavedResults = 0;
+			nextSaveTime = System.currentTimeMillis() + SAVE_INTERVAL;
+		}
 	}
 
 	private void saveData(Map<String, Object> res) {
@@ -217,26 +235,36 @@ public class ResultSaver extends ExperimentListenerBase {
 			return v.toString();
 	}
 
+	// getter /setter below
+
 	public String getResultFileName() {
 		return resultFileName;
 	}
 
+	/**
+	 * Sets the result file name. This name is appended with the default suffix
+	 * "{@code jasBinRes}". If no file name is set explicitly, this defaults to
+	 * something like "{@code runResults_<timeStamp>}".
+	 * 
+	 * @param resultFileName
+	 */
 	public void setResultFileName(String resultFileName) {
 		this.resultFileName = resultFileName;
 	}
 
-	protected static class CellData implements Serializable {
+	public boolean isSaveSubExperiments() {
+		return saveSubExperiments;
+	}
 
-		private static final long serialVersionUID = -1799390860125722470L;
-
-		public final int colIdx;
-		public final Object value;
-
-		public CellData(int colIdx, Object value) {
-			super();
-			this.colIdx = colIdx;
-			this.value = value;
-		}
+	/**
+	 * Whether to save parameters and results of sub-experiments.
+	 * 
+	 * @param saveSubExperiments
+	 * @see MultipleReplicationExperiment
+	 * @see FullFactorialExperiment
+	 */
+	public void setSaveSubExperiments(boolean saveSubExperiments) {
+		this.saveSubExperiments = saveSubExperiments;
 	}
 
 }

@@ -46,6 +46,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	private ExpMsgCategory logLevel = ExpMsgCategory.INFO;
 	private String logFormat = "%1$tT.%1$tL\t%2$s\t%3$s";
 	private PrintWriter out = null;
+	private boolean printStdEvents = true;
 
 	public ConsolePrinter() {
 		this(null, null);
@@ -85,41 +86,48 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 	@Override
 	protected void starting(final Experiment e) {
-		e.print("starting...");
+		if (isPrintStdEvents())
+			e.print("starting...");
 	}
 
 	@Override
 	protected void initialized(final Experiment e) {
-		e.print("initializing...");
+		if (isPrintStdEvents())
+			e.print("initializing...");
 	}
 
 	@Override
 	protected void beforeRun(Experiment e) {
-		e.print("running...");
+		if (isPrintStdEvents())
+			e.print("running...");
 	}
 
 	@Override
 	protected void afterRun(Experiment e) {
-		e.print("terminating...");
+		if (isPrintStdEvents())
+			e.print("terminating...");
 	}
 
 	@Override
 	protected void done(Experiment e) {
-		e.print("collecting results...");
+		if (isPrintStdEvents())
+			e.print("collecting results...");
 	}
 
 	@Override
 	protected void finished(Experiment e, Map<String, Object> results) {
-		e.print("finished.");
+		if (isPrintStdEvents())
+			e.print("finished.");
 	}
 
 	@Override
 	protected void multiExperimentCompletedTask(AbstractMultiExperiment me,
 			int numTasksExecuted, Experiment runExperiment,
 			Map<String, Object> runResults) {
-		me.print("finished experiment\t" + me.getNumTasksExecuted() + "/"
-				+ me.getNumTasks() + " in "
-				+ runResults.get(Experiment.RUNTIME) + "s");
+		if (isPrintStdEvents())
+			me.print("finished experiment\t" + me.getNumTasksExecuted() + "/"
+					+ me.getNumTasks() + " in "
+					+ runResults.get(Experiment.RUNTIME) + "s");
 	}
 
 	// getter and setter below
@@ -138,6 +146,33 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 	public void setLogFormat(String logFormat) {
 		this.logFormat = logFormat;
+	}
+
+	public PrintWriter getOut() {
+		return out;
+	}
+
+	/**
+	 * Sets the {@link PrintWriter} where to send output. If this is null, print
+	 * events will be written to {@link System#out}.
+	 * 
+	 * @param out
+	 *            The {@code PrintWriter} to use.
+	 */
+	public void setOut(PrintWriter out) {
+		this.out = out;
+	}
+
+	public boolean isPrintStdEvents() {
+		return printStdEvents;
+	}
+
+	/**
+	 * PrintStdEvents determines, if print events for standard events (like
+	 * experiment starting) should be produced. Defaults to {@code true}.
+	 */
+	public void setPrintStdEvents(boolean printStdEvents) {
+		this.printStdEvents = printStdEvents;
 	}
 
 	// static utility methods below
@@ -255,14 +290,6 @@ public class ConsolePrinter extends ExperimentListenerBase {
 			return res.substring(0, res.length() - delim.length());
 		else
 			return "";
-	}
-
-	public PrintWriter getOut() {
-		return out;
-	}
-
-	public void setOut(PrintWriter out) {
-		this.out = out;
 	}
 
 }

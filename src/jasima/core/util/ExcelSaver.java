@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +59,8 @@ import jxl.write.WritableWorkbook;
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
- * @version $Id$
+ * @version $Id: ExcelSaver.java 36 2012-09-10 16:43:48Z THildebrandt@gmail.com
+ *          $
  */
 public class ExcelSaver extends ResultSaver {
 
@@ -72,8 +73,9 @@ public class ExcelSaver extends ResultSaver {
 	private static final String SHEET_NAME_COUNT = "sub-exp. count";
 	private static final String SHEET_NAME_SUM = "sub-exp. sum";
 
-	private static final String[] SUB_RES_SHEETS = { SHEET_NAME_MEAN, SHEET_NAME_MIN, SHEET_NAME_MAX,
-		SHEET_NAME_SD, SHEET_NAME_COUNT, SHEET_NAME_SUM };
+	private static final String[] SUB_RES_SHEETS = { SHEET_NAME_MEAN,
+			SHEET_NAME_MIN, SHEET_NAME_MAX, SHEET_NAME_SD, SHEET_NAME_COUNT,
+			SHEET_NAME_SUM };
 
 	private static final long serialVersionUID = 342144249972918192L;
 
@@ -115,6 +117,7 @@ public class ExcelSaver extends ResultSaver {
 			// recover column names by reading file once
 			es.readColumns(is);
 			is.close();
+			is = null;
 
 			// now read a second time and produce Excel file
 			is = new ObjectInputStream(new BufferedInputStream(
@@ -346,12 +349,12 @@ public class ExcelSaver extends ResultSaver {
 								Set<Object> values = (Set<Object>) paramValues
 										.get(col.name);
 								if (values == null) {
-									values = new HashSet<Object>();
+									values = new LinkedHashSet<Object>();
 									paramValues.put(col.name, values);
 								}
-								values.add(cd.value);
+								values.add(convertToString(cd.value));
 							} else {
-								// ignore values
+								// ignore result values
 							}
 						}
 					}
@@ -501,7 +504,21 @@ public class ExcelSaver extends ResultSaver {
 			valSheet.addCell(new Label(col, row, Util.arrayToString(value),
 					format));
 		} else {
-			valSheet.addCell(new Label(col, row, String.valueOf(value), format));
+			valSheet.addCell(new Label(col, row, value.toString(), format));
+		}
+	}
+
+	/**
+	 * Convert an object to a String closely resembling how it would appear in
+	 * the Excel file.
+	 */
+	private static String convertToString(Object o) {
+		if (o == null) {
+			return "null";
+		} else if (o.getClass().isArray()) {
+			return Util.arrayToString(o);
+		} else {
+			return o.toString();
 		}
 	}
 
@@ -523,7 +540,7 @@ public class ExcelSaver extends ResultSaver {
 		// return long as text to avoid rounding problems
 		if (n.getClass() == Long.class)
 			return new Label(col, row, n.toString());
-		
+
 		// determine cell format
 		WritableCellFormat f = defFormat;
 		if (n.getClass() == Double.class || n.getClass() == Float.class) {

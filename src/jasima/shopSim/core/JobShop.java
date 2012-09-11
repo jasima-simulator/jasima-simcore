@@ -40,17 +40,14 @@ public class JobShop extends Simulation {
 	public static class JobShopEvent extends SimEvent {
 	}
 
-	// constants for default events thrown by a shop
-
+	// constants for default events thrown by a shop (in addition to simulation
+	// events)
 	public static final JobShopEvent JOB_RELEASED = new JobShopEvent();
 	public static final JobShopEvent JOB_FINISHED = new JobShopEvent();
 
-	private int maxJobsInSystem = 0; // end simulation if WIP reaches this value
-										// (0: no limit)
-	private int maxJobsFinished = 0; // end simulation if this number of jobs
-										// was finished (0: no limit)
-
-	public boolean enableLookAhead = true;
+	private int maxJobsInSystem = 0;
+	private int maxJobsFinished = 0;
+	private boolean enableLookAhead = true;
 
 	public JobSource[] sources = {};
 	public WorkStation[] machines = {};
@@ -61,7 +58,7 @@ public class JobShop extends Simulation {
 
 	private boolean strangePriorities;
 
-	private HashMap<String, Object> valueStore;
+	private HashMap<Object, Object> valueStore;
 
 	// fields used during event notification
 	public Job lastJobReleased;
@@ -175,7 +172,7 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Adds a listener to all machines ({@link WorkStation}s).
+	 * Adds a listener to all {@link WorkStation}s in the shop.
 	 * 
 	 * @param listener
 	 *            The machine listener to add.
@@ -196,46 +193,88 @@ public class JobShop extends Simulation {
 
 	/**
 	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store.
+	 * kind of global data store. This can be used as a simple extension
+	 * mechanism.
 	 * 
 	 * @param key
 	 *            The key name.
 	 * @param value
 	 *            value to assign to key.
+	 * @see #valueStoreGet(String)
 	 */
-	public void valueStorePut(String key, Object value) {
+	public void valueStorePut(Object key, Object value) {
 		if (valueStore == null)
-			valueStore = new HashMap<String, Object>();
+			valueStore = new HashMap<Object, Object>();
 		valueStore.put(key, value);
 	}
 
-	public Object valueStoreGet(String key) {
+	/**
+	 * Retrieves a value from the value store.
+	 * 
+	 * @param key
+	 *            The entry to return, e.g. identified by a name.
+	 * @return The value associated with {@code key}.
+	 * @see #valueStorePut(Object, Object)
+	 */
+	public Object valueStoreGet(Object key) {
 		if (valueStore == null)
 			return null;
 		else
 			return valueStore.get(key);
 	}
 
+	/**
+	 * Returns the status of lookahead mechanism.
+	 * 
+	 * @return Whether lookahead is used.
+	 */
 	public boolean isEnableLookAhead() {
 		return enableLookAhead;
 	}
 
+	/**
+	 * Enable the lookahead mechanism of this shop.
+	 * 
+	 * @param enableLookAhead
+	 *            Whether to enable or disable lookahead.
+	 */
 	public void setEnableLookAhead(boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
 	}
 
+	/**
+	 * End simulation if WIP (work in process) reaches this value (0: no limit)
+	 * 
+	 * @param maxJobsInSystem
+	 *            The maximum number of jobs in the system.
+	 */
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
 		this.maxJobsInSystem = maxJobsInSystem;
 	}
 
+	/**
+	 * Returns the maximum number of jobs in the system.
+	 */
 	public int getMaxJobsInSystem() {
 		return maxJobsInSystem;
 	}
 
+	/**
+	 * End simulation if a certain number of jobs was completed (0 (default): no
+	 * limit).
+	 * 
+	 * @param maxJobsFinished
+	 *            The number of jobs to finish.
+	 */
 	public void setMaxJobsFinished(int maxJobsFinished) {
 		this.maxJobsFinished = maxJobsFinished;
 	}
 
+	/**
+	 * Returns the number of jobs to complete before the simulation is ended.
+	 * 
+	 * @return The number of jobs to complete before terminating the simulation.
+	 */
 	public int getMaxJobsFinished() {
 		return maxJobsFinished;
 	}
