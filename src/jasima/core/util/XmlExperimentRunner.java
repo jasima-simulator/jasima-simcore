@@ -19,6 +19,7 @@
 package jasima.core.util;
 
 import jasima.core.experiment.Experiment;
+import jasima.core.experiment.Experiment.ExpMsgCategory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,12 +30,15 @@ import java.util.Map;
 
 /**
  * Runs an experiment from an XML file and executes it on the command line.
+ * 
  * @version $Id$
  */
 public class XmlExperimentRunner {
+
 	protected boolean optSilent = false;
 	protected String experimentFileName = null;
 	protected String resultsFileName = null;
+	protected ExpMsgCategory outputCat = ExpMsgCategory.INFO;
 
 	public static void main(String[] args) {
 		new XmlExperimentRunner().parseArgs(args).run();
@@ -44,6 +48,11 @@ public class XmlExperimentRunner {
 		for (String arg : args) {
 			if (arg.equals("--silent")) {
 				optSilent = true;
+				outputCat = ExpMsgCategory.WARN;
+			} else if (arg.equals("--debug")) {
+				outputCat = ExpMsgCategory.DEBUG;
+			} else if (arg.equals("--trace")) {
+				outputCat = ExpMsgCategory.TRACE;
 			} else {
 				if (arg.startsWith("--")) {
 					printUsageAndExit("Unknown option: %s%n", arg);
@@ -89,8 +98,16 @@ public class XmlExperimentRunner {
 			System.exit(2);
 			return;
 		}
-		Map<String, Object> res = null;
-		res = runExperimentFromXML(r, !optSilent);
+
+		Experiment exp = (Experiment) XmlUtil.loadXML(r);
+		exp.addNotifierListener(new ConsolePrinter(outputCat));
+		
+		exp.runExperiment();
+		Map<String, Object> res = exp.getResults();
+
+		if (!optSilent)
+			exp.printResults();
+
 		try {
 			r.close();
 		} catch (IOException e) {
@@ -100,27 +117,6 @@ public class XmlExperimentRunner {
 		if (resultsFileName != null) {
 			XmlUtil.saveXML(res, new File(resultsFileName));
 		}
-	}
-
-	/**
-	 * Runs an experiment read from an xml document and returns results.
-	 * Optionally results can be printed out to the console.
-	 * 
-	 * @param xml
-	 *            An xml-serialized {@link Experiment}.
-	 * @param printResults
-	 *            Whether to print the experiment and its results to the
-	 *            console.
-	 * @return Experiment results.
-	 */
-	public static Map<String, Object> runExperimentFromXML(BufferedReader xml,
-			boolean printResults) {
-		Experiment exp = (Experiment) XmlUtil.loadXML(xml);
-		exp.runExperiment();
-		Map<String, Object> res = exp.getResults();
-		if (printResults)
-			exp.printResults();
-		return res;
 	}
 
 }
