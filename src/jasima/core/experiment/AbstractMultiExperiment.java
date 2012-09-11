@@ -40,7 +40,8 @@ import java.util.concurrent.Future;
  * times.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: AbstractMultiExperiment.java 33 2012-09-07 15:36:36Z
+ *          THildebrandt@gmail.com $
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 
@@ -185,6 +186,11 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		long s = getExperimentSeed();
 		e.setInitialSeed(s);
 		e.nestingLevel(nestingLevel() + 1);
+
+		String name = prefix() + padNumTasks(experiments.size() + 1);
+		if (e.getName() != null)
+			name = name + "." + e.getName();
+		e.setName(name);
 	}
 
 	protected long getExperimentSeed() {

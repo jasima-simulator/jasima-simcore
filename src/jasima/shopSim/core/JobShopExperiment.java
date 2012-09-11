@@ -40,8 +40,7 @@ import java.util.Locale;
  * results.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version $Id: JobShopExperiment.java 33 2012-09-07 15:36:36Z
- *          THildebrandt@gmail.com $
+ * @version $Id$
  */
 public abstract class JobShopExperiment extends Experiment {
 

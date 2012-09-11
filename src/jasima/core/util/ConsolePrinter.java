@@ -44,7 +44,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	private static final long serialVersionUID = 6722626849679009735L;
 
 	private ExpMsgCategory logLevel = ExpMsgCategory.INFO;
-	private String logFormat = "%1$tT.%1$tL\t%2$s\t%3$s";
+	private String logFormat = "%1$tT.%1$tL\t%4$s\t%2$s\t%3$s";
 	private PrintWriter out = null;
 	private boolean printStdEvents = true;
 
@@ -196,6 +196,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	 */
 	public static void printResults(PrintWriter out, Experiment e,
 			Map<String, Object> res) {
+		out.println();
 		out.println(getDescription(e, "; "));
 
 		ArrayList<String> valStatNames = new ArrayList<String>();
