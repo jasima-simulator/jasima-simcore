@@ -58,6 +58,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	private int skipSeedCount = 0;
 	private boolean abortUponBaseExperimentAbort = false;
 	protected HashSet<String> keepResults = new HashSet<String>();
+	private boolean produceAveragedResults = true;
 
 	// fields used during run
 
@@ -218,11 +219,13 @@ public abstract class AbstractMultiExperiment extends Experiment {
 				detailedResults.put(key + "." + prefix()
 						+ padNumTasks(getNumTasksExecuted()), r.get(key));
 
-			if ((val != null)
-					&& ((val instanceof SummaryStat) || ((val instanceof Number))))
-				handleNumericValue(key, val);
-			else
-				handleOtherValue(key, val);
+			if (isProduceAveragedResults()) {
+				if ((val != null)
+						&& ((val instanceof SummaryStat) || ((val instanceof Number))))
+					handleNumericValue(key, val);
+				else
+					handleOtherValue(key, val);
+			}
 		}
 	}
 
@@ -264,6 +267,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * Handles arbitrary values "val" by storing them in an object array.
 	 */
 	protected void handleOtherValue(String key, Object val) {
+		@SuppressWarnings("unchecked")
 		ArrayList<Object> l = (ArrayList<Object>) detailedResults.get(key);
 		if (l == null) {
 			l = new ArrayList<Object>();
@@ -274,7 +278,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	/**
 	 * Handles a numeric value "val" by averaging it over all runs performed. If
-	 * "val" is of type ValueStat, averaging is performed with its mean()-value.
+	 * "val" is of type SummaryStat, averaging is performed with its mean()-value.
 	 */
 	protected void handleNumericValue(String key, Object val) {
 		// ensure there is an entry "key" also in "results"
@@ -325,6 +329,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		resultMap.put(NUM_TASKS_EXECUTED, getNumTasksExecuted());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public AbstractMultiExperiment clone() throws CloneNotSupportedException {
 		AbstractMultiExperiment mre = (AbstractMultiExperiment) super.clone();
@@ -386,6 +391,14 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	public boolean isAbortUponBaseExperimentAbort() {
 		return abortUponBaseExperimentAbort;
+	}
+
+	public boolean isProduceAveragedResults() {
+		return produceAveragedResults;
+	}
+
+	public void setProduceAveragedResults(boolean produceAveragedResults) {
+		this.produceAveragedResults = produceAveragedResults;
 	}
 
 }

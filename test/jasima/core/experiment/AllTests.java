@@ -27,7 +27,7 @@ import org.junit.runners.Suite;
  * @version $Id$
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestExperimentAbort.class })
+@Suite.SuiteClasses({ TestExperimentAbort.class, OCBATest.class })
 public class AllTests {
 
 }

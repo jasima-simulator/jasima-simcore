@@ -45,9 +45,20 @@ import java.util.Map;
  */
 public class Util {
 
+	/**
+	 * Returns a new array with a certain number of new objects of a certain
+	 * type.
+	 * 
+	 * @param numElements
+	 *            Number of elements in the result array.
+	 * @param componentType
+	 *            Class of the array elements.
+	 * @return The new array with all elements initialized with new objects.
+	 */
 	public static <T> T[] initializedArray(int numElements,
 			Class<T> componentType) {
 		try {
+			@SuppressWarnings("unchecked")
 			T[] res = (T[]) Array.newInstance(componentType, numElements);
 			for (int i = 0; i < numElements; i++) {
 				res[i] = componentType.newInstance();
@@ -172,6 +183,7 @@ public class Util {
 	 *            The object to be cloned.
 	 * @return A clone of o was cloneable, or otherwise the original object.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T cloneIfPossible(T o) {
 		if (o instanceof Cloneable) {
 			try {

@@ -103,7 +103,7 @@ public class ResultSaver extends ExperimentListenerBase {
 			baseName = "runResults_"
 					+ (e.getName() != null ? e.getName() + "_" : "")
 					+ String.format(Locale.ENGLISH,
-							"runResults_%1$tF_%1$tH%1$tM%1$tS",
+							"%1$tF_%1$tH%1$tM%1$tS",
 							System.currentTimeMillis());
 		}
 
