@@ -59,10 +59,11 @@ import jxl.write.WritableWorkbook;
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
- * @version $Id: ExcelSaver.java 36 2012-09-10 16:43:48Z THildebrandt@gmail.com
- *          $
+ * @version $Id: ExcelSaver.java 36 2012-09-10 16:43:48Z THildebrandt@gmail.com$
  */
 public class ExcelSaver extends ResultSaver {
+
+	public static final String XLS_EXTENSION = ".xls";
 
 	private static final String SHEET_NAME_MAIN = "main experiment";
 	private static final String SHEET_NAME_OVERVIEW = "sub-exp. overview";
@@ -88,7 +89,7 @@ public class ExcelSaver extends ResultSaver {
 
 		for (String a : args) {
 			File in = new File(a);
-			File out = new File(a + ".xls");
+			File out = new File(a + XLS_EXTENSION);
 
 			System.out.println("reading '" + in.toString() + "', writing to '"
 					+ out.toString() + "'...");
@@ -173,12 +174,8 @@ public class ExcelSaver extends ResultSaver {
 		super.finished(e, results);
 
 		// convert data to Excel file
-		File tmp = new File(tmpFileName);
-
-		int idx = tmpFileName.lastIndexOf('.');
-		String name = idx >= 0 ? tmpFileName.substring(0, idx) : tmpFileName;
-
-		File out = new File(name + ".xls");
+		File tmp = new File(tmpFileName + ResultSaver.SER_EXTENSION);
+		File out = new File(tmpFileName + XLS_EXTENSION);
 
 		try {
 			convertFile(tmp, out);
@@ -188,6 +185,11 @@ public class ExcelSaver extends ResultSaver {
 
 		if (!isKeepDataFile())
 			tmp.delete();
+	}
+
+	@Override
+	protected String extension() {
+		return XLS_EXTENSION;
 	}
 
 	protected void convertToExcelFile(ObjectInputStream is, OutputStream os) {

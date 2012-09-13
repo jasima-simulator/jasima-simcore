@@ -25,6 +25,7 @@ import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleReplicationExperiment;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -38,9 +39,11 @@ import java.util.Map;
  * a binary file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: ResultSaver.java 38 2012-09-11 12:27:38Z THildebrandt@gmail.com$
  */
 public class ResultSaver extends ExperimentListenerBase {
+
+	public static final String SER_EXTENSION = ".jasResBin";
 
 	private static final long serialVersionUID = -6333367038346285154L;
 
@@ -94,18 +97,48 @@ public class ResultSaver extends ExperimentListenerBase {
 		columns = new ArrayList<ColumnData>();
 		unsavedResults = 0;
 		nextSaveTime = 0;
-		String s = getResultFileName();
-		if (s == null)
-			s = String.format(Locale.ENGLISH,
-					"runResults_%1$tF_%1$tH%1$tM%1$tS",
-					System.currentTimeMillis());
-		tmpFileName = s + ".jasBinRes";
+
+		String baseName = getResultFileName();
+		if (baseName == null) {
+			baseName = "runResults_"
+					+ (e.getName() != null ? e.getName() + "_" : "")
+					+ String.format(Locale.ENGLISH,
+							"runResults_%1$tF_%1$tH%1$tM%1$tS",
+							System.currentTimeMillis());
+		}
+
+		// don't overwrite existing files, ensure unique final file name
+		File f;
+		int tried = 0;
+		try {
+			do {
+				tried++;
+				tmpFileName = baseName;
+				if (tried > 1)
+					tmpFileName += "_(" + tried + ")";
+				f = new File(tmpFileName + extension());
+			} while (!f.createNewFile());
+		} catch (IOException e1) {
+			throw new RuntimeException(e1);
+		}
+
+		// write to a file name with fixed ext. SER_EXTENSION (might be
+		// different to extension() see ExcelSaver)
+		f = new File(tmpFileName + SER_EXTENSION);
+		if (f.exists())
+			throw new RuntimeException("File '" + f + "' already exists!?");
+
+		// create output stream
 		try {
 			tmpDatOut = new ObjectOutputStream(new BufferedOutputStream(
-					new FileOutputStream(tmpFileName)));
+					new FileOutputStream(f)));
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	protected String extension() {
+		return SER_EXTENSION;
 	}
 
 	@Override
