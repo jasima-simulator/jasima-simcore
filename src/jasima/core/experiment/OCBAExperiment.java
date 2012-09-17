@@ -86,14 +86,16 @@ import org.apache.commons.math3.distribution.NormalDistribution;
  * versions it would be very helpful to improve its algorithm to better deal
  * with very similar performances of good configurations (such as indifference
  * zone approaches, or using Expected Opportunity Costs). I'm also unsure about
- * the effects if base experiments use common random numbers. In summary, this
- * class is not a fool-proof intelligent allocator of replications, but should
- * provide reasonably good results to be useful. Probably it's also a good
- * starting point for experts in the field to implement (and contribute?)
- * improved algorithms.
+ * the effects if base experiments use common random numbers (which is the
+ * default behavior of this class, see {@link #setCommonRandomNumbers(boolean)}.
+ * In summary, this class is not a fool-proof intelligent allocator of
+ * replications, but should provide reasonably good results to be useful.
+ * Probably it's also a good starting point for experts in the field to
+ * implement (and contribute?) improved algorithms.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  * 
  * @see MultipleReplicationExperiment
  * @see FullFactorialExperiment
