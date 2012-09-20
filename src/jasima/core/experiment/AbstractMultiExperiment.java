@@ -18,26 +18,20 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import jasima.core.expExecution.ExperimentExecutor;
+import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.ExperimentExecutor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
- * Parent class of an experiment which runs a given base experiment multiple
- * times.
+ * Parent class of an experiment which runs a number of child experiments.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version $Id: AbstractMultiExperiment.java 33 2012-09-07 15:36:36Z
@@ -108,12 +102,11 @@ public abstract class AbstractMultiExperiment extends Experiment {
 				// start execution and store process results in the same order
 				// as they are stored in tasks
 				int n = 0;
-				Collection<Future<Map<String, Object>>> allFutures = ExperimentExecutor
+				Collection<ExperimentFuture> allFutures = ExperimentExecutor
 						.getExecutor().runAllExperiments(experiments);
-				Iterator<Future<Map<String, Object>>> it = allFutures
-						.iterator();
+				Iterator<ExperimentFuture> it = allFutures.iterator();
 				while (it.hasNext()) {
-					Future<Map<String, Object>> f = it.next();
+					ExperimentFuture f = it.next();
 					it.remove();
 
 					getAndStoreResults(experiments.get(n), f);
@@ -123,8 +116,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 					// check if to abort this experiment, if so cancel all
 					// future tasks
 					if (aborted != 0) {
-						for (Future<Map<String, Object>> f2 : allFutures) {
-							f2.cancel(false);
+						for (ExperimentFuture f2 : allFutures) {
+							f2.cancel(true);
 						}
 						break; // while
 					}
@@ -137,8 +130,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 					experiments.set(i, null);
 
 					if (aborted == 0) {
-						Future<Map<String, Object>> future = ex
-								.runExperiment(e);
+						ExperimentFuture future = ex.runExperiment(e);
 						getAndStoreResults(e, future);
 					}
 				}
@@ -148,27 +140,9 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		}
 	}
 
-	private void getAndStoreResults(Experiment e, Future<Map<String, Object>> f)
+	private void getAndStoreResults(Experiment e, ExperimentFuture f)
 			throws InterruptedException {
-		Map<String, Object> res;
-		try {
-			res = f.get();
-		} catch (ExecutionException ex) {
-			Throwable cause = ex.getCause();
-
-			// convert exception to string
-			Writer sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			cause.printStackTrace(pw);
-			String s = sw.toString();
-			s = s.replace(System.getProperty("line.separator") + '\t', " \\\\ ");
-
-			// create "artificial" results map
-			res = new HashMap<String, Object>();
-			res.put(EXP_ABORTED, 1);
-			res.put("exceptionMessage", cause.getMessage());
-			res.put("exception", s);
-		}
+		Map<String, Object> res = f.get();
 
 		numTasksExecuted++;
 		storeRunResults(e, res);
@@ -278,7 +252,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	/**
 	 * Handles a numeric value "val" by averaging it over all runs performed. If
-	 * "val" is of type SummaryStat, averaging is performed with its mean()-value.
+	 * "val" is of type SummaryStat, averaging is performed with its
+	 * mean()-value.
 	 */
 	protected void handleNumericValue(String key, Object val) {
 		// ensure there is an entry "key" also in "results"

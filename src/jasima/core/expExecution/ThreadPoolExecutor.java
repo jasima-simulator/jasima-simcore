@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.expExecution;
 
 import jasima.core.experiment.Experiment;
 
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -38,7 +37,8 @@ import java.util.concurrent.ThreadFactory;
  * to complete, there is a thread pool for each nesting level of experiments.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ThreadPoolExecutor extends ExperimentExecutor {
 
@@ -47,17 +47,21 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	// an executor service for each nesting level
 	private Map<Integer, ExecutorService> insts = new HashMap<Integer, ExecutorService>();
 
+	protected ThreadPoolExecutor() {
+		super();
+	}
+
 	@Override
-	public Future<Map<String, Object>> runExperiment(final Experiment e) {
+	public ExperimentFuture runExperiment(final Experiment e) {
 		ExecutorService es = getExecutorInstance(e.isLeafExperiment(),
 				e.nestingLevel());
-		return es.submit(new Callable<Map<String, Object>>() {
+		return new FutureWrapper(es.submit(new Callable<Map<String, Object>>() {
 			@Override
 			public Map<String, Object> call() throws Exception {
 				e.runExperiment();
 				return e.getResults();
 			}
-		});
+		}));
 	}
 
 	@Override

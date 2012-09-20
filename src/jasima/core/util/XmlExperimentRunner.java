@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.util;
 
+import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.Experiment.ExpMsgCategory;
 
@@ -27,11 +28,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Runs an experiment from an XML file and executes it on the command line.
  * 
- * @version $Id$
+ * @version $Id: XmlExperimentRunner.java 39 2012-09-11 12:39:42Z
+ *          THildebrandt@gmail.com $
  */
 public class XmlExperimentRunner {
 
@@ -101,9 +104,13 @@ public class XmlExperimentRunner {
 
 		Experiment exp = (Experiment) XmlUtil.loadXML(r);
 		exp.addNotifierListener(new ConsolePrinter(outputCat));
-		
-		exp.runExperiment();
-		Map<String, Object> res = exp.getResults();
+
+		Map<String, Object> res;
+		try {
+			res = ExperimentExecutor.getExecutor().runExperiment(exp).get();
+		} catch (InterruptedException e1) {
+			throw new RuntimeException(e1);
+		}
 
 		if (!optSilent)
 			exp.printResults();

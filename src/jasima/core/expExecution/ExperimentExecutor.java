@@ -16,14 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.expExecution;
 
 import jasima.core.experiment.Experiment;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 /**
  * Base class for classes executing experiments. This class implements the
@@ -35,13 +33,14 @@ import java.util.concurrent.Future;
  * the number of available processors is used.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version 
+ *          "$Id$"
+ * @see ThreadPoolExecutor
  */
 public abstract class ExperimentExecutor {
 
 	public static final String EXECUTOR_FACTORY = "jasima.core.ExperimentExecutor";
-	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class
-			.getName();
+	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class.getName();
 
 	private static ExperimentExecutor execFactoryInst = null;
 
@@ -72,17 +71,20 @@ public abstract class ExperimentExecutor {
 		return execFactoryInst;
 	}
 
+	/**
+	 * Protected constructor, use {@link #getExecutor()} instead.
+	 */
 	protected ExperimentExecutor() {
 		super();
 	}
 
-	public abstract Future<Map<String, Object>> runExperiment(Experiment e);
+	public abstract ExperimentFuture runExperiment(Experiment e);
 
 	public abstract void shutdownNow();
 
-	public Collection<Future<Map<String, Object>>> runAllExperiments(
+	public Collection<ExperimentFuture> runAllExperiments(
 			Collection<? extends Experiment> es) {
-		ArrayList<Future<Map<String, Object>>> res = new ArrayList<Future<Map<String, Object>>>(
+		ArrayList<ExperimentFuture> res = new ArrayList<ExperimentFuture>(
 				es.size());
 
 		for (Experiment e : es) {

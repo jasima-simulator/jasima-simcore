@@ -67,6 +67,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	public static final String RUNTIME = "runTime";
 	public static final String EXP_ABORTED = "expAborted";
+	public static final String EXCEPTION = "exception";
+	public static final String EXCEPTION_MESSAGE = "exceptionMessage";
 
 	/**
 	 * Simple base class for events used by the notification mechanism.

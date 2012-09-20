@@ -50,7 +50,8 @@ import java.util.ArrayList;
  * </ol>
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: MultipleReplicationExperiment.java 33 2012-09-07 15:36:36Z
+ *          THildebrandt@gmail.com $
  */
 public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
@@ -207,10 +208,11 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 				.clone();
 
 		if (confIntervalMeasure != null)
-			mre.confIntervalMeasure = (ArrayList<String>) confIntervalMeasure.clone();
+			mre.confIntervalMeasure = (ArrayList<String>) confIntervalMeasure
+					.clone();
 
 		if (baseExperiment != null)
-			mre.baseExperiment = (Experiment) baseExperiment.clone();
+			mre.baseExperiment = baseExperiment.clone();
 
 		return mre;
 	}
