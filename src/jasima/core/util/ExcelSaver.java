@@ -400,7 +400,7 @@ public class ExcelSaver extends ResultSaver {
 			Set<Object> values = paramValues.get(cd.name);
 
 			// is parameter not varied in experiments?
-			if (values != null && values.size() == 1) {
+			if (cd.isParamColumn && values != null && values.size() == 1) {
 				cd.sortedIndex = -1;
 			} else {
 				cd.sortedIndex = n++;
