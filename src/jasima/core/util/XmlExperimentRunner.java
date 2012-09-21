@@ -28,13 +28,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Runs an experiment from an XML file and executes it on the command line.
  * 
- * @version $Id: XmlExperimentRunner.java 39 2012-09-11 12:39:42Z
- *          THildebrandt@gmail.com $
+ * @version "$Id$"
  */
 public class XmlExperimentRunner {
 
