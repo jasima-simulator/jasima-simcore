@@ -249,6 +249,15 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	/**
 	 * Prints the results of this experiments to {@link System#out}.
+	 * @param res 
+	 */
+	public final void printResults(Map<String, Object> res) {
+		ConsolePrinter.printResults(this, res);
+	}
+
+	/**
+	 * Prints the results of this experiments to {@link System#out}.
+	 * @param res 
 	 */
 	public final void printResults() {
 		ConsolePrinter.printResults(this, getResults());

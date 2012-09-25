@@ -111,7 +111,7 @@ public class XmlExperimentRunner {
 		}
 
 		if (!optSilent)
-			exp.printResults();
+			exp.printResults(res);
 
 		try {
 			r.close();
