@@ -70,6 +70,69 @@ public class Util {
 	}
 
 	/**
+	 * Attempts trivial type conversion. This methods supports all cating
+	 * conversions (JLS 5.5) and always returns null when the input object is
+	 * null. If the target type is {@link String}, the result is the return
+	 * value of the input object's {@link Object#toString()} method. Any object
+	 * can be converted to {@link Integer}, {@link Double} and {@link Boolean},
+	 * but those conversions can throw exceptions.
+	 * 
+	 * @param o
+	 *            the object to be converted
+	 * @param klass
+	 *            the target type
+	 * @return the converted object
+	 * @throws IllegalArgumentException
+	 *             if the conversion is not supported
+	 * @throws NumberFormatException
+	 *             if the input object is not assignable to {@link Number} and
+	 *             the return value of its {@link Object#toString()} method
+	 *             can't be converted to the numeric target type
+	 */
+	public static <E> E convert(Object o, Class<E> klass)
+			throws IllegalArgumentException {
+
+		if (o == null)
+			return null;
+
+		if (klass.isAssignableFrom(o.getClass())) {
+			return klass.cast(o);
+		}
+
+		if (klass == String.class) {
+			return klass.cast(o.toString());
+		}
+
+		if (klass == int.class || klass == Integer.class) {
+			if (o instanceof Number)
+				return klass.cast(((Number) o).intValue());
+			return klass.cast(Integer.valueOf(o.toString()));
+		}
+
+		if (klass == double.class || klass == Double.class) {
+			if (o instanceof Number)
+				return klass.cast(((Number) o).doubleValue());
+			return klass.cast(Double.valueOf(o.toString()));
+		}
+
+		if (klass == boolean.class || klass == Boolean.class) {
+			String str = o.toString();
+			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")
+					|| str.equalsIgnoreCase("1"))
+				return klass.cast(Boolean.TRUE);
+			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
+					|| str.equalsIgnoreCase("0"))
+				return klass.cast(Boolean.FALSE);
+			throw new IllegalArgumentException(String.format(
+					"Can't convert %s to bool.", o));
+		}
+
+		throw new IllegalArgumentException(String.format(
+				"Can't convert from %s to %s.",
+				o.getClass().getCanonicalName(), klass.getCanonicalName()));
+	}
+
+	/**
 	 * Sets a property named with propPath to a certain value using reflection.
 	 * 
 	 * Example: setProperty( obj, "a.b.c", 5 ); is equivalent to a direct call
@@ -99,7 +162,7 @@ public class Util {
 				if (i == segments.length - 1) {
 					// call setter
 					m = match.getWriteMethod();
-					o = m.invoke(o, value);
+					o = m.invoke(o, convert(value, match.getPropertyType()));
 				} else {
 					// call getter and continue
 					m = match.getReadMethod();
