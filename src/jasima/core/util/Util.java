@@ -89,40 +89,44 @@ public class Util {
 	 *             the return value of its {@link Object#toString()} method
 	 *             can't be converted to the numeric target type
 	 */
+	@SuppressWarnings("unchecked")
 	public static <E> E convert(Object o, Class<E> klass)
 			throws IllegalArgumentException {
+
+		// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6456930
+		// klass.cast will not unbox and can't accept primitive values
 
 		if (o == null)
 			return null;
 
 		if (klass.isAssignableFrom(o.getClass())) {
-			return klass.cast(o);
+			return (E) o;
 		}
 
 		if (klass == String.class) {
-			return klass.cast(o.toString());
+			return (E) o.toString();
 		}
 
 		if (klass == int.class || klass == Integer.class) {
 			if (o instanceof Number)
-				return klass.cast(((Number) o).intValue());
-			return klass.cast(Integer.valueOf(o.toString()));
+				return (E) (Integer) ((Number) o).intValue();
+			return (E) Integer.valueOf(o.toString());
 		}
 
 		if (klass == double.class || klass == Double.class) {
 			if (o instanceof Number)
-				return klass.cast(((Number) o).doubleValue());
-			return klass.cast(Double.valueOf(o.toString()));
+				return (E) (Double) ((Number) o).doubleValue();
+			return (E) Double.valueOf(o.toString());
 		}
 
 		if (klass == boolean.class || klass == Boolean.class) {
 			String str = o.toString();
 			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")
 					|| str.equalsIgnoreCase("1"))
-				return klass.cast(Boolean.TRUE);
+				return (E) Boolean.TRUE;
 			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
 					|| str.equalsIgnoreCase("0"))
-				return klass.cast(Boolean.FALSE);
+				return (E) Boolean.FALSE;
 			throw new IllegalArgumentException(String.format(
 					"Can't convert %s to bool.", o));
 		}
