@@ -247,6 +247,20 @@ public class FullFactorialExperiment extends AbstractMultiExperiment {
 			addFactor(factorName, o);
 		}
 	}
+	
+	/**
+	 * Convenience method to add all elements in {@code values} as a possible
+	 * value for a factor/property {@code factorName}. This method is equivalent
+	 * to repeatedly calling {@link #addFactor(String, Object)} for each element
+	 * in {@code values}.
+	 * 
+	 * @see #addFactor(String, Object)
+	 */
+	public void addFactors(String factorName, Collection<?> values) {
+		for (Object o : values) {
+			addFactor(factorName, o);
+		}
+	}
 
 	public Collection<String> getFactorNames() {
 		return factors.keySet();
