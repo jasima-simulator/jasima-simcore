@@ -59,7 +59,8 @@ import jxl.write.WritableWorkbook;
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
- * @version $Id: ExcelSaver.java 36 2012-09-10 16:43:48Z THildebrandt@gmail.com$
+ * @version 
+ *          "$Id: ExcelSaver.java 36 2012-09-10 16:43:48Z THildebrandt@gmail.com$"
  */
 public class ExcelSaver extends ResultSaver {
 
@@ -126,16 +127,16 @@ public class ExcelSaver extends ResultSaver {
 			os = new BufferedOutputStream(new FileOutputStream(out));
 			es.convertToExcelFile(is, os);
 		} finally {
-			if (is != null)
-				try {
+			try {
+				if (is != null)
 					is.close();
-				} catch (IOException ignore) {
-				}
-			if (os != null)
-				try {
+			} catch (IOException ignore) {
+			}
+			try {
+				if (os != null)
 					os.close();
-				} catch (IOException ignore) {
-				}
+			} catch (IOException ignore) {
+			}
 		}
 	}
 
@@ -410,7 +411,13 @@ public class ExcelSaver extends ResultSaver {
 				addCell(SHEET_NAME_OVERVIEW, i + 3, 0, cd.name);
 				addCell(SHEET_NAME_OVERVIEW, i + 3, 1, values.size());
 				int j = 2;
+				int num = 0;
 				for (Object v : values) {
+					if (++num == 21) {
+						addCell(SHEET_NAME_OVERVIEW, i + 3, j++, "... "
+								+ (values.size() - num + 1) + " more ...");
+						break; // for v
+					}
 					addCell(SHEET_NAME_OVERVIEW, i + 3, j++, v);
 				}
 			}
