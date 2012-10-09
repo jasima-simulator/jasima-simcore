@@ -21,16 +21,15 @@ package jasima.shopSim.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Simple container for Operations.
  * 
- * @version $Id$
+ * @version "$Id$"
  */
 public class Route {
 
-	private List<Operation> ops;
+	private ArrayList<Operation> ops;
 	private Operation[] opsArray; // cache results of call to ops()
 
 	public Route() {

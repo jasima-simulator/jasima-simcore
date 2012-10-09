@@ -20,6 +20,10 @@ package jasima.shopSim.models.staticShop;
 
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.JobShopExperiment;
+import jasima.shopSim.core.Operation;
+import jasima.shopSim.core.Route;
+import jasima.shopSim.core.StaticJobSource;
+import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.util.TextFileReader;
 
 import java.io.BufferedReader;
@@ -28,22 +32,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
  * Experiment which loads a scheduling instance from a file or URL/URI. Shop and
  * job data has to be described in this file.
- *
- * @version $Id$
+ * 
+ * @version 
+ *          "$Id$"
  */
 public class StaticShopExperiment extends JobShopExperiment {
 
+	private static final long serialVersionUID = 3907065922245526545L;
+
 	private static Map<URI, TextFileReader> readerCache = new WeakHashMap<URI, TextFileReader>();
 
+	// parameters
 	private String instFileName;
 	private URI instURI;
-	private boolean useInstanceCache = false;
+	private boolean useInstanceCache = true;
+	private double dueDateTightness = Double.NaN;
+	private RoundingMode roundingMode = RoundingMode.NONE;
+
+	public static enum RoundingMode {
+		NONE, FLOOR, CEIL, ROUND;
+	}
 
 	@Override
 	protected void createShop() {
@@ -59,17 +75,65 @@ public class StaticShopExperiment extends JobShopExperiment {
 		return c;
 	}
 
-	public void configureShopFromFile(JobShop js) {
-		URI uri = getInstURI();
+	protected void configureShopFromFile(JobShop js) {
+		URI uri = null;
 
-		if (getInstFileName() != null)
-			uri = new File(getInstFileName()).toURI();
+		if (getInstFileName() != null) {
+			File f = new File(getInstFileName());
+			if (f.exists())
+				uri = f.toURI();
+			else {
+				// try to load as a resource
+				URL u = this.getClass().getResource(getInstFileName());
+				if (u == null)
+					u = Thread.currentThread().getContextClassLoader()
+							.getResource(getInstFileName());
+				if (u != null)
+					try {
+						uri = u.toURI();
+					} catch (URISyntaxException e) {
+						throw new RuntimeException(e);
+					}
+			}
+		}
+
+		if (uri == null)
+			uri = getInstURI();
 
 		if (uri == null)
 			throw new IllegalArgumentException(
 					"Either 'instFileName' or 'instURI' have to be specified.");
 
-		configureShopFromFile(uri, js, isUseInstanceCache());
+		TextFileReader r = getReader(uri, useInstanceCache);
+		r.configureMdl(js);
+
+		// overwrite JobSpec data with new due dates
+		if (!Double.isNaN(getDueDateTightness())) {
+			StaticJobSource src = (StaticJobSource) js.sources[0];
+			JobSpec[] jobs = src.jobs;
+
+			for (int i = 0, n = src.jobs.length; i < n; i++) {
+				JobSpec orig = jobs[i];
+
+				Route route = js.routes[orig.routeNum];
+				double procSum = 0.0;
+				for (Operation o : route.ops()) {
+					procSum += o.procTime;
+				}
+
+				double dd = getDueDateTightness() * procSum;
+				if (getRoundingMode() == RoundingMode.FLOOR) {
+					dd = Math.floor(dd);
+				} else if (getRoundingMode() == RoundingMode.CEIL) {
+					dd = Math.ceil(dd);
+				} else if (getRoundingMode() == RoundingMode.ROUND) {
+					dd = Math.round(dd);
+				}
+
+				jobs[i] = new JobSpec(orig.routeNum, orig.releaseDate, dd,
+						orig.weight, orig.name);
+			}
+		}
 	}
 
 	//
@@ -78,13 +142,7 @@ public class StaticShopExperiment extends JobShopExperiment {
 	//
 	//
 
-	public static void configureShopFromFile(URI res, JobShop js,
-			boolean useInstanceCache) {
-		TextFileReader r = getReader(res, useInstanceCache);
-		r.configureMdl(js);
-	}
-
-	static TextFileReader getReader(URI uri, boolean useInstanceCache) {
+	protected static TextFileReader getReader(URI uri, boolean useInstanceCache) {
 		TextFileReader r = null;
 		if (useInstanceCache)
 			synchronized (readerCache) {
@@ -124,6 +182,13 @@ public class StaticShopExperiment extends JobShopExperiment {
 		return instFileName;
 	}
 
+	/**
+	 * Sets the name of a file which is used to load the static problem
+	 * instance. If no file with the given name is found, an attempt is made to
+	 * load a resource with the given name.
+	 * 
+	 * @see #setInstURI(URI)
+	 */
 	public void setInstFileName(String instFileName) {
 		this.instFileName = instFileName;
 	}
@@ -132,6 +197,11 @@ public class StaticShopExperiment extends JobShopExperiment {
 		return instURI;
 	}
 
+	/**
+	 * Sets an arbitrary URI which is used to locate the problem instance. This
+	 * URI takes precedence over a file name set using
+	 * {@link #setInstFileName(String)}.
+	 */
 	public void setInstURI(URI instURI) {
 		this.instURI = instURI;
 	}
@@ -142,6 +212,35 @@ public class StaticShopExperiment extends JobShopExperiment {
 
 	public void setUseInstanceCache(boolean useInstanceCache) {
 		this.useInstanceCache = useInstanceCache;
+	}
+
+	public double getDueDateTightness() {
+		return dueDateTightness;
+	}
+
+	/**
+	 * Overwrites/sets the due dates of all jobs, if set to a value different
+	 * from NaN (Not A Number).
+	 * 
+	 * @see #setRoundingMode(RoundingMode)
+	 */
+	public void setDueDateTightness(double dueDateTightness) {
+		this.dueDateTightness = dueDateTightness;
+	}
+
+	public RoundingMode getRoundingMode() {
+		return roundingMode;
+	}
+
+	/**
+	 * Sets the rounding mode when computing a new due date. This is only used
+	 * if dueDateTightness is set to a value!=null. Rounds the result to an
+	 * integer value.
+	 * 
+	 * @see #setDueDateTightness(double)
+	 */
+	public void setRoundingMode(RoundingMode roundingMode) {
+		this.roundingMode = roundingMode;
 	}
 
 }
