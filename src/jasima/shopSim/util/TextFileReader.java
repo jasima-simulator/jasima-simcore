@@ -316,7 +316,7 @@ public class TextFileReader {
 		// create job source if jobs specified in file
 		if (jobSpecs != null) {
 			StaticJobSource s = new StaticJobSource();
-			s.jobs = jobSpecs;
+			s.jobs = jobSpecs.clone();
 			shop.addJobSource(s);
 		}
 	}
