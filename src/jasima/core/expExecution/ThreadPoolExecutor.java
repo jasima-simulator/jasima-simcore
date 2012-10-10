@@ -55,7 +55,7 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	public ExperimentFuture runExperiment(final Experiment e) {
 		ExecutorService es = getExecutorInstance(e.isLeafExperiment(),
 				e.nestingLevel());
-		return new FutureWrapper(es.submit(new Callable<Map<String, Object>>() {
+		return new FutureWrapper(e, es.submit(new Callable<Map<String, Object>>() {
 			@Override
 			public Map<String, Object> call() throws Exception {
 				e.runExperiment();

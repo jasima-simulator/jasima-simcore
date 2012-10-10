@@ -195,8 +195,15 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	@Override
+	protected void finish() {
+		super.finish();
+		
+		shop = null;
+	}
+
+	@Override
 	public JobShopExperiment clone() throws CloneNotSupportedException {
-		if (shop != null)
+		if (resultMap != null)
 			throw new CloneNotSupportedException(
 					"Can't clone an experiment that was already executed.");
 

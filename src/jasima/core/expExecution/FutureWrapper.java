@@ -16,14 +16,17 @@ import java.util.concurrent.TimeoutException;
  * Thin wrapper around a {@link Future}, implementing {@link ExperimentFuture}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class FutureWrapper implements ExperimentFuture {
 
+	private final Experiment experiment;
 	private final Future<Map<String, Object>> future;
 
-	public FutureWrapper(Future<Map<String, Object>> future) {
+	public FutureWrapper(Experiment e, Future<Map<String, Object>> future) {
 		super();
+		this.experiment = e;
 		this.future = future;
 	}
 
@@ -80,6 +83,11 @@ public class FutureWrapper implements ExperimentFuture {
 		}
 
 		return res;
+	}
+
+	@Override
+	public Experiment getExperiment() {
+		return experiment;
 	}
 
 }

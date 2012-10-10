@@ -34,8 +34,8 @@ import java.util.Random;
  * Parent class of an experiment which runs a number of child experiments.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: AbstractMultiExperiment.java 33 2012-09-07 15:36:36Z
- *          THildebrandt@gmail.com $
+ * @version 
+ *          "$Id$"
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 
@@ -72,7 +72,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		experiments = new ArrayList<Experiment>();
 		seedStream = null;
 
-		detailedResults = new UniqueNamesCheckingHashMap<String, Object>();
+		detailedResults = new UniqueNamesCheckingHashMap();
 		numTasksExecuted = 0;
 
 		for (int i = 0; i < getSkipSeedCount(); i++) {
@@ -132,6 +132,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 					if (aborted == 0) {
 						ExperimentFuture future = ex.runExperiment(e);
 						getAndStoreResults(e, future);
+					} else {
+						break; // for i
 					}
 				}
 			}

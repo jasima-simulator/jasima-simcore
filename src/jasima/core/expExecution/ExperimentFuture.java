@@ -1,5 +1,7 @@
 package jasima.core.expExecution;
 
+import jasima.core.experiment.Experiment;
+
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,8 @@ import java.util.concurrent.TimeoutException;
  */
 public interface ExperimentFuture {
 
+	public Experiment getExperiment();
+	
 	public boolean cancel(boolean mayInterruptIfRunning);
 
 	public boolean isCancelled();

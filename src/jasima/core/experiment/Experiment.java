@@ -118,16 +118,16 @@ public abstract class Experiment implements Cloneable, Serializable,
 	// used during event notification
 	public Map<String, Object> results;
 
-	public static class UniqueNamesCheckingHashMap<K, V> extends
-			LinkedHashMap<K, V> {
+	public static class UniqueNamesCheckingHashMap extends
+			LinkedHashMap<String, Object> {
 		private static final long serialVersionUID = -6783419937586790463L;
 
 		@Override
-		public V put(K key, V value) {
+		public Object put(String key, Object value) {
 			if (containsKey(key))
 				throw new RuntimeException("Map already contains value '" + key
 						+ "'.");
-			return super.put(key, value);
+			return super.put(key.intern(), value);
 		}
 	}
 
@@ -172,7 +172,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 		}
 
 		// build result map
-		resultMap = new UniqueNamesCheckingHashMap<String, Object>();
+		resultMap = new UniqueNamesCheckingHashMap();
 		produceResults();
 		if (numListener() > 0) {
 			results = resultMap;
