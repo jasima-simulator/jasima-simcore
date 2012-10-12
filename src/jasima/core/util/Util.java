@@ -41,7 +41,7 @@ import java.util.Map;
  * Some static utility methods that don't really fit anywhere else.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class Util {
 
@@ -252,7 +252,13 @@ public class Util {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T cloneIfPossible(T o) {
-		if (o instanceof Cloneable) {
+		// array?
+		Class<?> o2 = o.getClass().getComponentType();
+		if (o2 == null)
+			o2 = o.getClass();
+
+		if (Cloneable.class.isAssignableFrom(o2)) {
+			// o or an array's components are clonable
 			try {
 				Method cloneMethod = o.getClass().getMethod("clone",
 						new Class[] {});

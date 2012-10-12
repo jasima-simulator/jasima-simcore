@@ -19,20 +19,24 @@
 package jasima.core.experiment;
 
 import jasima.core.util.MersenneTwister;
-import jasima.core.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
  * Allows to run a certain maximum number of experiments chosen randomly. This
  * number of experiments run is usually smaller than the number of possible
  * factor combinations, i.e., only a fraction of possible designs is tested.
+ * <p>
+ * The implementation of this class ensures, that each value of a factor occurs
+ * equally often (there are no guarantees about value combinations, however).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-06-08
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 
@@ -43,8 +47,6 @@ public class RandomFractionalExperiment extends FullFactorialExperiment {
 
 	// fields used during run
 	private Random rnd;
-	private double threshold;
-	private PriorityQueue<Pair<Double, Experiment>> data;
 
 	public RandomFractionalExperiment() {
 		super();
@@ -58,60 +60,154 @@ public class RandomFractionalExperiment extends FullFactorialExperiment {
 
 	@Override
 	public void init() {
-		if (maxConfigurations <= 0)
-			throw new IllegalArgumentException(
-					"'maxConfigurations' has to be >=1.");
-
 		super.init();
 
 		rnd = new MersenneTwister(getInitialSeed());
-		data = new PriorityQueue<Pair<Double, Experiment>>(maxConfigurations,
-				new Comparator<Pair<Double, Experiment>>() {
-					@Override
-					public int compare(Pair<Double, Experiment> o1,
-							Pair<Double, Experiment> o2) {
-						return -Double.compare(o1.a, o2.a);
-					}
-				});
 	}
 
 	@Override
 	protected void createExperiments() {
-		super.createExperiments();
+		int numFactors = getFactorNames().size();
+		int[] numValuesPerFactor = new int[numFactors];
+		long total = 1;
 
-		for (Pair<Double, Experiment> e : data) {
-			experiments.add(e.b);
+		// calculate totals
+		int i = 0;
+		for (String name : getFactorNames()) {
+			int n = getFactorValues(name).size();
+			numValuesPerFactor[i++] = n;
+			total *= n;
 		}
 
-		data = null;
+		long numCfgsToCreate = Math.min(getMaxConfigurations(), total);
+
+		print("creating " + numCfgsToCreate + " configurations out of " + total
+				+ " possible...");
+		numConfs = 0;
+
+		sampleConfs((int) numCfgsToCreate, numValuesPerFactor);
+
+		print(experiments.size() + " valid configurations found.");
 	}
 
-	@Override
-	protected void handleConfig(ArrayList<Pair<String, Object>> conf) {
-		if (isValidConfiguration(conf)) {
-			numConfs++;
+	private void sampleConfs(int numCfgsToCreate, int[] numValuesPerFactor) {
+		int[][] confs = new int[getNumFactors()][numCfgsToCreate];
+		for (int n = 0; n < getNumFactors(); n++) {
+			initConfDim(confs[n], numValuesPerFactor[n]);
+		}
 
-			// accept this configuration?
-			double v = rnd.nextDouble();
-			if (v < threshold || data.size() < maxConfigurations) {
-				if (data.size() == maxConfigurations) {
-					Pair<Double, Experiment> del = data.poll();
-					assert del.a == threshold;
+		HashSet<IntArrayWrapper> cfgs = new HashSet<IntArrayWrapper>();
+		boolean cont = true;
+		while (cont) {
+			// shuffle all dimensions
+			for (int n = 0; n < confs.length; n++) {
+				shuffle(confs[n]);
+			}
+
+			// create new configurations if possible
+			for (int n = confs[0].length - 1; n >= 0; n--) {
+				int[] conf = new int[getNumFactors()];
+				for (int j = 0; j < conf.length; j++) {
+					conf[j] = confs[j][n];
 				}
 
-				data.add(new Pair<Double, Experiment>(v,
-						createExperimentForConf(conf)));
+				IntArrayWrapper w = new IntArrayWrapper(conf);
+				if (!cfgs.contains(w)) {
+					cfgs.add(w);
 
-				threshold = data.peek().a;
+					if (cfgs.size() == numCfgsToCreate) {
+						cont = false;
+						break; // for n
+					}
+				}
 			}
 		}
+
+		ArrayList<IntArrayWrapper> l = new ArrayList<IntArrayWrapper>(cfgs);
+		Collections.sort(l);
+		for (IntArrayWrapper iaw : l) {
+			addExperimentForConf(iaw.is);
+		}
 	}
+
+	private static class IntArrayWrapper implements Comparable<IntArrayWrapper> {
+		public final int[] is;
+
+		public IntArrayWrapper(int[] is) {
+			super();
+			this.is = is;
+		}
+
+		@Override
+		public int hashCode() {
+			return Arrays.hashCode(is);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			return Arrays.equals(is, ((IntArrayWrapper) o).is);
+		}
+
+		@Override
+		public int compareTo(IntArrayWrapper o) {
+			assert is.length == o.is.length;
+			for (int i = 0; i < is.length; i++) {
+				int diff = is[i] - o.is[i];
+				if (diff != 0)
+					return diff;
+			}
+			return 0;
+		}
+	}
+
+	private void shuffle(int[] is) {
+		int n = is.length;
+		for (int i = 0; i < n; i++) {
+			int b = i + rnd.nextInt(n - i);
+
+			int x = is[i];
+			is[i] = is[b];
+			is[b] = x;
+		}
+	}
+
+	private void initConfDim(int[] is, int numValues) {
+		double n = is.length * 1.0 / numValues;
+		int m = (int) Math.floor(n);
+
+		// fill integer part
+		int p = 0;
+		for (int i = 0; i < numValues; i++) {
+			for (int j = 0; j < m; j++) {
+				is[p++] = i;
+			}
+		}
+
+		// fill rest, avoiding duplicates
+		assert is.length - p < numValues;
+		int[] v = new int[numValues];
+		for (int i = 0; i < v.length; i++) {
+			v[i] = i;
+		}
+		shuffle(v);
+
+		int q = 0;
+		while (p < is.length) {
+			is[p++] = v[q++];
+		}
+	}
+
+	// getter/setter for parameters
 
 	public int getMaxConfigurations() {
 		return maxConfigurations;
 	}
 
 	public void setMaxConfigurations(int maxConfigurations) {
+		if (maxConfigurations <= 0)
+			throw new IllegalArgumentException(
+					"'maxConfigurations' has to be >=1.");
+
 		this.maxConfigurations = maxConfigurations;
 	}
 

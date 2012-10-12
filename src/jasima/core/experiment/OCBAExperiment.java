@@ -1,12 +1,12 @@
 package jasima.core.experiment;
 
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.Pair;
 import jasima.core.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -172,8 +172,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	}
 
 	@Override
-	protected Experiment createExperimentForConf(
-			ArrayList<Pair<String, Object>> conf) {
+	protected Experiment createExperimentForConf(HashMap<String, Object> conf) {
 		Experiment e = super.createExperimentForConf(conf);
 		// reset name
 		e.setName(getBaseExperiment().getName());
