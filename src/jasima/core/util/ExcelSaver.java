@@ -145,6 +145,8 @@ public class ExcelSaver extends ResultSaver {
 
 	private boolean keepDataFile = false;
 	private boolean transpose = false;
+	private int maxParamValues = 20;
+	private int maxStringLength = 500;
 
 	private WritableWorkbook workbook;
 
@@ -413,9 +415,11 @@ public class ExcelSaver extends ResultSaver {
 				int j = 2;
 				int num = 0;
 				for (Object v : values) {
-					if (++num == 21) {
-						addCell(SHEET_NAME_OVERVIEW, i + 3, j++, "... "
-								+ (values.size() - num + 1) + " more ...");
+					if (getMaxParamValues() > 0
+							&& ++num == getMaxParamValues() + 1) {
+						String moreString = "... " + (values.size() - num + 1)
+								+ " more ...";
+						addCell(SHEET_NAME_OVERVIEW, i + 3, j++, moreString);
 						break; // for v
 					}
 					addCell(SHEET_NAME_OVERVIEW, i + 3, j++, v);
@@ -504,16 +508,19 @@ public class ExcelSaver extends ResultSaver {
 
 		WritableSheet valSheet = getOrCreateSheet(sheetBaseName);
 
-		if (value == null) {
-			valSheet.addCell(new Label(col, row, "null", format));
-		} else if (value instanceof java.lang.Number) {
+		// convert everything but numbers to a string
+		if (value instanceof java.lang.Number) {
+			// do nothing
+		} else {
+			value = convertToString(value);
+		}
+
+		// add to Excel sheet
+		if (value instanceof java.lang.Number) {
 			valSheet.addCell(createCell4Number(col, row,
 					(java.lang.Number) value));
-		} else if (value.getClass().isArray()) {
-			valSheet.addCell(new Label(col, row, Util.arrayToString(value),
-					format));
 		} else {
-			valSheet.addCell(new Label(col, row, value.toString(), format));
+			valSheet.addCell(new Label(col, row, (String) value, format));
 		}
 	}
 
@@ -521,14 +528,26 @@ public class ExcelSaver extends ResultSaver {
 	 * Convert an object to a String closely resembling how it would appear in
 	 * the Excel file.
 	 */
-	private static String convertToString(Object o) {
+	private String convertToString(Object o) {
+		String res;
 		if (o == null) {
-			return "null";
+			res = "null";
 		} else if (o.getClass().isArray()) {
-			return Util.arrayToString(o);
+			res = Util.arrayToString(o);
 		} else {
-			return o.toString();
+			res = o.toString();
 		}
+
+		// cut off Strings which are too long
+		if (getMaxStringLength() > 0 && res.length() > getMaxStringLength()) {
+			int diff = res.length() - getMaxStringLength();
+			String s = "... " + diff + " more characters ...";
+			if (getMaxStringLength() + s.length() < res.length()) {
+				res = res.substring(0, getMaxStringLength()) + s;
+			}
+		}
+
+		return res;
 	}
 
 	/**
@@ -575,20 +594,55 @@ public class ExcelSaver extends ResultSaver {
 
 	// getter / setter for parameters below
 
-	public void setTranspose(boolean transpose) {
-		this.transpose = transpose;
-	}
-
 	public boolean isTranspose() {
 		return transpose;
+	}
+
+	/**
+	 * Change columns/rows. 
+	 */
+	public void setTranspose(boolean transpose) {
+		this.transpose = transpose;
 	}
 
 	public boolean isKeepDataFile() {
 		return keepDataFile;
 	}
 
+	/**
+	 * If set, the (binary) result file produced by the parent class
+	 * {@link ResultSaver} is not deleted after successfully creating an Excel
+	 * file from it (default: false, i.e., the file is deleted).
+	 */
 	public void setKeepDataFile(boolean keepDataFile) {
 		this.keepDataFile = keepDataFile;
+	}
+
+	public int getMaxParamValues() {
+		return maxParamValues;
+	}
+
+	/**
+	 * Sets the maximum number of parameters values shown on sheet
+	 * "sub-exp. overview". Set this to 0 for no limit (default is: 20).
+	 */
+	public void setMaxParamValues(int maxParamValues) {
+		this.maxParamValues = maxParamValues;
+	}
+
+	public int getMaxStringLength() {
+		return maxStringLength;
+	}
+
+	/**
+	 * Sets the maximum length of a String (to save space and increase
+	 * readability). Set this to 0 for no limit (default is: 500).
+	 */
+	public void setMaxStringLength(int maxStringLength) {
+		if (maxStringLength < 0)
+			throw new IllegalArgumentException(
+					"maxStringLength mustn't be negative. " + maxStringLength);
+		this.maxStringLength = maxStringLength;
 	}
 
 }
