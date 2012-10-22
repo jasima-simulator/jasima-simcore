@@ -627,6 +627,9 @@ public class ExcelSaver extends ResultSaver {
 	 * "sub-exp. overview". Set this to 0 for no limit (default is: 20).
 	 */
 	public void setMaxParamValues(int maxParamValues) {
+		if (maxParamValues < 0)
+			throw new IllegalArgumentException(
+					"maxParamValues mustn't be negative. " + maxParamValues);
 		this.maxParamValues = maxParamValues;
 	}
 
