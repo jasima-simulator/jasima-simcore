@@ -27,7 +27,7 @@ import java.io.Serializable;
  * using an array-based heap.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-30
- * @version $Id$
+ * @version "$Id$"
  */
 public final class EventHeap implements EventQueue, Serializable {
 	private static final long serialVersionUID = -7578258752027946114L;
@@ -76,11 +76,11 @@ public final class EventHeap implements EventQueue, Serializable {
 	 */
 	@Override
 	public void insert(Event x) {
-		final Event[] nodes = this.nodes;
-
 		if (count >= nodes.length) {
 			setCapacity(3 * nodes.length / 2 + 1);
 		}
+
+		final Event[] nodes = this.nodes;
 
 		if (invalidRoot) {
 			// move new element to root
