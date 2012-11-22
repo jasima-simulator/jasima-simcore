@@ -65,10 +65,6 @@ public abstract class JobShopExperiment extends Experiment {
 
 	// fields used during experiment execution
 	public JobShop shop;
-	public Job lastJobReleased;
-	public PrioRuleTarget lastJobStarted;
-	public Job lastJobFinished;
-	public PrioRuleTarget lastJobCompletedOp;
 
 	@Override
 	public void init() {
