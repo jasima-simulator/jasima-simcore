@@ -39,7 +39,8 @@ import java.util.Map;
  * a binary file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: ResultSaver.java 38 2012-09-11 12:27:38Z THildebrandt@gmail.com$
+ * @version $Id: ResultSaver.java 38 2012-09-11 12:27:38Z
+ *          THildebrandt@gmail.com$
  */
 public class ResultSaver extends ExperimentListenerBase {
 
@@ -102,8 +103,7 @@ public class ResultSaver extends ExperimentListenerBase {
 		if (baseName == null) {
 			baseName = "runResults_"
 					+ (e.getName() != null ? e.getName() + "_" : "")
-					+ String.format(Locale.ENGLISH,
-							"%1$tF_%1$tH%1$tM%1$tS",
+					+ String.format(Locale.ENGLISH, "%1$tF_%1$tH%1$tM%1$tS",
 							System.currentTimeMillis());
 		}
 
@@ -144,7 +144,8 @@ public class ResultSaver extends ExperimentListenerBase {
 	@Override
 	protected void multiExperimentCompletedTask(AbstractMultiExperiment me,
 			int numTasksExecuted, Experiment e, Map<String, Object> runRes) {
-		saveExperiment(e, runRes);
+		if (isSaveSubExperiments())
+			saveExperiment(e, runRes);
 	}
 
 	@Override

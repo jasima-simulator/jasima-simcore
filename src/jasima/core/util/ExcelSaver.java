@@ -100,7 +100,8 @@ public class ExcelSaver extends ResultSaver {
 						+ "', file already exists.");
 			} else {
 				try {
-					convertFile(in, out);
+					ExcelSaver es = new ExcelSaver();
+					es.convertFile(in, out);
 					System.out.println("  done.");
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -109,15 +110,13 @@ public class ExcelSaver extends ResultSaver {
 		}
 	}
 
-	public static void convertFile(File in, File out) throws IOException {
+	public void convertFile(File in, File out) throws IOException {
 		ObjectInputStream is = new ObjectInputStream(new BufferedInputStream(
 				new FileInputStream(in)));
 		OutputStream os = null;
 		try {
-			ExcelSaver es = new ExcelSaver();
-
 			// recover column names by reading file once
-			es.readColumns(is);
+			readColumns(is);
 			is.close();
 			is = null;
 
@@ -125,7 +124,7 @@ public class ExcelSaver extends ResultSaver {
 			is = new ObjectInputStream(new BufferedInputStream(
 					new FileInputStream(in)));
 			os = new BufferedOutputStream(new FileOutputStream(out));
-			es.convertToExcelFile(is, os);
+			convertToExcelFile(is, os);
 		} finally {
 			try {
 				if (is != null)
