@@ -27,7 +27,7 @@ import org.apache.commons.math3.distribution.RealDistribution;
  * determined by an arbitrary {@link RealDistribution}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class DblDistribution extends DblStream {
 
@@ -59,10 +59,13 @@ public class DblDistribution extends DblStream {
 		setName(name);
 	}
 
-	public RealDistribution distribution() {
+	public RealDistribution getDistribution() {
 		return distribution;
 	}
 
+	/**
+	 * Sets the continuous distribution to use.
+	 */
 	public void setDistribution(RealDistribution distribution) {
 		this.distribution = distribution;
 	}
