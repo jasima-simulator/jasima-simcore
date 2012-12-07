@@ -43,7 +43,20 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	public static final String NUM_TASKS_EXECUTED = "numTasks";
 
-	public static final ExperimentEvent BASE_EXPERIMENT_COMPLETED = new ExperimentEvent();
+	/** Complex event object triggered upon sub-experiment completion.
+	 */
+	public static class BaseExperimentCompleted extends ExperimentEvent {
+		
+		public BaseExperimentCompleted(Experiment experimentRun,
+				Map<String, Object> results) {
+			super();
+			this.experimentRun = experimentRun;
+			this.results = results;
+		}
+		
+		public final Experiment experimentRun;
+		public final Map<String, Object> results; 
+	}
 
 	// parameters
 
@@ -60,10 +73,6 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	private Random seedStream;
 	protected List<Experiment> experiments;
 	private int numTasksExecuted;
-
-	// fields used during event processing
-	public Experiment expRun;
-	public Map<String, Object> runResults;
 
 	@Override
 	public void init() {
@@ -149,13 +158,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		numTasksExecuted++;
 		storeRunResults(e, res);
 		if (numListener() > 0) {
-			assert expRun == null;
-			assert runResults == null;
-			expRun = e;
-			runResults = res;
-			fire(BASE_EXPERIMENT_COMPLETED);
-			runResults = null;
-			expRun = null;
+			fire(new BaseExperimentCompleted(e, res));
 		}
 	}
 

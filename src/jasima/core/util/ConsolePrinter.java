@@ -37,7 +37,8 @@ import java.util.Map;
  * Prints experiment messages to the console.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class ConsolePrinter extends ExperimentListenerBase {
 
@@ -121,13 +122,14 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	}
 
 	@Override
-	protected void multiExperimentCompletedTask(AbstractMultiExperiment me,
-			int numTasksExecuted, Experiment runExperiment,
-			Map<String, Object> runResults) {
-		if (isPrintStdEvents())
+	protected void multiExperimentCompletedTask(Experiment e,
+			Experiment runExperiment, Map<String, Object> runResults) {
+		if (isPrintStdEvents() && e instanceof AbstractMultiExperiment) {
+			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
 			me.print("finished experiment\t" + me.getNumTasksExecuted() + "/"
 					+ me.getNumTasks() + " in "
 					+ runResults.get(Experiment.RUNTIME) + "s");
+		}
 	}
 
 	// getter and setter below

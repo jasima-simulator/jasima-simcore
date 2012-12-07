@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.util.observer.NotifierListener;
@@ -30,7 +31,7 @@ import java.util.Map;
  * all events of {@link Experiment} to separate methods.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class ExperimentListenerBase implements
 		NotifierListener<Experiment, ExperimentEvent>, Cloneable, Serializable {
@@ -57,10 +58,9 @@ public class ExperimentListenerBase implements
 			finished(e, e.getResults());
 		} else if (event instanceof ExpPrintEvent) {
 			print(e, (ExpPrintEvent) event);
-		} else if (event == AbstractMultiExperiment.BASE_EXPERIMENT_COMPLETED) {
-			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
-			multiExperimentCompletedTask(me, me.getNumTasksExecuted(),
-					me.expRun, me.runResults);
+		} else if (event instanceof BaseExperimentCompleted) {
+			BaseExperimentCompleted evt = (BaseExperimentCompleted) event;
+			multiExperimentCompletedTask(e, evt.experimentRun, evt.results);
 		} else {
 			handleOther(e, event);
 		}
@@ -96,9 +96,8 @@ public class ExperimentListenerBase implements
 	protected void finished(Experiment e, Map<String, Object> results) {
 	}
 
-	protected void multiExperimentCompletedTask(AbstractMultiExperiment me,
-			int numTasksExecuted, Experiment runExperiment,
-			Map<String, Object> runResults) {
+	protected void multiExperimentCompletedTask(Experiment baseExp,
+			Experiment runExperiment, Map<String, Object> runResults) {
 	}
 
 	@Override

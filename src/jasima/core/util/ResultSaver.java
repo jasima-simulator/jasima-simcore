@@ -18,7 +18,6 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.experiment.AbstractMultiExperiment;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListenerBase;
 import jasima.core.experiment.FullFactorialExperiment;
@@ -39,8 +38,7 @@ import java.util.Map;
  * a binary file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: ResultSaver.java 38 2012-09-11 12:27:38Z
- *          THildebrandt@gmail.com$
+ * @version "$Id: ResultSaver.java 38 2012-09-11 12:27:38Z THildebrandt@gmail.com$"
  */
 public class ResultSaver extends ExperimentListenerBase {
 
@@ -142,8 +140,8 @@ public class ResultSaver extends ExperimentListenerBase {
 	}
 
 	@Override
-	protected void multiExperimentCompletedTask(AbstractMultiExperiment me,
-			int numTasksExecuted, Experiment e, Map<String, Object> runRes) {
+	protected void multiExperimentCompletedTask(Experiment me, Experiment e,
+			Map<String, Object> runRes) {
 		if (isSaveSubExperiments())
 			saveExperiment(e, runRes);
 	}
@@ -259,12 +257,12 @@ public class ResultSaver extends ExperimentListenerBase {
 		// convert everything not Serializable to a String
 		if (v == null) {
 			return "null";
-		} else if (v instanceof Serializable) {
-			return v;
 		} else if (v.getClass().isArray()) {
 			// an array which is not Serializable, i.e., components are not
 			// Serializable
 			return Util.arrayToString(v);
+		} else if (v instanceof Serializable) {
+			return v;
 		} else
 			return v.toString();
 	}
