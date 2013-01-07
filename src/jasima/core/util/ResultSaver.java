@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +39,8 @@ import java.util.Map;
  * a binary file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id: ResultSaver.java 38 2012-09-11 12:27:38Z THildebrandt@gmail.com$"
+ * @version 
+ *          "$Id: ResultSaver.java 38 2012-09-11 12:27:38Z THildebrandt@gmail.com$"
  */
 public class ResultSaver extends ExperimentListenerBase {
 
@@ -112,6 +114,8 @@ public class ResultSaver extends ExperimentListenerBase {
 			do {
 				tried++;
 				tmpFileName = baseName;
+				if (!tmpFileName.matches("[a-zA-Z0-9äöüÄÖÜß ]+"))
+					tmpFileName = URLEncoder.encode(tmpFileName, "utf8");
 				if (tried > 1)
 					tmpFileName += "_(" + tried + ")";
 				f = new File(tmpFileName + extension());
