@@ -35,8 +35,7 @@ import java.util.Random;
  * equally often (there are no guarantees about value combinations, however).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-06-08
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 
@@ -91,8 +90,9 @@ public class RandomFractionalExperiment extends FullFactorialExperiment {
 	}
 
 	private void sampleConfs(int numCfgsToCreate, int[] numValuesPerFactor) {
-		int[][] confs = new int[getNumFactors()][numCfgsToCreate];
-		for (int n = 0; n < getNumFactors(); n++) {
+		int numFactors = getFactorNames().size();
+		int[][] confs = new int[numFactors][numCfgsToCreate];
+		for (int n = 0; n < numFactors; n++) {
 			initConfDim(confs[n], numValuesPerFactor[n]);
 		}
 
@@ -106,7 +106,7 @@ public class RandomFractionalExperiment extends FullFactorialExperiment {
 
 			// create new configurations if possible
 			for (int n = confs[0].length - 1; n >= 0; n--) {
-				int[] conf = new int[getNumFactors()];
+				int[] conf = new int[numFactors];
 				for (int j = 0; j < conf.length; j++) {
 					conf[j] = confs[j][n];
 				}

@@ -20,9 +20,9 @@ package jasima.shopSim.util;
 
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
+import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.Route;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.StaticJobSource;
 import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.core.WorkStation;

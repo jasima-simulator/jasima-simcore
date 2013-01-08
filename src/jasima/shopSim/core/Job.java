@@ -27,7 +27,7 @@ package jasima.shopSim.core;
 public class Job extends PrioRuleTarget implements Cloneable {
 
 	private final JobShop shop;
-	
+
 	private double arriveTime; // arrival time at current machine
 	private WorkStation currMachine;
 	// when will job finish processing on its current machine (if started)

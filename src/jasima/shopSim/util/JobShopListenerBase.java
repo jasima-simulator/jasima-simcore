@@ -19,8 +19,8 @@
 package jasima.shopSim.util;
 
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimPrintEvent;
 import jasima.core.simulation.Simulation.SimEvent;
+import jasima.core.simulation.Simulation.SimPrintEvent;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;

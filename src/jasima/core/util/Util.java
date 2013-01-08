@@ -131,6 +131,10 @@ public class Util {
 					"Can't convert %s to bool.", o));
 		}
 
+		if (klass.isEnum()) {
+			return (E) Enum.valueOf(klass.asSubclass(Enum.class), o.toString());
+		}
+
 		throw new IllegalArgumentException(String.format(
 				"Can't convert from %s to %s.",
 				o.getClass().getCanonicalName(), klass.getCanonicalName()));
@@ -176,6 +180,47 @@ public class Util {
 		} catch (Exception e1) {
 			throw new RuntimeException("Can't set property '" + propPath
 					+ "' to value '" + value + "'.", e1);
+		}
+	}
+
+	/**
+	 * Determines the type of a property named with propPath using reflection.
+	 * 
+	 * This method interprets propPath the same way as
+	 * {@link #getProperty(Object, String)} does.
+	 */
+	public static Class<?> getPropertyType(Object o, String propPath) {
+		try {
+			String[] segments = propPath.split("\\.");
+			// call getters until we finally arrive where we can call the
+			// setter-method
+			for (int i = 0; i < segments.length; i++) {
+				BeanInfo bi = Introspector.getBeanInfo(o.getClass());
+				PropertyDescriptor[] pds = bi.getPropertyDescriptors();
+
+				PropertyDescriptor match = null;
+				for (PropertyDescriptor pd : pds) {
+					if (pd.getName().equals(segments[i])) {
+						match = pd;
+						break; // for
+					}
+				}
+				if (match == null)
+					throw new IllegalArgumentException("segment '"
+							+ segments[i] + "' not found of property path '"
+							+ propPath + "'.");
+				if (i == segments.length - 1) {
+					// return property type
+					return match.getPropertyType();
+				} else {
+					// call getter and continue
+					o = match.getReadMethod().invoke(o);
+				}
+			}
+			throw new AssertionError();
+		} catch (Exception e1) {
+			throw new RuntimeException("Can't determine type of property "
+					+ propPath, e1);
 		}
 	}
 

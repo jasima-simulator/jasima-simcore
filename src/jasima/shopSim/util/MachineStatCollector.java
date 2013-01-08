@@ -18,8 +18,8 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import jasima.core.statistics.TimeWeightedSummaryStat;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.statistics.TimeWeightedSummaryStat;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;

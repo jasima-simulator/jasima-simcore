@@ -34,8 +34,7 @@ import java.util.Random;
  * Parent class of an experiment which runs a number of child experiments.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 
@@ -43,19 +42,20 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	public static final String NUM_TASKS_EXECUTED = "numTasks";
 
-	/** Complex event object triggered upon sub-experiment completion.
+	/**
+	 * Complex event object triggered upon sub-experiment completion.
 	 */
 	public static class BaseExperimentCompleted extends ExperimentEvent {
-		
+
 		public BaseExperimentCompleted(Experiment experimentRun,
 				Map<String, Object> results) {
 			super();
 			this.experimentRun = experimentRun;
 			this.results = results;
 		}
-		
+
 		public final Experiment experimentRun;
-		public final Map<String, Object> results; 
+		public final Map<String, Object> results;
 	}
 
 	// parameters

@@ -102,9 +102,8 @@ public class BATCS extends ATCS {
 		public double getTotalOSlack(PrioRuleTarget b) {
 			double oSlack = 0;
 			for (int i = 0; i < b.numJobsInBatch(); i++) {
-				oSlack += Math.max(
-						b.job(i).getCurrentOperationDueDate()
-								- b.getShop().simTime() - b.currProcTime(), 0);
+				oSlack += Math.max(b.job(i).getCurrentOperationDueDate()
+						- b.getShop().simTime() - b.currProcTime(), 0);
 			}
 			return oSlack;
 		}

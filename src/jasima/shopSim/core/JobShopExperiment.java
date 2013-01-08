@@ -193,7 +193,7 @@ public abstract class JobShopExperiment extends Experiment {
 	@Override
 	protected void finish() {
 		super.finish();
-		
+
 		shop = null;
 	}
 

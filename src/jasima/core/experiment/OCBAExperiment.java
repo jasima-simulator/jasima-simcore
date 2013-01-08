@@ -6,7 +6,6 @@ import jasima.core.util.Util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -94,8 +93,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
  * implement (and contribute?) improved algorithms.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see MultipleReplicationExperiment
  * @see FullFactorialExperiment
@@ -172,7 +170,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	}
 
 	@Override
-	protected Experiment createExperimentForConf(HashMap<String, Object> conf) {
+	protected Experiment createExperimentForConf(Map<String, Object> conf) {
 		Experiment e = super.createExperimentForConf(conf);
 		// reset name
 		e.setName(getBaseExperiment().getName());

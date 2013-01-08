@@ -68,7 +68,8 @@ public class AdaptiveLAThreshold extends LookaheadThreshold {
 	}
 
 	public double maxProcTimeWaiting(PriorityQueue<?> q) {
-		// find maximum time in which a jobs currently waiting can be finished (incl. setups)
+		// find maximum time in which a jobs currently waiting can be finished
+		// (incl. setups)
 		double[][] setupMatrix = getOwner().getSetupMatrix();
 		int currSetupState = getOwner().currMachine.setupState;
 
@@ -77,9 +78,9 @@ public class AdaptiveLAThreshold extends LookaheadThreshold {
 			PrioRuleTarget j = q.get(i);
 			if (!j.isFuture()) {
 				Operation o = j.getCurrentOperation();
-				double timeToComplete = setupMatrix[currSetupState]
-				                                    [o.setupState] + o.procTime
-				                                    + setupMatrix[o.setupState][currSetupState];
+				double timeToComplete = setupMatrix[currSetupState][o.setupState]
+						+ o.procTime
+						+ setupMatrix[o.setupState][currSetupState];
 				if (timeToComplete > res) {
 					res = timeToComplete;
 				}

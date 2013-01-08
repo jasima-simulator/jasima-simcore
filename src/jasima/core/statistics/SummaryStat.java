@@ -26,8 +26,8 @@ import org.apache.commons.math3.distribution.TDistribution;
  * Class to collect the most important statistics without having to store all
  * values encountered. It can return mean, standard deviation, variance, min,
  * max etc. in O(1) time. Values are passed by calling the
- * {@link #value(double)} method. Values can be weighted, just call {@link
- * #value(double, double)} instead.
+ * {@link #value(double)} method. Values can be weighted, just call
+ * {@link #value(double, double)} instead.
  * <p />
  * In other simulation packages this is sometimes called "tally".
  * 

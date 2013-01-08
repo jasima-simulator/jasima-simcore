@@ -37,8 +37,7 @@ import java.util.Map;
  * Prints experiment messages to the console.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ConsolePrinter extends ExperimentListenerBase {
 

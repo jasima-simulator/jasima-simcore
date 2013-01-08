@@ -53,14 +53,16 @@ import jxl.write.WritableWorkbook;
  * file named like "runResults_2009-08-27_164340.xls". The timestamp in this
  * name is the time the method saveAsExcel() was first called.
  * <p />
+ * This class stores final results of an experiment as well as results of any
+ * sub-experiments.
+ * <p />
  * This class supports more than 256 columns per sheet (Excel-Limit) by
  * splitting data on multiple sheets.
  * <p />
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
- * @version 
- *          "$Id: ExcelSaver.java 36 2012-09-10 16:43:48Z THildebrandt@gmail.com$"
+ * @version "$Id$"
  */
 public class ExcelSaver extends ResultSaver {
 
@@ -176,8 +178,8 @@ public class ExcelSaver extends ResultSaver {
 		super.finished(e, results);
 
 		// convert data to Excel file
-		File tmp = new File(tmpFileName + ResultSaver.SER_EXTENSION);
-		File out = new File(tmpFileName + XLS_EXTENSION);
+		File tmp = new File(getActualResultBaseName() + SER_EXTENSION);
+		File out = new File(getActualResultBaseName() + XLS_EXTENSION);
 
 		try {
 			convertFile(tmp, out);
@@ -190,8 +192,12 @@ public class ExcelSaver extends ResultSaver {
 	}
 
 	@Override
-	protected String extension() {
-		return XLS_EXTENSION;
+	public boolean checkBaseName(String base) {
+		if (!super.checkBaseName(base))
+			return false;
+		if (new File(base + XLS_EXTENSION).exists())
+			return false;
+		return true;
 	}
 
 	protected void convertToExcelFile(ObjectInputStream is, OutputStream os) {
@@ -598,7 +604,7 @@ public class ExcelSaver extends ResultSaver {
 	}
 
 	/**
-	 * Change columns/rows. 
+	 * Change columns/rows.
 	 */
 	public void setTranspose(boolean transpose) {
 		this.transpose = transpose;

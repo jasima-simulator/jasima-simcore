@@ -18,9 +18,6 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
-import jasima.core.util.Util;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,149 +31,18 @@ import java.util.Map;
  * values on a base experiment.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
-public class FullFactorialExperiment extends AbstractMultiExperiment {
+public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
-	private static final long serialVersionUID = -7045310595384248793L;
-
-	/**
-	 * Allows finer control of the way a base experiment is configured than the
-	 * usual mechanism using JavaBean properties. If an object implementing
-	 * ComplexFactorSetter is passed as a value when calling
-	 * {@link FullFactorialExperiment#addFactor(String, Object)
-	 * addFactor(String, Object)} then instead of setting a bean property the
-	 * method {@link #configureExperiment(Experiment)} is called.
-	 * 
-	 * @see FullFactorialExperiment#addFactor(String, Object)
-	 */
-	public interface ComplexFactorSetter extends Serializable {
-		/**
-		 * Configures an experiment.
-		 * 
-		 * @param e
-		 *            The experiment to configure.
-		 */
-		void configureExperiment(final Experiment e);
-	}
-
-	/**
-	 * An (optional) way to veto certain configurations, because some
-	 * combinations of factors and their values might not make sense.
-	 * 
-	 * @see FullFactorialExperiment#setConfigurationValidator(ConfigurationValidator)
-	 */
-	public interface ConfigurationValidator extends Serializable {
-		boolean isValid(Map<String, Object> configuration);
-	}
-
-	// parameters
+	private static final long serialVersionUID = 1612150171949724274L;
 
 	private ArrayList<String> factorNames;
 	private Map<String, List<Object>> factors;
-	private Experiment baseExperiment;
-	private ConfigurationValidator configurationValidator = null;
-
-	// fields used during run
-
-	protected int numConfs = 0;
 
 	public FullFactorialExperiment() {
 		super();
 		factors = new LinkedHashMap<String, List<Object>>();
-		factorNames = new ArrayList<String>();
-	}
-
-	@Override
-	public void init() {
-		numConfs = 0;
-		super.init();
-	}
-
-	@Override
-	protected void createExperiments() {
-		print("building configurations ...");
-
-		int numFactors = getFactorNames().size();
-		int[] numValuesPerFactor = new int[numFactors];
-		ArrayList<String> factorNames = new ArrayList<String>(getFactorNames());
-
-		// calculate totals
-		int i = 0;
-		for (String name : factorNames) {
-			int n = getFactorValues(name).size();
-			numValuesPerFactor[i++] = n;
-		}
-
-		// create and add experiments
-		int[] is = new int[numFactors];
-		do {
-			addExperimentForConf(is);
-		} while (createNextCombination(is, numValuesPerFactor));
-
-		print("executing experiments ...");
-	}
-
-	private static boolean createNextCombination(int[] is,
-			int[] numValuesPerFactor) {
-		assert is.length == numValuesPerFactor.length;
-		for (int i = is.length - 1; i >= 0; i--) {
-			if (++is[i] >= numValuesPerFactor[i]) {
-				is[i] = 0;
-			} else
-				return true;
-		}
-
-		return false;
-	}
-
-	protected void addExperimentForConf(int[] conf) {
-		assert conf.length == factorNames.size();
-
-		HashMap<String, Object> c = new HashMap<String, Object>();
-
-		for (int f = 0; f < conf.length; f++) {
-			String name = factorNames.get(f);
-			Object value = factors.get(name).get(conf[f]);
-
-			c.put(name, value);
-		}
-
-		if (getConfigurationValidator() == null
-				|| getConfigurationValidator().isValid(c)) {
-			numConfs++;
-			experiments.add(createExperimentForConf(c));
-		}
-	}
-
-	protected Experiment createExperimentForConf(HashMap<String, Object> conf) {
-		Experiment e = getBaseExperiment().silentClone();
-		configureRunExperiment(e);
-
-		for (String name : conf.keySet()) {
-			Object value = conf.get(name);
-
-			if (value != null && value instanceof ComplexFactorSetter) {
-				((ComplexFactorSetter) value).configureExperiment(e);
-			} else
-				Util.setProperty(e, name, Util.cloneIfPossible(value));
-		}
-
-		return e;
-	}
-
-	@Override
-	protected final String prefix() {
-		return "conf";
-	}
-
-	/**
-	 * Returns the number of experiment configurations to be executed.
-	 */
-	@Override
-	public int getNumExperiments() {
-		return numConfs;
 	}
 
 	/**
@@ -184,7 +50,6 @@ public class FullFactorialExperiment extends AbstractMultiExperiment {
 	 */
 	public void clearFactors() {
 		factors.clear();
-		factorNames.clear();
 	}
 
 	/**
@@ -203,7 +68,6 @@ public class FullFactorialExperiment extends AbstractMultiExperiment {
 		if (values == null) {
 			values = new ArrayList<Object>();
 			factors.put(name, values);
-			factorNames.add(name);
 		}
 
 		if (values.contains(value))
@@ -258,6 +122,10 @@ public class FullFactorialExperiment extends AbstractMultiExperiment {
 		}
 	}
 
+	public Collection<String> getFactorNames() {
+		return factors.keySet();
+	}
+
 	/**
 	 * Convenience method to add all elements in {@code values} as a possible
 	 * value for a factor/property {@code factorName}. This method is equivalent
@@ -273,20 +141,6 @@ public class FullFactorialExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
-	 * Return the number of factors.
-	 */
-	public int getNumFactors() {
-		return factors.size();
-	}
-
-	/**
-	 * Returns a list of all factors.
-	 */
-	public List<String> getFactorNames() {
-		return Collections.unmodifiableList(factorNames);
-	}
-
-	/**
 	 * Returns a list with all values of a certain factor.
 	 */
 	public List<?> getFactorValues(String name) {
@@ -294,36 +148,65 @@ public class FullFactorialExperiment extends AbstractMultiExperiment {
 		return res == null ? null : Collections.unmodifiableList(res);
 	}
 
-	public Experiment getBaseExperiment() {
-		return baseExperiment;
-	}
-
-	/**
-	 * Sets the base experiment that is executed multiple times.
-	 */
-	public void setBaseExperiment(Experiment baseExperiment) {
-		this.baseExperiment = baseExperiment;
-	}
-
-	public ConfigurationValidator getConfigurationValidator() {
-		return configurationValidator;
-	}
-
-	public void setConfigurationValidator(
-			ConfigurationValidator configurationValidator) {
-		this.configurationValidator = configurationValidator;
-	}
-
 	@Override
 	public FullFactorialExperiment clone() throws CloneNotSupportedException {
 		FullFactorialExperiment e = (FullFactorialExperiment) super.clone();
 
-		if (baseExperiment != null)
-			e.baseExperiment = baseExperiment.clone();
-
 		e.factors = new LinkedHashMap<String, List<Object>>(factors);
 
 		return e;
+	}
+
+	@Override
+	protected void createExperiments() {
+		print("building configurations ...");
+
+		int numFactors = getFactorNames().size();
+		int[] numValuesPerFactor = new int[numFactors];
+		factorNames = new ArrayList<String>(getFactorNames());
+
+		// calculate totals
+		int i = 0;
+		for (String name : factorNames) {
+			int n = getFactorValues(name).size();
+			numValuesPerFactor[i++] = n;
+		}
+
+		// create and add experiments
+		int[] is = new int[numFactors];
+		do {
+			addExperimentForConf(is);
+		} while (createNextCombination(is, numValuesPerFactor));
+
+		print("executing experiments ...");
+	}
+
+	private static boolean createNextCombination(int[] is,
+			int[] numValuesPerFactor) {
+		assert is.length == numValuesPerFactor.length;
+		for (int i = is.length - 1; i >= 0; i--) {
+			if (++is[i] >= numValuesPerFactor[i]) {
+				is[i] = 0;
+			} else
+				return true;
+		}
+
+		return false;
+	}
+
+	protected void addExperimentForConf(int[] conf) {
+		assert conf.length == factorNames.size();
+
+		HashMap<String, Object> c = new HashMap<String, Object>();
+
+		for (int f = 0; f < conf.length; f++) {
+			String name = factorNames.get(f);
+			Object value = factors.get(name).get(conf[f]);
+
+			c.put(name, value);
+		}
+
+		handleConfig(c);
 	}
 
 }

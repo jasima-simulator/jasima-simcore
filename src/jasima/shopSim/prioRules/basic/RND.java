@@ -50,8 +50,8 @@ public class RND extends PR {
 		super.beforeCalc(q);
 
 		if (rnd == null) {
-			rnd = getOwner().shop.getRndStreamFactory().createInstance(getOwner()
-					.toString() + "." + RND.class.getName());
+			rnd = getOwner().shop.getRndStreamFactory().createInstance(
+					getOwner().toString() + "." + RND.class.getName());
 
 			// modify seed
 			long seed = rnd.nextLong();

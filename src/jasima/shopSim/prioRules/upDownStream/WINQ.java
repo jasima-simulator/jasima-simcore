@@ -42,6 +42,7 @@ public class WINQ extends PR {
 	 * Computes the work in next queue of the jobs currently waiting in front of
 	 * the next machine, i.e. <em>without</em> future jobs.
 	 * <p>
+	 * 
 	 * @see XWINQ#xwinq(PrioRuleTarget)
 	 */
 	public static double winq(PrioRuleTarget job) {

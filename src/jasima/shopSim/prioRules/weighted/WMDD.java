@@ -33,8 +33,8 @@ public class WMDD extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		return -Math.max(job.remainingProcTime(),
-				job.getDueDate() - job.getShop().simTime())
+		return -Math.max(job.remainingProcTime(), job.getDueDate()
+				- job.getShop().simTime())
 				/ job.getWeight();
 	}
 

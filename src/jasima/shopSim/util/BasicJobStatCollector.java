@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Collects some basic job statistics like flowtime, tardiness, ...
- *  
+ * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version $Id$
  */
@@ -65,7 +65,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 	@Override
 	protected void done(Simulation sim) {
 		JobShop shop = (JobShop) sim;
-		
+
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
 		for (WorkStation m : shop.machines) {
 			for (int i = 0, n = m.queue.size(); i < n; i++) {

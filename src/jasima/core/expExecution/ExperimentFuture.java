@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 public interface ExperimentFuture {
 
 	public Experiment getExperiment();
-	
+
 	public boolean cancel(boolean mayInterruptIfRunning);
 
 	public boolean isCancelled();

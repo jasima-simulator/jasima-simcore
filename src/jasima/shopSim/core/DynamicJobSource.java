@@ -41,7 +41,8 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
  * machine being revisited.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class DynamicJobSource extends JobSource {
 

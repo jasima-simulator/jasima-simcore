@@ -18,10 +18,10 @@
  *******************************************************************************/
 package jasima.core.simulation.arrivalprocess;
 
-import java.util.Random;
-
 import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
+
+import java.util.Random;
 
 /**
  * This class can be used to create a stationary arrival process which can be
@@ -31,7 +31,8 @@ import jasima.core.random.continuous.DblStream;
  * @see DblStream
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ArrivalsStationary extends ArrivalProcess {
 

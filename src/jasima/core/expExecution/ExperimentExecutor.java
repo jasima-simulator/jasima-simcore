@@ -33,14 +33,14 @@ import java.util.Collection;
  * the number of available processors is used.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * @see ThreadPoolExecutor
  */
 public abstract class ExperimentExecutor {
 
 	public static final String EXECUTOR_FACTORY = "jasima.core.ExperimentExecutor";
-	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class.getName();
+	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class
+			.getName();
 
 	private static ExperimentExecutor execFactoryInst = null;
 

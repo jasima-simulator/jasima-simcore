@@ -86,8 +86,8 @@ public class ATCS extends PR {
 		if (arrivesTooLate(job))
 			return PriorityQueue.MIN_PRIO;
 
-		double slack = job.getCurrentOperationDueDate() - job.getShop().simTime()
-				- job.currProcTime();
+		double slack = job.getCurrentOperationDueDate()
+				- job.getShop().simTime() - job.currProcTime();
 		double prod1 = -Math.max(slack, 0.0d) / slackNorm;
 		double prod2 = setupNorm != 0.0 ? -setupMatrix[getOwner().currMachine.setupState][job
 				.getCurrentOperation().setupState] / setupNorm

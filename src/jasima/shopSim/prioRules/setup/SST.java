@@ -23,7 +23,7 @@ import jasima.shopSim.core.PrioRuleTarget;
 
 /**
  * This class implements the Shortest Setup Time rule.
- *
+ * 
  * @version $Id$
  */
 public class SST extends PR {

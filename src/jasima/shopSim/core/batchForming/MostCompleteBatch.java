@@ -55,7 +55,8 @@ public class MostCompleteBatch extends BatchForming {
 	}
 
 	public double maxProcTimeWaiting(PriorityQueue<?> q) {
-		// find maximum time in which a jobs currently waiting can be finished (incl. setups)
+		// find maximum time in which a jobs currently waiting can be finished
+		// (incl. setups)
 		double[][] setupMatrix = getOwner().getSetupMatrix();
 		int currSetupState = getOwner().currMachine.setupState;
 
@@ -64,9 +65,9 @@ public class MostCompleteBatch extends BatchForming {
 			PrioRuleTarget j = q.get(i);
 			if (!j.isFuture()) {
 				Operation o = j.getCurrentOperation();
-				double timeToComplete = setupMatrix[currSetupState]
-				                                    [o.setupState] + o.procTime
-				                                    + setupMatrix[o.setupState][currSetupState];
+				double timeToComplete = setupMatrix[currSetupState][o.setupState]
+						+ o.procTime
+						+ setupMatrix[o.setupState][currSetupState];
 				if (timeToComplete > res) {
 					res = timeToComplete;
 				}
@@ -124,7 +125,8 @@ public class MostCompleteBatch extends BatchForming {
 			int mbs = j.getCurrentOperation().maxBatchSize;
 			int arriveInTimeJobs = 0;
 			for (int i = 0; i < maxFam.size(); i++) {
-				if (maxFam.get(i).getArriveTime() - maxFam.get(i).getShop().simTime() <= maxWait)
+				if (maxFam.get(i).getArriveTime()
+						- maxFam.get(i).getShop().simTime() <= maxWait)
 					arriveInTimeJobs++;
 			}
 			if (arriveInTimeJobs > mbs)
@@ -134,7 +136,8 @@ public class MostCompleteBatch extends BatchForming {
 			if (j.getArriveTime() - j.getShop().simTime() <= maxWait)
 				b.addToBatch(j);
 			for (int n = 1; n < maxFam.size(); n++) {
-				if (maxFam.get(n).getArriveTime() - maxFam.get(n).getShop().simTime() <= maxWait)
+				if (maxFam.get(n).getArriveTime()
+						- maxFam.get(n).getShop().simTime() <= maxWait)
 					b.addToBatch(maxFam.get(n));
 			}
 
@@ -190,13 +193,16 @@ public class MostCompleteBatch extends BatchForming {
 				Batch b = new Batch(getOwner().shop);
 				// make batch as full as possible
 				int i = 0;
-				while (i < famJobs.size() && b.numJobsInBatch() < o.maxBatchSize) {
-					if (famJobs.get(i).getArriveTime() - famJobs.get(i).getShop().simTime() <= maxWait)
+				while (i < famJobs.size()
+						&& b.numJobsInBatch() < o.maxBatchSize) {
+					if (famJobs.get(i).getArriveTime()
+							- famJobs.get(i).getShop().simTime() <= maxWait)
 						b.addToBatch(famJobs.get(i));
 					i++;
 				}
 
-				if ((maxRBS * o.maxBatchSize) <= b.numJobsInBatch() && 0 < b.numJobsInBatch()) {
+				if ((maxRBS * o.maxBatchSize) <= b.numJobsInBatch()
+						&& 0 < b.numJobsInBatch()) {
 					if (maxRBS * o.maxBatchSize < b.numJobsInBatch()) {
 						possibleBatches.clear();
 						maxRBS = ((double) b.numJobsInBatch() / o.maxBatchSize);

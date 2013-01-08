@@ -37,8 +37,7 @@ import java.util.concurrent.ThreadFactory;
  * to complete, there is a thread pool for each nesting level of experiments.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ThreadPoolExecutor extends ExperimentExecutor {
 
@@ -55,13 +54,14 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	public ExperimentFuture runExperiment(final Experiment e) {
 		ExecutorService es = getExecutorInstance(e.isLeafExperiment(),
 				e.nestingLevel());
-		return new FutureWrapper(e, es.submit(new Callable<Map<String, Object>>() {
-			@Override
-			public Map<String, Object> call() throws Exception {
-				e.runExperiment();
-				return e.getResults();
-			}
-		}));
+		return new FutureWrapper(e,
+				es.submit(new Callable<Map<String, Object>>() {
+					@Override
+					public Map<String, Object> call() throws Exception {
+						e.runExperiment();
+						return e.getResults();
+					}
+				}));
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 
 	public void init() {
 	}
-	
+
 	public abstract double nextDbl();
 
 	@Override
@@ -54,7 +54,6 @@ public abstract class DblStream implements Serializable, Cloneable {
 		return (DblStream) super.clone();
 	}
 
-	
 	public Random getRndGen() {
 		return rndGen;
 	}

@@ -28,6 +28,7 @@ import java.io.Serializable;
  *            Type of the first element.
  * @param <B>
  *            Type of the second element.
+ * @author Torsten Hildebrandt
  * @version $Id$
  */
 public class Pair<A, B> implements Cloneable, Serializable {
@@ -45,6 +46,10 @@ public class Pair<A, B> implements Cloneable, Serializable {
 
 	public Pair(final Pair<A, B> p) {
 		this(p.a, p.b);
+	}
+
+	public static <A, B> Pair<A, B> makePair(A a, B b) {
+		return new Pair<A, B>(a, b);
 	}
 
 	@Override

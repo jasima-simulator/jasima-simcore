@@ -19,7 +19,6 @@
 package jasima.core.util;
 
 import jasima.core.experiment.Experiment;
-import jasima.core.experiment.ExperimentListenerBase;
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleReplicationExperiment;
 
@@ -29,9 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -39,10 +36,9 @@ import java.util.Map;
  * a binary file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id: ResultSaver.java 38 2012-09-11 12:27:38Z THildebrandt@gmail.com$"
+ * @version "$Id$"
  */
-public class ResultSaver extends ExperimentListenerBase {
+public class ResultSaver extends AbstractResultSaver {
 
 	public static final String SER_EXTENSION = ".jasResBin";
 
@@ -82,12 +78,10 @@ public class ResultSaver extends ExperimentListenerBase {
 
 	// parameters
 
-	private String resultFileName = null;
 	private boolean saveSubExperiments = true;
 
 	// fields used during run
 
-	protected String tmpFileName;
 	private ObjectOutputStream tmpDatOut;
 	private int unsavedResults;
 	private long nextSaveTime;
@@ -99,36 +93,7 @@ public class ResultSaver extends ExperimentListenerBase {
 		unsavedResults = 0;
 		nextSaveTime = 0;
 
-		String baseName = getResultFileName();
-		if (baseName == null) {
-			baseName = "runResults_"
-					+ (e.getName() != null ? e.getName() + "_" : "")
-					+ String.format(Locale.ENGLISH, "%1$tF_%1$tH%1$tM%1$tS",
-							System.currentTimeMillis());
-		}
-
-		// don't overwrite existing files, ensure unique final file name
-		File f;
-		int tried = 0;
-		try {
-			do {
-				tried++;
-				tmpFileName = baseName;
-				if (!tmpFileName.matches("[a-zA-Z0-9äöüÄÖÜß ]+"))
-					tmpFileName = URLEncoder.encode(tmpFileName, "utf8");
-				if (tried > 1)
-					tmpFileName += "_(" + tried + ")";
-				f = new File(tmpFileName + extension());
-			} while (!f.createNewFile());
-		} catch (IOException e1) {
-			throw new RuntimeException(e1);
-		}
-
-		// write to a file name with fixed ext. SER_EXTENSION (might be
-		// different to extension() see ExcelSaver)
-		f = new File(tmpFileName + SER_EXTENSION);
-		if (f.exists())
-			throw new RuntimeException("File '" + f + "' already exists!?");
+		String f = getActualResultBaseName() + SER_EXTENSION;
 
 		// create output stream
 		try {
@@ -139,8 +104,11 @@ public class ResultSaver extends ExperimentListenerBase {
 		}
 	}
 
-	protected String extension() {
-		return SER_EXTENSION;
+	@Override
+	public boolean checkBaseName(String base) {
+		if (new File(base + SER_EXTENSION).exists())
+			return false;
+		return true;
 	}
 
 	@Override
@@ -269,23 +237,6 @@ public class ResultSaver extends ExperimentListenerBase {
 			return v;
 		} else
 			return v.toString();
-	}
-
-	// getter /setter below
-
-	public String getResultFileName() {
-		return resultFileName;
-	}
-
-	/**
-	 * Sets the result file name. This name is appended with the default suffix
-	 * "{@code jasBinRes}". If no file name is set explicitly, this defaults to
-	 * something like "{@code runResults_<timeStamp>}".
-	 * 
-	 * @param resultFileName
-	 */
-	public void setResultFileName(String resultFileName) {
-		this.resultFileName = resultFileName;
 	}
 
 	public boolean isSaveSubExperiments() {

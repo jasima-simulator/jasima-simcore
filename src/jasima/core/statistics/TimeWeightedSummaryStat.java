@@ -19,7 +19,7 @@
 package jasima.core.statistics;
 
 /**
- * Summary stat which weights values according to the time.  
+ * Summary stat which weights values according to the time.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version $Id$

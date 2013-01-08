@@ -34,7 +34,7 @@ import java.util.ArrayList;
  * addConfIntervalMeasure(String) which result(s) of the base experiment to use.
  * <p />
  * 
- * The the case of dynamic runs the following procedure is followed:
+ * In case of dynamic runs the following procedure is followed:
  * <ol>
  * <li>getMinReplications() replications are performed
  * <li>no further runs are performed if the confidence interval is less than a
@@ -42,16 +42,17 @@ import java.util.ArrayList;
  * <ol>
  * <li>width of the confidence interval is determined by setErrorProb(double),
  * default is 0.05
- * <li>allowance value is computed by the runMeans * allowancePercentage()
+ * <li>allowance value is computed by the runMean * allowancePercentage()
  * (default 1%)
  * </ol>
- * <li>if there is another run (i.e. confidence interval too large), another
- * batch of getMinReplications() are performed, i.e. go back to step 1
+ * <li>if there is another run (i.e., confidence interval too large), another
+ * batch of getMinReplications() is performed, i.e., go back to step 1
  * </ol>
  * 
+ * @see OCBAExperiment
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: MultipleReplicationExperiment.java 33 2012-09-07 15:36:36Z
- *          THildebrandt@gmail.com $
+ * @version 
+ *          "$Id$"
  */
 public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
@@ -76,11 +77,6 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		this();
 		setBaseExperiment(e);
 		setMaxReplications(numReps);
-	}
-
-	@Override
-	public void init() {
-		super.init();
 	}
 
 	@Override

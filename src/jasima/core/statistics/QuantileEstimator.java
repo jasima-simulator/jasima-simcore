@@ -30,12 +30,12 @@ import java.util.Locale;
  * <p />
  * The method used is based on the following papers:
  * <ul>
- * <li> Raj Jain, Imrich Chlamtac: The P2 Algorithm for Dynamic Calculation of
- *      Quantiles and Histograms Without Storing Observations, ACM 28, 10 (1985)
- * <li> Kimmo Raatikainen: Simultaneous estimation of several percentiles,
- *      Simulations Councils (1987)
+ * <li>Raj Jain, Imrich Chlamtac: The P2 Algorithm for Dynamic Calculation of
+ * Quantiles and Histograms Without Storing Observations, ACM 28, 10 (1985)
+ * <li>Kimmo Raatikainen: Simultaneous estimation of several percentiles,
+ * Simulations Councils (1987)
  * </ul>
- *  
+ * 
  * @author Robin Kreis <r.kreis@uni-bremen.de>, 2012-09-07
  * @version $Id$
  */
