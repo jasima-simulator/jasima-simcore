@@ -38,7 +38,7 @@ import java.util.List;
  * properly.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id: IFTMinusUIT.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public class IFTMinusUIT extends PR {
 

@@ -36,7 +36,7 @@ import java.util.Map;
  * {@link #handleOther(WorkStation, WorkStationEvent)}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class WorkStationListenerBase implements
 		NotifierListener<WorkStation, WorkStationEvent>, Serializable,

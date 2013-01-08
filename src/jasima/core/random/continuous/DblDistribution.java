@@ -29,7 +29,8 @@ import org.apache.commons.math3.distribution.RealDistribution;
  * determined by an arbitrary {@link RealDistribution}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class DblDistribution extends DblStream {
 

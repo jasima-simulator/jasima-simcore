@@ -35,7 +35,7 @@ import java.util.Map;
  * utilization, average queue length, average setup time per operation).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class MachineStatCollector extends WorkStationListenerBase {
 

@@ -33,7 +33,7 @@ import jasima.shopSim.core.PR;
  * the non-future jobs.
  * 
  * @author Torsten Hildebrandt, 2010-02-16
- * @version $Id$
+ * @version "$Id$"
  */
 public class IgnoreFutureJobs extends FixedLAThreshold {
 

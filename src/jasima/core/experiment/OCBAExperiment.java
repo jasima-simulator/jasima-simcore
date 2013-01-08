@@ -113,7 +113,8 @@ import org.apache.commons.math3.distribution.NormalDistribution;
  * implement (and contribute?) improved algorithms.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * 
  * @see MultipleReplicationExperiment
  * @see FullFactorialExperiment

@@ -25,7 +25,7 @@ package jasima.shopSim.core;
  * {@link JobSpec}).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class StaticJobSource extends JobSource {
 

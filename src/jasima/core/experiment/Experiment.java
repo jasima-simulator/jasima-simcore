@@ -60,7 +60,7 @@ import java.util.Map;
  * additional events.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id: Experiment.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public abstract class Experiment implements Cloneable, Serializable,
 		Notifier<Experiment, ExperimentEvent> {

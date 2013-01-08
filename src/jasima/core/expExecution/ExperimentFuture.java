@@ -34,7 +34,8 @@ import java.util.concurrent.TimeoutException;
  * containing the exception message and the exception in text format.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * @see FutureWrapper
  */
 public interface ExperimentFuture {

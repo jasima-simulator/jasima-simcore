@@ -33,7 +33,8 @@ import java.util.Map;
  * all events of {@link Experiment} to separate methods.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ExperimentListenerBase implements
 		NotifierListener<Experiment, ExperimentEvent>, Cloneable, Serializable {

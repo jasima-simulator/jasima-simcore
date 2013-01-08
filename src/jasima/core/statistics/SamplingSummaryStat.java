@@ -43,7 +43,7 @@ import java.util.Random;
  * {@link Math#random()} is used.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-07-06
- * @version $Id$
+ * @version "$Id$"
  */
 public class SamplingSummaryStat extends SummaryStat {
 

@@ -40,7 +40,7 @@ import org.junit.rules.ErrorCollector;
  * results of an experiment can be validated with a single method call.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-08
- * @version $Id$
+ * @version "$Id$"
  */
 public class ExperimentTest {
 

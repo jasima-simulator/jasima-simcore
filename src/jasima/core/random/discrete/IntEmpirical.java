@@ -31,7 +31,7 @@ import java.util.Random;
  * , and can be arbitrary positive numbers as long as they sum up to 1.0.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class IntEmpirical extends IntStream {
 

@@ -36,7 +36,8 @@ import java.util.concurrent.TimeoutException;
  * Thin wrapper around a {@link Future}, implementing {@link ExperimentFuture}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class FutureWrapper implements ExperimentFuture {
 

@@ -34,7 +34,7 @@ import org.apache.commons.math3.distribution.TDistribution;
  * In other simulation packages this is sometimes called "tally".
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id: SummaryStat.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public class SummaryStat implements Serializable {
 

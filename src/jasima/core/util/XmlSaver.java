@@ -30,7 +30,8 @@ import java.util.Map;
  * 
  * @author Robin Kreis
  * @author Torsten Hildebrandt, 2013-01-08
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class XmlSaver extends AbstractResultSaver {
 

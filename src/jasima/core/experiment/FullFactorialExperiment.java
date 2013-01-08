@@ -33,7 +33,8 @@ import java.util.Map;
  * values on a base experiment.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 

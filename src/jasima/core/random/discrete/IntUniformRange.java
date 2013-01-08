@@ -27,7 +27,7 @@ import java.util.Random;
  * both min and max).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class IntUniformRange extends IntStream {
 

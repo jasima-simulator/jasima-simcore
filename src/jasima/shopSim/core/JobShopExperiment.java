@@ -42,7 +42,7 @@ import java.util.Locale;
  * results.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version $Id$
+ * @version "$Id$"
  */
 public abstract class JobShopExperiment extends Experiment {
 

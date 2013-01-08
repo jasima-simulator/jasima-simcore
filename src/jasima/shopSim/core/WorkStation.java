@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link IndividualMachine}s sharing a common queue.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 

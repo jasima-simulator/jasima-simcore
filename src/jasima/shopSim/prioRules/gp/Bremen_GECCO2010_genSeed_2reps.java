@@ -26,7 +26,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class Bremen_GECCO2010_genSeed_2reps extends GPRuleBase {
 

@@ -173,7 +173,7 @@ import java.io.Serializable;
  * POSSIBILITY OF SUCH DAMAGE.
  * 
  * @version 16
- * @version $Id$
+ * @version "$Id$"
  */
 
 public strictfp class MersenneTwister extends java.util.Random implements

@@ -37,7 +37,8 @@ import java.util.Random;
  * equally often (there are no guarantees about value combinations, however).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-06-08
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 

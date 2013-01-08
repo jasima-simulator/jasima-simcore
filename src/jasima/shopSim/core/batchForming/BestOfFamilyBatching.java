@@ -39,7 +39,7 @@ import java.util.Map;
  * are used to form the batch.
  * 
  * @author Torsten Hildebrandt, 2010-10-25
- * @version $Id$
+ * @version "$Id$"
  */
 public class BestOfFamilyBatching extends BatchForming {
 

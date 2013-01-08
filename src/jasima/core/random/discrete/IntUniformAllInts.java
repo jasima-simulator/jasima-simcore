@@ -28,7 +28,7 @@ import java.util.Random;
  * {@link java.util.Random#nextInt()}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class IntUniformAllInts extends IntStream {
 

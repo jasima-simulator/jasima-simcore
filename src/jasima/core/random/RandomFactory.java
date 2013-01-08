@@ -45,7 +45,7 @@ import java.util.Random;
  * </ol>
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class RandomFactory implements Serializable {
 	private static final long serialVersionUID = 4828925858942593527L;

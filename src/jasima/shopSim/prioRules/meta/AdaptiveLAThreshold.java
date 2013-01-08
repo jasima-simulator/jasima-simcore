@@ -36,7 +36,7 @@ import jasima.shopSim.core.PriorityQueue;
  * This class does not take setup times into account.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class AdaptiveLAThreshold extends LookaheadThreshold {
 

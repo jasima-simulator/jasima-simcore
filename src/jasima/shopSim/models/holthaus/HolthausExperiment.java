@@ -42,7 +42,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * Holthaus and Rajendran (1999) for details.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class HolthausExperiment extends JobShopExperiment {
 

@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class WSC2010_GPRuleSize98 extends GPRuleBase {
 

@@ -64,7 +64,8 @@ import jxl.write.WritableWorkbook;
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ExcelSaver extends ResultSaver {
 

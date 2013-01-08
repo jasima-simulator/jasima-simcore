@@ -26,7 +26,7 @@ import java.util.Random;
  * Returns a uniformly distributed real number in the range [min, max).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class DblUniformRange extends DblStream {
 

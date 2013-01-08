@@ -30,7 +30,8 @@ import java.util.Date;
  * Base class for result saver.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class AbstractResultSaver extends ExperimentListenerBase {
 

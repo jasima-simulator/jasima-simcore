@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Collects flowtimes seperately for each product.
  * 
- * @version $Id$
+ * @version "$Id$"
  */
 public class FlowtimePerProductCollector extends JobShopListenerBase {
 

@@ -34,7 +34,8 @@ import java.util.Map;
  * @see FullFactorialExperiment
  * @author Robin Kreis <r.kreis@uni-bremen.de>
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2013-01-08
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class MultipleConfigurationExperiment extends
 		AbstractMultiConfExperiment {

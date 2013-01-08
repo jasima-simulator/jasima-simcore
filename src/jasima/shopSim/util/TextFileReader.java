@@ -39,7 +39,7 @@ import java.util.HashMap;
  * structure see the examples in the directory "testInstances".
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class TextFileReader {
 

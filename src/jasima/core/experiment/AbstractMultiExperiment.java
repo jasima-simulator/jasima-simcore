@@ -36,7 +36,8 @@ import java.util.Random;
  * Parent class of an experiment which runs a number of child experiments.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 

@@ -28,7 +28,7 @@ import java.util.Random;
  * Use {@link RandomFactory} instead.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 @Deprecated
 public class RandomFactoryOld extends RandomFactory {

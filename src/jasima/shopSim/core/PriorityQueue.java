@@ -36,7 +36,7 @@ import java.util.Comparator;
  * 
  * @param <T>
  *            The element type contained in this PriorityQueue.
- * @version $Id$
+ * @version "$Id$"
  */
 public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 

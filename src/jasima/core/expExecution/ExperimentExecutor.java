@@ -35,7 +35,8 @@ import java.util.Collection;
  * the number of available processors is used.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * @see ThreadPoolExecutor
  */
 public abstract class ExperimentExecutor {

@@ -46,7 +46,8 @@ import java.util.Map.Entry;
  * 
  * @author Robin Kreis <r.kreis@uni-bremen.de>
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class AbstractMultiConfExperiment extends
 		AbstractMultiExperiment {

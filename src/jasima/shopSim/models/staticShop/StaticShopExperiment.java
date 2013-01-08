@@ -43,7 +43,8 @@ import java.util.WeakHashMap;
  * Experiment which loads a scheduling instance from a file or URL/URI. Shop and
  * job data has to be described in this file.
  * 
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class StaticShopExperiment extends JobShopExperiment {
 

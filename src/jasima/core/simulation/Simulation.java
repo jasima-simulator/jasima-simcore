@@ -40,7 +40,8 @@ import java.util.Map;
  * perform clean-up, collecting simulation results, etc.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-02-08
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class Simulation implements Notifier<Simulation, SimEvent> {
 

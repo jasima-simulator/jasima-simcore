@@ -34,7 +34,7 @@ import java.util.Map;
  * Collects some basic job statistics like flowtime, tardiness, ...
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class BasicJobStatCollector extends JobShopListenerBase {
 

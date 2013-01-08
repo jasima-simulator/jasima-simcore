@@ -38,7 +38,7 @@ import java.io.PrintWriter;
  * debugging purposes.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-24
- * @version $Id$
+ * @version "$Id$"
  */
 public class TraceFileProducer extends JobShopListenerBase {
 
