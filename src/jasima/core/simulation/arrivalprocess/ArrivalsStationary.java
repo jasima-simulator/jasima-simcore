@@ -31,8 +31,7 @@ import jasima.core.random.continuous.DblStream;
  * @see DblStream
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
- * @version $Id: ArrivalsStationary.java 33 2012-09-07 15:36:36Z
- *          THildebrandt@gmail.com $
+ * @version "$Id$"
  */
 public class ArrivalsStationary extends ArrivalProcess {
 

@@ -38,7 +38,7 @@ import java.util.Map;
  * perform clean-up, collecting simulation results, etc.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-02-08
- * @version $Id: Simulation.java 33 2012-09-07 15:36:36Z THildebrandt@gmail.com$
+ * @version "$Id: Simulation.java 33 2012-09-07 15:36:36Z THildebrandt@gmail.com$"
  */
 public class Simulation implements Notifier<Simulation, SimEvent> {
 

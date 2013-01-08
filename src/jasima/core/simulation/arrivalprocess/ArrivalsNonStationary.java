@@ -34,7 +34,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  * create non-stationary (Poisson) processes.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
- * @version $Id$
+ * @version "$Id$"
  */
 public class ArrivalsNonStationary extends ArrivalProcess {
 

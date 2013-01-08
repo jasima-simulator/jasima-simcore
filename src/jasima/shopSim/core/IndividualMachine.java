@@ -26,7 +26,7 @@ import jasima.core.simulation.Event;
  * {@link WorkStation}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class IndividualMachine {
 

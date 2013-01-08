@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * single operation.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class Batch extends PrioRuleTarget {
 
