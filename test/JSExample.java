@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011, 2012 Torsten Hildebrandt and BIBA - Bremer Institut für Produktion und Logistik GmbH
+ * Copyright (c) 2010-2013 Torsten Hildebrandt and jasima contributors
  *
  * This file is part of jasima, v1.0.
  *
@@ -15,14 +15,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $Id$
  *******************************************************************************/
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
+import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PrioRuleTarget;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.util.MachineStatCollector;
 import jasima.shopSim.util.WorkStationListenerBase;

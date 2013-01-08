@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011, 2012 Torsten Hildebrandt and BIBA - Bremer Institut für Produktion und Logistik GmbH
+ * Copyright (c) 2010-2013 Torsten Hildebrandt and jasima contributors
  *
  * This file is part of jasima, v1.0.
  *
@@ -15,6 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $Id$
  *******************************************************************************/
 package jasima.shopSim.models.staticShop;
 
