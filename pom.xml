@@ -197,9 +197,8 @@
 		<system>google code</system>
 	</issueManagement>
 	<scm>
-		<url>http://jasima.googlecode.com/svn/trunk/jasima</url>
-		<developerConnection>scm:svn:https://jasima.googlecode.com/svn/trunk/jasima</developerConnection>
 		<connection>scm:svn:http://jasima.googlecode.com/svn/trunk/jasima</connection>
-		<tag>HEAD</tag>
+		<developerConnection>scm:svn:https://jasima.googlecode.com/svn/trunk/jasima</developerConnection>
+		<url>http://jasima.googlecode.com/svn/trunk/jasima</url>
 	</scm>
 </project>
