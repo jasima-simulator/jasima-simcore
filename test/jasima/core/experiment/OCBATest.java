@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,7 +45,7 @@ import org.junit.Test;
  */
 public class OCBATest {
 
-	@Test
+	@Test @Ignore
 	public void prioRuleSelectionShouldGiveExpectedResults() {
 		// create and configure base experiment
 		HolthausExperiment he = new HolthausExperiment();
