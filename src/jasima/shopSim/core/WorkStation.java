@@ -189,6 +189,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 			imd.setupState = imd.initialSetup;
 
 			imd.procFinished = imd.relDate;
+			imd.procStarted = 0.0;
 			imd.state = MachineState.DOWN;
 			numBusy++;
 
@@ -217,6 +218,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 		currMachine.state = MachineState.IDLE;
 		currMachine.procFinished = -1.0d;
+		currMachine.procStarted = -1.0d;
 		freeMachines.addFirst(currMachine);
 
 		numBusy--;
@@ -254,6 +256,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 			double whenReactivated = shop.simTime()
 					+ currMachine.timeToRepair.nextDbl();
 
+			currMachine.procStarted = shop.simTime();
 			currMachine.procFinished = whenReactivated;
 			currMachine.state = MachineState.DOWN;
 			currMachine.curJob = null;
@@ -409,14 +412,17 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 			currMachine.setupState = newSetupState;
 		}
 
-		currMachine.onDepart.setTime(simTime + op.procTime + setupTime);
+		double tCompl = simTime + op.procTime + setupTime;
+		currMachine.onDepart.setTime(tCompl);
+		currMachine.procFinished = tCompl;
+		currMachine.procStarted = simTime;
 		currMachine.curJob = batch;
-		currMachine.procFinished = currMachine.onDepart.getTime();
 		shop.schedule(currMachine.onDepart);
 
 		for (int i = 0; i < batch.numJobsInBatch(); i++) {
 			Job j = batch.job(i);
 			j.setFinishTime(currMachine.procFinished);
+			j.setStartTime(simTime);
 			j.notifyNextMachine();
 		}
 		currMachine.state = MachineState.WORKING;
@@ -431,6 +437,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 		currMachine.state = MachineState.IDLE;
 		currMachine.procFinished = -1.0d;
+		currMachine.procStarted = -1.0d;
 		freeMachines.addFirst(currMachine);
 
 		numBusy--;

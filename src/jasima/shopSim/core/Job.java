@@ -24,7 +24,7 @@ package jasima.shopSim.core;
  * Main work unit in a shop.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class Job extends PrioRuleTarget implements Cloneable {
 
@@ -33,6 +33,7 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	private double arriveTime; // arrival time at current machine
 	private WorkStation currMachine;
 	// when will job finish processing on its current machine (if started)
+	private double startTime;
 	private double finishTime;
 	private int taskNumber; // current operation
 	private double relDate;
@@ -257,12 +258,28 @@ public class Job extends PrioRuleTarget implements Cloneable {
 		return sourceNum;
 	}
 
+	/**
+	 * Sets the completion time of the current operation. This is called by a
+	 * machine whenever processing starts.
+	 */
 	public void setFinishTime(double finishTime) {
 		this.finishTime = finishTime;
 	}
 
 	public double getFinishTime() {
 		return finishTime;
+	}
+
+	public double getStartTime() {
+		return startTime;
+	}
+
+	/**
+	 * Sets the start time of the current operation. This is called by a machine
+	 * whenever processing starts.
+	 */
+	public void setStartTime(double startTime) {
+		this.startTime = startTime;
 	}
 
 	public void setOpDueDates(double[] opDueDates) {

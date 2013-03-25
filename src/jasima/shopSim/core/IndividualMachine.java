@@ -62,6 +62,7 @@ public class IndividualMachine {
 	public DblStream timeToRepair;
 
 	public MachineState state;
+	public double procStarted;
 	public double procFinished;
 	public int setupState;
 	public PrioRuleTarget curJob;
