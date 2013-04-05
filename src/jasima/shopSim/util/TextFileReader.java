@@ -405,7 +405,8 @@ public class TextFileReader {
 				}
 				ms.machRelDates = rds.clone();
 			} else {
-				int m = getMachIdx(sm);
+				int m = getMachIdx(sm.trim());
+				System.out.println(sm);
 				ms = machineSpecs[m];
 			}
 
@@ -512,7 +513,7 @@ public class TextFileReader {
 						Job j = super.createNextJob();
 
 						numCreated++;
-						if (numJobs > 0 && numCreated >= numJobs)
+						if (numJobs > 0 && numCreated > numJobs)
 							stopArrivals = true;
 
 						return j;
