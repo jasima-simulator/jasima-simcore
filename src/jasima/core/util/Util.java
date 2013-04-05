@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Some static utility methods that don't really fit anywhere else.
@@ -412,8 +413,7 @@ public class Util {
 	 */
 	public static int[] parseIntList(String list) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
-		String[] ss = list.split(",");
-		for (String s : ss) {
+		for (String s : list.split(",")) {
 			if (s.contains("..")) {
 				String[] sp = s.split("\\.\\.");
 				int i1 = Integer.parseInt(sp[0]);
@@ -429,6 +429,24 @@ public class Util {
 		for (int i = 0; i < res.size(); i++)
 			is[i] = res.get(i);
 		return is;
+	}
+
+	/** Converts a list of comma-separated double values (with dot as decimal separator) to a double-array.  
+	 *  Example: parseDblList("1.23,4.56") -> {1.23,4.56}
+	 */
+	public static double[] parseDblList(String s) {
+		ArrayList<Double> ll = new ArrayList<Double>();
+		StringTokenizer st = new StringTokenizer(s, ",");
+		while (st.hasMoreElements()) {
+			double v = Double.parseDouble(st.nextToken().trim());
+			ll.add(v);
+		}
+
+		double[] res = new double[ll.size()];
+		for (int i = 0; i < res.length; i++) {
+			res[i] = ll.get(i);
+		}
+		return res;
 	}
 
 	public static String[][] read2DimStrings(BufferedReader r, int numRows)
