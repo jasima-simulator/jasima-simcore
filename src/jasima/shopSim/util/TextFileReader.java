@@ -87,6 +87,8 @@ public class TextFileReader {
 	private int numMachines;
 	private MachineSpec[] machineSpecs;
 
+	private HashMap<String, Integer> machIds;
+
 	// route data
 	private int numRoutes;
 	private RouteSpec[] routeSpecs;
@@ -97,6 +99,8 @@ public class TextFileReader {
 
 	public TextFileReader() {
 		super();
+
+		clearData();
 	}
 
 	private void clearData() {
@@ -106,6 +110,7 @@ public class TextFileReader {
 		machineSpecs = null;
 		numMachines = numRoutes = -1;
 		haveData = false;
+		machIds = new HashMap<String, Integer>();
 	}
 
 	public void readData(BufferedReader r) {
@@ -201,9 +206,25 @@ public class TextFileReader {
 				} else
 					rs.setups[j] = DEF_SETUP;
 
-				rs.machSpec[j] = Integer.parseInt(dat[0]) - 1;
+				String machId = dat[0];
+				int idx = getMachIdx(machId);
+				rs.machSpec[j] = idx;
 			}
 		}
+	}
+
+	private int getMachIdx(String machId) {
+		Integer idx = machIds.get(machId);
+		if (idx == null) {
+			try {
+				idx = Integer.parseInt(machId) - 1;
+			} catch (NumberFormatException ignore) {
+				idx = machIds.size();
+			}
+			assert !machIds.containsValue(idx);
+			machIds.put(machId, idx);
+		}
+		return idx.intValue();
 	}
 
 	private String readJobs(BufferedReader r) throws IOException {
@@ -363,24 +384,18 @@ public class TextFileReader {
 	private String readMachineParams(BufferedReader r) throws IOException {
 		// setup times
 		String sm = Util.nextNonEmptyLine(r);
-		int[] ms = null;
+		MachineSpec ms = null;
 		while (sm != null && !JOB_SECT_MARKER.equalsIgnoreCase(sm)
 				&& !JOB_SECT_DYN_MARKER.equalsIgnoreCase(sm)) {
 			if (SETUP_MATRIX_MARKER.equals(sm)) {
 				HashMap<Pair<String, String>, Double> matrix = readSetupMatrix(r);
-				for (int m = 0; m < ms.length; m++) {
-					machineSpecs[ms[m] - 1].setupMatrix = matrix;
-				}
+				ms.setupMatrix = matrix;
 			} else if (NAME_MARKER.equals(sm)) {
 				String name = Util.nextNonEmptyLine(r);
-				for (int m = 0; m < ms.length; m++) {
-					machineSpecs[ms[m] - 1].name = name;
-				}
+				ms.name = name;
 			} else if (NUM_IN_GROUP_MARKER.equals(sm)) {
 				int inGroup = Integer.parseInt(Util.nextNonEmptyLine(r));
-				for (int m = 0; m < ms.length; m++) {
-					machineSpecs[ms[m] - 1].numInGroup = inGroup;
-				}
+				ms.numInGroup = inGroup;
 			} else if (MACHINE_RELEASE_MARKER.equals(sm)) {
 				String[] ss = Util.nextNonEmptyLine(r).trim().split("\\s+");
 
@@ -388,12 +403,11 @@ public class TextFileReader {
 				for (int i = 0; i < ss.length; i++) {
 					rds[i] = Double.parseDouble(ss[i]);
 				}
-
-				for (int m = 0; m < ms.length; m++) {
-					machineSpecs[ms[m] - 1].machRelDates = rds.clone();
-				}
-			} else
-				ms = Util.parseIntList(sm);
+				ms.machRelDates = rds.clone();
+			} else {
+				int m = getMachIdx(sm);
+				ms = machineSpecs[m];
+			}
 
 			sm = Util.nextNonEmptyLine(r);
 		}
