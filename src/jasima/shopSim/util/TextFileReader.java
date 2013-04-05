@@ -406,7 +406,6 @@ public class TextFileReader {
 				ms.machRelDates = rds.clone();
 			} else {
 				int m = getMachIdx(sm.trim());
-				System.out.println(sm);
 				ms = machineSpecs[m];
 			}
 
@@ -558,11 +557,7 @@ public class TextFileReader {
 		return res;
 	}
 
-	private void initOperations(JobShop shop, Route r, RouteSpec rs
-	// int[] is,
-	// double[] procTimes, String[] setups, String[] batchFamilies,
-	// int[] batchSizes
-	) {
+	private void initOperations(JobShop shop, Route r, RouteSpec rs) {
 		if (rs.machSpec.length != rs.procTimes.length)
 			throw new IllegalArgumentException(
 					"time for operation missing or vice versa");
