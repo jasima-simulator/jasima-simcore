@@ -65,6 +65,13 @@ public class TextFileReader {
 		public int[] batchSizes;
 	}
 
+	static class MachineSpec {
+		public String name;
+		public int numInGroup;
+		public double[] machRelDates;
+		public HashMap<Pair<String, String>, Double> setupMatrix;
+	}
+
 	private static final String JOB_SECT_MARKER = "jobs";
 	private static final String JOB_SECT_DYN_MARKER = "jobs_dynamic";
 	private static final String NAME_MARKER = "machineName";
@@ -76,15 +83,17 @@ public class TextFileReader {
 
 	private boolean haveData = false;
 
+	// machine related data
 	private int numMachines;
-	private double[][] machRelDates;
+	private MachineSpec[] machineSpecs;
+
+	// route data
 	private int numRoutes;
 	private RouteSpec[] routeSpecs;
+
+	// jobs
 	private ArrayList<JobSpec[]> jobSpecs;
 	private ArrayList<HashMap<String, Object>> jobSpecsDynamic;
-	private HashMap<Pair<String, String>, Double>[] setupMatrices;
-	private String[] name;
-	private int[] numInGroup;
 
 	public TextFileReader() {
 		super();
@@ -94,8 +103,7 @@ public class TextFileReader {
 		routeSpecs = null;
 		jobSpecs = null;
 		jobSpecsDynamic = null;
-		setupMatrices = null;
-		machRelDates = null;
+		machineSpecs = null;
 		numMachines = numRoutes = -1;
 		haveData = false;
 	}
@@ -103,6 +111,12 @@ public class TextFileReader {
 	public void readData(BufferedReader r) {
 		try {
 			numMachines = Integer.parseInt(Util.nextNonEmptyLine(r));
+			machineSpecs = new MachineSpec[numMachines];
+			for (int i = 0; i < numMachines; i++) {
+				MachineSpec rs = new MachineSpec();
+				machineSpecs[i] = rs;
+			}
+
 			numRoutes = Integer.parseInt(Util.nextNonEmptyLine(r));
 
 			routeSpecs = new RouteSpec[numRoutes];
@@ -187,7 +201,7 @@ public class TextFileReader {
 				} else
 					rs.setups[j] = DEF_SETUP;
 
-				rs.machSpec[j] = Integer.parseInt(dat[0])-1;
+				rs.machSpec[j] = Integer.parseInt(dat[0]) - 1;
 			}
 		}
 	}
@@ -348,12 +362,6 @@ public class TextFileReader {
 
 	private String readMachineParams(BufferedReader r) throws IOException {
 		// setup times
-		setupMatrices = new HashMap[numMachines];
-
-		name = new String[numMachines];
-		numInGroup = new int[numMachines];
-		machRelDates = new double[numMachines][];
-
 		String sm = Util.nextNonEmptyLine(r);
 		int[] ms = null;
 		while (sm != null && !JOB_SECT_MARKER.equalsIgnoreCase(sm)
@@ -361,17 +369,17 @@ public class TextFileReader {
 			if (SETUP_MATRIX_MARKER.equals(sm)) {
 				HashMap<Pair<String, String>, Double> matrix = readSetupMatrix(r);
 				for (int m = 0; m < ms.length; m++) {
-					setupMatrices[ms[m] - 1] = matrix;
+					machineSpecs[ms[m] - 1].setupMatrix = matrix;
 				}
 			} else if (NAME_MARKER.equals(sm)) {
 				String name = Util.nextNonEmptyLine(r);
 				for (int m = 0; m < ms.length; m++) {
-					this.name[ms[m] - 1] = name;
+					machineSpecs[ms[m] - 1].name = name;
 				}
 			} else if (NUM_IN_GROUP_MARKER.equals(sm)) {
 				int inGroup = Integer.parseInt(Util.nextNonEmptyLine(r));
 				for (int m = 0; m < ms.length; m++) {
-					this.numInGroup[ms[m] - 1] = inGroup;
+					machineSpecs[ms[m] - 1].numInGroup = inGroup;
 				}
 			} else if (MACHINE_RELEASE_MARKER.equals(sm)) {
 				String[] ss = Util.nextNonEmptyLine(r).trim().split("\\s+");
@@ -382,7 +390,7 @@ public class TextFileReader {
 				}
 
 				for (int m = 0; m < ms.length; m++) {
-					this.machRelDates[ms[m] - 1] = rds.clone();
+					machineSpecs[ms[m] - 1].machRelDates = rds.clone();
 				}
 			} else
 				ms = Util.parseIntList(sm);
@@ -426,17 +434,18 @@ public class TextFileReader {
 
 		// create all machines
 		for (int i = 0; i < numMachines; i++) {
-			int groupSize = numInGroup[i] == 0 ? 1 : numInGroup[i];
+			MachineSpec ms = machineSpecs[i];
+			int groupSize = ms.numInGroup == 0 ? 1 : ms.numInGroup;
 
 			WorkStation m = new WorkStation(groupSize);
-			m.setName(name[i]);
+			m.setName(ms.name);
 			shop.addMachine(m);
 
-			if (setupMatrices[i] != null)
-				m.setSetupMatrix(createSetupMatrix(setupMatrices[i], m));
+			if (ms.setupMatrix != null)
+				m.setSetupMatrix(createSetupMatrix(ms.setupMatrix, m));
 
-			if (machRelDates[i] != null) {
-				double[] rds = machRelDates[i];
+			if (ms.machRelDates != null) {
+				double[] rds = ms.machRelDates;
 				if (rds.length != groupSize)
 					throw new IllegalStateException(
 							"Invallid number of machine release dates, found: "
@@ -451,12 +460,7 @@ public class TextFileReader {
 		Route[] routes = new Route[numRoutes];
 		for (int i = 0; i < numRoutes; i++) {
 			Route r = new Route();
-
 			initOperations(shop, r, routeSpecs[i]);
-
-			// machSpec[i], procTimes[i], setups[i],
-			// batchFamilies[i], batchSizes[i]);
-
 			routes[i] = r;
 		}
 		shop.routes = routes;
@@ -580,13 +584,14 @@ public class TextFileReader {
 	}
 
 	public int getNumInGroup(int machine) {
-		return numInGroup[machine] == 0 ? 1 : numInGroup[machine];
+		return machineSpecs[machine].numInGroup == 0 ? 1
+				: machineSpecs[machine].numInGroup;
 	}
 
 	public double getMachineReleaseDate(int m, int machInGroup) {
-		if (machRelDates == null || machRelDates[m] == null)
+		if (machineSpecs[m].machRelDates == null)
 			return 0.0;
-		return machRelDates[m][machInGroup];
+		return machineSpecs[m].machRelDates[machInGroup];
 	}
 
 	public int getNumRoutes() {
