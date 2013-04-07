@@ -43,14 +43,15 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	 * Continuous statistic time average number of number of machines busy at
 	 * each station and time average number in queue
 	 */
-	private TimeWeightedSummaryStat aveMachinesBusy;
-	private TimeWeightedSummaryStat aniq;
+	public TimeWeightedSummaryStat aveMachinesBusy;
+	public TimeWeightedSummaryStat aniq;
 
 	// Discrete statistics average delay at station
-	private SummaryStat stationDelay;
-	private SummaryStat capacityUtilized;
-	private SummaryStat aveBatchSize;
-	private SummaryStat setupTime;
+	public SummaryStat stationDelay;
+	public SummaryStat capacityUtilized;
+	public SummaryStat aveBatchSize;
+	public SummaryStat setupTime;
+	public SummaryStat procTime;
 
 	public MachineStatCollector() {
 		super();
@@ -65,6 +66,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 		capacityUtilized = new SummaryStat();
 		aveBatchSize = new SummaryStat();
 		setupTime = new SummaryStat();
+		procTime = new SummaryStat();
 		aniq.clear();
 		stationDelay.clear();
 		capacityUtilized.clear();
@@ -125,6 +127,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 		aniq.value(m.numJobsWaiting(), simTime);
 
 		setupTime.value(setTime);
+		procTime.value(jobOrBatch.currProcTime());
 	}
 
 	@Override

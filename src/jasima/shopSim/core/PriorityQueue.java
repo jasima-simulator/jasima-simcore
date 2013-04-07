@@ -36,7 +36,8 @@ import java.util.Comparator;
  * 
  * @param <T>
  *            The element type contained in this PriorityQueue.
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 
@@ -281,11 +282,13 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 		if (this.sr == sr)
 			return;
 
-		if (size() > 0)
-			throw new IllegalStateException(
-					"Can only change sequencing rule if queue is empty.");
+		// if (size() > 0)
+		// throw new IllegalStateException(
+		// "Can only change sequencing rule if queue is empty.");
 
 		this.sr = sr;
+
+		int oldRuleCount = rules.length;
 
 		rules = new PR[dimCount(sr)];
 		int i = 0;
@@ -293,7 +296,20 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 			rules[i++] = sr;
 		} while ((sr = sr.getTieBreaker()) != null);
 
+		// clear cache
 		reuse = null;
+
+		if (oldRuleCount != rules.length) {
+			// adjust buffer for prio values
+			for (int j = 0; j < nodes_.length; j++) {
+				ListEntry<T> e = nodes_[j];
+				if (e != null) {
+					ListEntry<T> le = new ListEntry<T>(rules.length);
+					le.elem = e.elem;
+					nodes_[j] = le;
+				}
+			}
+		}
 	}
 
 	public PR getSequencingRule() {
