@@ -279,7 +279,7 @@ public class Util {
 			ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
 
 			for (PropertyDescriptor pd : pds) {
-				if (pd.getWriteMethod() != null)
+				if (pd.getWriteMethod() != null && pd.getReadMethod() != null)
 					list.add(pd);
 			}
 
