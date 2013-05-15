@@ -21,8 +21,8 @@
 package jasima.shopSim.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Simple container for Operations.
@@ -31,34 +31,44 @@ import java.util.Collections;
  */
 public class Route {
 
-	private ArrayList<Operation> ops;
-	private Operation[] opsArray; // cache results of call to ops()
+	private Operation[] operations;
 
 	public Route() {
-		this.ops = new ArrayList<Operation>();
+		super();
+		operations = new Operation[0];
 	}
 
 	public Operation operation(int i) {
-		return ops.get(i);
+		return operations[i];
 	}
 
 	public void addSequentialOperation(Operation op) {
-		opsArray = null;
-		ops.add(op);
+		ArrayList<Operation> list = new ArrayList<Operation>(
+				Arrays.asList(operations));
+		list.add(op);
+		operations = list.toArray(new Operation[list.size()]);
 	}
 
 	public int numOperations() {
-		return ops.size();
+		return operations.length;
 	}
 
-	public Collection<Operation> operations() {
-		return Collections.unmodifiableCollection(ops);
+	public List<Operation> operations() {
+		return Arrays.asList(operations);
 	}
 
 	public Operation[] ops() {
-		if (opsArray == null)
-			opsArray = ops.toArray(new Operation[ops.size()]);
-		return opsArray;
+		return getOperations();
+	}
+	
+	public  Operation[] getOperations() {
+		return operations;
+	}
+	
+	public  void setOperations(Operation[] ops) {
+		if (ops==null)
+			throw new IllegalArgumentException("'ops' mustn't be null.");
+		 operations = ops;
 	}
 
 }

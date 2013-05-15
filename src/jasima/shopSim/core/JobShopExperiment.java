@@ -42,7 +42,8 @@ import java.util.Locale;
  * results.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class JobShopExperiment extends Experiment {
 
@@ -164,10 +165,16 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	protected void createShop() {
-		shop = new JobShop();
+		doCreateShop();
+
 		RandomFactory randomFactory = RandomFactory.newInstance(shop);
 		randomFactory.setSeed(getInitialSeed());
 		shop.setRndStreamFactory(randomFactory);
+	}
+
+	/** Factory method to create/initialize a shop object. */
+	protected void doCreateShop() {
+		shop = new JobShop();
 	}
 
 	@Override

@@ -292,7 +292,7 @@ public class Util {
 	/**
 	 * This method returns a clone of an object, if this object is cloneable.
 	 * The clone is created by calling <code>clone()</code> using Java
-	 * reflection, therefore clone not necessaritly has to be public.
+	 * reflection, therefore <code>clone()</code> not necessarily has to be public.
 	 * 
 	 * @param o
 	 *            The object to be cloned.

@@ -35,7 +35,7 @@ import java.util.Map;
  * has to be a job shop.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class JobShop extends Simulation {
 
@@ -47,6 +47,7 @@ public class JobShop extends Simulation {
 	public static final JobShopEvent JOB_RELEASED = new JobShopEvent();
 	public static final JobShopEvent JOB_FINISHED = new JobShopEvent();
 
+	// parameters
 	private int maxJobsInSystem = 0;
 	private int maxJobsFinished = 0;
 	private boolean enableLookAhead = true;
@@ -102,28 +103,6 @@ public class JobShop extends Simulation {
 				break;
 			}
 		}
-	}
-
-	public void addMachine(WorkStation machine) {
-		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
-				Arrays.asList(machines));
-		list.add(machine);
-
-		machine.shop = this;
-		machine.index = list.size() - 1;
-
-		machines = list.toArray(new WorkStation[list.size()]);
-	}
-
-	public void addJobSource(JobSource js) {
-		ArrayList<JobSource> list = new ArrayList<JobSource>(
-				Arrays.asList(sources));
-		list.add(js);
-
-		js.setShop(this);
-		js.index = list.size() - 1;
-
-		sources = list.toArray(new JobSource[list.size()]);
 	}
 
 	public void jobFinished(Job j) {
@@ -214,7 +193,7 @@ public class JobShop extends Simulation {
 	 * Retrieves a value from the value store.
 	 * 
 	 * @param key
-	 *            The entry to return, e.g. identified by a name.
+	 *            The entry to return, e.g., identified by a name.
 	 * @return The value associated with {@code key}.
 	 * @see #valueStorePut(Object, Object)
 	 */
@@ -279,6 +258,130 @@ public class JobShop extends Simulation {
 	 */
 	public int getMaxJobsFinished() {
 		return maxJobsFinished;
+	}
+
+	/**
+	 * Gets the list of job sources in this shop.
+	 */
+	public JobSource[] getSources() {
+		return sources;
+	}
+
+	/**
+	 * Sets all job sources in this shop.
+	 */
+	public void setSources(JobSource[] sources) {
+		this.sources = sources;
+		
+		int i = 0;
+		for (JobSource js : sources) {
+			js.setShop(this);
+			js.index = i++;
+		}
+	}
+
+	public void addJobSource(JobSource js) {
+		ArrayList<JobSource> list = new ArrayList<JobSource>(
+				Arrays.asList(sources));
+		list.add(js);
+
+		js.setShop(this);
+		js.index = list.size() - 1;
+
+		sources = list.toArray(new JobSource[list.size()]);
+	}
+
+	public void removeJobSource(JobSource js) {
+		ArrayList<JobSource> list = new ArrayList<JobSource>(
+				Arrays.asList(sources));
+		if (list.remove(js)) {
+			js.setShop(null);
+			js.index = -1;
+			int i = 0;
+			for (JobSource s : list) {
+				s.index = i++;
+			}
+			sources = list.toArray(new JobSource[list.size()]);
+		}
+	}
+
+	/**
+	 * Gets the list of workstations in this shop.
+	 */
+	public WorkStation[] getMachines() {
+		return machines;
+	}
+
+	/**
+	 * Sets the workstations of this shop.
+	 */
+	public void setMachines(WorkStation[] machines) {
+		this.machines = machines;
+		int i = 0;
+		for (WorkStation w : machines) {
+			w.shop = this;
+			w.index = i++;
+		}
+	}
+
+	/**
+	 * Adds a single machine to this shop.
+	 * 
+	 * @see #getMachines()
+	 */
+	public void addMachine(WorkStation machine) {
+		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
+				Arrays.asList(machines));
+		list.add(machine);
+
+		machine.shop = this;
+		machine.index = list.size() - 1;
+
+		machines = list.toArray(new WorkStation[list.size()]);
+	}
+
+	/**
+	 * Remove a machine from this shop.
+	 */
+	public void removeMachine(WorkStation machine) {
+		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
+				Arrays.asList(machines));
+		if (list.remove(machine)) {
+			machine.shop = null;
+			machine.index = -1;
+			int i = 0;
+			for (WorkStation w : list) {
+				w.index = i++;
+			}
+			machines = list.toArray(new WorkStation[list.size()]);
+		}
+	}
+
+	/**
+	 * Returns the routes added to this job shop.
+	 */
+	public Route[] getRoutes() {
+		return routes;
+	}
+
+	/**
+	 * Sets the routes available for this job shop.
+	 */
+	public void setRoutes(Route[] routes) {
+		this.routes = routes;
+	}
+
+	public void addRoute(Route r) {
+		ArrayList<Route> list = new ArrayList<Route>(Arrays.asList(routes));
+		list.add(r);
+		routes = list.toArray(new Route[list.size()]);
+	}
+
+	public void removeRoute(Route r) {
+		ArrayList<Route> list = new ArrayList<Route>(Arrays.asList(routes));
+		if (list.remove(r)) {
+			routes = list.toArray(new Route[list.size()]);
+		}
 	}
 
 }

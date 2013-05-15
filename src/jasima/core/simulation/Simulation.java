@@ -97,13 +97,11 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 
 	// ////////////// attributes/fields used during a simulation
 
-	/**
-	 * The current simulation time.
-	 */
+	// the current simulation time.
 	private double simTime;
-
+	// event queue
 	private EventQueue eventList;
-	// enforce FIFO-order of concurrent events with equal priorities
+	// eventNum is used to enforce FIFO-order of concurrent events with equal priorities
 	private int eventNum;
 	private boolean continueSim;
 	private int numAppEvents;
