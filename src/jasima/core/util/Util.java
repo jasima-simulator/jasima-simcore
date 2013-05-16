@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -70,6 +71,34 @@ public class Util {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Generic method to remove the first occurrence of an element from an
+	 * array. A new array without the given element is returned (or the old
+	 * array if element was not found).
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] removeFromArray(T[] a, T elementToRemove) {
+		List<T> l = Arrays.asList(a);
+		if (l.remove(elementToRemove)) {
+			return l.toArray((T[]) Array.newInstance(a.getClass()
+					.getComponentType(), l.size()));
+		} else {
+			return a;
+		}
+	}
+
+	/**
+	 * Generic method to add an element to an array. A new array containing the
+	 * given element is returned.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] addToArray(T[] a, T newElement) {
+		List<T> l = Arrays.asList(a);
+		l.add(newElement);
+		return l.toArray((T[]) Array.newInstance(a.getClass()
+				.getComponentType(), l.size()));
 	}
 
 	/**
@@ -292,7 +321,8 @@ public class Util {
 	/**
 	 * This method returns a clone of an object, if this object is cloneable.
 	 * The clone is created by calling <code>clone()</code> using Java
-	 * reflection, therefore <code>clone()</code> not necessarily has to be public.
+	 * reflection, therefore <code>clone()</code> not necessarily has to be
+	 * public.
 	 * 
 	 * @param o
 	 *            The object to be cloned.
@@ -431,8 +461,10 @@ public class Util {
 		return is;
 	}
 
-	/** Converts a list of comma-separated double values (with dot as decimal separator) to a double-array.  
-	 *  Example: parseDblList("1.23,4.56") -> {1.23,4.56}
+	/**
+	 * Converts a list of comma-separated double values (with dot as decimal
+	 * separator) to a double-array. Example: parseDblList("1.23,4.56") ->
+	 * {1.23,4.56}
 	 */
 	public static double[] parseDblList(String s) {
 		ArrayList<Double> ll = new ArrayList<Double>();
