@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -80,7 +79,7 @@ public class Util {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] removeFromArray(T[] a, T elementToRemove) {
-		List<T> l = Arrays.asList(a);
+		ArrayList<T> l = new ArrayList<T>(Arrays.asList(a));
 		if (l.remove(elementToRemove)) {
 			return l.toArray((T[]) Array.newInstance(a.getClass()
 					.getComponentType(), l.size()));
@@ -94,11 +93,16 @@ public class Util {
 	 * given element is returned.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] addToArray(T[] a, T newElement) {
-		List<T> l = Arrays.asList(a);
-		l.add(newElement);
-		return l.toArray((T[]) Array.newInstance(a.getClass()
-				.getComponentType(), l.size()));
+	public static <T> T[] addToArray(T[] a, T newElement, Class<T> compType) {
+		if (a == null || a.length == 0) {
+			T[] res = (T[]) Array.newInstance(compType, 1);
+			res[0] = newElement;
+			return res;
+		} else {
+			ArrayList<T> l = new ArrayList<T>(Arrays.asList(a));
+			l.add(newElement);
+			return l.toArray((T[]) Array.newInstance(compType, l.size()));
+		}
 	}
 
 	/**
