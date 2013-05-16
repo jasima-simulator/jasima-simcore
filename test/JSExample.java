@@ -188,7 +188,7 @@ public class JSExample extends JobShop {
 					+ String.valueOf(aniq.mean())
 					+ "        "
 					+ String.valueOf(aveMachinesBusy.mean()
-							/ machines[i].numInGroup) + "        "
+							/ machines[i].numInGroup()) + "        "
 					+ String.valueOf(stationDelay.mean()));
 		}
 	}

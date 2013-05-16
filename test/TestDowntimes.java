@@ -75,7 +75,7 @@ public class TestDowntimes extends ExperimentTest {
 			protected void createShop() {
 				super.createShop();
 				for (WorkStation m : shop.machines) {
-					for (IndividualMachine im : m.machDat) {
+					for (IndividualMachine im : m.machDat()) {
 						im.timeBetweenFailures = new DblConst(1.0);
 						im.timeToRepair = new DblConst(1.0);
 					}

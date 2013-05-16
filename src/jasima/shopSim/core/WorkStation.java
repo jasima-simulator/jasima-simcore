@@ -96,6 +96,8 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 	public final PriorityQueue<Job> queue;
 
+	private HashMap<Object, Object> valueStore;
+
 	JobShop shop;
 	int index; // in shop.machines
 
@@ -154,6 +156,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 	public WorkStation(int numInGroup) {
 		super();
+		this.valueStore = null;
 		this.numInGroup = numInGroup;
 
 		numBusy = 0;
@@ -808,6 +811,38 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	/**
+	 * Offers a simple get/put-mechanism to store and retrieve information as a
+	 * kind of global data store. This can be used as a simple extension
+	 * mechanism.
+	 * 
+	 * @param key
+	 *            The key name.
+	 * @param value
+	 *            value to assign to {@code key}.
+	 * @see #valueStoreGet(String)
+	 */
+	public void valueStorePut(Object key, Object value) {
+		if (valueStore == null)
+			valueStore = new HashMap<Object, Object>();
+		valueStore.put(key, value);
+	}
+
+	/**
+	 * Retrieves a value from the value store.
+	 * 
+	 * @param key
+	 *            The entry to return, e.g., identified by a name.
+	 * @return The value associated with {@code key}.
+	 * @see #valueStorePut(Object, Object)
+	 */
+	public Object valueStoreGet(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.get(key);
 	}
 
 }

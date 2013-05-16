@@ -110,7 +110,7 @@ public class JobShopTests {
 			assertEquals("Average Utilization", new double[] {
 					0.9507663051379164, 0.9906905798380076, 0.7214107612790233,
 					0.967256788472735, 0.803024879706631 }[i],
-					aveMachinesBusy.mean() / js.machines[i].numInGroup, 0.0001d);
+					aveMachinesBusy.mean() / js.machines[i].numInGroup(), 0.0001d);
 			assertEquals("Average Delay in Queue",
 					new double[] { 2.6724790935697262, 21.627010141269572,
 							0.17260580485393026, 14.956587844458907,
@@ -166,7 +166,7 @@ public class JobShopTests {
 			assertEquals("Average Utilization", new double[] {
 					0.958749123958056, 0.9911394388506134, 0.7248176313853936,
 					0.9726069395363314, 0.7998228342590076 }[i],
-					aveMachinesBusy.mean() / js.machines[i].numInGroup,
+					aveMachinesBusy.mean() / js.machines[i].numInGroup(),
 					0.00001d);
 			assertEquals("Average Delay in Queue", new double[] {
 					3.30305880395206, 38.59318497492146, 0.18740648456724288,
