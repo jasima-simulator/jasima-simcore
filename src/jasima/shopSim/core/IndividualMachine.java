@@ -40,10 +40,20 @@ public class IndividualMachine {
 	public final WorkStation workStation;
 	public final int idx; // index in workStation.machDat
 
-	/**
-	 * @param workStation
-	 */
-	IndividualMachine(WorkStation workStation, int idx) {
+	public double relDate;
+	public int initialSetup;
+	public String name = null;
+
+	public DblStream timeBetweenFailures;
+	public DblStream timeToRepair;
+
+	public MachineState state;
+	public double procStarted;
+	public double procFinished;
+	public int setupState;
+	public PrioRuleTarget curJob;
+
+	public IndividualMachine(WorkStation workStation, int idx) {
 		super();
 		this.workStation = workStation;
 		this.idx = idx;
@@ -54,18 +64,6 @@ public class IndividualMachine {
 		initialSetup = WorkStation.DEF_SETUP;
 		relDate = 0.0;
 	}
-
-	public double relDate;
-	public int initialSetup;
-
-	public DblStream timeBetweenFailures;
-	public DblStream timeToRepair;
-
-	public MachineState state;
-	public double procStarted;
-	public double procFinished;
-	public int setupState;
-	public PrioRuleTarget curJob;
 
 	// called whenever an operation is finished
 	Event onDepart = new Event(0.0d, WorkStation.DEPART_PRIO) {
@@ -104,8 +102,6 @@ public class IndividualMachine {
 			return false;
 		}
 	};
-
-	private String name = null;
 
 	@Override
 	public String toString() {
