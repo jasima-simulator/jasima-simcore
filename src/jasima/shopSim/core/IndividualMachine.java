@@ -111,7 +111,7 @@ public class IndividualMachine {
 	public String toString() {
 		if (name == null)
 			name = workStation.getName()
-					+ (workStation.numInGroup > 1 ? "." + idx : "");
+					+ (workStation.numInGroup() > 1 ? "." + idx : "");
 		return name;
 	}
 

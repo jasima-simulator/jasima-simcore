@@ -321,8 +321,10 @@ public class Job extends PrioRuleTarget implements Cloneable {
 		return 1;
 	}
 
-	// compute operational due dates based on the total work content method,
-	// i.e., proportional to an operation's processing time
+	/**
+	 * Computes operational due dates based on the total work content method, /*
+	 * i.e., proportional to an operation's processing time.
+	 */
 	public static double[] computeDueDatesTWC(Job j, double ff) {
 		Operation[] ops = j.ops;
 

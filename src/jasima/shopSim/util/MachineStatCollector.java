@@ -35,7 +35,8 @@ import java.util.Map;
  * utilization, average queue length, average setup time per operation).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class MachineStatCollector extends WorkStationListenerBase {
 
@@ -60,7 +61,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	@Override
 	protected void init(WorkStation m) {
 		aveMachinesBusy = new TimeWeightedSummaryStat();
-		aveMachinesBusy.value(m.numBusy, m.shop.simTime());
+		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
 		aniq = new TimeWeightedSummaryStat();
 		stationDelay = new SummaryStat();
 		capacityUtilized = new SummaryStat();
@@ -87,20 +88,20 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	@Override
 	protected void done(WorkStation m) {
 		// properly "close" time weighted stats
-		aniq.value(Double.NaN, m.shop.simTime());
-		aveMachinesBusy.value(Double.NaN, m.shop.simTime());
+		aniq.value(Double.NaN, m.shop().simTime());
+		aveMachinesBusy.value(Double.NaN, m.shop().simTime());
 	}
 
 	@Override
 	protected void arrival(WorkStation m, Job j) {
 		if (!j.isFuture()) {
-			aniq.value(m.numJobsWaiting(), m.shop.simTime());
+			aniq.value(m.numJobsWaiting(), m.shop().simTime());
 		}
 	}
 
 	@Override
 	protected void activated(WorkStation m, IndividualMachine justActivated) {
-		aveMachinesBusy.value(m.numBusy, m.shop.simTime());
+		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
 	}
 
 	@Override
@@ -109,8 +110,8 @@ public class MachineStatCollector extends WorkStationListenerBase {
 		if (jobOrBatch == null)
 			return;
 
-		double simTime = m.shop.simTime();
-		aveMachinesBusy.value(m.numBusy, simTime);
+		double simTime = m.shop().simTime();
+		aveMachinesBusy.value(m.numBusy(), simTime);
 
 		// Record delay for station
 		for (int i = 0; i < jobOrBatch.numJobsInBatch(); i++) {
@@ -133,7 +134,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	@Override
 	protected void operationCompleted(WorkStation m,
 			PrioRuleTarget justCompleted) {
-		aveMachinesBusy.value(m.numBusy, m.shop.simTime());
+		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
 	}
 
 }

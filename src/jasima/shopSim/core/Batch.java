@@ -179,7 +179,7 @@ public class Batch extends PrioRuleTarget {
 
 	@Override
 	public JobShop getShop() {
-		return op.machine.shop;
+		return op.machine.shop();
 	}
 
 	@Override

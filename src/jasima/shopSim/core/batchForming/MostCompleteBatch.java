@@ -38,7 +38,8 @@ import java.util.Map;
  * 
  * @author Christoph Pickardt, 2010-09-07
  * @author Torsten Hildebrandt, 2010-09-29
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class MostCompleteBatch extends BatchForming {
 
@@ -134,7 +135,7 @@ public class MostCompleteBatch extends BatchForming {
 			if (arriveInTimeJobs > mbs)
 				return null;
 
-			Batch b = new Batch(getOwner().shop);
+			Batch b = new Batch(getOwner().shop());
 			if (j.getArriveTime() - j.getShop().simTime() <= maxWait)
 				b.addToBatch(j);
 			for (int n = 1; n < maxFam.size(); n++) {
@@ -185,14 +186,14 @@ public class MostCompleteBatch extends BatchForming {
 			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.batchFamily)) {
 				for (Job j : famJobs) {
 					if (j.getArriveTime() - j.getShop().simTime() <= maxWait) {
-						Batch b = new Batch(getOwner().shop);
+						Batch b = new Batch(getOwner().shop());
 						b.addToBatch(j);
 						possibleBatches.add(b);
 					}
 				}
 				maxRBS = 1.0;
 			} else {
-				Batch b = new Batch(getOwner().shop);
+				Batch b = new Batch(getOwner().shop());
 				// make batch as full as possible
 				int i = 0;
 				while (i < famJobs.size()

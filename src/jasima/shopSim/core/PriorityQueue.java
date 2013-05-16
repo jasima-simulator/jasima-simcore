@@ -61,7 +61,7 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 
 			int res = comparePrioArrays(p1, p2);
 			if (res == 0)
-				getWorkStation().shop.print(SimMsgCategory.WARN,
+				getWorkStation().shop().print(SimMsgCategory.WARN,
 						"equal priorities.");
 			return res;
 		}

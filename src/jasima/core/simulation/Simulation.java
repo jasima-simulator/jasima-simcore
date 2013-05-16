@@ -27,6 +27,7 @@ import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -92,6 +93,8 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	private double simulationLength = 0.0d;
 	private RandomFactory rndStreamFactory;
 
+	private HashMap<Object, Object> valueStore;
+
 	// fields used during event notification
 	public Map<String, Object> resultMap;
 
@@ -101,7 +104,8 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	private double simTime;
 	// event queue
 	private EventQueue eventList;
-	// eventNum is used to enforce FIFO-order of concurrent events with equal priorities
+	// eventNum is used to enforce FIFO-order of concurrent events with equal
+	// priorities
 	private int eventNum;
 	private boolean continueSim;
 	private int numAppEvents;
@@ -318,6 +322,38 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	/**
+	 * Offers a simple get/put-mechanism to store and retrieve information as a
+	 * kind of global data store. This can be used as a simple extension
+	 * mechanism.
+	 * 
+	 * @param key
+	 *            The key name.
+	 * @param value
+	 *            value to assign to {@code key}.
+	 * @see #valueStoreGet(String)
+	 */
+	public void valueStorePut(Object key, Object value) {
+		if (valueStore == null)
+			valueStore = new HashMap<Object, Object>();
+		valueStore.put(key, value);
+	}
+
+	/**
+	 * Retrieves a value from the value store.
+	 * 
+	 * @param key
+	 *            The entry to return, e.g., identified by a name.
+	 * @return The value associated with {@code key}.
+	 * @see #valueStorePut(Object, Object)
+	 */
+	public Object valueStoreGet(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.get(key);
 	}
 
 }

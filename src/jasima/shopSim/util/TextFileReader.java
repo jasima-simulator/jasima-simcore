@@ -465,7 +465,7 @@ public class TextFileReader {
 							"Invallid number of machine release dates, found: "
 									+ rds.length + ", expected: " + groupSize);
 				for (int n = 0; n < groupSize; n++) {
-					m.machDat[n].relDate = rds[n];
+					m.machDat()[n].relDate = rds[n];
 				}
 			}
 		}

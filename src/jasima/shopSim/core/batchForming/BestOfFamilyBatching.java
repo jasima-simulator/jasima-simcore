@@ -70,8 +70,8 @@ public class BestOfFamilyBatching extends BatchForming {
 				: true;
 
 		// make batches as full as possible
-		Batch b = new Batch(getOwner().shop);
-		Batch b2 = new Batch(getOwner().shop);
+		Batch b = new Batch(getOwner().shop());
+		Batch b2 = new Batch(getOwner().shop());
 		for (int i = 0, n = famJobs.size(); i < n; i++) {
 			Job job = famJobs.get(i);
 			if (b.numJobsInBatch() < o.maxBatchSize)

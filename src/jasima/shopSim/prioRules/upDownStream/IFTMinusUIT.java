@@ -114,7 +114,7 @@ public class IFTMinusUIT extends PR {
 
 	private static List<PrioRuleTarget> findLookAheadJobs(WorkStation m,
 			double threshold) {
-		threshold += m.shop.simTime();
+		threshold += m.shop().simTime();
 
 		ArrayList<PrioRuleTarget> res = new ArrayList<PrioRuleTarget>();
 		PriorityQueue<Job> q = m.queue;

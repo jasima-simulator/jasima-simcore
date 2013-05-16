@@ -46,7 +46,8 @@ import java.util.Map;
  * {@link IndividualMachine}s sharing a common queue.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
@@ -83,12 +84,11 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	public static final int TAKE_DOWN_PRIO = DEPART_PRIO + 1000; // after depart
 	public static final int ACTIVATE_PRIO = DEPART_PRIO - 1000; // before depart
 
+	// parameters
+
 	private String name;
-	public final int numInGroup;
-
-	public JobShop shop;
-	public int index; // in shop.machines
-
+	private final int numInGroup;
+	private final IndividualMachine[] machDat;
 	private double[][] setupMatrix = { { 0.0 } };
 
 	private BatchForming batchForming;
@@ -96,16 +96,18 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 	public final PriorityQueue<Job> queue;
 
-	public int numBusy;
+	JobShop shop;
+	int index; // in shop.machines
+
+	private int numBusy;
 	private int numFutures; // number of future arrivals currently in queue
 
 	private boolean batchingUsed;
 
 	// which machine in this group currently selects its next batch? This
-	// information is important if e.g., dispatching rules have to determine a
+	// information is important if, e.g., dispatching rules have to determine a
 	// specific machine's setup state
 	public IndividualMachine currMachine;
-	public final IndividualMachine[] machDat;
 
 	private ArrayDeque<IndividualMachine> freeMachines;
 	// reuse select event objects
@@ -691,8 +693,20 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 		return Collections.unmodifiableCollection(freeMachines);
 	}
 
-	public IndividualMachine[] getMachDat() {
+	public IndividualMachine[] machDat() {
 		return machDat;
+	}
+
+	public int numBusy() {
+		return numBusy;
+	}
+
+	public int numInGroup() {
+		return numInGroup;
+	}
+
+	public JobShop shop() {
+		return shop;
 	}
 
 	public Map<String, List<Job>> getJobsByFamily() {

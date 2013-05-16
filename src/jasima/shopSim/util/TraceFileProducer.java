@@ -38,7 +38,8 @@ import java.io.PrintWriter;
  * debugging purposes.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-24
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class TraceFileProducer extends JobShopListenerBase {
 
@@ -65,8 +66,8 @@ public class TraceFileProducer extends JobShopListenerBase {
 			@Override
 			protected void arrival(WorkStation m, Job j) {
 				if (!j.isFuture()) {
-					print(m.shop.simTime() + "\tarrives_at\t" + j + "\t" + m
-							+ "\t" + (m.numBusy == 0 ? "IDLE" : "PROCESSING")
+					print(m.shop().simTime() + "\tarrives_at\t" + j + "\t" + m
+							+ "\t" + (m.numBusy() == 0 ? "IDLE" : "PROCESSING")
 							+ "\t" + (m.queue.size() - 1));
 				}
 			}
@@ -74,13 +75,13 @@ public class TraceFileProducer extends JobShopListenerBase {
 			@Override
 			protected void activated(WorkStation m,
 					IndividualMachine justActivated) {
-				print(m.shop.simTime() + "\tbecomes_available\t"
+				print(m.shop().simTime() + "\tbecomes_available\t"
 						+ justActivated.toString() + "\t" + m.queue.size());
 			}
 
 			@Override
 			protected void deactivated(WorkStation ws, IndividualMachine m) {
-				print(ws.shop.simTime() + "\tunavailable\t" + m.toString()
+				print(ws.shop().simTime() + "\tunavailable\t" + m.toString()
 						+ "\t" + ws.queue.size());
 			}
 
@@ -89,11 +90,11 @@ public class TraceFileProducer extends JobShopListenerBase {
 					PrioRuleTarget jobOrBatch, int oldSetupState,
 					int newSetupState, double setTime) {
 				if (jobOrBatch == null) {
-					print(m.shop.simTime() + "\tkeeping_idle\t"
+					print(m.shop().simTime() + "\tkeeping_idle\t"
 							+ m.currMachine.toString() + "\t" + jobOrBatch);
 				} else {
 					for (int i = 0; i < jobOrBatch.numJobsInBatch(); i++)
-						print(m.shop.simTime() + "\tstart_processing\t"
+						print(m.shop().simTime() + "\tstart_processing\t"
 								+ m.currMachine.toString() + "\t"
 								+ jobOrBatch.job(i) + "\t" + "\t"
 								+ m.queue.size());
@@ -101,7 +102,7 @@ public class TraceFileProducer extends JobShopListenerBase {
 					// shop.simTime + "\tstart_processing\t" + machName + "\t"
 					// + batch + "\t" + "\t" + queue.size());
 					if (oldSetupState != newSetupState) {
-						print(m.shop.simTime() + "\tsetup\t"
+						print(m.shop().simTime() + "\tsetup\t"
 								+ m.currMachine.toString() + "\t"
 								+ m.setupStateToString(oldSetupState) + "\t"
 								+ m.setupStateToString(newSetupState) + "\t"
@@ -117,7 +118,7 @@ public class TraceFileProducer extends JobShopListenerBase {
 				// shop.simTime + "\tfinished_processing\t" + machName + "\t"
 				// + b);
 				for (int i = 0; i < jobOrBatch.numJobsInBatch(); i++)
-					print(m.shop.simTime() + "\tfinished_processing\t"
+					print(m.shop().simTime() + "\tfinished_processing\t"
 							+ m.currMachine.toString() + "\t"
 							+ jobOrBatch.job(i));
 			}

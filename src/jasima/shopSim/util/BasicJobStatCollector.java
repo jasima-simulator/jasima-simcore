@@ -73,7 +73,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 			for (int i = 0, n = m.queue.size(); i < n; i++) {
 				storeWIPJob(m.queue.get(i));
 			}
-			for (int i = 0; i < m.numInGroup; i++) {
+			for (int i = 0; i < m.numInGroup(); i++) {
 				PrioRuleTarget j = m.getProcessedJob(i);
 				if (j != null)
 					storeWIPJob(j);

@@ -27,7 +27,6 @@ import jasima.shopSim.core.WorkStation.WorkStationEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +34,8 @@ import java.util.Map;
  * has to be a job shop.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class JobShop extends Simulation {
 
@@ -60,8 +60,6 @@ public class JobShop extends Simulation {
 	public int jobsStarted;
 
 	private boolean strangePriorities;
-
-	private HashMap<Object, Object> valueStore;
 
 	// fields used during event notification
 	public Job lastJobReleased;
@@ -173,38 +171,6 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to key.
-	 * @see #valueStoreGet(String)
-	 */
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
 	 * Returns the status of lookahead mechanism.
 	 * 
 	 * @return Whether lookahead is used.
@@ -272,7 +238,7 @@ public class JobShop extends Simulation {
 	 */
 	public void setSources(JobSource[] sources) {
 		this.sources = sources;
-		
+
 		int i = 0;
 		for (JobSource js : sources) {
 			js.setShop(this);
