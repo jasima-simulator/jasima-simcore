@@ -66,7 +66,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	public static final WorkStationEvent WS_COLLECT_RESULTS = new WorkStationEvent();
 	public static final WorkStationEvent WS_INIT = new WorkStationEvent();
 
-	private static final String DEF_SETUP_STR = "DEF_SETUP";
+	public static final String DEF_SETUP_STR = "DEF_SETUP";
 	public static final int DEF_SETUP = 0;
 
 	/**
