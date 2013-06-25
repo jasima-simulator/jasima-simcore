@@ -95,6 +95,8 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 
 	private HashMap<Object, Object> valueStore;
 
+	private String name = null;
+
 	// fields used during event notification
 	public Map<String, Object> resultMap;
 
@@ -266,8 +268,23 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 		return rndStreamFactory;
 	}
 
+	/**
+	 * Sets the random factory to use to create random number streams for
+	 * stochastic simulations.
+	 */
 	public void setRndStreamFactory(RandomFactory rndStreamFactory) {
 		this.rndStreamFactory = rndStreamFactory;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets a name for this simulation.
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	// event notification
