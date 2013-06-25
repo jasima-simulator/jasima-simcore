@@ -20,31 +20,28 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import jasima.core.random.continuous.DblConst;
-import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
-import jasima.core.random.continuous.DblUniformRange;
-import jasima.core.random.discrete.IntEmpirical;
-import jasima.core.random.discrete.IntUniformRange;
-import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
-import jasima.shopSim.core.DynamicJobSource;
-import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
-import jasima.shopSim.core.Operation;
-import jasima.shopSim.core.Route;
-import jasima.shopSim.core.StaticJobSource;
-import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.util.modelDef.DynamicSourceDef;
+import jasima.shopSim.util.modelDef.IndividualMachineDef;
+import jasima.shopSim.util.modelDef.JobDef;
+import jasima.shopSim.util.modelDef.OperationDef;
+import jasima.shopSim.util.modelDef.RouteDef;
+import jasima.shopSim.util.modelDef.ShopDef;
+import jasima.shopSim.util.modelDef.SourceDef;
+import jasima.shopSim.util.modelDef.StaticSourceDef;
+import jasima.shopSim.util.modelDef.WorkstationDef;
+import jasima.shopSim.util.modelDef.streams.StreamDef;
+import jasima.shopSim.util.modelDef.streams.StreamDefFact;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.StringTokenizer;
-
-import org.apache.commons.math3.distribution.ExponentialDistribution;
+import java.util.Map;
 
 /**
  * This class configures a StaticShopModel based on the contents of a text file.
@@ -57,21 +54,6 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  */
 public class TextFileReader {
 
-	static class RouteSpec {
-		public double[] procTimes;
-		public int[] machSpec;
-		public String[] setups;
-		public String[] batchFamilies;
-		public int[] batchSizes;
-	}
-
-	static class MachineSpec {
-		public String name;
-		public int numInGroup;
-		public double[] machRelDates;
-		public HashMap<Pair<String, String>, Double> setupMatrix;
-	}
-
 	private static final String JOB_SECT_MARKER = "jobs";
 	private static final String JOB_SECT_DYN_MARKER = "jobs_dynamic";
 	private static final String NAME_MARKER = "machineName";
@@ -81,21 +63,9 @@ public class TextFileReader {
 
 	private static final String DEF_SETUP = "DEF_SETUP";
 
-	private boolean haveData = false;
-
-	// machine related data
-	private int numMachines;
-	private MachineSpec[] machineSpecs;
-
+	private ShopDef data;
 	private HashMap<String, Integer> machIds;
-
-	// route data
-	private int numRoutes;
-	private RouteSpec[] routeSpecs;
-
-	// jobs
-	private ArrayList<JobSpec[]> jobSpecs;
-	private ArrayList<HashMap<String, Object>> jobSpecsDynamic;
+	private boolean haveData;
 
 	public TextFileReader() {
 		super();
@@ -103,32 +73,35 @@ public class TextFileReader {
 		clearData();
 	}
 
+	public ShopDef getShopDef() {
+		return haveData ? data : null;
+	}
+
 	private void clearData() {
-		routeSpecs = null;
-		jobSpecs = null;
-		jobSpecsDynamic = null;
-		machineSpecs = null;
-		numMachines = numRoutes = -1;
 		haveData = false;
+		data = null;
 		machIds = new HashMap<String, Integer>();
 	}
 
-	public void readData(BufferedReader r) {
+	public ShopDef readData(BufferedReader r) {
+		data = new ShopDef();
 		try {
-			numMachines = Integer.parseInt(Util.nextNonEmptyLine(r));
-			machineSpecs = new MachineSpec[numMachines];
+			int numMachines = Integer.parseInt(Util.nextNonEmptyLine(r));
+			WorkstationDef[] ws = new WorkstationDef[numMachines];
 			for (int i = 0; i < numMachines; i++) {
-				MachineSpec rs = new MachineSpec();
-				machineSpecs[i] = rs;
+				WorkstationDef wd = new WorkstationDef();
+				ws[i] = wd;
 			}
+			data.setWorkstations(ws);
 
-			numRoutes = Integer.parseInt(Util.nextNonEmptyLine(r));
-
-			routeSpecs = new RouteSpec[numRoutes];
+			int numRoutes = Integer.parseInt(Util.nextNonEmptyLine(r));
+			RouteDef[] rs = new RouteDef[numRoutes];
 			for (int i = 0; i < numRoutes; i++) {
-				RouteSpec rs = new RouteSpec();
-				routeSpecs[i] = rs;
+				RouteDef rd = new RouteDef();
+				rs[i] = rd;
 			}
+			data.setRoutes(rs);
+
 			readMachOrderAndSetups(r);
 			readProcTimesAndBatching(r);
 
@@ -136,13 +109,12 @@ public class TextFileReader {
 			String s = readMachineParams(r);
 
 			// read jobs, optional
-			jobSpecs = null;
-			jobSpecsDynamic = null;
 			while (s != null) {
 				s = readJobs(r, s);
 			}
 
 			haveData = true;
+			return data;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -156,59 +128,70 @@ public class TextFileReader {
 		return s;
 	}
 
-	private void readProcTimesAndBatching(BufferedReader r) throws IOException {
-		// read processing times and batch families for each operation
-		String[][] tmp = Util.read2DimStrings(r, numRoutes);
-
-		for (int i = 0; i < numRoutes; i++) {
-			RouteSpec rs = routeSpecs[i];
-
-			rs.procTimes = new double[tmp[i].length];
-			rs.batchFamilies = new String[tmp[i].length];
-			rs.batchSizes = new int[tmp[i].length];
-
-			for (int j = 0; j < rs.procTimes.length; j++) {
-				String[] dat = tmp[i][j].split(";");
-				assert dat.length == 1 || dat.length == 3;
-
-				// do we have a batch family?
-				if (dat.length == 3) {
-					rs.batchFamilies[j] = dat[1];
-					rs.batchSizes[j] = Integer.parseInt(dat[2]);
-				} else {
-					rs.batchFamilies[j] = "BATCH_INCOMPATIBLE";
-					rs.batchSizes[j] = 1;
-				}
-
-				// parse processing time
-				rs.procTimes[j] = Double.parseDouble(dat[0]);
-			}
-		}
-	}
-
 	private void readMachOrderAndSetups(BufferedReader r) throws IOException {
+		RouteDef[] routes = data.getRoutes();
+		final int numRoutes = routes.length;
+
 		// read machine order and required setup states
 		String[][] machTmp = Util.read2DimStrings(r, numRoutes);
 
 		for (int i = 0; i < numRoutes; i++) {
-			RouteSpec rs = routeSpecs[i];
+			RouteDef rd = routes[i];
+			int numOps = machTmp[i].length;
 
-			rs.machSpec = new int[machTmp[i].length];
-			rs.setups = new String[rs.machSpec.length];
+			OperationDef[] ops = new OperationDef[numOps];
+			rd.setOperations(ops);
 
-			for (int j = 0; j < rs.machSpec.length; j++) {
+			for (int j = 0; j < numOps; j++) {
+				OperationDef od = new OperationDef();
+				ops[j] = od;
+
 				String[] dat = machTmp[i][j].split(";");
 				assert dat.length > 0 && dat.length <= 2;
 
+				od.setSetup(WorkStation.DEF_SETUP_STR);
 				// do we have setups?
 				if (dat.length == 2) {
-					rs.setups[j] = dat[1];
-				} else
-					rs.setups[j] = DEF_SETUP;
+					od.setSetup(dat[1]);
+				}
 
 				String machId = dat[0];
 				int idx = getMachIdx(machId);
-				rs.machSpec[j] = idx;
+				od.setWorkstation(data.getWorkstations()[idx]);
+			}
+		}
+	}
+
+	private void readProcTimesAndBatching(BufferedReader r) throws IOException {
+		RouteDef[] routes = data.getRoutes();
+		final int numRoutes = routes.length;
+
+		// read processing times and batch families for each operation
+		String[][] tmp = Util.read2DimStrings(r, numRoutes);
+
+		for (int i = 0; i < numRoutes; i++) {
+			RouteDef rd = routes[i];
+			int numOps = tmp[i].length;
+
+			OperationDef[] ops = rd.getOperations();
+
+			for (int j = 0; j < numOps; j++) {
+				OperationDef od = ops[j];
+
+				String[] dat = tmp[i][j].split(";");
+				assert dat.length == 1 || dat.length == 3;
+
+				// parse processing time
+				od.setProcTime(Double.parseDouble(dat[0]));
+
+				od.setBatchFamily(WorkStation.BATCH_INCOMPATIBLE);
+				od.setMaxBatchSize(1);
+
+				// do we have a batch family?
+				if (dat.length == 3) {
+					od.setBatchFamily(dat[1]);
+					od.setMaxBatchSize(Integer.parseInt(dat[2]));
+				}
 			}
 		}
 	}
@@ -233,8 +216,10 @@ public class TextFileReader {
 		if (s == null)
 			return s;
 
+		int numRoutes = data.getRoutes().length;
+
 		int numJobs = Integer.parseInt(s);
-		JobSpec[] curJobs = new JobSpec[numJobs];
+		JobDef[] jobs = new JobDef[numJobs];
 
 		String[][] rawVals = Util.read2DimStrings(r, numJobs);
 		for (int n = 0; n < rawVals.length; n++) {
@@ -252,13 +237,16 @@ public class TextFileReader {
 			double w = Double.parseDouble(i[3]);
 			String name = i.length >= 5 ? i[4] : null;
 
-			curJobs[n] = new JobSpec(route, rel, due, w, name);
+			RouteDef rd = data.getRoutes()[route];
+
+			jobs[n] = new JobDef(rd, rel, due, w, name);
 		}
 
-		if (jobSpecs == null)
-			jobSpecs = new ArrayList<StaticJobSource.JobSpec[]>();
-
-		jobSpecs.add(curJobs);
+		StaticSourceDef sd = new StaticSourceDef();
+		sd.setJobSpecs(jobs);
+		SourceDef[] as = Util.addToArray(data.getJobSources(), sd,
+				SourceDef.class);
+		data.setJobSources(as);
 
 		return Util.nextNonEmptyLine(r);
 	}
@@ -269,144 +257,119 @@ public class TextFileReader {
 		if (s == null)
 			return s;
 
-		int route = -1;
-		DblStream iats = null;
-		DblStream dueDates = null;
-		DblStream weights = null;
-		int numJobs = -1;
+		RouteDef route = null;
+		StreamDef iats = null;
+		StreamDef dueDates = null;
+		StreamDef weights = null;
+		// int numJobs = -1;
+
+		ArrayList<String> errors = new ArrayList<String>();
 
 		if (!"route".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		route = Integer.parseInt(s);
-		if (route < 1 || route > numRoutes)
-			throw new IllegalArgumentException("Invalid route number " + route);
-		route--;// adjust to zero-based route index
+		int rt = Integer.parseInt(s);
+		if (rt < 1 || rt > data.getRoutes().length)
+			throw new RuntimeException("Invalid route number " + rt);
+		rt--;// adjust to zero-based route index
+		route = data.getRoutes()[rt];
 
 		s = Util.nextNonEmptyLine(r);
 		if (!"arrivals".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		iats = parseDblStream(s);
+		iats = StreamDefFact.parseDblStream(s, errors);
+		if (errors.size() > 0)
+			throw new RuntimeException("parse error '" + s + "', "
+					+ Arrays.toString(errors.toArray()));
 
 		s = Util.nextNonEmptyLine(r);
 		if (!"due_dates".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		dueDates = parseDblStream(s);
+		dueDates = StreamDefFact.parseDblStream(s, errors);
+		if (errors.size() > 0)
+			throw new RuntimeException("parse error '" + s + "', "
+					+ Arrays.toString(errors.toArray()));
 
 		s = Util.nextNonEmptyLine(r);
 		if (!"weights".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		weights = parseDblStream(s);
+		weights = StreamDefFact.parseDblStream(s, errors);
+		if (errors.size() > 0)
+			throw new RuntimeException("parse error '" + s + "', "
+					+ Arrays.toString(errors.toArray()));
 
-		// optional
-		s = Util.nextNonEmptyLine(r);
-		if ("numJobs".equalsIgnoreCase(s)) {
-			s = Util.nextNonEmptyLine(r);
-			numJobs = Integer.parseInt(s);
-			s = Util.nextNonEmptyLine(r);
-		}
+		// // optional
+		// s = Util.nextNonEmptyLine(r);
+		// if ("numJobs".equalsIgnoreCase(s)) {
+		// s = Util.nextNonEmptyLine(r);
+		// numJobs = Integer.parseInt(s);
+		// s = Util.nextNonEmptyLine(r);
+		// }
 
-		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put("route", route);
-		hm.put("iats", iats);
-		hm.put("dueDates", dueDates);
-		hm.put("weights", weights);
-		hm.put("numJobs", numJobs);
+		DynamicSourceDef sd = new DynamicSourceDef();
+		sd.setIats(iats);
+		sd.setDueDates(dueDates);
+		sd.setWeights(weights);
+		sd.setRoute(route);
 
-		if (jobSpecsDynamic == null)
-			jobSpecsDynamic = new ArrayList<HashMap<String, Object>>();
-		jobSpecsDynamic.add(hm);
+		SourceDef[] as = Util.addToArray(data.getJobSources(), sd,
+				SourceDef.class);
+		data.setJobSources(as);
 
 		return s;
-	}
-
-	private DblStream parseDblStream(String s) {
-		StringTokenizer sst = new StringTokenizer(s, "()", false);
-		ArrayList<String> ss = new ArrayList<String>();
-		while (sst.hasMoreTokens()) {
-			ss.add(sst.nextToken().trim());
-		}
-		if (ss.size() != 2)
-			throw new RuntimeException("invalid stream configuration '" + s
-					+ "'");
-
-		String type = ss.get(0);
-		String parms = ss.get(1);
-
-		DblStream stream = null;
-
-		if ("const".equalsIgnoreCase(type)) {
-			double[] ll = Util.parseDblList(parms);
-			stream = new DblConst(ll);
-		} else if ("emp".equalsIgnoreCase(type)) {
-			ArrayList<Pair<Integer, Double>> l = new ArrayList<Pair<Integer, Double>>();
-			StringTokenizer st = new StringTokenizer(parms, "<");
-			while (st.hasMoreTokens()) {
-				String v = st.nextToken().replace(">", "").trim();
-				String[] vv = v.split(",");
-				int v1 = Integer.parseInt(vv[0]);
-				double p1 = Double.parseDouble(vv[1]);
-				l.add(new Pair<Integer, Double>(v1, p1));
-			}
-
-			double[] probs = new double[l.size()];
-			int[] values = new int[l.size()];
-			for (int i = 0; i < l.size(); i++) {
-				Pair<Integer, Double> p = l.get(i);
-				values[i] = p.a;
-				probs[i] = p.b;
-			}
-
-			stream = new IntEmpirical(probs, values);
-		} else if ("dblUnif".equalsIgnoreCase(type)) {
-			double[] ll = Util.parseDblList(parms);
-			if (ll.length == 2)
-				stream = new DblUniformRange(ll[0], ll[1]);
-		} else if ("intUnif".equalsIgnoreCase(type)) {
-			int[] ll = Util.parseIntList(parms);
-			if (ll.length == 2)
-				stream = new IntUniformRange(ll[0], ll[1]);
-		} else if ("dblExp".equalsIgnoreCase(type)) {
-			double d = Double.parseDouble(parms);
-			stream = new DblDistribution(new ExponentialDistribution(d));
-		}
-
-		if (stream == null)
-			throw new RuntimeException("invalid stream configuration '" + s
-					+ "'");
-
-		return stream;
 	}
 
 	private String readMachineParams(BufferedReader r) throws IOException {
 		// setup times
 		String sm = Util.nextNonEmptyLine(r);
-		MachineSpec ms = null;
+		WorkstationDef ms = null;
 		while (sm != null && !JOB_SECT_MARKER.equalsIgnoreCase(sm)
 				&& !JOB_SECT_DYN_MARKER.equalsIgnoreCase(sm)) {
 			if (SETUP_MATRIX_MARKER.equals(sm)) {
-				HashMap<Pair<String, String>, Double> matrix = readSetupMatrix(r);
-				ms.setupMatrix = matrix;
+				Map<Pair<String, String>, Double> matrix = readSetupMatrix(r);
+
+				ArrayList<String> states = new ArrayList<String>();
+				states.add(DEF_SETUP);
+				for (Pair<String, String> p : matrix.keySet()) {
+					if (!states.contains(p.a))
+						states.add(p.a);
+					if (!states.contains(p.b))
+						states.add(p.b);
+				}
+
+				double[][] times = new double[states.size()][states.size()];
+				for (int i = 0; i < states.size(); i++) {
+					String s1 = states.get(i);
+					for (int j = 0; j < states.size(); j++) {
+						String s2 = states.get(j);
+						Double d = matrix.get(new Pair<String, String>(s1, s2));
+						times[i][j] = d == null ? 0.0 : d.doubleValue();
+					}
+				}
+
+				ms.setSetupStates(states.toArray(new String[states.size()]));
+				ms.setSetupTimes(times);
 			} else if (NAME_MARKER.equals(sm)) {
 				String name = Util.nextNonEmptyLine(r);
-				ms.name = name;
+				ms.setName(name);
 			} else if (NUM_IN_GROUP_MARKER.equals(sm)) {
 				int inGroup = Integer.parseInt(Util.nextNonEmptyLine(r));
-				ms.numInGroup = inGroup;
+				IndividualMachineDef[] im = Util.initializedArray(inGroup,
+						IndividualMachineDef.class);
+				ms.setMachines(im);
 			} else if (MACHINE_RELEASE_MARKER.equals(sm)) {
 				String[] ss = Util.nextNonEmptyLine(r).trim().split("\\s+");
+				IndividualMachineDef[] im = ms.getMachines();
 
-				double[] rds = new double[ss.length];
 				for (int i = 0; i < ss.length; i++) {
-					rds[i] = Double.parseDouble(ss[i]);
+					im[i].setMachRelDate(Double.parseDouble(ss[i]));
 				}
-				ms.machRelDates = rds.clone();
 			} else {
 				int m = getMachIdx(sm.trim());
-				ms = machineSpecs[m];
+				ms = data.getWorkstations()[m];
 			}
 
 			sm = Util.nextNonEmptyLine(r);
@@ -439,190 +402,15 @@ public class TextFileReader {
 		TextFileReader tfr = new TextFileReader();
 		tfr.readData(rd);
 		tfr.configureMdl(shop);
-		tfr.clearData();
 	}
 
 	public void configureMdl(JobShop shop) {
 		if (!haveData)
 			throw new IllegalStateException("No data read yet.");
 
-		// create all machines
-		for (int i = 0; i < numMachines; i++) {
-			MachineSpec ms = machineSpecs[i];
-			int groupSize = ms.numInGroup == 0 ? 1 : ms.numInGroup;
-
-			WorkStation m = new WorkStation(groupSize);
-			m.setName(ms.name);
-			shop.addMachine(m);
-
-			if (ms.setupMatrix != null)
-				m.setSetupMatrix(createSetupMatrix(ms.setupMatrix, m));
-
-			if (ms.machRelDates != null) {
-				double[] rds = ms.machRelDates;
-				if (rds.length != groupSize)
-					throw new IllegalStateException(
-							"Invallid number of machine release dates, found: "
-									+ rds.length + ", expected: " + groupSize);
-				for (int n = 0; n < groupSize; n++) {
-					m.machDat()[n].relDate = rds[n];
-				}
-			}
-		}
-
-		// create all routes
-		Route[] routes = new Route[numRoutes];
-		for (int i = 0; i < numRoutes; i++) {
-			Route r = new Route();
-			initOperations(shop, r, routeSpecs[i]);
-			routes[i] = r;
-		}
-		shop.routes = routes;
-
-		// create job source if jobs specified in file
-		if (jobSpecs != null) {
-			for (JobSpec[] js : jobSpecs) {
-				StaticJobSource s = new StaticJobSource();
-				s.jobs = js.clone();
-				shop.addJobSource(s);
-			}
-		}
-
-		// create dynamic job source if jobs specified in file
-		if (jobSpecsDynamic != null) {
-			for (HashMap<String, Object> hm : jobSpecsDynamic) {
-				int route = (Integer) hm.get("route");
-				DblStream iats = (DblStream) hm.get("iats");
-				DblStream dueDates = (DblStream) hm.get("dueDates");
-				DblStream weights = (DblStream) hm.get("weights");
-				final int numJobs = (Integer) hm.get("numJobs");
-
-				DynamicJobSource ds = new DynamicJobSource() {
-
-					private int numCreated;
-
-					@Override
-					public void init() {
-						super.init();
-						numCreated = 0;
-					}
-
-					@Override
-					public Job createNextJob() {
-						Job j = super.createNextJob();
-
-						numCreated++;
-						if (numJobs > 0 && numCreated > numJobs)
-							stopArrivals = true;
-
-						return j;
-					}
-				};
-				ds.setRoute(shop.routes[route]);
-
-				try {
-					ArrivalsStationary arrivals = new ArrivalsStationary();
-					arrivals.setArrivalAtTimeZero(false);
-					arrivals.setInterArrivalTimes(iats.clone());
-
-					ds.setArrivalProcess(arrivals);
-					ds.setDueDateFactors(dueDates.clone());
-					ds.setJobWeights(weights.clone());
-				} catch (CloneNotSupportedException e) {
-					throw new RuntimeException(e);
-				}
-
-				shop.addJobSource(ds);
-			}
-		}
+		ShopConfigurator conf = new ShopConfigurator();
+		conf.setShopDef(getShopDef());
+		conf.configureMdl(shop);
 	}
 
-	private double[][] createSetupMatrix(
-			HashMap<Pair<String, String>, Double> hashMap, WorkStation m) {
-		int matrixDim = (int) Math.sqrt(hashMap.size());
-		assert matrixDim * matrixDim == hashMap.size();
-
-		double[][] res = new double[matrixDim][];
-		for (int i = 0; i < matrixDim; i++) {
-			res[i] = new double[matrixDim];
-		}
-
-		for (Pair<String, String> entry : hashMap.keySet()) {
-			int fromState = m.translateSetupState(entry.a);
-			int toState = m.translateSetupState(entry.b);
-
-			res[fromState][toState] = hashMap.get(entry);
-		}
-
-		return res;
-	}
-
-	private void initOperations(JobShop shop, Route r, RouteSpec rs) {
-		if (rs.machSpec.length != rs.procTimes.length)
-			throw new IllegalArgumentException(
-					"time for operation missing or vice versa");
-		if (rs.machSpec.length != rs.setups.length)
-			throw new IllegalArgumentException(
-					"setup state for operation missing or vice versa");
-
-		for (int i = 0; i < rs.procTimes.length; i++) {
-			Operation o = new Operation();
-
-			o.machine = shop.machines[rs.machSpec[i]];
-			o.procTime = rs.procTimes[i];
-
-			// assert setupStateTranslate[o.machine.index].contains(setups[i]);
-			o.setupState = o.machine.translateSetupState(rs.setups[i]);
-
-			o.batchFamily = rs.batchFamilies[i];
-			o.maxBatchSize = rs.batchSizes[i];
-
-			r.addSequentialOperation(o);
-		}
-	}
-
-	public JobSpec getJobSpec(int jobSpec, int idx) {
-		return jobSpecs.get(jobSpec)[idx];
-	}
-
-	public int getNumJobs(int jobSpec) {
-		return jobSpecs.get(jobSpec).length;
-	}
-
-	public int getNumMachines() {
-		return numMachines;
-	}
-
-	public int getNumInGroup(int machine) {
-		return machineSpecs[machine].numInGroup == 0 ? 1
-				: machineSpecs[machine].numInGroup;
-	}
-
-	public double getMachineReleaseDate(int m, int machInGroup) {
-		if (machineSpecs[m].machRelDates == null)
-			return 0.0;
-		return machineSpecs[m].machRelDates[machInGroup];
-	}
-
-	public int getNumRoutes() {
-		return numRoutes;
-	}
-
-	public int[] getMachineOrder(int route) {
-		RouteSpec rs = routeSpecs[route];
-		int[] res = new int[rs.machSpec.length];
-		for (int i = 0; i < res.length; i++) {
-			res[i] = rs.machSpec[i];
-		}
-		return res;
-	}
-
-	public double[] getProcTimes(int route) {
-		RouteSpec rs = routeSpecs[route];
-		double[] res = new double[rs.procTimes.length];
-		for (int i = 0; i < res.length; i++) {
-			res[i] = rs.procTimes[i];
-		}
-		return res;
-	}
 }
