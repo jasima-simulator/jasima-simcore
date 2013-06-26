@@ -1,6 +1,5 @@
 package jasima.shopSim.util.modelDef.streams;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,6 @@ public abstract class StreamDefFact {
 	public abstract StreamDef stringToStreamDef(String params,
 			List<String> errors);
 
-	
 	public static StreamDef parseDblStream(String s, List<String> errors) {
 		StringTokenizer sst = new StringTokenizer(s, "()", false);
 		ArrayList<String> ss = new ArrayList<String>();
@@ -35,7 +33,7 @@ public abstract class StreamDefFact {
 		StreamDefFact fact = streamFactoryReg.get(type);
 		if (fact == null)
 			errors.add(String.format("invalid stream type '%s'", type));
-		
+
 		StreamDef res = fact.stringToStreamDef(parms, errors);
 		return res;
 	}
@@ -48,6 +46,10 @@ public abstract class StreamDefFact {
 
 	static {
 		registerStreamFactory(new DblConstFactory());
+		registerStreamFactory(new DblExponentialDefFactory());
+		registerStreamFactory(new DblUniformDefFactory());
+		registerStreamFactory(new IntUniformDefFactory());
+		registerStreamFactory(new IntEmpDefFactory());
 	}
 
 }
