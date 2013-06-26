@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import java.util.HashMap;
+
 /**
  * Main work unit in a shop.
  * 
@@ -39,9 +41,7 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	private double relDate;
 	private double dueDate;
 	private int jobNum; // global number of job in system
-	private JobSource source; // the job source which released this job
 	private int jobType;
-	private int sourceNum; // number of job by a specific JobSource
 	private double weight = 1.0d;
 	private Operation[] ops;
 	private double[] opDueDates;
@@ -51,6 +51,7 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	private double remProcTime = -1.0d;
 
 	private Job future;
+	private HashMap<Object, Object> valueStore;
 
 	public Job(JobShop shop) {
 		super();
@@ -166,7 +167,11 @@ public class Job extends PrioRuleTarget implements Cloneable {
 
 	@Override
 	public Job clone() throws CloneNotSupportedException {
-		return (Job) super.clone();
+		Job j = (Job) super.clone();
+		j.future = null;
+		if (valueStore != null)
+			j.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		return j;
 	}
 
 	public Job silentClone() {
@@ -240,22 +245,6 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	@Override
 	public int getJobNum() {
 		return jobNum;
-	}
-
-	public void setSource(JobSource source) {
-		this.source = source;
-	}
-
-	public JobSource getSource() {
-		return source;
-	}
-
-	public void setSourceNum(int sourceNum) {
-		this.sourceNum = sourceNum;
-	}
-
-	public int getSourceNum() {
-		return sourceNum;
 	}
 
 	/**
@@ -352,6 +341,38 @@ public class Job extends PrioRuleTarget implements Cloneable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Offers a simple get/put-mechanism to store and retrieve information as a
+	 * kind of global data store. This can be used as a simple extension
+	 * mechanism.
+	 * 
+	 * @param key
+	 *            The key name.
+	 * @param value
+	 *            value to assign to {@code key}.
+	 * @see #valueStoreGet(String)
+	 */
+	public void valueStorePut(Object key, Object value) {
+		if (valueStore == null)
+			valueStore = new HashMap<Object, Object>();
+		valueStore.put(key, value);
+	}
+
+	/**
+	 * Retrieves a value from the value store.
+	 * 
+	 * @param key
+	 *            The entry to return, e.g., identified by a name.
+	 * @return The value associated with {@code key}.
+	 * @see #valueStorePut(Object, Object)
+	 */
+	public Object valueStoreGet(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.get(key);
 	}
 
 }

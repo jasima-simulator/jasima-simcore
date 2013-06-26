@@ -61,8 +61,6 @@ public abstract class JobSource {
 				Job job = createNextJob();
 
 				if (job != null) {
-					job.setSource(JobSource.this);
-
 					if (job.getRelDate() < getShop().simTime())
 						throw new IllegalStateException(
 								"arrival time is in the past: " + job);
@@ -74,7 +72,6 @@ public abstract class JobSource {
 
 				// release "nextJob"
 				if (nextJob != null) {
-					nextJob.setSourceNum(jobsStarted++);
 					getShop().startJob(nextJob);
 				}
 
