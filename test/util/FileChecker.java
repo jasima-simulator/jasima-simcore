@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
@@ -32,7 +33,8 @@ import java.util.zip.GZIPInputStream;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: FileChecker.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com
+ *          $
  */
 public class FileChecker {
 	private FileChecker() {
@@ -41,9 +43,15 @@ public class FileChecker {
 	public static void checkFiles(String file1, String file2) {
 		try {
 			BufferedReader in1 = new BufferedReader(new FileReader(file1));
-			BufferedReader in2 = new BufferedReader(new InputStreamReader(
-					new GZIPInputStream(new BufferedInputStream(
-							new FileInputStream(file2 + ".gz")))));
+			BufferedReader in2;
+			try {
+				in2 = new BufferedReader(new InputStreamReader(
+						new GZIPInputStream(new BufferedInputStream(
+								new FileInputStream(file2 + ".gz")))));
+			} catch (FileNotFoundException e) {
+				in2 = new BufferedReader(new FileReader(file2));
+			}
+
 			int line = 0;
 
 			String s1 = in1.readLine();

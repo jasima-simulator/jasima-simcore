@@ -1,0 +1,332 @@
+0.0	sim_start
+0.0	becomes_available	m0	0
+0.0	becomes_available	m1	0
+0.0	becomes_available	m2	0
+0.0	becomes_available	m3	0
+0.0	becomes_available	m4	0
+0.0	becomes_available	m5	0
+0.0	becomes_available	m6	0
+0.0	becomes_available	m7	0
+0.0	becomes_available	m8	0
+0.0	becomes_available	m9	0
+0.0	enter_system	Job.0.0#0
+0.0	arrives_at	Job.0.0#0	m0	IDLE	0
+0.0	enter_system	Job.1.1#0
+0.0	arrives_at	Job.1.1#0	m0	IDLE	1
+0.0	enter_system	Job.2.2#0
+0.0	arrives_at	Job.2.2#0	m1	IDLE	0
+0.0	enter_system	Job.3.3#0
+0.0	arrives_at	Job.3.3#0	m1	IDLE	1
+0.0	enter_system	Job.4.4#0
+0.0	arrives_at	Job.4.4#0	m2	IDLE	0
+0.0	enter_system	Job.5.5#0
+0.0	arrives_at	Job.5.5#0	m2	IDLE	1
+0.0	enter_system	Job.6.6#0
+0.0	arrives_at	Job.6.6#0	m1	IDLE	2
+0.0	enter_system	Job.7.7#0
+0.0	arrives_at	Job.7.7#0	m2	IDLE	2
+0.0	enter_system	Job.8.8#0
+0.0	arrives_at	Job.8.8#0	m0	IDLE	2
+0.0	enter_system	Job.9.9#0
+0.0	arrives_at	Job.9.9#0	m1	IDLE	3
+0.0	start_processing	m0	Job.0.0#0		2
+0.0	start_processing	m1	Job.2.2#0		3
+0.0	start_processing	m2	Job.4.4#0		2
+14.0	finished_processing	m2	Job.4.4#0
+14.0	arrives_at	Job.4.4#1	m0	PROCESSING	3
+14.0	start_processing	m2	Job.5.5#0		1
+29.0	finished_processing	m0	Job.0.0#0
+29.0	arrives_at	Job.0.0#1	m1	PROCESSING	4
+29.0	start_processing	m0	Job.1.1#0		3
+72.0	finished_processing	m0	Job.1.1#0
+72.0	arrives_at	Job.1.1#1	m2	PROCESSING	1
+72.0	start_processing	m0	Job.8.8#0		2
+91.0	finished_processing	m1	Job.2.2#0
+91.0	arrives_at	Job.2.2#1	m0	PROCESSING	1
+91.0	start_processing	m1	Job.3.3#0		5
+98.0	finished_processing	m2	Job.5.5#0
+98.0	arrives_at	Job.5.5#1	m1	PROCESSING	4
+98.0	start_processing	m2	Job.7.7#0		2
+129.0	finished_processing	m2	Job.7.7#0
+129.0	arrives_at	Job.7.7#1	m0	PROCESSING	2
+129.0	start_processing	m2	Job.1.1#1		1
+148.0	finished_processing	m0	Job.8.8#0
+148.0	arrives_at	Job.8.8#1	m1	PROCESSING	4
+148.0	start_processing	m0	Job.4.4#1		2
+154.0	finished_processing	m0	Job.4.4#1
+154.0	arrives_at	Job.4.4#2	m1	PROCESSING	5
+154.0	start_processing	m0	Job.2.2#1		1
+172.0	finished_processing	m1	Job.3.3#0
+172.0	arrives_at	Job.3.3#1	m2	PROCESSING	0
+172.0	start_processing	m1	Job.6.6#0		5
+218.0	finished_processing	m1	Job.6.6#0
+218.0	arrives_at	Job.6.6#1	m0	PROCESSING	1
+218.0	start_processing	m1	Job.9.9#0		4
+219.0	finished_processing	m2	Job.1.1#1
+219.0	arrives_at	Job.1.1#2	m4	IDLE	0
+219.0	start_processing	m4	Job.1.1#2		0
+219.0	start_processing	m2	Job.3.3#1		0
+239.0	finished_processing	m0	Job.2.2#1
+239.0	arrives_at	Job.2.2#2	m3	IDLE	0
+239.0	start_processing	m3	Job.2.2#2		0
+239.0	start_processing	m0	Job.7.7#1		3
+278.0	finished_processing	m3	Job.2.2#2
+278.0	arrives_at	Job.2.2#3	m2	PROCESSING	0
+294.0	finished_processing	m4	Job.1.1#2
+294.0	arrives_at	Job.1.1#3	m9	IDLE	0
+294.0	start_processing	m9	Job.1.1#3		0
+303.0	finished_processing	m1	Job.9.9#0
+303.0	arrives_at	Job.9.9#1	m0	PROCESSING	2
+303.0	start_processing	m1	Job.0.0#1		4
+305.0	finished_processing	m9	Job.1.1#3
+305.0	arrives_at	Job.1.1#4	m3	IDLE	0
+305.0	start_processing	m3	Job.1.1#4		0
+314.0	finished_processing	m2	Job.3.3#1
+314.0	arrives_at	Job.3.3#2	m0	PROCESSING	2
+314.0	start_processing	m2	Job.2.2#3		1
+325.0	finished_processing	m0	Job.7.7#1
+325.0	arrives_at	Job.7.7#2	m1	PROCESSING	4
+325.0	start_processing	m0	Job.6.6#1		2
+362.0	finished_processing	m0	Job.6.6#1
+362.0	arrives_at	Job.6.6#2	m3	PROCESSING	0
+362.0	start_processing	m0	Job.9.9#1		1
+374.0	finished_processing	m3	Job.1.1#4
+374.0	arrives_at	Job.1.1#5	m1	PROCESSING	4
+374.0	start_processing	m3	Job.6.6#2		0
+375.0	finished_processing	m0	Job.9.9#1
+375.0	arrives_at	Job.9.9#2	m2	PROCESSING	2
+375.0	start_processing	m0	Job.3.3#2		0
+381.0	finished_processing	m1	Job.0.0#1
+381.0	arrives_at	Job.0.0#2	m2	PROCESSING	2
+381.0	start_processing	m1	Job.5.5#1		4
+383.0	finished_processing	m1	Job.5.5#1
+383.0	arrives_at	Job.5.5#2	m5	IDLE	0
+383.0	start_processing	m5	Job.5.5#2		0
+383.0	start_processing	m1	Job.8.8#1		3
+388.0	finished_processing	m2	Job.2.2#3
+388.0	arrives_at	Job.2.2#4	m8	IDLE	0
+388.0	start_processing	m8	Job.2.2#4		0
+388.0	start_processing	m2	Job.9.9#2		2
+435.0	finished_processing	m3	Job.6.6#2
+435.0	arrives_at	Job.6.6#3	m2	PROCESSING	1
+435.0	finished_processing	m5	Job.5.5#2
+435.0	arrives_at	Job.5.5#3	m3	IDLE	1
+435.0	start_processing	m3	Job.5.5#3		1
+446.0	finished_processing	m0	Job.3.3#2
+446.0	arrives_at	Job.3.3#3	m4	IDLE	0
+446.0	start_processing	m4	Job.3.3#3		0
+449.0	finished_processing	m2	Job.9.9#2
+449.0	arrives_at	Job.9.9#3	m6	IDLE	1
+449.0	start_processing	m6	Job.9.9#3		1
+449.0	start_processing	m2	Job.0.0#2		1
+452.0	finished_processing	m1	Job.8.8#1
+452.0	arrives_at	Job.8.8#2	m3	PROCESSING	1
+452.0	start_processing	m1	Job.4.4#2		2
+456.0	finished_processing	m6	Job.9.9#3
+456.0	arrives_at	Job.9.9#4	m8	PROCESSING	1
+458.0	finished_processing	m2	Job.0.0#2
+458.0	arrives_at	Job.0.0#3	m3	PROCESSING	1
+458.0	start_processing	m2	Job.6.6#3		0
+471.0	finished_processing	m2	Job.6.6#3
+471.0	arrives_at	Job.6.6#4	m6	IDLE	1
+471.0	start_processing	m6	Job.6.6#4		1
+474.0	finished_processing	m1	Job.4.4#2
+474.0	arrives_at	Job.4.4#3	m5	IDLE	2
+474.0	start_processing	m5	Job.4.4#3		2
+474.0	start_processing	m1	Job.7.7#2		1
+478.0	finished_processing	m8	Job.2.2#4
+478.0	arrives_at	Job.2.2#5	m5	PROCESSING	2
+478.0	start_processing	m8	Job.9.9#4		1
+503.0	finished_processing	m6	Job.6.6#4
+503.0	arrives_at	Job.6.6#5	m5	PROCESSING	2
+520.0	finished_processing	m1	Job.7.7#2
+520.0	arrives_at	Job.7.7#3	m5	PROCESSING	2
+520.0	start_processing	m1	Job.1.1#5		0
+530.0	finished_processing	m3	Job.5.5#3
+530.0	arrives_at	Job.5.5#4	m8	PROCESSING	0
+530.0	start_processing	m3	Job.8.8#2		2
+535.0	finished_processing	m5	Job.4.4#3
+535.0	arrives_at	Job.4.4#4	m3	PROCESSING	1
+535.0	start_processing	m5	Job.2.2#5		3
+542.0	finished_processing	m8	Job.9.9#4
+542.0	arrives_at	Job.9.9#5	m9	IDLE	0
+542.0	start_processing	m9	Job.9.9#5		0
+542.0	start_processing	m8	Job.5.5#4		0
+545.0	finished_processing	m4	Job.3.3#3
+545.0	arrives_at	Job.3.3#4	m6	IDLE	1
+545.0	finished_processing	m5	Job.2.2#5
+545.0	arrives_at	Job.2.2#6	m7	IDLE	0
+545.0	start_processing	m6	Job.3.3#4		1
+545.0	start_processing	m7	Job.2.2#6		0
+545.0	start_processing	m5	Job.6.6#5		3
+548.0	finished_processing	m1	Job.1.1#5
+548.0	arrives_at	Job.1.1#6	m6	PROCESSING	1
+554.0	finished_processing	m6	Job.3.3#4
+554.0	arrives_at	Job.3.3#5	m8	PROCESSING	0
+554.0	start_processing	m6	Job.1.1#6		1
+557.0	finished_processing	m7	Job.2.2#6
+557.0	arrives_at	Job.2.2#7	m6	PROCESSING	0
+566.0	finished_processing	m5	Job.6.6#5
+566.0	arrives_at	Job.6.6#6	m9	PROCESSING	1
+566.0	start_processing	m5	Job.7.7#3		3
+590.0	finished_processing	m8	Job.5.5#4
+590.0	arrives_at	Job.5.5#5	m9	PROCESSING	1
+590.0	start_processing	m8	Job.3.3#5		0
+600.0	finished_processing	m6	Job.1.1#6
+600.0	arrives_at	Job.1.1#7	m5	PROCESSING	2
+600.0	start_processing	m6	Job.2.2#7		0
+606.0	finished_processing	m3	Job.8.8#2
+606.0	arrives_at	Job.8.8#3	m5	PROCESSING	2
+606.0	start_processing	m3	Job.0.0#3		1
+618.0	finished_processing	m9	Job.9.9#5
+618.0	arrives_at	Job.9.9#6	m5	PROCESSING	2
+618.0	start_processing	m9	Job.6.6#6		2
+640.0	finished_processing	m5	Job.7.7#3
+640.0	arrives_at	Job.7.7#4	m4	IDLE	1
+640.0	start_processing	m4	Job.7.7#4		1
+640.0	start_processing	m5	Job.1.1#7		2
+642.0	finished_processing	m8	Job.3.3#5
+642.0	arrives_at	Job.3.3#6	m7	IDLE	1
+642.0	finished_processing	m3	Job.0.0#3
+642.0	arrives_at	Job.0.0#4	m4	PROCESSING	0
+642.0	start_processing	m7	Job.3.3#6		1
+642.0	start_processing	m3	Job.4.4#4		0
+650.0	finished_processing	m9	Job.6.6#6
+650.0	arrives_at	Job.6.6#7	m8	IDLE	0
+650.0	start_processing	m8	Job.6.6#7		0
+650.0	start_processing	m9	Job.5.5#5		1
+668.0	finished_processing	m3	Job.4.4#4
+668.0	arrives_at	Job.4.4#5	m4	PROCESSING	1
+672.0	finished_processing	m4	Job.7.7#4
+672.0	arrives_at	Job.7.7#5	m6	PROCESSING	0
+672.0	start_processing	m4	Job.0.0#4		1
+686.0	finished_processing	m5	Job.1.1#7
+686.0	arrives_at	Job.1.1#8	m7	PROCESSING	1
+686.0	start_processing	m5	Job.8.8#3		2
+689.0	finished_processing	m6	Job.2.2#7
+689.0	arrives_at	Job.2.2#8	m9	PROCESSING	0
+689.0	start_processing	m6	Job.7.7#5		0
+721.0	finished_processing	m4	Job.0.0#4
+721.0	arrives_at	Job.0.0#5	m5	PROCESSING	1
+721.0	start_processing	m4	Job.4.4#5		0
+722.0	finished_processing	m9	Job.5.5#5
+722.0	arrives_at	Job.5.5#6	m0	IDLE	0
+722.0	start_processing	m0	Job.5.5#6		0
+722.0	start_processing	m9	Job.2.2#8		0
+727.0	finished_processing	m7	Job.3.3#6
+727.0	arrives_at	Job.3.3#7	m3	IDLE	0
+727.0	start_processing	m3	Job.3.3#7		0
+727.0	start_processing	m7	Job.1.1#8		1
+737.0	finished_processing	m5	Job.8.8#3
+737.0	arrives_at	Job.8.8#4	m2	IDLE	0
+737.0	start_processing	m2	Job.8.8#4		0
+737.0	start_processing	m5	Job.9.9#6		1
+739.0	finished_processing	m8	Job.6.6#7
+739.0	arrives_at	Job.6.6#8	m7	PROCESSING	0
+767.0	finished_processing	m9	Job.2.2#8
+767.0	arrives_at	Job.2.2#9	m4	PROCESSING	0
+769.0	finished_processing	m0	Job.5.5#6
+769.0	arrives_at	Job.5.5#7	m6	PROCESSING	0
+777.0	finished_processing	m6	Job.7.7#5
+777.0	arrives_at	Job.7.7#6	m8	IDLE	2
+777.0	start_processing	m8	Job.7.7#6		2
+777.0	start_processing	m6	Job.5.5#7		0
+784.0	finished_processing	m5	Job.9.9#6
+784.0	arrives_at	Job.9.9#7	m3	PROCESSING	0
+784.0	start_processing	m5	Job.0.0#5		0
+790.0	finished_processing	m4	Job.4.4#5
+790.0	arrives_at	Job.4.4#6	m8	PROCESSING	1
+790.0	start_processing	m4	Job.2.2#9		1
+795.0	finished_processing	m5	Job.0.0#5
+795.0	arrives_at	Job.0.0#6	m6	PROCESSING	0
+796.0	finished_processing	m8	Job.7.7#6
+796.0	arrives_at	Job.7.7#7	m9	IDLE	2
+796.0	start_processing	m9	Job.7.7#7		2
+796.0	start_processing	m8	Job.4.4#6		1
+799.0	finished_processing	m7	Job.1.1#8
+799.0	arrives_at	Job.1.1#9	m8	PROCESSING	0
+799.0	start_processing	m7	Job.6.6#8		2
+817.0	finished_processing	m8	Job.4.4#6
+817.0	arrives_at	Job.4.4#7	m7	PROCESSING	1
+817.0	start_processing	m8	Job.1.1#9		0
+822.0	finished_processing	m2	Job.8.8#4
+822.0	arrives_at	Job.8.8#5	m9	PROCESSING	1
+823.0	finished_processing	m4	Job.2.2#9
+823.0	leave_system	Job.2.2#9
+825.0	finished_processing	m3	Job.3.3#7
+825.0	arrives_at	Job.3.3#8	m9	PROCESSING	1
+825.0	start_processing	m3	Job.9.9#7		0
+829.0	finished_processing	m7	Job.6.6#8
+829.0	arrives_at	Job.6.6#9	m4	IDLE	2
+829.0	start_processing	m4	Job.6.6#9		2
+829.0	start_processing	m7	Job.4.4#7		1
+842.0	finished_processing	m6	Job.5.5#7
+842.0	arrives_at	Job.5.5#8	m4	PROCESSING	1
+842.0	start_processing	m6	Job.0.0#6		0
+844.0	finished_processing	m9	Job.7.7#7
+844.0	arrives_at	Job.7.7#8	m7	PROCESSING	1
+844.0	start_processing	m9	Job.8.8#5		2
+847.0	finished_processing	m8	Job.1.1#9
+847.0	leave_system	Job.1.1#9
+855.0	finished_processing	m9	Job.8.8#5
+855.0	arrives_at	Job.8.8#6	m6	PROCESSING	0
+855.0	start_processing	m9	Job.3.3#8		1
+877.0	finished_processing	m3	Job.9.9#7
+877.0	arrives_at	Job.9.9#8	m4	PROCESSING	1
+877.0	finished_processing	m9	Job.3.3#8
+877.0	arrives_at	Job.3.3#9	m5	IDLE	0
+877.0	start_processing	m5	Job.3.3#9		0
+878.0	finished_processing	m7	Job.4.4#7
+878.0	arrives_at	Job.4.4#8	m9	IDLE	0
+878.0	start_processing	m9	Job.4.4#8		0
+878.0	start_processing	m7	Job.7.7#8		1
+884.0	finished_processing	m4	Job.6.6#9
+884.0	leave_system	Job.6.6#9
+884.0	start_processing	m4	Job.5.5#8		1
+890.0	finished_processing	m4	Job.5.5#8
+890.0	arrives_at	Job.5.5#9	m7	PROCESSING	1
+890.0	start_processing	m4	Job.9.9#8		0
+904.0	finished_processing	m6	Job.0.0#6
+904.0	arrives_at	Job.0.0#7	m7	PROCESSING	2
+904.0	start_processing	m6	Job.8.8#6		1
+914.0	finished_processing	m7	Job.7.7#8
+914.0	arrives_at	Job.7.7#9	m3	IDLE	0
+914.0	start_processing	m3	Job.7.7#9		0
+914.0	start_processing	m7	Job.5.5#9		3
+920.0	finished_processing	m5	Job.3.3#9
+920.0	leave_system	Job.3.3#9
+939.0	finished_processing	m7	Job.5.5#9
+939.0	leave_system	Job.5.5#9
+939.0	start_processing	m7	Job.0.0#7		2
+944.0	finished_processing	m6	Job.8.8#6
+944.0	arrives_at	Job.8.8#7	m7	PROCESSING	1
+950.0	finished_processing	m9	Job.4.4#8
+950.0	arrives_at	Job.4.4#9	m6	IDLE	0
+950.0	start_processing	m6	Job.4.4#9		0
+980.0	finished_processing	m4	Job.9.9#8
+980.0	arrives_at	Job.9.9#9	m7	PROCESSING	1
+993.0	finished_processing	m3	Job.7.7#9
+993.0	leave_system	Job.7.7#9
+995.0	finished_processing	m7	Job.0.0#7
+995.0	arrives_at	Job.0.0#8	m8	IDLE	0
+995.0	start_processing	m8	Job.0.0#8		0
+995.0	start_processing	m7	Job.8.8#7		1
+1003.0	finished_processing	m6	Job.4.4#9
+1003.0	leave_system	Job.4.4#9
+1039.0	finished_processing	m8	Job.0.0#8
+1039.0	arrives_at	Job.0.0#9	m9	IDLE	0
+1039.0	start_processing	m9	Job.0.0#9		0
+1060.0	finished_processing	m9	Job.0.0#9
+1060.0	leave_system	Job.0.0#9
+1084.0	finished_processing	m7	Job.8.8#7
+1084.0	arrives_at	Job.8.8#8	m4	IDLE	0
+1084.0	start_processing	m4	Job.8.8#8		0
+1084.0	start_processing	m7	Job.9.9#9		0
+1110.0	finished_processing	m4	Job.8.8#8
+1110.0	arrives_at	Job.8.8#9	m8	IDLE	0
+1110.0	start_processing	m8	Job.8.8#9		0
+1129.0	finished_processing	m7	Job.9.9#9
+1129.0	leave_system	Job.9.9#9
+1184.0	finished_processing	m8	Job.8.8#9
+1184.0	leave_system	Job.8.8#9
+1184.0	sim_end
