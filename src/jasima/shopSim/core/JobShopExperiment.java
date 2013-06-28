@@ -165,7 +165,7 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	protected void createShop() {
-		doCreateShop();
+		shop = doCreateShop();
 
 		RandomFactory randomFactory = RandomFactory.newInstance(shop);
 		randomFactory.setSeed(getInitialSeed());
@@ -173,8 +173,8 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	/** Factory method to create/initialize a shop object. */
-	protected void doCreateShop() {
-		shop = new JobShop();
+	protected JobShop doCreateShop() {
+		return new JobShop();
 	}
 
 	@Override

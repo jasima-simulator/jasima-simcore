@@ -70,7 +70,7 @@ public class JobShop extends Simulation {
 	}
 
 	@Override
-	public void init() {
+	protected void init() {
 		super.init();
 
 		jobsStarted = jobsFinished = 0;
@@ -83,12 +83,7 @@ public class JobShop extends Simulation {
 	}
 
 	@Override
-	public void run() {
-		super.run();
-	}
-
-	@Override
-	public void done() {
+	protected void done() {
 		super.done();
 
 		for (WorkStation m : machines)

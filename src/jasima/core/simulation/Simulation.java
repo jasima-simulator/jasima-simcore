@@ -116,7 +116,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * Performs all initializations required for a successful simulation
 	 * {@link #run()}.
 	 */
-	public void init() {
+	protected void init() {
 		eventList = createEventQueue();
 		simTime = 0.0d;
 		eventNum = Integer.MIN_VALUE;
@@ -151,14 +151,14 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * @see jasima.core.simulation.Event#isAppEvent()
 	 */
 	public void run() {
-		if (numListener() > 0) {
-			fire(SIM_START);
-		}
+		beforeRun();
 
-		continueSim = true;
+		continueSim = numAppEvents > 0;
 
-		Event event;
-		while ((event = eventList.extract()) != null && continueSim) {
+		// main event loop
+		while (continueSim) {
+			Event event = eventList.extract();
+
 			// Advance clock to time of next event
 			simTime = event.getTime();
 
@@ -170,15 +170,33 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 			}
 		}
 
+		afterRun();
+	}
+
+	/**
+	 * Override this method to perform initializations after {@link #init()},
+	 * but before running the simulation.
+	 */
+	protected void beforeRun() {
+		if (numListener() > 0) {
+			fire(SIM_START);
+		}
+	}
+
+	/**
+	 * Override this method to perform some action after running the simulation,
+	 * but before {@link #done()} is called.
+	 */
+	protected void afterRun() {
 		if (numListener() > 0) {
 			fire(SIM_END);
 		}
 	}
 
 	/**
-	 * Performs clean-up, etc., after a simulation {@link #run()} finished.
+	 * Performs clean-up etc., after a simulation's {@link #run()} method finished.
 	 */
-	public void done() {
+	protected void done() {
 		if (numListener() > 0) {
 			fire(SIM_DONE);
 		}

@@ -35,7 +35,8 @@ import java.util.Random;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: JSExample.java 112 2013-05-16 13:08:03Z THildebrandt@gmail.com
+ *          $
  */
 public class JSExample extends JobShop {
 	final Random streamService = new Random(1234234535);
@@ -94,16 +95,17 @@ public class JSExample extends JobShop {
 		installMachineListener(new WorkStationListenerBase() {
 
 			@Override
-			protected void operationStarted(WorkStation m,
-					PrioRuleTarget b, int oldSetupState,
-					int newSetupState, double setupTime) {
+			protected void operationStarted(WorkStation m, PrioRuleTarget b,
+					int oldSetupState, int newSetupState, double setupTime) {
 				assert b.numJobsInBatch() == 1;
 				Job job = b.job(0);
 
-				jobTypeDelay[job.getJobType()].value(simTime() - job.getArriveTime());
-			}}, false);
+				jobTypeDelay[job.getJobType()].value(simTime()
+						- job.getArriveTime());
+			}
+		}, false);
 		installMachineListener(new MachineStatCollector(), true);
-		
+
 		addJobSource(new JobSource() {
 			@Override
 			public Job createNextJob() {
@@ -143,6 +145,11 @@ public class JSExample extends JobShop {
 		}
 	}
 
+	@Override
+	public void done() {
+		super.done();
+	}
+
 	public void addRecord(String s) {
 		System.out.println(s);
 	}
@@ -175,14 +182,16 @@ public class JSExample extends JobShop {
 		 */
 		addRecord("\n\nWork     Average Number     Average       Average Delay");
 		addRecord("Station    in Queue        Utilization       in queue ");
-		
-		HashMap<String, Object> res = new HashMap<String,Object>();
+
+		HashMap<String, Object> res = new HashMap<String, Object>();
 		produceResults(res);
 		for (int i = 0; i < machines.length; i++) {
 			WorkStation m = machines[i];
-			SummaryStat aniq = (SummaryStat) res.get( m.getName() + ".qLen" );
-			SummaryStat aveMachinesBusy = (SummaryStat) res.get( m.getName() + ".util" );
-			SummaryStat stationDelay = (SummaryStat) res.get( m.getName() + ".qWait" );
+			SummaryStat aniq = (SummaryStat) res.get(m.getName() + ".qLen");
+			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName()
+					+ ".util");
+			SummaryStat stationDelay = (SummaryStat) res.get(m.getName()
+					+ ".qWait");
 			addRecord(String.valueOf(i)
 					+ "        "
 					+ String.valueOf(aniq.mean())
