@@ -229,13 +229,6 @@ public class Batch extends PrioRuleTarget {
 	}
 
 	@Override
-	public void proceed() {
-		for (int i = 0, n = jobsInBatch.size(); i < n; i++) {
-			jobsInBatch.get(i).proceed();
-		}
-	}
-
-	@Override
 	public boolean isBatch() {
 		return true;
 	}

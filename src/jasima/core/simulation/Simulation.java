@@ -122,15 +122,6 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 
-		// schedule simulation end
-		if (getSimulationLength() > 0.0)
-			schedule(new Event(getSimulationLength(), Event.EVENT_PRIO_LOWEST) {
-				@Override
-				public void handle() {
-					end();
-				}
-			});
-
 		if (numListener() > 0) {
 			fire(SIM_INIT);
 		}
@@ -178,6 +169,15 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * but before running the simulation.
 	 */
 	protected void beforeRun() {
+		// schedule simulation end
+		if (getSimulationLength() > 0.0)
+			schedule(new Event(getSimulationLength(), Event.EVENT_PRIO_LOWEST) {
+				@Override
+				public void handle() {
+					end();
+				}
+			});
+
 		if (numListener() > 0) {
 			fire(SIM_START);
 		}
@@ -348,8 +348,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 		adapter.removeNotifierListener(listener);
 	}
 
-	@Override
-	public void fire(SimEvent event) {
+	protected void fire(SimEvent event) {
 		if (adapter != null)
 			adapter.fire(event);
 	}

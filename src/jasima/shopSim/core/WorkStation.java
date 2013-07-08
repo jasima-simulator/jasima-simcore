@@ -329,8 +329,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	}
 
 	private void addToQueue(Job j, double arrivesAt) {
-		j.setCurrMachine(this);
-		j.setArriveTime(arrivesAt);
+		j.arriveInQueue(this, arrivesAt);
 
 		queue.add(j);
 		Operation o = j.getCurrentOperation();
@@ -347,7 +346,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 		if (jobsPerBatchFamily != null)
 			addJobToBatchFamily(j);
-
+		
 		if (numListener() > 0) {
 			justArrived = j;
 			fire(WS_JOB_ARRIVAL);
@@ -364,6 +363,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 	public void removeFromQueue(Job j) {
 		boolean removeRes = queue.remove(j);
+		j.removedFromQueue();
 
 		if (!j.isFuture()) {
 			Operation o = j.getCurrentOperation();
@@ -401,7 +401,8 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 		// remove job/batch's jobs from queue
 		for (int i = 0; i < batch.numJobsInBatch(); i++) {
-			removeFromQueue(batch.job(i));
+			Job job = batch.job(i);
+			removeFromQueue(job);
 		}
 
 		// at least 1 machine idle, start job
@@ -426,10 +427,9 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 		for (int i = 0; i < batch.numJobsInBatch(); i++) {
 			Job j = batch.job(i);
-			j.setFinishTime(currMachine.procFinished);
-			j.setStartTime(simTime);
-			j.notifyNextMachine();
+			j.startProcessing();
 		}
+
 		currMachine.state = MachineState.WORKING;
 	}
 
@@ -455,8 +455,12 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 
 		currMachine = null;
 
-		// send jobs to next machine
-		b.proceed();
+		for (int i = 0, n = b.numJobsInBatch(); i < n; i++) {
+			Job j = b.job(i);
+			j.endProcessing();
+			// send jobs to next machine
+			j.proceed();
+		}
 
 		// start next job on this machine
 		if (numJobsWaiting() > 0)
@@ -803,14 +807,13 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	}
 
 	@Override
-	public void fire(WorkStationEvent event) {
-		if (adapter != null)
-			adapter.fire(event);
-	}
-
-	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	protected void fire(WorkStationEvent event) {
+		if (adapter != null)
+			adapter.fire(event);
 	}
 
 	/**

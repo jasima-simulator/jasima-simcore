@@ -20,6 +20,11 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import jasima.core.util.observer.Notifier;
+import jasima.core.util.observer.NotifierAdapter;
+import jasima.core.util.observer.NotifierListener;
+import jasima.shopSim.core.Job.JobEvent;
+
 import java.util.HashMap;
 
 /**
@@ -28,7 +33,21 @@ import java.util.HashMap;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version "$Id$"
  */
-public class Job extends PrioRuleTarget implements Cloneable {
+public class Job extends PrioRuleTarget implements Cloneable,
+		Notifier<Job, JobEvent> {
+
+	/** Base class for workstation events. */
+	public static class JobEvent {
+	}
+
+	// constants for events thrown by a job
+
+	public static final JobEvent JOB_RELEASED = new JobEvent();
+	public static final JobEvent JOB_FINISHED = new JobEvent();
+	public static final JobEvent JOB_ARRIVED_IN_QUEUE = new JobEvent();
+	public static final JobEvent JOB_REMOVED_FROM_QUEUE = new JobEvent();
+	public static final JobEvent JOB_START_OPERATION = new JobEvent();
+	public static final JobEvent JOB_END_OPERATION = new JobEvent();
 
 	private final JobShop shop;
 
@@ -130,8 +149,7 @@ public class Job extends PrioRuleTarget implements Cloneable {
 	 * If the this job has one or more tasks yet to be done, send the job to the
 	 * next machine on its route
 	 */
-	@Override
-	public void proceed() {
+	void proceed() {
 		if (!isLastOperation()) {
 			setTaskNumber(getTaskNumber() + 1);
 
@@ -140,6 +158,37 @@ public class Job extends PrioRuleTarget implements Cloneable {
 		} else {
 			shop.jobFinished(this);
 		}
+	}
+
+	void jobReleased() {
+		fire(JOB_RELEASED);
+	}
+
+	void jobFinished() {
+		fire(JOB_FINISHED);
+	}
+
+	void arriveInQueue(WorkStation workStation, double arrivesAt) {
+		setCurrMachine(workStation);
+		setArriveTime(arrivesAt);
+
+		fire(JOB_ARRIVED_IN_QUEUE);
+	}
+
+	void removedFromQueue() {
+		fire(JOB_REMOVED_FROM_QUEUE);
+	}
+
+	void startProcessing() {
+		setFinishTime(currMachine.currMachine.procFinished);
+		setStartTime(currMachine.shop().simTime());
+		notifyNextMachine();
+
+		fire(JOB_START_OPERATION);
+	}
+
+	void endProcessing() {
+		fire(JOB_END_OPERATION);
 	}
 
 	/**
@@ -165,6 +214,7 @@ public class Job extends PrioRuleTarget implements Cloneable {
 		return future;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Job clone() throws CloneNotSupportedException {
 		Job j = (Job) super.clone();
@@ -373,6 +423,41 @@ public class Job extends PrioRuleTarget implements Cloneable {
 			return null;
 		else
 			return valueStore.get(key);
+	}
+
+	//
+	//
+	// event notification
+	//
+	//
+
+	private NotifierAdapter<Job, JobEvent> adapter = null;
+
+	@Override
+	public void addNotifierListener(NotifierListener<Job, JobEvent> listener) {
+		if (adapter == null)
+			adapter = new NotifierAdapter<Job, JobEvent>(this);
+		adapter.addNotifierListener(listener);
+	}
+
+	@Override
+	public NotifierListener<Job, JobEvent> getNotifierListener(int index) {
+		return adapter.getNotifierListener(index);
+	}
+
+	@Override
+	public void removeNotifierListener(NotifierListener<Job, JobEvent> listener) {
+		adapter.removeNotifierListener(listener);
+	}
+
+	@Override
+	public int numListener() {
+		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	protected void fire(JobEvent event) {
+		if (adapter != null)
+			adapter.fire(event);
 	}
 
 }

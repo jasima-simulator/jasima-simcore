@@ -74,6 +74,11 @@ public class JobShop extends Simulation {
 		super.init();
 
 		jobsStarted = jobsFinished = 0;
+	}
+
+	@Override
+	protected void beforeRun() {
+		super.beforeRun();
 
 		for (WorkStation m : machines)
 			m.init();
@@ -106,6 +111,8 @@ public class JobShop extends Simulation {
 			// + " jobs finished, aborting sim (job starvation?).");
 			end(); // abort simulation
 		}
+		
+		j.jobFinished();
 
 		lastJobFinished = j;
 		if (numListener() > 0)
@@ -121,6 +128,8 @@ public class JobShop extends Simulation {
 					+ ", aborting sim.");
 			end(); // abort simulation
 		}
+		
+		nextJob.jobReleased();
 
 		lastJobReleased = nextJob;
 		if (numListener() > 0)

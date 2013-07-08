@@ -378,8 +378,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 		adapter.removeNotifierListener(listener);
 	}
 
-	@Override
-	public void fire(ExperimentEvent event) {
+	protected void fire(ExperimentEvent event) {
 		if (adapter != null)
 			adapter.fire(event);
 	}

@@ -108,8 +108,6 @@ public abstract class PrioRuleTarget {
 
 	public abstract Job job(int i);
 
-	public abstract void proceed();
-
 	public abstract boolean isBatch();
 
 	public abstract String getName();
