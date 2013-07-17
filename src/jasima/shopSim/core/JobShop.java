@@ -111,7 +111,7 @@ public class JobShop extends Simulation {
 			// + " jobs finished, aborting sim (job starvation?).");
 			end(); // abort simulation
 		}
-		
+
 		j.jobFinished();
 
 		lastJobFinished = j;
@@ -128,7 +128,7 @@ public class JobShop extends Simulation {
 					+ ", aborting sim.");
 			end(); // abort simulation
 		}
-		
+
 		nextJob.jobReleased();
 
 		lastJobReleased = nextJob;
@@ -325,6 +325,24 @@ public class JobShop extends Simulation {
 			}
 			machines = list.toArray(new WorkStation[list.size()]);
 		}
+	}
+
+	/**
+	 * Returns a workstation with the given name, or <code>null</code> if no
+	 * such workstation exists.
+	 */
+	public WorkStation getWorkstationByName(String name) {
+		WorkStation res = null;
+
+		if (getMachines() != null)
+			for (WorkStation w : getMachines()) {
+				if (name.equals(w.getName())) {
+					res = w;
+					break; // for w
+				}
+			}
+
+		return res;
 	}
 
 	/**
