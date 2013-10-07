@@ -251,10 +251,18 @@ public class HolthausExperiment extends JobShopExperiment {
 	public int getOpProcTimeMin() {
 		return opProcTime.a;
 	}
+//
+//	public void setOpProcTimeMin(int min) {
+//		opProcTime = new Pair<Integer, Integer>(min, opProcTime.b);
+//	}
 
 	public int getOpProcTimeMax() {
 		return opProcTime.b;
 	}
+//
+//	public void setOpProcTimeMax(int max) {
+//		opProcTime = new Pair<Integer, Integer>(opProcTime.a, max);
+//	}
 
 	public void setOpProcTime(int min, int max) {
 		if (min < 0 || (max < min))
