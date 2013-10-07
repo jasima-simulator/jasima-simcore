@@ -42,7 +42,8 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * Holthaus and Rajendran (1999) for details.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class HolthausExperiment extends JobShopExperiment {
 
@@ -251,18 +252,20 @@ public class HolthausExperiment extends JobShopExperiment {
 	public int getOpProcTimeMin() {
 		return opProcTime.a;
 	}
-//
-//	public void setOpProcTimeMin(int min) {
-//		opProcTime = new Pair<Integer, Integer>(min, opProcTime.b);
-//	}
+
+	/** Sets the minimum processing time of an operation. */
+	public void setOpProcTimeMin(int min) {
+		opProcTime = new Pair<Integer, Integer>(min, opProcTime.b);
+	}
 
 	public int getOpProcTimeMax() {
 		return opProcTime.b;
 	}
-//
-//	public void setOpProcTimeMax(int max) {
-//		opProcTime = new Pair<Integer, Integer>(opProcTime.a, max);
-//	}
+
+	/** Sets the maximum processing time of an operation. */
+	public void setOpProcTimeMax(int max) {
+		opProcTime = new Pair<Integer, Integer>(opProcTime.a, max);
+	}
 
 	public void setOpProcTime(int min, int max) {
 		if (min < 0 || (max < min))
