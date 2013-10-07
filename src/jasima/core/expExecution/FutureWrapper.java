@@ -21,10 +21,8 @@
 package jasima.core.expExecution;
 
 import jasima.core.experiment.Experiment;
+import jasima.core.util.Util;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -88,18 +86,11 @@ public class FutureWrapper implements ExperimentFuture {
 		} catch (ExecutionException ex) {
 			Throwable cause = ex.getCause();
 
-			// convert exception to string
-			Writer sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			cause.printStackTrace(pw);
-			String s = sw.toString();
-			s = s.replace(System.getProperty("line.separator") + '\t', " \\\\ ");
-
 			// create "artificial" results map
 			res = new HashMap<String, Object>();
 			res.put(Experiment.EXP_ABORTED, 1);
 			res.put(Experiment.EXCEPTION_MESSAGE, cause.getMessage());
-			res.put(Experiment.EXCEPTION, s);
+			res.put(Experiment.EXCEPTION, Util.exceptionToString(cause));
 		}
 
 		return res;

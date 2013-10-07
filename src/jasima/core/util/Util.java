@@ -30,7 +30,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,6 +50,18 @@ import java.util.StringTokenizer;
  * @version "$Id$"
  */
 public class Util {
+
+	/**
+	 * Converts an exception's stack trace to a single line string.
+	 */
+	public static String exceptionToString(Throwable t) {
+		// convert exception to string
+		Writer sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		String s = sw.toString();
+		return s.replace(System.getProperty("line.separator") + '\t', " \\\\ ");
+	}
 
 	/**
 	 * Returns a new array with a certain number of new objects of a certain
@@ -206,6 +221,9 @@ public class Util {
 				if (i == segments.length - 1) {
 					// call setter
 					m = match.getWriteMethod();
+					if (m == null)
+						throw new RuntimeException("Property '" + segments[i]
+								+ "' is not writable.");
 					o = m.invoke(o, convert(value, match.getPropertyType()));
 				} else {
 					// call getter and continue
@@ -215,7 +233,7 @@ public class Util {
 			}
 		} catch (Exception e1) {
 			throw new RuntimeException("Can't set property '" + propPath
-					+ "' to value '" + value + "'.", e1);
+					+ "' to value '" + value + "'. " + e1.getMessage(), e1);
 		}
 	}
 

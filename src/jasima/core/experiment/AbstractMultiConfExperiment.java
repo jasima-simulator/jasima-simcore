@@ -104,11 +104,31 @@ public abstract class AbstractMultiConfExperiment extends
 
 	protected void handleConfig(Map<String, Object> conf) {
 		if (isValidConfiguration(conf)) {
+			numConfs++;
 			try {
 				experiments.add(createExperimentForConf(conf));
-				numConfs++;
-			} catch (Exception e) {
-				// ignore
+			} catch (final Exception e) {
+				print(ExpMsgCategory.ERROR, e.getMessage());
+				experiments.add(new Experiment() {
+
+					private static final long serialVersionUID = 4259612422796656502L;
+
+					@Override
+					protected void produceResults() {
+						aborted++;
+						super.produceResults();
+
+						resultMap.put(Experiment.EXCEPTION_MESSAGE,
+								e.getMessage());
+						resultMap.put(Experiment.EXCEPTION,
+								Util.exceptionToString(e));
+					}
+
+					@Override
+					protected void performRun() {
+						// do nothing
+					}
+				});
 			}
 		}
 	}
