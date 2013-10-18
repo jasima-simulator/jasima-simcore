@@ -136,7 +136,7 @@ public class TraceFileProducer extends JobShopListenerBase {
 	}
 
 	@Override
-	protected void shopSimEnd(Simulation sim) {
+	protected void simEnd(Simulation sim) {
 		print(sim.simTime() + "\tsim_end");
 
 		log.close();
@@ -149,7 +149,7 @@ public class TraceFileProducer extends JobShopListenerBase {
 	}
 
 	@Override
-	protected void shopSimStart(Simulation sim) {
+	protected void simStart(Simulation sim) {
 		print(sim.simTime() + "\tsim_start");
 
 		JobShop shop = (JobShop) sim;

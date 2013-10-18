@@ -63,9 +63,9 @@ public abstract class JobShopListenerBase implements
 		} else if (event == Simulation.COLLECT_RESULTS) {
 			produceResults(sim, sim.resultMap);
 		} else if (event == Simulation.SIM_START) {
-			shopSimStart(sim);
+			simStart(sim);
 		} else if (event == Simulation.SIM_END) {
-			shopSimEnd(sim);
+			simEnd(sim);
 		} else if (event == Simulation.SIM_INIT) {
 			init(sim);
 		} else if (event == Simulation.SIM_DONE) {
@@ -89,10 +89,10 @@ public abstract class JobShopListenerBase implements
 	protected void init(Simulation sim) {
 	}
 
-	protected void shopSimEnd(Simulation sim) {
+	protected void simStart(Simulation sim) {
 	}
 
-	protected void shopSimStart(Simulation sim) {
+	protected void simEnd(Simulation sim) {
 	}
 
 	protected void produceResults(Simulation sim, Map<String, Object> resultMap) {
