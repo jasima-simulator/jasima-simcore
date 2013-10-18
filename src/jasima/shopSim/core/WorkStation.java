@@ -716,6 +716,10 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 		return shop;
 	}
 
+	public int index() {
+		return index;
+	}
+
 	public Map<String, List<Job>> getJobsByFamily() {
 		if (jobsPerBatchFamily == null) {
 			jobsPerBatchFamily = new HashMap<String, List<Job>>();
