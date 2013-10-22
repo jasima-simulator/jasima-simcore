@@ -97,6 +97,11 @@ public abstract class AbstractMultiConfExperiment extends
 	@Override
 	public void init() {
 		numConfs = 0;
+
+		if (getBaseExperiment() == null) {
+			throw new IllegalArgumentException("Please set a base experiment.");
+		}
+
 		super.init();
 	}
 
