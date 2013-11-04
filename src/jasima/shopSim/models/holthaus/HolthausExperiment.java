@@ -22,6 +22,7 @@ package jasima.shopSim.models.holthaus;
 
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblDistribution;
+import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.core.util.Pair;
@@ -67,6 +68,7 @@ public class HolthausExperiment extends JobShopExperiment {
 	private double dueDateFactor = DEF_DUE_DATE;
 	private int numMachines = DEF_MACHINES;
 	private Scenario scenario = Scenario.JOB_SHOP;
+	private DblStream weights = null;
 
 	private Pair<Integer, Integer> numOps = new Pair<Integer, Integer>(
 			DEF_OPS_MIN, DEF_OPS_MAX);
@@ -181,6 +183,13 @@ public class HolthausExperiment extends JobShopExperiment {
 				getNumMachines() - 1));
 
 		src.setDueDateFactors(new DblConst(getDueDateFactor()));
+
+		if (getWeights() != null)
+			try {
+				src.setJobWeights(getWeights().clone());
+			} catch (CloneNotSupportedException e) {
+				throw new RuntimeException(e);
+			}
 
 		return src;
 	}
@@ -297,6 +306,22 @@ public class HolthausExperiment extends JobShopExperiment {
 	 */
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
 		this.stopAfterNumJobs = stopAfterNumJobs;
+	}
+
+	public DblStream getWeights() {
+		return weights;
+	}
+
+	/**
+	 * Sets the weights to be used for each job. The default setting is to
+	 * assign a weight of 1 for each job when this attribute is {@code null}.
+	 * 
+	 * @param weights
+	 *            A {@link DblStream} to determine job weight. Default: each job
+	 *            gets a weight of 1.
+	 */
+	public void setWeights(DblStream weights) {
+		this.weights = weights;
 	}
 
 }
