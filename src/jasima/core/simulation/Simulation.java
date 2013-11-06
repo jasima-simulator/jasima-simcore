@@ -23,6 +23,7 @@ package jasima.core.simulation;
 import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.util.Util;
+import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
@@ -44,7 +45,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class Simulation implements Notifier<Simulation, SimEvent> {
+public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
@@ -194,7 +195,8 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	}
 
 	/**
-	 * Performs clean-up etc., after a simulation's {@link #run()} method finished.
+	 * Performs clean-up etc., after a simulation's {@link #run()} method
+	 * finished.
 	 */
 	protected void done() {
 		if (numListener() > 0) {
@@ -369,6 +371,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 *            value to assign to {@code key}.
 	 * @see #valueStoreGet(String)
 	 */
+	@Override
 	public void valueStorePut(Object key, Object value) {
 		if (valueStore == null)
 			valueStore = new HashMap<Object, Object>();
@@ -383,6 +386,7 @@ public class Simulation implements Notifier<Simulation, SimEvent> {
 	 * @return The value associated with {@code key}.
 	 * @see #valueStorePut(Object, Object)
 	 */
+	@Override
 	public Object valueStoreGet(Object key) {
 		if (valueStore == null)
 			return null;

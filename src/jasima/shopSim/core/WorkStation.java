@@ -21,6 +21,7 @@
 package jasima.shopSim.core;
 
 import jasima.core.simulation.Event;
+import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
@@ -49,7 +50,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
+public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, ValueStore {
 
 	/** Base class for workstation events. */
 	public static class WorkStationEvent {
@@ -831,6 +832,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	 *            value to assign to {@code key}.
 	 * @see #valueStoreGet(String)
 	 */
+	@Override
 	public void valueStorePut(Object key, Object value) {
 		if (valueStore == null)
 			valueStore = new HashMap<Object, Object>();
@@ -845,6 +847,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent> {
 	 * @return The value associated with {@code key}.
 	 * @see #valueStorePut(Object, Object)
 	 */
+	@Override
 	public Object valueStoreGet(Object key) {
 		if (valueStore == null)
 			return null;

@@ -20,6 +20,7 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
@@ -34,7 +35,7 @@ import java.util.HashMap;
  * @version "$Id$"
  */
 public class Job extends PrioRuleTarget implements Cloneable,
-		Notifier<Job, JobEvent> {
+		Notifier<Job, JobEvent>, ValueStore {
 
 	/** Base class for workstation events. */
 	public static class JobEvent {
@@ -404,6 +405,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	 *            value to assign to {@code key}.
 	 * @see #valueStoreGet(String)
 	 */
+	@Override
 	public void valueStorePut(Object key, Object value) {
 		if (valueStore == null)
 			valueStore = new HashMap<Object, Object>();
@@ -418,6 +420,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	 * @return The value associated with {@code key}.
 	 * @see #valueStorePut(Object, Object)
 	 */
+	@Override
 	public Object valueStoreGet(Object key) {
 		if (valueStore == null)
 			return null;
