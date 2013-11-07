@@ -7,7 +7,7 @@ public class IntUniformDef extends StreamDef {
 
 	public static final String PARAM_MAX_VALUE = "maxValue";
 	public static final String PARAM_MIN_VALUE = "minValue";
-	public static final String TYPE_STRING = "dblUnif";
+	public static final String TYPE_STRING = "intUnif";
 
 	private int minValue = 0;
 	private int maxValue = 10;

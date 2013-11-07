@@ -125,6 +125,8 @@ public class TextFileReader {
 			s = readJobs(r);
 		else if (JOB_SECT_DYN_MARKER.equalsIgnoreCase(s))
 			s = readDynJobs(r);
+		else
+			throw new IllegalArgumentException(s);
 		return s;
 	}
 
@@ -301,19 +303,24 @@ public class TextFileReader {
 			throw new RuntimeException("parse error '" + s + "', "
 					+ Arrays.toString(errors.toArray()));
 
-		// // optional
-		// s = Util.nextNonEmptyLine(r);
-		// if ("numJobs".equalsIgnoreCase(s)) {
-		// s = Util.nextNonEmptyLine(r);
-		// numJobs = Integer.parseInt(s);
-		// s = Util.nextNonEmptyLine(r);
-		// }
+		s = Util.nextNonEmptyLine(r);
+
+		int numJobs = -1;
+
+		// optional
+		if ("numJobs".equalsIgnoreCase(s)) {
+			s = Util.nextNonEmptyLine(r);
+			numJobs = Integer.parseInt(s);
+			s = Util.nextNonEmptyLine(r);
+		}
 
 		DynamicSourceDef sd = new DynamicSourceDef();
 		sd.setIats(iats);
 		sd.setDueDates(dueDates);
 		sd.setWeights(weights);
 		sd.setRoute(route);
+		if (numJobs >= 0)
+			sd.setNumJobs(numJobs);
 
 		SourceDef[] as = Util.addToArray(data.getJobSources(), sd,
 				SourceDef.class);
