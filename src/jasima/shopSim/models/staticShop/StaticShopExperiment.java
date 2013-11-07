@@ -80,6 +80,10 @@ public class StaticShopExperiment extends JobShopExperiment {
 	protected void configureShopFromFile(JobShop js) {
 		URI uri = null;
 
+		if (getInstFileName() == null && getInstURI() == null)
+			throw new IllegalArgumentException(
+					"Either 'instFileName' or 'instURI' have to be specified.");
+
 		if (getInstFileName() != null) {
 			File f = new File(getInstFileName());
 			if (f.exists())
@@ -102,9 +106,13 @@ public class StaticShopExperiment extends JobShopExperiment {
 		if (uri == null)
 			uri = getInstURI();
 
-		if (uri == null)
-			throw new IllegalArgumentException(
-					"Either 'instFileName' or 'instURI' have to be specified.");
+		if (uri == null) {
+			Object src = getInstURI();
+			if (src == null)
+				src = getInstFileName();
+			throw new IllegalArgumentException("Could not load model from '"
+					+ src.toString() + "'. Perhaps file is not accessible.");
+		}
 
 		TextFileReader r = getReader(uri, useInstanceCache);
 		r.configureMdl(js);
