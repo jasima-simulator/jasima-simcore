@@ -454,14 +454,14 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 			justCompleted = null;
 		}
 
-		currMachine = null;
-
 		for (int i = 0, n = b.numJobsInBatch(); i < n; i++) {
 			Job j = b.job(i);
 			j.endProcessing();
 			// send jobs to next machine
 			j.proceed();
 		}
+		
+		currMachine = null;
 
 		// start next job on this machine
 		if (numJobsWaiting() > 0)
