@@ -43,6 +43,7 @@ import jasima.shopSim.util.BatchStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -386,7 +387,10 @@ public class TestForAllResults extends ExperimentTest {
 		e.runExperiment();
 		e.printResults();
 
-		Map<String, Object> res = e.getResults();
+		Map<String, Object> res = new HashMap<String, Object>(e.getResults());
+		res.remove("condWeightedTardMax");
+		res.remove("condWeightedTardVariance");
+		res.remove("condWeightedTardMean");
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 
 		checkKeySets(res, expected);

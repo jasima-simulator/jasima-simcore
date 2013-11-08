@@ -34,6 +34,7 @@ import jasima.shopSim.util.TraceFileProducer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
@@ -90,7 +91,12 @@ public class TestDowntimes extends ExperimentTest {
 		e.addShopListener(new TraceFileProducer("log_" + new File(fn).getName()));
 		e.runExperiment();
 		e.printResults();
-		return e.getResults();
+
+		Map<String, Object> res = new HashMap<String, Object>(e.getResults());
+		res.remove("condWeightedTardMax");
+		res.remove("condWeightedTardVariance");
+		res.remove("condWeightedTardMean");
+		return res;
 	}
 
 	private static void checkFiles(String actual, String expected) {

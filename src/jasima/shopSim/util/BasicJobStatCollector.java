@@ -31,10 +31,13 @@ import jasima.shopSim.core.WorkStation;
 import java.util.Map;
 
 /**
- * Collects some basic job statistics like flowtime, tardiness, ...
+ * Collects some basic job statistics: cMax, percentage tardy, flowtime,
+ * tardiness, lateness, conditional tardiness, and weighted variants of the
+ * latter 4 objective functions.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class BasicJobStatCollector extends JobShopListenerBase {
 
@@ -46,6 +49,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 	private SummaryStat lateness;
 	private SummaryStat weightedTardiness;
 	private SummaryStat conditionalTardiness;
+	private SummaryStat conditionalWeightedTardiness;
 	private SummaryStat weightedTardinessWithWIP;
 	private int numTardy;
 	private int numFinished;
@@ -59,6 +63,8 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 		weightedFlowtimes = new SummaryStat("weightedFlowtimes");
 		weightedTardiness = new SummaryStat("weightedTardiness");
 		conditionalTardiness = new SummaryStat("conditionalTardiness");
+		conditionalWeightedTardiness = new SummaryStat(
+				"conditionalWeightedTardiness");
 		numTardy = 0;
 		numFinished = 0;
 		cMax = 0.0;
@@ -108,18 +114,19 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 
 		double flowtime = shop.simTime() - j.getRelDate();
 		flowtimes.value(flowtime);
+		weightedFlowtimes.value(j.getWeight() * flowtime);
 
 		double late = shop.simTime() - j.getDueDate();
 		lateness.value(late);
 
 		double tard = Math.max(late, 0);
+		double wTard = j.getWeight() * tard;
 		tardiness.value(tard);
-
-		weightedTardiness.value(j.getWeight() * tard);
-		weightedFlowtimes.value(j.getWeight() * flowtime);
+		weightedTardiness.value(wTard);
 
 		if (tard > 0.0) {
 			conditionalTardiness.value(tard);
+			conditionalWeightedTardiness.value(wTard);
 			numTardy++;
 		}
 
@@ -135,6 +142,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 		Util.putMeanMaxVar(weightedTardiness, "weightedTard", res);
 		Util.putMeanMaxVar(conditionalTardiness, "condTard", res);
 		Util.putMeanMaxVar(weightedTardinessWithWIP, "weightedTardWIP", res);
+		Util.putMeanMaxVar(conditionalWeightedTardiness, "condWeightedTard", res);
 
 		res.put("tardPercentage", ((double) numTardy) / numFinished);
 		res.put("cMax", cMax);
