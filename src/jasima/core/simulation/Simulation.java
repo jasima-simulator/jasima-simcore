@@ -394,4 +394,13 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 			return valueStore.get(key);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Simulation sim = (Simulation) super.clone();
+		if (valueStore != null)
+			sim.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		return sim;
+	}
+
 }

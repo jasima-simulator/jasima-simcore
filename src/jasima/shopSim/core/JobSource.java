@@ -21,20 +21,25 @@
 package jasima.shopSim.core;
 
 import jasima.core.simulation.Event;
+import jasima.core.util.ValueStore;
+
+import java.util.HashMap;
 
 /**
  * A job source is an abstract base class for classes producing {@link Job}s.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
-public abstract class JobSource {
+public abstract class JobSource implements ValueStore {
 
 	// bigger than WorkStation.DEPART_PRIO but smaller than
 	// WorkStation.SELECT_PRIO
 	public static final int ARRIVE_PRIO = Event.EVENT_PRIO_HIGH;
 
 	private JobShop shop;
+	private HashMap<Object, Object> valueStore;
 
 	public boolean stopArrivals;
 	public int jobsStarted;
@@ -101,4 +106,48 @@ public abstract class JobSource {
 	public void setShop(JobShop shop) {
 		this.shop = shop;
 	}
+
+	/**
+	 * Offers a simple get/put-mechanism to store and retrieve information as a
+	 * kind of global data store. This can be used as a simple extension
+	 * mechanism.
+	 * 
+	 * @param key
+	 *            The key name.
+	 * @param value
+	 *            value to assign to {@code key}.
+	 * @see #valueStoreGet(String)
+	 */
+	@Override
+	public void valueStorePut(Object key, Object value) {
+		if (valueStore == null)
+			valueStore = new HashMap<Object, Object>();
+		valueStore.put(key, value);
+	}
+
+	/**
+	 * Retrieves a value from the value store.
+	 * 
+	 * @param key
+	 *            The entry to return, e.g., identified by a name.
+	 * @return The value associated with {@code key}.
+	 * @see #valueStorePut(Object, Object)
+	 */
+	@Override
+	public Object valueStoreGet(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.get(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		JobSource js = (JobSource) super.clone();
+		if (valueStore != null)
+			js.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		return js;
+	}
+
 }

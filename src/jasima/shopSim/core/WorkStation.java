@@ -50,7 +50,8 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, ValueStore {
+public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
+		ValueStore {
 
 	/** Base class for workstation events. */
 	public static class WorkStationEvent {
@@ -347,7 +348,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 
 		if (jobsPerBatchFamily != null)
 			addJobToBatchFamily(j);
-		
+
 		if (numListener() > 0) {
 			justArrived = j;
 			fire(WS_JOB_ARRIVAL);
@@ -460,7 +461,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 			// send jobs to next machine
 			j.proceed();
 		}
-		
+
 		currMachine = null;
 
 		// start next job on this machine
@@ -853,6 +854,15 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 			return null;
 		else
 			return valueStore.get(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		WorkStation ws = (WorkStation) super.clone();
+		if (valueStore != null)
+			ws.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		return ws;
 	}
 
 }
