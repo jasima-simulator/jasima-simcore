@@ -388,9 +388,11 @@ public class TestForAllResults extends ExperimentTest {
 		e.printResults();
 
 		Map<String, Object> res = new HashMap<String, Object>(e.getResults());
-		res.remove("condWeightedTardMax");
-		res.remove("condWeightedTardVariance");
-		res.remove("condWeightedTardMean");
+		res.remove("weightedCondTardMax");
+		res.remove("weightedCondTardVariance");
+		res.remove("weightedCondTardMean");
+		res.remove("numTardy");
+		res.remove("weightedNumTardy");
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 
 		checkKeySets(res, expected);

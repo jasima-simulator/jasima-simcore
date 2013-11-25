@@ -48,7 +48,12 @@ public class TestDowntimes extends ExperimentTest {
 
 	@Test
 	public void test_js02x05() throws Exception {
-		Map<String, Object> res = test("testInstances/js02x05.txt");
+		Map<String, Object> res = new HashMap<String, Object>(test("testInstances/js02x05.txt"));
+		res.remove("weightedCondTardMax");
+		res.remove("weightedCondTardVariance");
+		res.remove("weightedCondTardMean");
+		res.remove("numTardy");
+		res.remove("weightedNumTardy");
 
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil
 				.loadXML(new File("testInstances/js02x05.txt.results"));
@@ -60,7 +65,12 @@ public class TestDowntimes extends ExperimentTest {
 
 	@Test
 	public void test_js01x02() throws Exception {
-		Map<String, Object> res = test("testInstances/js01x03.txt");
+		Map<String, Object> res = new HashMap<String, Object>(test("testInstances/js01x03.txt"));
+		res.remove("weightedCondTardMax");
+		res.remove("weightedCondTardVariance");
+		res.remove("weightedCondTardMean");
+		res.remove("numTardy");
+		res.remove("weightedNumTardy");
 
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil
 				.loadXML(new File("testInstances/js01x03.txt.results"));

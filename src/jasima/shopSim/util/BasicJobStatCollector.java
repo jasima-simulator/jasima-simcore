@@ -31,9 +31,10 @@ import jasima.shopSim.core.WorkStation;
 import java.util.Map;
 
 /**
- * Collects some basic job statistics: cMax, percentage tardy, flowtime,
- * tardiness, lateness, conditional tardiness, and weighted variants of the
- * latter 4 objective functions.
+ * Collects some basic job statistics: cMax (completion time of last job
+ * finished), percentage tardy, lateness, number of tardy jobs, flowtime,
+ * tardiness, conditional tardiness, and weighted variants of the latter 4
+ * objective functions.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
@@ -43,28 +44,30 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 
 	private static final long serialVersionUID = -6311778884767987852L;
 
-	private SummaryStat flowtimes;
-	private SummaryStat weightedFlowtimes;
-	private SummaryStat tardiness;
 	private SummaryStat lateness;
+	private SummaryStat flowtime;
+	private SummaryStat weightedFlowtime;
+	private SummaryStat tardiness;
 	private SummaryStat weightedTardiness;
 	private SummaryStat conditionalTardiness;
-	private SummaryStat conditionalWeightedTardiness;
+	private SummaryStat weightedConditionalTardiness;
 	private SummaryStat weightedTardinessWithWIP;
 	private int numTardy;
+	private double numTardyWeighted;
 	private int numFinished;
 	private double cMax;
 
 	@Override
 	protected void init(Simulation sim) {
-		flowtimes = new SummaryStat("flowtimes");
+		flowtime = new SummaryStat("flowtimes");
 		tardiness = new SummaryStat("tardiness");
 		lateness = new SummaryStat("lateness");
-		weightedFlowtimes = new SummaryStat("weightedFlowtimes");
+		weightedFlowtime = new SummaryStat("weightedFlowtimes");
 		weightedTardiness = new SummaryStat("weightedTardiness");
 		conditionalTardiness = new SummaryStat("conditionalTardiness");
-		conditionalWeightedTardiness = new SummaryStat(
-				"conditionalWeightedTardiness");
+		weightedConditionalTardiness = new SummaryStat(
+				"weightedConditionalTardiness");
+		numTardyWeighted = 0.0;
 		numTardy = 0;
 		numFinished = 0;
 		cMax = 0.0;
@@ -112,9 +115,9 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 		assert shop.simTime() >= cMax;
 		cMax = shop.simTime();
 
-		double flowtime = shop.simTime() - j.getRelDate();
-		flowtimes.value(flowtime);
-		weightedFlowtimes.value(j.getWeight() * flowtime);
+		double ft = shop.simTime() - j.getRelDate();
+		flowtime.value(ft);
+		weightedFlowtime.value(j.getWeight() * ft);
 
 		double late = shop.simTime() - j.getDueDate();
 		lateness.value(late);
@@ -126,8 +129,9 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 
 		if (tard > 0.0) {
 			conditionalTardiness.value(tard);
-			conditionalWeightedTardiness.value(wTard);
+			weightedConditionalTardiness.value(wTard);
 			numTardy++;
+			numTardyWeighted += j.getWeight();
 		}
 
 		numFinished++;
@@ -135,16 +139,23 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 
 	@Override
 	public void produceResults(Simulation sim, Map<String, Object> res) {
-		Util.putMeanMaxVar(flowtimes, "flow", res);
-		Util.putMeanMaxVar(weightedFlowtimes, "weightedFlow", res);
+		Util.putMeanMaxVar(flowtime, "flow", res);
+		Util.putMeanMaxVar(weightedFlowtime, "weightedFlow", res);
+
 		Util.putMeanMaxVar(lateness, "late", res);
+
 		Util.putMeanMaxVar(tardiness, "tard", res);
 		Util.putMeanMaxVar(weightedTardiness, "weightedTard", res);
-		Util.putMeanMaxVar(conditionalTardiness, "condTard", res);
 		Util.putMeanMaxVar(weightedTardinessWithWIP, "weightedTardWIP", res);
-		Util.putMeanMaxVar(conditionalWeightedTardiness, "condWeightedTard", res);
+
+		Util.putMeanMaxVar(conditionalTardiness, "condTard", res);
+		Util.putMeanMaxVar(weightedConditionalTardiness, "weightedCondTard",
+				res);
 
 		res.put("tardPercentage", ((double) numTardy) / numFinished);
+		res.put("numTardy", numTardy);
+		res.put("weightedNumTardy", numTardyWeighted);
+
 		res.put("cMax", cMax);
 	}
 
