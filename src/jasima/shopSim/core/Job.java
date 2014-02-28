@@ -26,7 +26,9 @@ import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.Job.JobEvent;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Main work unit in a shop.
@@ -57,12 +59,12 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	// when will job finish processing on its current machine (if started)
 	private double startTime;
 	private double finishTime;
-	private int taskNumber; // current operation
 	private double relDate;
 	private double dueDate;
 	private int jobNum; // global number of job in system
 	private int jobType;
 	private double weight = 1.0d;
+	private int taskNumber; // current operation
 	private Operation[] ops;
 	private double[] opDueDates;
 	private boolean isFuture = false;
@@ -426,6 +428,39 @@ public class Job extends PrioRuleTarget implements Cloneable,
 			return null;
 		else
 			return valueStore.get(key);
+	}
+
+	/**
+	 * Returns the number of keys in this job's value store.
+	 */
+	@Override
+	public int valueStoreGetNumKeys() {
+		return (valueStore == null) ? 0 : valueStore.size();
+	}
+
+	/**
+	 * Returns a list of all keys contained in this job's value store.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Object> valueStoreGetAllKeys() {
+		if (valueStore == null)
+			return Collections.EMPTY_SET;
+		else
+			return valueStore.keySet();
+	}
+
+	/**
+	 * Removes an entry from this job's value store.
+	 * 
+	 * @return The value previously associated with "key", or null, if no such key was found.
+	 */
+	@Override
+	public Object valueStoreRemove(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.remove(key);
 	}
 
 	//

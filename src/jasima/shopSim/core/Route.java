@@ -24,8 +24,10 @@ import jasima.core.util.ValueStore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Simple container for Operations.
@@ -107,6 +109,40 @@ public class Route implements ValueStore {
 			return null;
 		else
 			return valueStore.get(key);
+	}
+
+	/**
+	 * Returns the number of keys in the value store.
+	 */
+	@Override
+	public int valueStoreGetNumKeys() {
+		return (valueStore == null) ? 0 : valueStore.size();
+	}
+
+	/**
+	 * Returns a list of all keys contained in the value store.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Object> valueStoreGetAllKeys() {
+		if (valueStore == null)
+			return Collections.EMPTY_SET;
+		else
+			return valueStore.keySet();
+	}
+
+	/**
+	 * Removes an entry from the value store.
+	 * 
+	 * @return The value previously associated with "key", or null, if no such
+	 *         key was found.
+	 */
+	@Override
+	public Object valueStoreRemove(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.remove(key);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -28,8 +28,10 @@ import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for a discrete event simulation. This class doesn't do much, but
@@ -392,6 +394,39 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 			return null;
 		else
 			return valueStore.get(key);
+	}
+
+	/**
+	 * Returns the number of keys in this simulation's value store.
+	 */
+	@Override
+	public int valueStoreGetNumKeys() {
+		return (valueStore == null) ? 0 : valueStore.size();
+	}
+
+	/**
+	 * Returns a list of all keys contained in this simulation's value store.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Object> valueStoreGetAllKeys() {
+		if (valueStore == null)
+			return Collections.EMPTY_SET;
+		else
+			return valueStore.keySet();
+	}
+
+	/**
+	 * Removes an entry from this simulation's value store.
+	 * 
+	 * @return The value previously associated with "key", or null, if no such key was found.
+	 */
+	@Override
+	public Object valueStoreRemove(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.remove(key);
 	}
 
 	@SuppressWarnings("unchecked")
