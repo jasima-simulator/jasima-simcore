@@ -33,6 +33,7 @@ import jasima.shopSim.util.JobShopListenerBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -65,6 +66,7 @@ public abstract class JobShopExperiment extends Experiment {
 
 	private NotifierListener<Simulation, SimEvent>[] shopListener;
 	private NotifierListener<WorkStation, WorkStationEvent>[] machineListener;
+	private HashMap<String, NotifierListener<WorkStation, WorkStationEvent>> machListenerSpecific;
 
 	// fields used during experiment execution
 	public JobShop shop;
@@ -113,13 +115,29 @@ public abstract class JobShopExperiment extends Experiment {
 						(NotifierListener<Simulation, SimEvent>) l, true);
 			}
 
-		// install machine listener
+		// install generic machine listener
 		if (machineListener != null)
 			for (NotifierListener<?, ?> l : machineListener) {
 				shop.installMachineListener(
 						(NotifierListener<WorkStation, WorkStationEvent>) l,
 						true);
 			}
+
+		// install specific machine listener
+		if (machListenerSpecific != null) {
+			for (String machName : machListenerSpecific.keySet()) {
+				WorkStation ws = shop.getWorkstationByName(machName);
+				if (ws == null) {
+					throw new RuntimeException(
+							"Error installing machine listener: can't find a workstation named '"
+									+ machName + "'");
+				}
+				NotifierListener<WorkStation, WorkStationEvent> ml = machListenerSpecific
+						.get(machName);
+				ml = Util.cloneIfPossible(ml);
+				ws.addNotifierListener(ml);
+			}
+		}
 
 		// forward simulation print events to experiment print events
 		shop.addNotifierListener(new JobShopListenerBase() {
@@ -228,6 +246,14 @@ public abstract class JobShopExperiment extends Experiment {
 				.deepCloneArrayIfPossible(batchFormingRules);
 		clone.shopListener = Util.deepCloneArrayIfPossible(shopListener);
 		clone.machineListener = Util.deepCloneArrayIfPossible(machineListener);
+
+		if (machListenerSpecific != null) {
+			clone.machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>>();
+			for (String name : machListenerSpecific.keySet()) {
+				clone.machListenerSpecific.put(name,
+						Util.cloneIfPossible(machListenerSpecific.get(name)));
+			}
+		}
 
 		return clone;
 	}
@@ -395,6 +421,23 @@ public abstract class JobShopExperiment extends Experiment {
 
 			machineListener = list.toArray(new NotifierListener[list.size()]);
 		}
+	}
+
+	/**
+	 * Adds a WorkStation-listener to be installed on a certain
+	 * {@link WorkStation}.
+	 * 
+	 * @param name
+	 *            The workstation's name.
+	 * @param l
+	 *            The listener to install during experiment execution.
+	 */
+	public void addMachineListener(String name,
+			NotifierListener<WorkStation, WorkStationEvent> l) {
+		if (machListenerSpecific == null)
+			machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>>();
+
+		machListenerSpecific.put(name, l);
 	}
 
 }
