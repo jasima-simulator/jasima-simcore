@@ -1,16 +1,17 @@
 package jasima.shopSim.util.modelDef.streams;
 
 import jasima.core.random.continuous.DblStream;
-import jasima.core.random.continuous.DblUniformRange;
+import jasima.core.random.continuous.DblTriangular;
 import jasima.core.util.Util;
 
 import java.util.List;
 
-public class DblUniformDef extends StreamDef {
+public class DblTriangularDef extends StreamDef {
 
 	public static final String PARAM_MAX_VALUE = "maxValue";
+	public static final String PARAM_MODE_VALUE = "modeValue";
 	public static final String PARAM_MIN_VALUE = "minValue";
-	public static final String TYPE_STRING = "dblUnif";
+	public static final String TYPE_STRING = "dblTri";
 
 	public static final StreamDefFact FACTORY = new StreamDefFact() {
 
@@ -20,7 +21,7 @@ public class DblUniformDef extends StreamDef {
 		}
 
 		@Override
-		public DblUniformDef stringToStreamDef(String params,
+		public DblTriangularDef stringToStreamDef(String params,
 				List<String> errors) {
 			double[] ll;
 			try {
@@ -30,38 +31,39 @@ public class DblUniformDef extends StreamDef {
 						nfe.getLocalizedMessage()));
 				return null;
 			}
-			if (ll.length != 2) {
+			if (ll.length != 3) {
 				errors.add(String
-						.format("invalid number of parameters (2 required, min and max value): '%s'",
+						.format("invalid number of parameters (3 required, min, mode, and max value): '%s'",
 								params));
 				return null;
 			}
-			DblUniformDef res = new DblUniformDef();
+
+			DblTriangularDef res = new DblTriangularDef();
 			res.setMinValue(ll[0]);
-			res.setMaxValue(ll[1]);
+			res.setModeValue(ll[1]);
+			res.setMaxValue(ll[2]);
 			return res;
 		}
 
 	};
 
 	private double minValue = 0.0;
-	private double maxValue = 1.0;
+	private double modeValue = 5.0;
+	private double maxValue = 10.0;
 
-	public DblUniformDef() {
+	public DblTriangularDef() {
 		super();
 	}
 
 	@Override
 	public String toString() {
-		String params = Double.toString(getMinValue()) + ","
-				+ Double.toString(getMaxValue());
-
-		return String.format("%s(%s)", FACTORY.getTypeString(), params);
+		return String.format("%s(%d,%d)", FACTORY.getTypeString(),
+				getMinValue(), getMaxValue());
 	}
 
 	@Override
 	public DblStream createStream() {
-		return new DblUniformRange(getMinValue(), getMaxValue());
+		return new DblTriangular(getMinValue(), getModeValue(), getMaxValue());
 	}
 
 	public double getMinValue() {
@@ -80,6 +82,15 @@ public class DblUniformDef extends StreamDef {
 	public void setMaxValue(double maxValue) {
 		firePropertyChange(PARAM_MAX_VALUE, this.maxValue,
 				this.maxValue = maxValue);
+	}
+
+	public double getModeValue() {
+		return modeValue;
+	}
+
+	public void setModeValue(double modeValue) {
+		firePropertyChange(PARAM_MODE_VALUE, this.modeValue,
+				this.modeValue = modeValue);
 	}
 
 }

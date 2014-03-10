@@ -34,7 +34,6 @@ import jasima.shopSim.util.modelDef.SourceDef;
 import jasima.shopSim.util.modelDef.StaticSourceDef;
 import jasima.shopSim.util.modelDef.WorkstationDef;
 import jasima.shopSim.util.modelDef.streams.StreamDef;
-import jasima.shopSim.util.modelDef.streams.StreamDefFact;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -280,7 +279,7 @@ public class TextFileReader {
 		if (!"arrivals".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		iats = StreamDefFact.parseDblStream(s, errors);
+		iats = StreamDef.parseDblStream(s, errors);
 		if (errors.size() > 0)
 			throw new RuntimeException("parse error '" + s + "', "
 					+ Arrays.toString(errors.toArray()));
@@ -289,7 +288,7 @@ public class TextFileReader {
 		if (!"due_dates".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		dueDates = StreamDefFact.parseDblStream(s, errors);
+		dueDates = StreamDef.parseDblStream(s, errors);
 		if (errors.size() > 0)
 			throw new RuntimeException("parse error '" + s + "', "
 					+ Arrays.toString(errors.toArray()));
@@ -298,7 +297,7 @@ public class TextFileReader {
 		if (!"weights".equalsIgnoreCase(s))
 			throw new RuntimeException("parse error '" + s + "'");
 		s = Util.nextNonEmptyLine(r);
-		weights = StreamDefFact.parseDblStream(s, errors);
+		weights = StreamDef.parseDblStream(s, errors);
 		if (errors.size() > 0)
 			throw new RuntimeException("parse error '" + s + "', "
 					+ Arrays.toString(errors.toArray()));
