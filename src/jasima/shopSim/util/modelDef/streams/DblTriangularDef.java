@@ -57,8 +57,8 @@ public class DblTriangularDef extends StreamDef {
 
 	@Override
 	public String toString() {
-		return String.format("%s(%d,%d)", FACTORY.getTypeString(),
-				getMinValue(), getMaxValue());
+		return String.format("%s(%f,%f,%f)", FACTORY.getTypeString(),
+				getMinValue(), getModeValue(), getMaxValue());
 	}
 
 	@Override
