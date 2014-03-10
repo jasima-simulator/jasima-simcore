@@ -33,8 +33,10 @@ import jasima.shopSim.util.JobShopListenerBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Base class for shop experiments. This class wraps a {@link JobShop}. Derived
@@ -66,7 +68,7 @@ public abstract class JobShopExperiment extends Experiment {
 
 	private NotifierListener<Simulation, SimEvent>[] shopListener;
 	private NotifierListener<WorkStation, WorkStationEvent>[] machineListener;
-	private HashMap<String, NotifierListener<WorkStation, WorkStationEvent>> machListenerSpecific;
+	private HashMap<String, NotifierListener<WorkStation, WorkStationEvent>[]> machListenerSpecific;
 
 	// fields used during experiment execution
 	public JobShop shop;
@@ -132,10 +134,12 @@ public abstract class JobShopExperiment extends Experiment {
 							"Error installing machine listener: can't find a workstation named '"
 									+ machName + "'");
 				}
-				NotifierListener<WorkStation, WorkStationEvent> ml = machListenerSpecific
+				NotifierListener<WorkStation, WorkStationEvent>[] mls = machListenerSpecific
 						.get(machName);
-				ml = Util.cloneIfPossible(ml);
-				ws.addNotifierListener(ml);
+				for (NotifierListener<WorkStation, WorkStationEvent> ml : mls) {
+					ml = Util.cloneIfPossible(ml);
+					ws.addNotifierListener(ml);
+				}
 			}
 		}
 
@@ -248,7 +252,7 @@ public abstract class JobShopExperiment extends Experiment {
 		clone.machineListener = Util.deepCloneArrayIfPossible(machineListener);
 
 		if (machListenerSpecific != null) {
-			clone.machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>>();
+			clone.machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>[]>();
 			for (String name : machListenerSpecific.keySet()) {
 				clone.machListenerSpecific.put(name,
 						Util.cloneIfPossible(machListenerSpecific.get(name)));
@@ -435,9 +439,37 @@ public abstract class JobShopExperiment extends Experiment {
 	public void addMachineListener(String name,
 			NotifierListener<WorkStation, WorkStationEvent> l) {
 		if (machListenerSpecific == null)
-			machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>>();
+			machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>[]>();
 
-		machListenerSpecific.put(name, l);
+		// create new array using an intermediary list
+		NotifierListener<WorkStation, WorkStationEvent>[] listeners = machListenerSpecific
+				.get(name);
+		if (listeners == null)
+			listeners = new NotifierListener[0];
+		ArrayList<NotifierListener<WorkStation, WorkStationEvent>> list = new ArrayList<NotifierListener<WorkStation, WorkStationEvent>>(
+				Arrays.asList(listeners));
+		list.add(l);
+
+		machListenerSpecific.put(name,
+				list.toArray(new NotifierListener[list.size()]));
+	}
+
+	/**
+	 * Returns an array of all listeners registered for a given machine
+	 * registered before using
+	 * {@code #addMachineListener(String, NotifierListener)}.
+	 * 
+	 * @param name
+	 *            The workstation's name.
+	 * @return An array of all listeners for the given machine name.
+	 */
+	public NotifierListener<WorkStation, WorkStationEvent>[] getMachineListenerSpecific(
+			String name) {
+		if (machListenerSpecific == null) {
+			return new NotifierListener[0];
+		} else {
+			return machListenerSpecific.get(name);
+		}
 	}
 
 }
