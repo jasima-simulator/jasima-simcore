@@ -1,12 +1,12 @@
 package jasima.shopSim.util.modelDef.streams;
 
+import jasima.core.random.continuous.DblStream;
+import jasima.shopSim.util.modelDef.PropertySupport;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import jasima.core.random.continuous.DblStream;
-import jasima.shopSim.util.modelDef.PropertySupport;
 
 public abstract class StreamDef extends PropertySupport {
 
@@ -57,8 +57,8 @@ public abstract class StreamDef extends PropertySupport {
 		registerStreamFactory(DblExponentialDef.FACTORY);
 		registerStreamFactory(DblUniformDef.FACTORY);
 		registerStreamFactory(DblTriangularDef.FACTORY);
-		registerStreamFactory( IntUniformDef.FACTORY);
-		registerStreamFactory( IntEmpDef.FACTORY);
+		registerStreamFactory(IntUniformDef.FACTORY);
+		registerStreamFactory(IntEmpDef.FACTORY);
 	}
 
 }
