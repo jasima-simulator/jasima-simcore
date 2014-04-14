@@ -26,6 +26,7 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.shopSim.core.DynamicJobSource;
 import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.util.TextFileReader;
+import jasima.shopSim.util.modelDef.ShopDef;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +39,8 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * Implements simulations of the MIMAC Scenarios.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2010-03-12
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class MimacExperiment extends JobShopExperiment {
 
@@ -56,19 +58,22 @@ public class MimacExperiment extends JobShopExperiment {
 		public final String resourceName;
 		public final double[] defaultIats;
 
-		private TextFileReader reader = null;
+		private ShopDef def = null;
 
 		DataSet(String resoureName, double[] defaultIats) {
 			this.resourceName = resoureName;
 			this.defaultIats = defaultIats;
 		}
 
-		public synchronized TextFileReader getReader() {
-			if (reader == null) {
-				reader = createNewReader();
+		public synchronized ShopDef getShopDef() {
+			ShopDef def = this.def;
+			
+			if (def == null) {
+				TextFileReader reader = createNewReader();
+				def = reader.getShopDef();
 			}
 
-			return reader;
+			return def;
 		}
 
 		private TextFileReader createNewReader() {
@@ -108,12 +113,13 @@ public class MimacExperiment extends JobShopExperiment {
 	private boolean arrivalAtTimeZero = false;
 
 	@Override
-	protected void createShop() {
-		super.createShop();
-
+	protected void configureShop() {
 		// configure model from file
-		getScenario().getReader().configureMdl(shop);
+		getScenario().getShopDef().getShopConfigurator().configureMdl(shop);
 
+		super.configureShop();
+
+		// create job sources
 		DblStream[] iats = getInterArrivalTimes();
 		if (iats != null && shop.routes.length != iats.length) {
 			throw new RuntimeException("Number of routes ("

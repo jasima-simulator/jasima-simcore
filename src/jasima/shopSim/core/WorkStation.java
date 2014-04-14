@@ -114,7 +114,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	// specific machine's setup state
 	public IndividualMachine currMachine;
 
-	private ArrayDeque<IndividualMachine> freeMachines;
+	ArrayDeque<IndividualMachine> freeMachines;
 	// reuse select event objects
 	private SelectEvent selectEventCache;
 
@@ -191,26 +191,17 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		numBusy = 0;
 
 		queue.clear();
+		selectEventCache = null;
+		currMachine = null;
 
 		for (int i = machDat.length - 1; i >= 0; i--) {
 			IndividualMachine imd = machDat[i];
-			imd.setupState = imd.initialSetup;
-
-			imd.procFinished = imd.relDate;
-			imd.procStarted = 0.0;
-			imd.state = MachineState.DOWN;
+			imd.init();
 			numBusy++;
-
-			imd.activateEvent.setTime(imd.relDate);
-			shop.schedule(imd.activateEvent);
 		}
-
-		selectEventCache = null;
-
-		currMachine = null;
-
+		
 		queue.getSequencingRule().init();
-
+		
 		if (getBatchSequencingRule() != null)
 			getBatchSequencingRule().init();
 
@@ -219,15 +210,72 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		}
 	}
 
-	/** Activation from DOWN state. */
-	protected void activate() {
-		assert currMachine.state == MachineState.DOWN;
-		assert currMachine.curJob == null;
+//	/** Activation from DOWN state. */
+//	protected void activate() {
+//		assert currMachine.state == MachineState.DOWN;
+//		assert currMachine.curJob == null;
+//
+//		currMachine.state = MachineState.IDLE;
+//		currMachine.procFinished = -1.0d;
+//		currMachine.procStarted = -1.0d;
+//		freeMachines.addFirst(currMachine);
+//
+//		numBusy--;
+//		assert numBusy >= 0 && numBusy <= numInGroup;
+//
+//		// start a job on this machine
+//		if (numJobsWaiting() > 0)
+//			selectAndStart();
+//
+//		if (numListener() > 0) {
+//			fire(WS_ACTIVATED);
+//		}
+//
+//		if (currMachine.timeBetweenFailures != null) {
+//			// schedule next down time
+//			double nextFailure = shop.simTime()
+//					+ currMachine.timeBetweenFailures.nextDbl();
+//			currMachine.takeDownEvent.setTime(nextFailure);
+//			shop.schedule(currMachine.takeDownEvent);
+//		}
+//	}
+//
+//	/** Machine going down. */
+//	public void takeDown() {
+//		if (currMachine.state != MachineState.IDLE) {
+//			// don't interrupt ongoing operation / down time, postpone takeDown
+//			// instead
+//			assert currMachine.procFinished > shop.simTime();
+//			assert currMachine.curJob != null
+//					|| currMachine.state == MachineState.DOWN;
+//			currMachine.takeDownEvent.setTime(currMachine.procFinished);
+//			shop.schedule(currMachine.takeDownEvent);
+//		} else {
+//			assert currMachine.state == MachineState.IDLE;
+//
+//			double whenReactivated = shop.simTime()
+//					+ currMachine.timeToRepair.nextDbl();
+//
+//			currMachine.procStarted = shop.simTime();
+//			currMachine.procFinished = whenReactivated;
+//			currMachine.state = MachineState.DOWN;
+//			currMachine.curJob = null;
+//			freeMachines.remove(currMachine);
+//			numBusy++;
+//
+//			if (numListener() > 0) {
+//				fire(WS_DEACTIVATED);
+//			}
+//
+//			// schedule reactivation
+//			assert currMachine.activateEvent.getTime() <= shop.simTime();
+//			currMachine.activateEvent.setTime(whenReactivated);
+//			shop.schedule(currMachine.activateEvent);
+//		}
+//	}
 
-		currMachine.state = MachineState.IDLE;
-		currMachine.procFinished = -1.0d;
-		currMachine.procStarted = -1.0d;
-		freeMachines.addFirst(currMachine);
+	void activated(IndividualMachine im) {
+		freeMachines.addFirst(im);
 
 		numBusy--;
 		assert numBusy >= 0 && numBusy <= numInGroup;
@@ -239,46 +287,16 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		if (numListener() > 0) {
 			fire(WS_ACTIVATED);
 		}
-
-		if (currMachine.timeBetweenFailures != null) {
-			// schedule next down time
-			double nextFailure = shop.simTime()
-					+ currMachine.timeBetweenFailures.nextDbl();
-			currMachine.takeDownEvent.setTime(nextFailure);
-			shop.schedule(currMachine.takeDownEvent);
-		}
 	}
 
-	/** Machine going down. */
-	protected void takeDown() {
-		if (currMachine.state != MachineState.IDLE) {
-			// don't interrupt ongoing operation / down time, postpone takeDown
-			// instead
-			assert currMachine.procFinished > shop.simTime();
-			assert currMachine.curJob != null;
-			currMachine.takeDownEvent.setTime(currMachine.procFinished);
-			shop.schedule(currMachine.takeDownEvent);
-		} else {
-			assert currMachine.state == MachineState.IDLE;
+	void takenDown(IndividualMachine im) {
+		freeMachines.remove(currMachine);
 
-			double whenReactivated = shop.simTime()
-					+ currMachine.timeToRepair.nextDbl();
+		numBusy++;
+		assert numBusy >= 0 && numBusy <= numInGroup;
 
-			currMachine.procStarted = shop.simTime();
-			currMachine.procFinished = whenReactivated;
-			currMachine.state = MachineState.DOWN;
-			currMachine.curJob = null;
-			freeMachines.remove(currMachine);
-			numBusy++;
-
-			if (numListener() > 0) {
-				fire(WS_DEACTIVATED);
-			}
-
-			// schedule reactivation
-			assert currMachine.activateEvent.getTime() <= shop.simTime();
-			currMachine.activateEvent.setTime(whenReactivated);
-			shop.schedule(currMachine.activateEvent);
+		if (numListener() > 0) {
+			fire(WS_DEACTIVATED);
 		}
 	}
 

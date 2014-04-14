@@ -101,8 +101,8 @@ public class HolthausExperiment extends JobShopExperiment {
 	}
 
 	@Override
-	protected void createShop() {
-		super.createShop();
+	protected void configureShop() {
+		super.configureShop();
 
 		createMachines();
 

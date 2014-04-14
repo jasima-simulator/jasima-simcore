@@ -50,7 +50,7 @@ public class JobShop extends Simulation {
 	// parameters
 	private int maxJobsInSystem = 0;
 	private int maxJobsFinished = 0;
-	private boolean enableLookAhead = true;
+	private boolean enableLookAhead = false;
 
 	public JobSource[] sources = {};
 	public WorkStation[] machines = {};

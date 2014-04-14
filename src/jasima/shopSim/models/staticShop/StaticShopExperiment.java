@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.shopSim.models.staticShop;
 
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.Route;
 import jasima.shopSim.core.StaticJobSource;
 import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.util.TextFileReader;
+import jasima.shopSim.util.modelDef.ShopDef;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,8 +36,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Experiment which loads a scheduling instance from a file or URL/URI. Shop and
@@ -50,24 +48,15 @@ public class StaticShopExperiment extends JobShopExperiment {
 
 	private static final long serialVersionUID = 3907065922245526545L;
 
-	private static Map<URI, TextFileReader> readerCache = new WeakHashMap<URI, TextFileReader>();
-
 	// parameters
 	private String instFileName;
 	private URI instURI;
-	private boolean useInstanceCache = true;
+	private ShopDef shopDef;
 	private double dueDateTightness = Double.NaN;
 	private RoundingMode roundingMode = RoundingMode.NONE;
 
 	public static enum RoundingMode {
 		NONE, FLOOR, CEIL, ROUND;
-	}
-
-	@Override
-	protected void createShop() {
-		super.createShop();
-
-		configureShopFromFile(shop);
 	}
 
 	@Override
@@ -77,55 +66,34 @@ public class StaticShopExperiment extends JobShopExperiment {
 		return c;
 	}
 
-	protected void configureShopFromFile(JobShop js) {
-		URI uri = null;
-
-		if (getInstFileName() == null && getInstURI() == null)
+	@Override
+	protected void configureShop() {
+		if (getInstFileName() == null && getInstURI() == null
+				&& getShopDef() == null)
 			throw new IllegalArgumentException(
-					"Either 'instFileName' or 'instURI' have to be specified.");
+					"Either 'instFileName', 'instURI' or 'shopDef' have to be specified.");
 
-		if (getInstFileName() != null) {
-			File f = new File(getInstFileName());
-			if (f.exists())
-				uri = f.toURI();
-			else {
-				// try to load as a resource
-				URL u = this.getClass().getResource(getInstFileName());
-				if (u == null)
-					u = Thread.currentThread().getContextClassLoader()
-							.getResource(getInstFileName());
-				if (u != null)
-					try {
-						uri = u.toURI();
-					} catch (URISyntaxException e) {
-						throw new RuntimeException(e);
-					}
-			}
+		// ShopDef given explicitly?
+		ShopDef def = getShopDef();
+		if (def == null) {
+			// if not, load with TextFileReader from URI
+			def = loadWithTextFileReader();
 		}
 
-		if (uri == null)
-			uri = getInstURI();
+		// configure shop using ShopDef
+		def.getShopConfigurator().configureMdl(shop);
 
-		if (uri == null) {
-			Object src = getInstURI();
-			if (src == null)
-				src = getInstFileName();
-			throw new IllegalArgumentException("Could not load model from '"
-					+ src.toString() + "'. Perhaps file is not accessible.");
-		}
-
-		TextFileReader r = getReader(uri, useInstanceCache);
-		r.configureMdl(js);
+		super.configureShop();
 
 		// overwrite JobSpec data with new due dates
 		if (!Double.isNaN(getDueDateTightness())) {
-			StaticJobSource src = (StaticJobSource) js.sources[0];
+			StaticJobSource src = (StaticJobSource) shop.sources[0];
 			JobSpec[] jobs = src.jobs;
 
 			for (int i = 0, n = src.jobs.length; i < n; i++) {
 				JobSpec orig = jobs[i];
 
-				Route route = js.routes[orig.routeNum];
+				Route route = shop.routes[orig.routeNum];
 				double procSum = 0.0;
 				for (Operation o : route.ops()) {
 					procSum += o.procTime;
@@ -146,40 +114,59 @@ public class StaticShopExperiment extends JobShopExperiment {
 		}
 	}
 
-	//
-	//
-	// static utility methods
-	//
-	//
+	/**
+	 * Loads a ShopDef from either a file or a resource.
+	 */
+	protected ShopDef loadWithTextFileReader() {
+		URI uri = null;
 
-	protected static TextFileReader getReader(URI uri, boolean useInstanceCache) {
-		TextFileReader r = null;
-		if (useInstanceCache)
-			synchronized (readerCache) {
-				r = readerCache.get(uri);
+		if (getInstFileName() != null) {
+			File f = new File(getInstFileName());
+			if (f.exists()) {
+				// ordinary file
+				uri = f.toURI();
+			} else {
+				// try to load as a resource
+				URL u = this.getClass().getResource(getInstFileName());
+				if (u == null)
+					u = Thread.currentThread().getContextClassLoader()
+							.getResource(getInstFileName());
+				if (u != null)
+					try {
+						uri = u.toURI();
+					} catch (URISyntaxException e) {
+						throw new RuntimeException(e);
+					}
 			}
-
-		if (r == null) {
-			// construct new reader
-			try {
-				InputStream inp = uri.toURL().openStream();
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						inp));
-				r = new TextFileReader();
-				r.readData(in);
-				in.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-
-			// double-check before updating readerCache to be thread-safe
-			if (useInstanceCache)
-				synchronized (readerCache) {
-					if (readerCache.get(uri) == null)
-						readerCache.put(uri, r);
-				}
 		}
-		return r;
+
+		if (uri == null) {
+			// URI given directly?
+			uri = getInstURI();
+		}
+
+		// error getting the URI?
+		if (uri == null) {
+			Object src = getInstURI();
+			if (src == null)
+				src = getInstFileName();
+			throw new IllegalArgumentException("Could not load model from '"
+					+ src.toString() + "'. Perhaps file is not accessible.");
+		}
+
+		// open stream and produce a shopDef
+		try {
+			InputStream inp = uri.toURL().openStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(inp));
+
+			TextFileReader r = new TextFileReader();
+			r.readData(in);
+			in.close();
+
+			return r.getShopDef();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	//
@@ -216,14 +203,6 @@ public class StaticShopExperiment extends JobShopExperiment {
 		this.instURI = instURI;
 	}
 
-	public boolean isUseInstanceCache() {
-		return useInstanceCache;
-	}
-
-	public void setUseInstanceCache(boolean useInstanceCache) {
-		this.useInstanceCache = useInstanceCache;
-	}
-
 	public double getDueDateTightness() {
 		return dueDateTightness;
 	}
@@ -251,6 +230,19 @@ public class StaticShopExperiment extends JobShopExperiment {
 	 */
 	public void setRoundingMode(RoundingMode roundingMode) {
 		this.roundingMode = roundingMode;
+	}
+
+	public ShopDef getShopDef() {
+		return shopDef;
+	}
+
+	/**
+	 * Sets the {@link ShopDef}-object to use. Setting a {@code shopDef} takes
+	 * precedence over setting a {@link #setInstFileName(String)} and
+	 * {@link #setInstURI(URI)}.
+	 */
+	public void setShopDef(ShopDef shopDef) {
+		this.shopDef = shopDef;
 	}
 
 }

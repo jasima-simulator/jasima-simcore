@@ -1,5 +1,15 @@
 package jasima.shopSim.util.modelDef;
 
+import jasima.shopSim.core.JobShop;
+import jasima.shopSim.util.ShopConfigurator;
+
+/**
+ * Simple data model object to hold the parameters necessary to configure a
+ * {@link JobShop}.
+ * 
+ * @author Torsten Hildebrandt
+ * @version "$Id$"
+ */
 public class ShopDef extends PropertySupport {
 
 	private String name = null;
@@ -94,6 +104,16 @@ public class ShopDef extends PropertySupport {
 
 	public void setName(String name) {
 		firePropertyChange("name", this.name, this.name = name);
+	}
+
+	/**
+	 * Returns a {@link ShopConfigurator} that knows how to configure a
+	 * {@link JobShop} using this {@link ShopDef}.
+	 */
+	public ShopConfigurator getShopConfigurator() {
+		ShopConfigurator conf = new ShopConfigurator();
+		conf.setShopDef(this);
+		return conf;
 	}
 
 }

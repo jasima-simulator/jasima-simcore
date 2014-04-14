@@ -20,6 +20,7 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Event;
 
@@ -37,7 +38,8 @@ public class IndividualMachine {
 		DOWN, IDLE, WORKING
 	}
 
-	public final WorkStation workStation;
+	public final WorkStation workStation; // the workstation this machine
+											// belongs to
 	public final int idx; // index in workStation.machDat
 
 	public double relDate;
@@ -78,8 +80,9 @@ public class IndividualMachine {
 	Event activateEvent = new Event(0.0d, WorkStation.ACTIVATE_PRIO) {
 		@Override
 		public void handle() {
+			assert workStation.currMachine == null;
 			workStation.currMachine = IndividualMachine.this;
-			workStation.activate();
+			IndividualMachine.this.activate();
 			workStation.currMachine = null;
 		}
 
@@ -92,8 +95,9 @@ public class IndividualMachine {
 	Event takeDownEvent = new Event(0.0d, WorkStation.TAKE_DOWN_PRIO) {
 		@Override
 		public void handle() {
+			assert workStation.currMachine == null;
 			workStation.currMachine = IndividualMachine.this;
-			workStation.takeDown();
+			IndividualMachine.this.takeDown();
 			workStation.currMachine = null;
 		}
 
@@ -102,6 +106,77 @@ public class IndividualMachine {
 			return false;
 		}
 	};
+
+	/** Activation from DOWN state. */
+	protected void activate() {
+		assert state == MachineState.DOWN;
+		assert curJob == null;
+
+		state = MachineState.IDLE;
+		procFinished = -1.0d;
+		procStarted = -1.0d;
+
+		workStation.activated(this);
+
+		// schedule next down time
+		if (timeBetweenFailures != null) {
+			JobShop shop = workStation.shop();
+
+			double nextFailure = shop.simTime() + timeBetweenFailures.nextDbl();
+			takeDownEvent.setTime(nextFailure);
+			shop.schedule(takeDownEvent);
+		}
+	}
+
+	/** Machine going down. */
+	protected void takeDown() {
+		final JobShop shop = workStation.shop();
+
+		if (state != MachineState.IDLE) {
+			// don't interrupt ongoing operation / down time, postpone takeDown
+			// instead
+			assert procFinished > shop.simTime();
+			assert curJob != null || state == MachineState.DOWN;
+			takeDownEvent.setTime(procFinished);
+			shop.schedule(takeDownEvent);
+		} else {
+			assert state == MachineState.IDLE;
+
+			double whenReactivated = shop.simTime() + timeToRepair.nextDbl();
+
+			procStarted = shop.simTime();
+			procFinished = whenReactivated;
+			state = MachineState.DOWN;
+			curJob = null;
+
+			workStation.takenDown(this);
+
+			// schedule reactivation
+			assert activateEvent.getTime() <= shop.simTime();
+			activateEvent.setTime(whenReactivated);
+			shop.schedule(activateEvent);
+		}
+	}
+
+	protected void init() {
+		setupState = initialSetup;
+		procFinished = relDate;
+		procStarted = 0.0;
+		state = MachineState.DOWN;
+		activateEvent.setTime(relDate);
+		workStation.shop.schedule(activateEvent);
+
+		RandomFactory fact = workStation.shop.getRndStreamFactory();
+		if (timeBetweenFailures != null
+				&& timeBetweenFailures.getRndGen() == null) {
+			fact.initNumberStream(timeBetweenFailures, toString() + ".timeBetweenFailures");
+			timeBetweenFailures.init();
+		}
+		if (timeToRepair != null && timeToRepair.getRndGen() == null) {
+			fact.initNumberStream(timeToRepair, toString() + ".timeToRepair");
+			timeToRepair.init();
+		}
+	}
 
 	@Override
 	public String toString() {

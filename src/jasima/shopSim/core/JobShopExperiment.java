@@ -33,10 +33,8 @@ import jasima.shopSim.util.JobShopListenerBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Base class for shop experiments. This class wraps a {@link JobShop}. Derived
@@ -53,10 +51,10 @@ public abstract class JobShopExperiment extends Experiment {
 	private static final long serialVersionUID = 2660935009898060395L;
 
 	// experiment parameters
-	private double simulationLength = 0.0d;
-	private int maxJobsInSystem = 0;
-	private int maxJobsFinished = 0;
-	private boolean enableLookAhead = false;
+	private double simulationLength = Double.NaN;
+	private int maxJobsInSystem = -1;
+	private int maxJobsFinished = -1;
+	private Boolean enableLookAhead = null;
 
 	private PR sequencingRule;
 	private PR batchSequencingRule;
@@ -78,12 +76,22 @@ public abstract class JobShopExperiment extends Experiment {
 		super.init();
 
 		createShop();
+		configureShop();
+		postConfigShop();
+	}
 
-		shop.setMaxJobsInSystem(getMaxJobsInSystem());
-		shop.setMaxJobsFinished(getMaxJobsFinished());
-		shop.setSimulationLength(getSimulationLength());
-		shop.setEnableLookAhead(isEnableLookAhead());
+	protected void configureShop() {
+		if (getMaxJobsInSystem() >= 0)
+			shop.setMaxJobsInSystem(getMaxJobsInSystem());
+		if (getMaxJobsFinished() >= 0)
+			shop.setMaxJobsFinished(getMaxJobsFinished());
+		if (!Double.isNaN(getSimulationLength()))
+			shop.setSimulationLength(getSimulationLength());
+		if (enableLookAhead != null)
+			shop.setEnableLookAhead(isEnableLookAhead());
+	}
 
+	protected void postConfigShop() {
 		// set dispatching rule of machines
 		for (int i = 0; i < shop.machines.length; i++) {
 			WorkStation m = shop.machines[i];
@@ -284,11 +292,11 @@ public abstract class JobShopExperiment extends Experiment {
 		return maxJobsInSystem;
 	}
 
-	public void setEnableLookAhead(boolean enableLookAhead) {
+	public void setEnableLookAhead(Boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
 	}
 
-	public boolean isEnableLookAhead() {
+	public Boolean isEnableLookAhead() {
 		return enableLookAhead;
 	}
 

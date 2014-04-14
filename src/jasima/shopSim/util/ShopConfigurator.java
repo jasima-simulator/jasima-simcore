@@ -53,7 +53,7 @@ public class ShopConfigurator {
 	}
 
 	public static void configureModel(JobShop shop, ShopDef sd) {
-		ShopConfigurator tfr = new ShopConfigurator();
+		ShopConfigurator tfr = sd.getShopConfigurator();
 		tfr.setShopDef(sd);
 		tfr.configureMdl(shop);
 	}

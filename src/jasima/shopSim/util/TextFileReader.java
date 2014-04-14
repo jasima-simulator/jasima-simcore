@@ -24,6 +24,7 @@ import jasima.core.util.Pair;
 import jasima.core.util.Util;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.util.modelDef.DynamicSourceDef;
 import jasima.shopSim.util.modelDef.IndividualMachineDef;
 import jasima.shopSim.util.modelDef.JobDef;
@@ -43,9 +44,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class configures a StaticShopModel based on the contents of a text file.
- * This class is used mostly for test purposes. For examples of the file
- * structure see the examples in the directory "testInstances".
+ * This class creates a {@link ShopDef} based on the contents of a text file.
+ * This can be used to configure a {@link JobShop}, e.g., as part of a
+ * {@link StaticShopExperiment}. For examples of the file structure see the
+ * examples in the directory "testInstances" or the model files in the package
+ * jasima.shopSim.models.mimac.
  * 
  * @author Torsten Hildebrandt
  * @version 
@@ -69,17 +72,13 @@ public class TextFileReader {
 	public TextFileReader() {
 		super();
 
-		clearData();
+		haveData = false;
+		data = null;
+		machIds = new HashMap<String, Integer>();
 	}
 
 	public ShopDef getShopDef() {
 		return haveData ? data : null;
-	}
-
-	private void clearData() {
-		haveData = false;
-		data = null;
-		machIds = new HashMap<String, Integer>();
 	}
 
 	public ShopDef readData(BufferedReader r) {
@@ -402,21 +401,6 @@ public class TextFileReader {
 			}
 		}
 		return matrix;
-	}
-
-	public static void configureModel(JobShop shop, BufferedReader rd) {
-		TextFileReader tfr = new TextFileReader();
-		tfr.readData(rd);
-		tfr.configureMdl(shop);
-	}
-
-	public void configureMdl(JobShop shop) {
-		if (!haveData)
-			throw new IllegalStateException("No data read yet.");
-
-		ShopConfigurator conf = new ShopConfigurator();
-		conf.setShopDef(getShopDef());
-		conf.configureMdl(shop);
 	}
 
 }

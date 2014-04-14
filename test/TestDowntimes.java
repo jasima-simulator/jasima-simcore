@@ -83,8 +83,8 @@ public class TestDowntimes extends ExperimentTest {
 	public static Map<String, Object> test(String fn) throws Exception {
 		StaticShopExperiment e = new StaticShopExperiment() {
 			@Override
-			protected void createShop() {
-				super.createShop();
+			protected void postConfigShop() {
+				super.postConfigShop();
 				for (WorkStation m : shop.machines) {
 					for (IndividualMachine im : m.machDat()) {
 						im.timeBetweenFailures = new DblConst(1.0);
