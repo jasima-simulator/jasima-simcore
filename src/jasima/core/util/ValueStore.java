@@ -8,7 +8,7 @@ import java.util.Set;
  * associated with a key object, similar to a @link {@link HashMap}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id:$"
+ * @version "$Id$"
  */
 public interface ValueStore {
 

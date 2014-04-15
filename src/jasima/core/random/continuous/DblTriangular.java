@@ -5,7 +5,7 @@ package jasima.core.random.continuous;
  * by the three parameters min, mode, and max.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id: $"
+ * @version "$Id$"
  */
 public class DblTriangular extends DblStream {
 

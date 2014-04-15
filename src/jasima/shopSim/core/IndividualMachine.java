@@ -77,7 +77,7 @@ public class IndividualMachine {
 		}
 	};
 
-	Event activateEvent = new Event(0.0d, WorkStation.ACTIVATE_PRIO) {
+	private Event activateEvent = new Event(0.0d, WorkStation.ACTIVATE_PRIO) {
 		@Override
 		public void handle() {
 			assert workStation.currMachine == null;
@@ -92,7 +92,7 @@ public class IndividualMachine {
 		}
 	};
 
-	Event takeDownEvent = new Event(0.0d, WorkStation.TAKE_DOWN_PRIO) {
+	private Event takeDownEvent = new Event(0.0d, WorkStation.TAKE_DOWN_PRIO) {
 		@Override
 		public void handle() {
 			assert workStation.currMachine == null;
