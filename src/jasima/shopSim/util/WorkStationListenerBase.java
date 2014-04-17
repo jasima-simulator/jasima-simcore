@@ -27,7 +27,6 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.core.WorkStation.WorkStationEvent;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -36,13 +35,11 @@ import java.util.Map;
  * {@link #handleOther(WorkStation, WorkStationEvent)}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class WorkStationListenerBase implements
-		NotifierListener<WorkStation, WorkStationEvent>, Serializable,
-		Cloneable {
-
-	private static final long serialVersionUID = 3192302528192466723L;
+		NotifierListener<WorkStation, WorkStationEvent>, Cloneable {
 
 	@Override
 	public final void update(WorkStation m, WorkStationEvent event) {

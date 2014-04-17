@@ -73,16 +73,25 @@ public class TraceFileProducer extends JobShopListenerBase {
 			}
 
 			@Override
-			protected void activated(WorkStation m,
-					IndividualMachine justActivated) {
-				print(m.shop().simTime() + "\tbecomes_available\t"
-						+ justActivated.toString() + "\t" + m.queue.size());
+			protected void activated(WorkStation ws, IndividualMachine m) {
+				print(ws.shop().simTime()
+						+ "\tbecomes_available\t"
+						+ m.toString()
+						+ "\t"
+						+ ws.queue.size()
+						+ (m.downReason == null ? "" : "\t"
+								+ String.valueOf(m.downReason)));
 			}
 
 			@Override
 			protected void deactivated(WorkStation ws, IndividualMachine m) {
-				print(ws.shop().simTime() + "\tunavailable\t" + m.toString()
-						+ "\t" + ws.queue.size());
+				print(ws.shop().simTime()
+						+ "\tunavailable\t"
+						+ m.toString()
+						+ "\t"
+						+ ws.queue.size()
+						+ (m.downReason == null ? "" : "\t"
+								+ String.valueOf(m.downReason)));
 			}
 
 			@Override

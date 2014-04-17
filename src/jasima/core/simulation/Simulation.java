@@ -107,6 +107,9 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
 	// the current simulation time.
 	private double simTime;
+	private int currPrio;
+	private Event currEvent;
+
 	// event queue
 	private EventQueue eventList;
 	// eventNum is used to enforce FIFO-order of concurrent events with equal
@@ -121,7 +124,15 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 */
 	protected void init() {
 		eventList = createEventQueue();
-		simTime = 0.0d;
+		// set to dummy event
+		currEvent = new Event(Double.NEGATIVE_INFINITY, Event.EVENT_PRIO_MIN) {
+
+			@Override
+			public void handle() {
+			}
+		};
+		simTime = 0.0d; // TODO: check initialization with some parameter for t0
+		currPrio = Event.EVENT_PRIO_MAX;
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 
@@ -151,14 +162,15 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
 		// main event loop
 		while (continueSim) {
-			Event event = eventList.extract();
+			currEvent = eventList.extract();
 
 			// Advance clock to time of next event
-			simTime = event.getTime();
+			simTime = currEvent.getTime();
+			currPrio = currEvent.getPrio();
 
-			event.handle();
+			currEvent.handle();
 
-			if (event.isAppEvent()) {
+			if (currEvent.isAppEvent()) {
 				if (--numAppEvents == 0)
 					continueSim = false;
 			}
@@ -210,6 +222,14 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * Schedules a new event.
 	 */
 	public void schedule(Event event) {
+		if (event.getTime() == simTime
+				&& event.getPrio() <= currPrio)
+			print(SimMsgCategory.WARN, "Priority inversion.");
+		if (event.getTime() < simTime) {
+			print(SimMsgCategory.ERROR,
+					"Can't schedule an event that is in the past.");
+			end();
+		}
 		event.eventNum = eventNum++;
 		if (event.isAppEvent())
 			numAppEvents++;
@@ -227,6 +247,19 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	/** Returns the current simulation time. */
 	public double simTime() {
 		return simTime;
+	}
+
+	/** Returns the priority of the currently processed event;
+	 */
+	public int currentPrio() {
+		return currPrio;
+	}
+	
+	/**
+	 * Returns the {@link Event} object that is currently processed.
+	 */
+	public Event currentEvent() {
+		return currEvent;
 	}
 
 	public void produceResults(Map<String, Object> res) {
@@ -419,7 +452,8 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	/**
 	 * Removes an entry from this simulation's value store.
 	 * 
-	 * @return The value previously associated with "key", or null, if no such key was found.
+	 * @return The value previously associated with "key", or null, if no such
+	 *         key was found.
 	 */
 	@Override
 	public Object valueStoreRemove(Object key) {

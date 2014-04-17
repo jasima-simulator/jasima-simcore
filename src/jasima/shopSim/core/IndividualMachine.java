@@ -20,9 +20,10 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.random.RandomFactory;
-import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Event;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class represents a single machine, which is part of a
@@ -45,11 +46,10 @@ public class IndividualMachine {
 	public double relDate;
 	public int initialSetup;
 	public String name = null;
-
-	public DblStream timeBetweenFailures;
-	public DblStream timeToRepair;
+	public List<? extends DowntimeSource> downsources = Collections.EMPTY_LIST;
 
 	public MachineState state;
+	public DowntimeSource downReason;
 	public double procStarted;
 	public double procFinished;
 	public int setupState;
@@ -60,8 +60,6 @@ public class IndividualMachine {
 		this.workStation = workStation;
 		this.idx = idx;
 
-		timeBetweenFailures = null;
-		timeToRepair = null;
 		state = MachineState.DOWN;
 		initialSetup = WorkStation.DEF_SETUP;
 		relDate = 0.0;
@@ -77,39 +75,11 @@ public class IndividualMachine {
 		}
 	};
 
-	private Event activateEvent = new Event(0.0d, WorkStation.ACTIVATE_PRIO) {
-		@Override
-		public void handle() {
-			assert workStation.currMachine == null;
-			workStation.currMachine = IndividualMachine.this;
-			IndividualMachine.this.activate();
-			workStation.currMachine = null;
-		}
-
-		@Override
-		public boolean isAppEvent() {
-			return false;
-		}
-	};
-
-	private Event takeDownEvent = new Event(0.0d, WorkStation.TAKE_DOWN_PRIO) {
-		@Override
-		public void handle() {
-			assert workStation.currMachine == null;
-			workStation.currMachine = IndividualMachine.this;
-			IndividualMachine.this.takeDown();
-			workStation.currMachine = null;
-		}
-
-		@Override
-		public boolean isAppEvent() {
-			return false;
-		}
-	};
-
 	/** Activation from DOWN state. */
-	protected void activate() {
-		assert state == MachineState.DOWN;
+	public void activate() {
+		if (state != MachineState.DOWN)
+			throw new IllegalStateException(
+					"Only a machine in state DOWN can be activated.");
 		assert curJob == null;
 
 		state = MachineState.IDLE;
@@ -117,44 +87,43 @@ public class IndividualMachine {
 		procStarted = -1.0d;
 
 		workStation.activated(this);
-
-		// schedule next down time
-		if (timeBetweenFailures != null) {
-			JobShop shop = workStation.shop();
-
-			double nextFailure = shop.simTime() + timeBetweenFailures.nextDbl();
-			takeDownEvent.setTime(nextFailure);
-			shop.schedule(takeDownEvent);
-		}
+		
+		downReason = null;
 	}
 
-	/** Machine going down. */
-	protected void takeDown() {
+	/**
+	 * Machine going down for a certain amount of time. If this machine is
+	 * already down or currently processing, this operation is finished before
+	 * the new downtime can become active.
+	 */
+	public void takeDown(final DowntimeSource downReason) {
 		final JobShop shop = workStation.shop();
 
 		if (state != MachineState.IDLE) {
-			// don't interrupt ongoing operation / down time, postpone takeDown
-			// instead
 			assert procFinished > shop.simTime();
 			assert curJob != null || state == MachineState.DOWN;
-			takeDownEvent.setTime(procFinished);
-			shop.schedule(takeDownEvent);
+
+			// don't interrupt ongoing operation/downtime, postpone takeDown
+			// instead
+			shop.schedule(new Event(procFinished, WorkStation.TAKE_DOWN_PRIO) {
+				@Override
+				public void handle() {
+					assert workStation.currMachine == null;
+					workStation.currMachine = IndividualMachine.this;
+					takeDown(downReason);
+					workStation.currMachine = null;
+				}
+			});
 		} else {
 			assert state == MachineState.IDLE;
 
-			double whenReactivated = shop.simTime() + timeToRepair.nextDbl();
-
 			procStarted = shop.simTime();
-			procFinished = whenReactivated;
+			procFinished = shop.simTime();
 			state = MachineState.DOWN;
+			this.downReason = downReason; 
 			curJob = null;
 
 			workStation.takenDown(this);
-
-			// schedule reactivation
-			assert activateEvent.getTime() <= shop.simTime();
-			activateEvent.setTime(whenReactivated);
-			shop.schedule(activateEvent);
 		}
 	}
 
@@ -163,18 +132,22 @@ public class IndividualMachine {
 		procFinished = relDate;
 		procStarted = 0.0;
 		state = MachineState.DOWN;
-		activateEvent.setTime(relDate);
-		workStation.shop.schedule(activateEvent);
 
-		RandomFactory fact = workStation.shop.getRndStreamFactory();
-		if (timeBetweenFailures != null
-				&& timeBetweenFailures.getRndGen() == null) {
-			fact.initNumberStream(timeBetweenFailures, toString() + ".timeBetweenFailures");
-			timeBetweenFailures.init();
-		}
-		if (timeToRepair != null && timeToRepair.getRndGen() == null) {
-			fact.initNumberStream(timeToRepair, toString() + ".timeToRepair");
-			timeToRepair.init();
+		// schedule initial activation
+		workStation.shop
+				.schedule(new Event(relDate, WorkStation.ACTIVATE_PRIO) {
+					@Override
+					public void handle() {
+						assert workStation.currMachine == null;
+						workStation.currMachine = IndividualMachine.this;
+						IndividualMachine.this.activate();
+						workStation.currMachine = null;
+					}
+				});
+
+		// init downsources
+		for (DowntimeSource ds : downsources) {
+			ds.init();
 		}
 	}
 

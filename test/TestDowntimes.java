@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.XmlUtil;
+import jasima.shopSim.core.DowntimeSource;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
@@ -34,6 +35,7 @@ import jasima.shopSim.util.TraceFileProducer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,13 +44,14 @@ import org.junit.Test;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class TestDowntimes extends ExperimentTest {
 
 	@Test
 	public void test_js02x05() throws Exception {
-		Map<String, Object> res = new HashMap<String, Object>(test("testInstances/js02x05.txt"));
+		Map<String, Object> res = new HashMap<String, Object>(
+				test("testInstances/js02x05.txt", 5));
 		res.remove("weightedCondTardMax");
 		res.remove("weightedCondTardVariance");
 		res.remove("weightedCondTardMean");
@@ -65,7 +68,8 @@ public class TestDowntimes extends ExperimentTest {
 
 	@Test
 	public void test_js01x02() throws Exception {
-		Map<String, Object> res = new HashMap<String, Object>(test("testInstances/js01x03.txt"));
+		Map<String, Object> res = new HashMap<String, Object>(
+				test("testInstances/js01x03.txt", 3));
 		res.remove("weightedCondTardMax");
 		res.remove("weightedCondTardVariance");
 		res.remove("weightedCondTardMean");
@@ -80,19 +84,22 @@ public class TestDowntimes extends ExperimentTest {
 		checkFiles("log_js01x03.txt", "testInstances/js01x03.txt.trace");
 	}
 
-	public static Map<String, Object> test(String fn) throws Exception {
+	public static Map<String, Object> test(String fn, int n) throws Exception {
 		StaticShopExperiment e = new StaticShopExperiment() {
 			@Override
 			protected void postConfigShop() {
 				super.postConfigShop();
 				for (WorkStation m : shop.machines) {
 					for (IndividualMachine im : m.machDat()) {
-						im.timeBetweenFailures = new DblConst(1.0);
-						im.timeToRepair = new DblConst(1.0);
+						DowntimeSource dt = new DowntimeSource(im);
+						dt.setTimeBetweenFailures(new DblConst(1.0));
+						dt.setTimeToRepair(new DblConst(1.0));
+						im.downsources = Arrays.asList(dt);
 					}
 				}
 			}
 		};
+		e.setMaxJobsFinished(n);
 		e.setInstFileName(fn);
 		e.setSequencingRule(new FASFS()
 				.setFinalTieBreaker(new TieBreakerFASFS()));
