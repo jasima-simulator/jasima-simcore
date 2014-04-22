@@ -83,7 +83,6 @@ public class DowntimeSource {
 
 			// schedule next downtime
 			double nextFailure = calcDeactivateTime(shop);
-			System.out.println(shop.simTime()+"\t"+machine+"\t"+nextFailure);
 			shop.schedule(new Event(nextFailure, WorkStation.TAKE_DOWN_PRIO) {
 				@Override
 				public void handle() {
@@ -104,7 +103,6 @@ public class DowntimeSource {
 		JobShop shop = machine.workStation.shop();
 
 		double whenReactivated = calcActivateTime(shop);
-		System.out.println(shop.simTime()+"\t"+machine+"\t"+whenReactivated);
 		machine.procFinished = whenReactivated;
 
 		// schedule reactivation
