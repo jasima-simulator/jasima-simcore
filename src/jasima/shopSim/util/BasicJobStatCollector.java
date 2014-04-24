@@ -34,7 +34,9 @@ import java.util.Map;
  * Collects some basic job statistics: cMax (completion time of last job
  * finished), percentage tardy, lateness, number of tardy jobs, flowtime,
  * tardiness, conditional tardiness, and weighted variants of the latter 4
- * objective functions.
+ * objective functions. A further statistic, "noProcTime", is computed as
+ * flowtime minus the sum of all processing times. It therefore only measures
+ * reducible components of the flowtime, i.e., waiting and setup times.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
@@ -46,6 +48,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 
 	private SummaryStat lateness;
 	private SummaryStat flowtime;
+	private SummaryStat noProcTime;
 	private SummaryStat weightedFlowtime;
 	private SummaryStat tardiness;
 	private SummaryStat weightedTardiness;
@@ -60,6 +63,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 	@Override
 	protected void init(Simulation sim) {
 		flowtime = new SummaryStat("flowtimes");
+		noProcTime = new SummaryStat("noProcTime");
 		tardiness = new SummaryStat("tardiness");
 		lateness = new SummaryStat("lateness");
 		weightedFlowtime = new SummaryStat("weightedFlowtimes");
@@ -75,9 +79,9 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 
 	@Override
 	protected void done(Simulation sim) {
-		JobShop shop = (JobShop) sim;
-
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
+
+		JobShop shop = (JobShop) sim;
 		for (WorkStation m : shop.machines) {
 			for (int i = 0, n = m.queue.size(); i < n; i++) {
 				storeWIPJob(m.queue.get(i));
@@ -90,7 +94,11 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 		}
 	}
 
-	private void storeWIPJob(PrioRuleTarget job) {
+	/**
+	 * Updates statistics after simulation ended with data from a job that is
+	 * still processed on the shop floor.
+	 */
+	protected void storeWIPJob(PrioRuleTarget job) {
 		for (int i = 0; i < job.numJobsInBatch(); i++) {
 			Job j = job.job(i);
 			if (j.isFuture())
@@ -119,6 +127,8 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 		flowtime.value(ft);
 		weightedFlowtime.value(j.getWeight() * ft);
 
+		noProcTime.value(ft - j.procSum());
+
 		double late = shop.simTime() - j.getDueDate();
 		lateness.value(late);
 
@@ -140,6 +150,7 @@ public class BasicJobStatCollector extends JobShopListenerBase {
 	@Override
 	public void produceResults(Simulation sim, Map<String, Object> res) {
 		Util.putMeanMaxVar(flowtime, "flow", res);
+		Util.putMeanMaxVar(noProcTime, "noProc", res);
 		Util.putMeanMaxVar(weightedFlowtime, "weightedFlow", res);
 
 		Util.putMeanMaxVar(lateness, "late", res);
