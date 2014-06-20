@@ -152,7 +152,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	protected void finish() {
 	}
 
-	public void runExperiment() {
+	public Map<String, Object> runExperiment() {
 		try {
 			runTimeReal = System.currentTimeMillis();
 			if (numListener() > 0)
@@ -194,6 +194,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 		resultMap = Collections.unmodifiableMap(resultMap);
 		if (numListener() > 0)
 			fire(EXPERIMENT_FINISHED);
+		
+		return getResults();
 	}
 
 	public final Map<String, Object> getResults() {
