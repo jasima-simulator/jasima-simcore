@@ -34,13 +34,13 @@ import org.apache.commons.math3.distribution.TDistribution;
  * In other simulation packages this is sometimes called "tally".
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id: SummaryStat.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
+ * @version 
+ *          "$Id: SummaryStat.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public class SummaryStat implements Serializable {
 
 	private static final long serialVersionUID = 2887454928117526659L;
 
-	private static final double MIN_WEIGHT = 1e-12d;
 	protected static final double DEF_ERROR_PROB = 0.05;
 
 	private String name;
@@ -83,9 +83,6 @@ public class SummaryStat implements Serializable {
 		if (weight < 0.0d)
 			throw new IllegalArgumentException("Weight can't be negative. "
 					+ weight);
-
-		if (weight < MIN_WEIGHT)
-			return;
 
 		lastValue = v;
 		lastWeight = weight;
@@ -148,8 +145,8 @@ public class SummaryStat implements Serializable {
 	}
 
 	/**
-	 * Combines the data in "other" with another ValueStat-Object. The combined
-	 * object behaves as if it had also seen the data of "other".
+	 * Combines the data in {@code other} with this SummaryStat-Object. The
+	 * combined object behaves as if it had also seen the data of "other".
 	 */
 	public void combine(SummaryStat other) {
 		valSum += other.valSum;
@@ -192,6 +189,8 @@ public class SummaryStat implements Serializable {
 	}
 
 	public double weightSum() {
+		if (numObs == 0)
+			return Double.NaN;
 		return weightSum;
 	}
 
