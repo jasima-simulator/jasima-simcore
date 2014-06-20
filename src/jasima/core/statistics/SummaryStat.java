@@ -35,7 +35,7 @@ import org.apache.commons.math3.distribution.TDistribution;
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
- *          "$Id: SummaryStat.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
+ *          "$Id$"
  */
 public class SummaryStat implements Serializable {
 
