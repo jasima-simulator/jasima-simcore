@@ -84,6 +84,7 @@ public class DynamicJobSource extends JobSource {
 		Job j = newJobInstance();
 		j.setJobType(index);
 		j.setOps(getRouteForJob());
+		j.setRoute(route);
 
 		j.setRelDate(getArrivalProcess().nextDbl());
 

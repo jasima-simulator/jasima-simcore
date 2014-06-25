@@ -70,6 +70,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	private double[] opDueDates;
 	private boolean isFuture = false;
 	private String name = null;
+	private Route route = null;
 	// we cache the value returned by remainingProcTime()
 	private double remProcTime = -1.0d;
 
@@ -401,6 +402,25 @@ public class Job extends PrioRuleTarget implements Cloneable,
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return The route this object is following (might be null).
+	 */
+	public Route getRoute() {
+		return route;
+	}
+
+	/**
+	 * Sets the {@link Route} this object is following. This might be
+	 * {@code null}, as not every job has to be created using a {@code Route}
+	 * (e.g. in a dynamic job shop where each {@code Job} has its unique rule).
+	 * 
+	 * @param route
+	 *            The route this Job is following.
+	 */
+	public void setRoute(Route route) {
+		this.route = route;
 	}
 
 	//

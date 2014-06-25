@@ -25,7 +25,8 @@ package jasima.shopSim.core;
  * {@link JobSpec}).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class StaticJobSource extends JobSource {
 
@@ -75,6 +76,7 @@ public class StaticJobSource extends JobSource {
 		j.setWeight(js.weight);
 		j.setJobType(js.routeNum);
 		j.setOps(getShop().routes[js.routeNum].ops());
+		j.setRoute(getShop().routes[js.routeNum]);
 		j.setName(js.name);
 
 		nextJob++;
