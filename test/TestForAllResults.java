@@ -52,9 +52,12 @@ import org.junit.Test;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: TestForAllResults.java 144 2013-11-25 13:23:16Z
+ *          THildebrandt@gmail.com $
  */
 public class TestForAllResults extends ExperimentTest {
+
+	private static final boolean SAVE_ACTUAL = false;
 
 	@BeforeClass
 	public static void setUp() {
@@ -78,12 +81,9 @@ public class TestForAllResults extends ExperimentTest {
 		e.addShopListener(batchStatCollector);
 
 		e.runExperiment();
-		// XmlUtil.saveXML(e.getResults(), new File("holthausRes.xml"));
 		e.printResults();
 
-		checkResults(e.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/holthausRes.xml")));
+		checkResults(e.getResults(), new File("testInstances/holthausRes.xml"));
 	}
 
 	@Test
@@ -105,12 +105,9 @@ public class TestForAllResults extends ExperimentTest {
 		e.addShopListener(batchStatCollector);
 
 		e.runExperiment();
-		// XmlUtil.saveXML(e.getResults(), new File("holthausRes.xml"));
 		e.printResults();
 
-		checkResults(e.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/holthausRes.xml")));
+		checkResults(e.getResults(), new File("testInstances/holthausRes.xml"));
 	}
 
 	@Test
@@ -132,12 +129,10 @@ public class TestForAllResults extends ExperimentTest {
 		e.addShopListener(batchStatCollector);
 
 		e.runExperiment();
-		// XmlUtil.saveXML(e.getResults(), new File("holthausResLA50.xml"));
 		e.printResults();
 
-		checkResults(e.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/holthausResLA50.xml")));
+		checkResults(e.getResults(), new File(
+				"testInstances/holthausResLA50.xml"));
 	}
 
 	@Test
@@ -159,12 +154,10 @@ public class TestForAllResults extends ExperimentTest {
 		e.addShopListener(batchStatCollector);
 
 		e.runExperiment();
-		// XmlUtil.saveXML(e.getResults(), new File("holthausResLA100.xml"));
 		e.printResults();
 
-		checkResults(e.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/holthausResLA100.xml")));
+		checkResults(e.getResults(), new File(
+				"testInstances/holthausResLA100.xml"));
 	}
 
 	@Test
@@ -186,12 +179,10 @@ public class TestForAllResults extends ExperimentTest {
 		mre.addKeepResultName("tardMean");
 		mre.addKeepResultName("flowMean");
 		mre.runExperiment();
-		// XmlUtil.saveXML(mre.getResults(), new File("holthausResMult.xml"));
 		mre.printResults();
 
-		checkResults(mre.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/holthausResMult.xml")));
+		checkResults(mre.getResults(), new File(
+				"testInstances/holthausResMult.xml"));
 	}
 
 	@Test
@@ -226,9 +217,8 @@ public class TestForAllResults extends ExperimentTest {
 		ffe.runExperiment();
 		ffe.printResults();
 
-		checkResults(ffe.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/holthausResMultFFE.xml")));
+		checkResults(ffe.getResults(), new File(
+				"testInstances/holthausResMultFFE.xml"));
 	}
 
 	@Test
@@ -238,8 +228,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"),
 				false);
-		// XmlUtil.saveXML(e.getResults(), new
-		// File("mimac4rResBestOfFamilyBatching.xml"));
 	}
 
 	@Test
@@ -250,8 +238,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"),
 				true);
-		// XmlUtil.saveXML(e.getResults(), new
-		// File("mimac4rResBestOfFamilyBatching.xml"));
 	}
 
 	@Test
@@ -262,8 +248,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResBestOfFamilyBatching50.xml"),
 				true);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResBestOfFamilyBatching50.xml"));
 	}
 
 	@Test
@@ -276,8 +260,6 @@ public class TestForAllResults extends ExperimentTest {
 				batchForming,
 				new File("testInstances/mimac4rResBestOfFamilyBatching100.xml"),
 				true);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResBestOfFamilyBatching100.xml"));
 	}
 
 	@Test
@@ -287,8 +269,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResMostCompleteBatch.xml"),
 				false);
-		// XmlUtil.saveXML(e.getResults(), new
-		// File("mimac4rResMostCompleteBatch.xml"));
 	}
 
 	@Test
@@ -298,8 +278,6 @@ public class TestForAllResults extends ExperimentTest {
 		BatchForming batchForming = new MostCompleteBatch();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResMostCompleteBatch.xml"), true);
-		// XmlUtil.saveXML(e.getResults(), new
-		// File("mimac4rResMostCompleteBatch.xml"));
 	}
 
 	@Test
@@ -310,8 +288,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResMostCompleteBatch50.xml"),
 				true);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResMostCompleteBatch50.xml"));
 	}
 
 	@Test
@@ -322,7 +298,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResMostCompleteBatch100.xml"),
 				true);
-		// XmlUtil.saveXML(res, new File("mimac4rResMostCompleteBatch100.xml"));
 	}
 
 	@Test
@@ -333,8 +308,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResHighestJobBatchingMBS.xml"),
 				false);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResHighestJobBatchingMBS.xml"));
 	}
 
 	@Test
@@ -346,8 +319,6 @@ public class TestForAllResults extends ExperimentTest {
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResHighestJobBatchingMBS.xml"),
 				true);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResHighestJobBatchingMBS.xml"));
 	}
 
 	@Test
@@ -361,8 +332,6 @@ public class TestForAllResults extends ExperimentTest {
 				batchForming,
 				new File("testInstances/mimac4rResHighestJobBatchingMBS50.xml"),
 				true);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResHighestJobBatchingMBS50.xml"));
 	}
 
 	@Test
@@ -376,8 +345,14 @@ public class TestForAllResults extends ExperimentTest {
 				batchForming,
 				new File("testInstances/mimac4rResHighestJobBatchingMBS100.xml"),
 				true);
-		// XmlUtil.saveXML(res, new
-		// File("mimac4rResHighestJobBatchingMBS100.xml"));
+	}
+
+	protected void checkResults(Map<String, Object> actual, File f) {
+		if (SAVE_ACTUAL)
+			XmlUtil.saveXML(actual, new File(f.getName()));
+
+		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
+		checkResults(actual, expected);
 	}
 
 	private Map<String, Object> runMimac4rAndCheck(PR pr,
@@ -388,11 +363,16 @@ public class TestForAllResults extends ExperimentTest {
 		e.printResults();
 
 		Map<String, Object> res = new HashMap<String, Object>(e.getResults());
-		res.remove("weightedCondTardMax");
-		res.remove("weightedCondTardVariance");
-		res.remove("weightedCondTardMean");
-		res.remove("numTardy");
-		res.remove("weightedNumTardy");
+		if (SAVE_ACTUAL)
+			XmlUtil.saveXML(res, new File(f.getName()));
+		// res.remove("weightedCondTardMax");
+		// res.remove("weightedCondTardVariance");
+		// res.remove("weightedCondTardMean");
+		// res.remove("noProcMean");
+		// res.remove("noProcMax");
+		// res.remove("noProcVariance");
+		// res.remove("numTardy");
+		// res.remove("weightedNumTardy");
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 
 		checkKeySets(res, expected);
@@ -446,8 +426,7 @@ public class TestForAllResults extends ExperimentTest {
 		ffe.runExperiment();
 		ffe.printResults();
 
-		checkResults(ffe.getResults(),
-				(Map<String, Object>) XmlUtil.loadXML(new File(
-						"testInstances/mimac4r_MRE_FFE.xml")));
+		checkResults(ffe.getResults(), new File(
+				"testInstances/mimac4r_MRE_FFE.xml"));
 	}
 }
