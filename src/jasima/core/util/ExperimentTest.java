@@ -34,13 +34,14 @@ import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
 
 /**
- * Base class for JUnit tests which check for many results of an
- * {@link Experiment} at once. Deriving a new test class from
- * {@code ExperimentTest} and calling {@link #checkResults(Map, Map)} many
+ * Utility class that can be used as a base class for JUnit tests which check
+ * for many results of an {@link Experiment} at once. Deriving a new test class
+ * from {@code ExperimentTest} and calling {@link #checkResults(Map, Map)} many
  * results of an experiment can be validated with a single method call.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-08
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ExperimentTest {
 
@@ -111,15 +112,16 @@ public class ExperimentTest {
 				Float act = (Float) actual;
 				Double e = exp == null ? null : exp.doubleValue();
 				Double a = act == null ? null : act.doubleValue();
-				errorCollector.checkThat(name, e, closeTo(a, EPS));
+				errorCollector.checkThat(name, a, closeTo(e, EPS));
 			} else
 				errorCollector.checkThat(name, actual, is(expected));
 		}
 	}
 
 	private void checkDouble(String name, double act, double exp) {
-		if (Double.compare(exp, act) != 0)
-			errorCollector.checkThat(name, exp, closeTo(act, EPS));
+		if (Double.compare(exp, act) != 0) {
+			errorCollector.checkThat(name, act, closeTo(exp, EPS));
+		}
 	}
 
 	public void checkValueStat(String name, SummaryStat exp, SummaryStat act) {
