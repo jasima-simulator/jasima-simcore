@@ -222,8 +222,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * Schedules a new event.
 	 */
 	public void schedule(Event event) {
-		if (event.getTime() == simTime
-				&& event.getPrio() <= currPrio)
+		if (event.getTime() == simTime && event.getPrio() <= currPrio)
 			print(SimMsgCategory.WARN, "Priority inversion.");
 		if (event.getTime() < simTime) {
 			print(SimMsgCategory.ERROR,
@@ -249,12 +248,13 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		return simTime;
 	}
 
-	/** Returns the priority of the currently processed event;
+	/**
+	 * Returns the priority of the currently processed event;
 	 */
 	public int currentPrio() {
 		return currPrio;
 	}
-	
+
 	/**
 	 * Returns the {@link Event} object that is currently processed.
 	 */
@@ -467,8 +467,12 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Simulation sim = (Simulation) super.clone();
-		if (valueStore != null)
+		if (valueStore != null) {
 			sim.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		}
+		if (adapter != null) {
+			sim.adapter = adapter.clone();
+		}
 		return sim;
 	}
 

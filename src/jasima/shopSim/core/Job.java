@@ -36,6 +36,7 @@ import java.util.Set;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version "$Id$"
  */
+// TODO: PrioRuleTarget should be an interface
 public class Job extends PrioRuleTarget implements Cloneable,
 		Notifier<Job, JobEvent>, ValueStore {
 
@@ -73,7 +74,6 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	private double remProcTime = -1.0d;
 
 	private Job future;
-	private HashMap<Object, Object> valueStore;
 
 	public Job(JobShop shop) {
 		super();
@@ -222,8 +222,15 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	public Job clone() throws CloneNotSupportedException {
 		Job j = (Job) super.clone();
 		j.future = null;
-		if (valueStore != null)
+
+		if (valueStore != null) {
 			j.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		}
+
+		if (adapter != null) {
+			j.adapter = adapter.clone();
+		}
+
 		return j;
 	}
 
@@ -396,6 +403,14 @@ public class Job extends PrioRuleTarget implements Cloneable,
 		this.name = name;
 	}
 
+	//
+	//
+	// ValueStore implementation
+	//
+	//
+
+	private HashMap<Object, Object> valueStore;
+
 	/**
 	 * Offers a simple get/put-mechanism to store and retrieve information as a
 	 * kind of global data store. This can be used as a simple extension
@@ -453,7 +468,8 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	/**
 	 * Removes an entry from this job's value store.
 	 * 
-	 * @return The value previously associated with "key", or null, if no such key was found.
+	 * @return The value previously associated with "key", or null, if no such
+	 *         key was found.
 	 */
 	@Override
 	public Object valueStoreRemove(Object key) {

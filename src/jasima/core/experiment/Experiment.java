@@ -60,7 +60,8 @@ import java.util.Map;
  * additional events.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id: Experiment.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
+ * @version 
+ *          "$Id: Experiment.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public abstract class Experiment implements Cloneable, Serializable,
 		Notifier<Experiment, ExperimentEvent> {
@@ -194,7 +195,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 		resultMap = Collections.unmodifiableMap(resultMap);
 		if (numListener() > 0)
 			fire(EXPERIMENT_FINISHED);
-		
+
 		return getResults();
 	}
 
@@ -277,12 +278,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 	public Experiment clone() throws CloneNotSupportedException {
 		Experiment c = (Experiment) super.clone();
 
-		c.adapter = null;
-		for (int i = 0; i < numListener(); i++) {
-			NotifierListener<Experiment, ExperimentEvent> clone = Util
-					.cloneIfPossible(getNotifierListener(i));
-			c.addNotifierListener(clone);
-		}
+		if (adapter != null)
+			c.adapter = adapter.clone();
 
 		return c;
 	}

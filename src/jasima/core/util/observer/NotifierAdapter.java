@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util.observer;
 
+import jasima.core.util.Util;
+
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,17 +33,18 @@ import java.util.Iterator;
  * notifier functionality for some real Notifier.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class NotifierAdapter<N extends Notifier<N, E>, E> implements
-		Notifier<N, E>, Serializable {
+		Notifier<N, E>, Serializable, Cloneable {
 
 	private static final long serialVersionUID = 72063783838585993L;
 
-	private ArrayList<NotifierListener<N, E>> listeners = new ArrayList<NotifierListener<N, E>>();
-	private ArrayDeque<E> events = null;
 	private final N notifier;
 
+	private ArrayList<NotifierListener<N, E>> listeners = new ArrayList<NotifierListener<N, E>>();
+	private ArrayDeque<E> events = null;
 	private Iterator<NotifierListener<N, E>> it;
 
 	public NotifierAdapter(final N notifier) {
@@ -98,6 +101,31 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 	@Override
 	public NotifierListener<N, E> getNotifierListener(int index) {
 		return listeners.get(index);
+	}
+
+	/**
+	 * Provides a deep clone of this {@code NotifierAdapter}, trying to clone
+	 * each Listener contained using the method
+	 * {@link Util#cloneIfPossible(Object)}
+	 * 
+	 * @see Util#cloneIfPossible(Object)
+	 */
+	@Override
+	public NotifierAdapter<N, E> clone() throws CloneNotSupportedException {
+		@SuppressWarnings("unchecked")
+		NotifierAdapter<N, E> c = (NotifierAdapter<N, E>) super.clone();
+
+		c.it = null;
+		c.events = null;
+
+		c.listeners = new ArrayList<NotifierListener<N, E>>(listeners.size());
+		for (int i = 0, n = listeners.size(); i < n; i++) {
+			NotifierListener<N, E> clone = Util.cloneIfPossible(listeners
+					.get(i));
+			c.listeners.add(clone);
+		}
+
+		return c;
 	}
 
 }

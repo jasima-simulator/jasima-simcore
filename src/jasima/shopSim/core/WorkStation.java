@@ -199,9 +199,9 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 			imd.init();
 			numBusy++;
 		}
-		
+
 		queue.getSequencingRule().init();
-		
+
 		if (getBatchSequencingRule() != null)
 			getBatchSequencingRule().init();
 
@@ -211,7 +211,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	}
 
 	void activated(IndividualMachine im) {
-		assert currMachine==im;
+		assert currMachine == im;
 		freeMachines.addFirst(currMachine);
 
 		numBusy--;
@@ -227,7 +227,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	}
 
 	void takenDown(IndividualMachine im) {
-		assert currMachine==im;
+		assert currMachine == im;
 		freeMachines.remove(currMachine);
 
 		numBusy++;
@@ -851,8 +851,15 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		WorkStation ws = (WorkStation) super.clone();
-		if (valueStore != null)
+
+		if (valueStore != null) {
 			ws.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		}
+
+		if (adapter != null) {
+			ws.adapter = adapter.clone();
+		}
+
 		return ws;
 	}
 
