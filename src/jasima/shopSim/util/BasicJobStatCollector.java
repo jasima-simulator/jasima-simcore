@@ -42,7 +42,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class BasicJobStatCollector extends JobShopListenerBase {
+public class BasicJobStatCollector extends ShopListenerBase {
 
 	private static final long serialVersionUID = -6311778884767987852L;
 

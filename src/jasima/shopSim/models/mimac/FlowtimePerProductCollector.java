@@ -25,7 +25,7 @@ import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
-import jasima.shopSim.util.JobShopListenerBase;
+import jasima.shopSim.util.ShopListenerBase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ import java.util.Map;
  * 
  * @version "$Id$"
  */
-public class FlowtimePerProductCollector extends JobShopListenerBase {
+public class FlowtimePerProductCollector extends ShopListenerBase {
 
 	private HashMap<Integer, SummaryStat> flowtimesPerProduct;
 

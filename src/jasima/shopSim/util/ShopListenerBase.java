@@ -38,7 +38,7 @@ import java.util.Map;
  * @see BasicJobStatCollector
  * @version "$Id$"
  */
-public abstract class JobShopListenerBase implements
+public abstract class ShopListenerBase implements
 		NotifierListener<Simulation, SimEvent>, Serializable, Cloneable {
 
 	private static final long serialVersionUID = 8342338485821153287L;

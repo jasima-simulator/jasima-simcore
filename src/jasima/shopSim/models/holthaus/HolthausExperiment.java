@@ -34,7 +34,7 @@ import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.WorkStation;
-import jasima.shopSim.util.JobShopListenerBase;
+import jasima.shopSim.util.ShopListenerBase;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
@@ -84,7 +84,7 @@ public class HolthausExperiment extends JobShopExperiment {
 		super.init();
 
 		@SuppressWarnings("serial")
-		JobShopListenerBase stopSrc = new JobShopListenerBase() {
+		ShopListenerBase stopSrc = new ShopListenerBase() {
 			int maxJob = getStopAfterNumJobs();
 			int numJobs = maxJob;
 

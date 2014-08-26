@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
  * @version "$Id$"
  */
-public class BatchStatCollector extends JobShopListenerBase {
+public class BatchStatCollector extends ShopListenerBase {
 
 	private static final long serialVersionUID = 7842780799230820976L;
 

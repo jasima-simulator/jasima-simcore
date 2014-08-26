@@ -41,7 +41,7 @@ import java.io.PrintWriter;
  * @version 
  *          "$Id$"
  */
-public class TraceFileProducer extends JobShopListenerBase {
+public class TraceFileProducer extends ShopListenerBase {
 
 	// parameters
 

@@ -29,7 +29,7 @@ import jasima.core.util.Util;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.WorkStation.WorkStationEvent;
 import jasima.shopSim.core.batchForming.BatchForming;
-import jasima.shopSim.util.JobShopListenerBase;
+import jasima.shopSim.util.ShopListenerBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,7 +152,7 @@ public abstract class JobShopExperiment extends Experiment {
 		}
 
 		// forward simulation print events to experiment print events
-		shop.addNotifierListener(new JobShopListenerBase() {
+		shop.addNotifierListener(new ShopListenerBase() {
 
 			@Override
 			protected void print(Simulation sim, SimPrintEvent event) {
