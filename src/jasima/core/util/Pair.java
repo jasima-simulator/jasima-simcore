@@ -25,17 +25,22 @@ import java.io.Serializable;
 /**
  * Simple wrapper to store two different objects. Instances of this class are
  * immutable.
+ * <p>
+ * This class can be used safely with {@code null} values for a and b.
+ * 
  * 
  * @param <A>
  *            Type of the first element.
  * @param <B>
  *            Type of the second element.
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class Pair<A, B> implements Cloneable, Serializable {
 
 	private static final long serialVersionUID = -1202307182078250138L;
+
+	private static final int NULL_HASH = 2147483647;
 
 	public final A a;
 	public final B b;
@@ -50,31 +55,36 @@ public class Pair<A, B> implements Cloneable, Serializable {
 		this(p.a, p.b);
 	}
 
-	public static <A, B> Pair<A, B> makePair(A a, B b) {
-		return new Pair<A, B>(a, b);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		Pair<?, ?> p2 = (Pair<?, ?>) obj;
 
-		return a.equals(p2.a) && b.equals(p2.b);
+		boolean aEquals = a == null ? p2.a == null : a.equals(p2.a);
+		boolean bEquals = b == null ? p2.b == null : b.equals(p2.b);
+
+		return aEquals && bEquals;
 	}
 
+	@Override
+	public int hashCode() {
+		final int hcA = a != null ? a.hashCode() : NULL_HASH;
+		final int hcB = b != null ? b.hashCode() : NULL_HASH;
+		return ((hcA << 16) ^ hcB) & (hcA >>> 16);
+	}
+
+	/**
+	 * Returns a String containing a and b seperated by comma and enclosed in
+	 * arrow brackets.
+	 */
 	@Override
 	public String toString() {
 		return "<" + a + "," + b + ">";
 	}
 
-	@Override
-	public int hashCode() {
-		final int hcA = a.hashCode();
-		return ((hcA << 16) ^ b.hashCode()) & (hcA >>> 16);
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public Pair<A, B> clone() throws CloneNotSupportedException {
-		return new Pair<A, B>(a, b);
+		return (Pair<A, B>) super.clone();
 	}
 
 }
