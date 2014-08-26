@@ -70,4 +70,9 @@ public class JobListenerBase implements Cloneable,
 	protected void released(JobShop shop, Job j) {
 	}
 
+	@Override
+	public JobListenerBase clone() throws CloneNotSupportedException {
+		return (JobListenerBase) super.clone();
+	}
+
 }

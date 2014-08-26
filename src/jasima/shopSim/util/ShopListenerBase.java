@@ -36,7 +36,8 @@ import java.util.Map;
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
  * @see BasicJobStatCollector
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class ShopListenerBase implements
 		NotifierListener<Simulation, SimEvent>, Serializable, Cloneable {
@@ -109,8 +110,8 @@ public abstract class ShopListenerBase implements
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public ShopListenerBase clone() throws CloneNotSupportedException {
+		return (ShopListenerBase) super.clone();
 	}
 
 	// boring getters and setters below

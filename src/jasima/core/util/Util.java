@@ -363,11 +363,14 @@ public class Util {
 				Method cloneMethod = o.getClass().getMethod("clone",
 						new Class[] {});
 				return (T) cloneMethod.invoke(o, new Object[] {});
+			} catch (NoSuchMethodException ignore) {
+				// no public clone-method, return o as is
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-		} else
-			return o;
+		} 
+
+		return o;
 	}
 
 	/**
