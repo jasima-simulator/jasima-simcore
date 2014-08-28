@@ -858,6 +858,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 
 		if (adapter != null) {
 			ws.adapter = adapter.clone();
+			ws.adapter.setNotifier(ws);
 		}
 
 		return ws;

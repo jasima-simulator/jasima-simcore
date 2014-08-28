@@ -230,6 +230,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 
 		if (adapter != null) {
 			j.adapter = adapter.clone();
+			j.adapter.setNotifier(j);
 		}
 
 		return j;
@@ -257,10 +258,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 
 	@Override
 	public String toString() {
-		String s = getName();
-		if (s == null)
-			s = getClass().getSimpleName() + "." + jobType + "." + getJobNum();
-		return s + "#" + taskNumber;
+		return getName() + "#" + taskNumber;
 	}
 
 	public JobShop getShop() {
@@ -397,7 +395,11 @@ public class Job extends PrioRuleTarget implements Cloneable,
 
 	@Override
 	public String getName() {
-		return name;
+		if (name == null)
+			return getClass().getSimpleName() + "." + jobType + "."
+					+ getJobNum();
+		else
+			return name;
 	}
 
 	public void setName(String name) {

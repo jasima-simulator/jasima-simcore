@@ -472,6 +472,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		}
 		if (adapter != null) {
 			sim.adapter = adapter.clone();
+			sim.adapter.setNotifier(sim);
 		}
 		return sim;
 	}

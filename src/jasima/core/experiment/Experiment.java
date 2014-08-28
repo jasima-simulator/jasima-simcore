@@ -278,8 +278,10 @@ public abstract class Experiment implements Cloneable, Serializable,
 	public Experiment clone() throws CloneNotSupportedException {
 		Experiment c = (Experiment) super.clone();
 
-		if (adapter != null)
+		if (adapter != null) {
 			c.adapter = adapter.clone();
+			c.adapter.setNotifier(c);
+		}
 
 		return c;
 	}

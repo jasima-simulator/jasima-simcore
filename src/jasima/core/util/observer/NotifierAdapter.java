@@ -41,7 +41,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 
 	private static final long serialVersionUID = 72063783838585993L;
 
-	private final N notifier;
+	private N notifier;
 
 	private ArrayList<NotifierListener<N, E>> listeners = new ArrayList<NotifierListener<N, E>>();
 	private ArrayDeque<E> events = null;
@@ -50,7 +50,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 	public NotifierAdapter(final N notifier) {
 		if (notifier == null)
 			throw new NullPointerException("notifier");
-		this.notifier = notifier;
+		this.setNotifier(notifier);
 	}
 
 	public void addNotifierListener(NotifierListener<N, E> listener) {
@@ -83,7 +83,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 			do {
 				it = listeners.iterator();
 				while (it.hasNext()) {
-					it.next().update(this.notifier, event);
+					it.next().update(this.getNotifier(), event);
 				}
 				it = null;
 
@@ -103,10 +103,19 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 		return listeners.get(index);
 	}
 
+	public N getNotifier() {
+		return notifier;
+	}
+
+	public void setNotifier(N notifier) {
+		this.notifier = notifier;
+	}
+
 	/**
 	 * Provides a deep clone of this {@code NotifierAdapter}, trying to clone
 	 * each Listener contained using the method
-	 * {@link Util#cloneIfPossible(Object)}
+	 * {@link Util#cloneIfPossible(Object)}. Make sure to set the clone's
+	 * notifier to the correct object.
 	 * 
 	 * @see Util#cloneIfPossible(Object)
 	 */
@@ -117,6 +126,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 
 		c.it = null;
 		c.events = null;
+		c.notifier = null; // set externally to proper value
 
 		c.listeners = new ArrayList<NotifierListener<N, E>>(listeners.size());
 		for (int i = 0, n = listeners.size(); i < n; i++) {
