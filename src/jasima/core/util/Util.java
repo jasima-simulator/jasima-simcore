@@ -688,12 +688,46 @@ public class Util {
 		return maxIdx;
 	}
 
-	public static double round(double val, int decimals) {
-		if (decimals < 0)
-			throw new IllegalArgumentException("" + decimals);
+	/**
+	 * Rounds the given double value to a certain number of decimal places.
+	 * {@code decimals} can be positive or negative.
+	 * 
+	 * @see #round(double[], int)
+	 */
+	public static double round(final double val, final int decimals) {
+		if (decimals >= 0) {
+			long fact = powerOfTen(decimals);
+			return Math.round(val * fact) / ((double) fact);
+		} else {
+			long fact = powerOfTen(-decimals);
+			return Math.round(val / fact) * ((double) fact);
+		}
+	}
 
-		double fact = Math.pow(10, decimals);
-		return Math.round(val * fact) / fact;
+	private static long powerOfTen(int exp) {
+		assert exp >= 0;
+
+		long fact = 1;
+		for (int i = 0; i < exp; i++) {
+			fact *= 10;
+		}
+		return fact;
+	}
+
+	/**
+	 * Rounds all values in the double array {@code vs} to a certain number of
+	 * decimal places. This method does not create a copy of {@code vs}, but
+	 * modifies its contents.
+	 * 
+	 * @return the parameter {@code vs} to allow easy chaining of method calls.
+	 * 
+	 * @see #round(double, int)
+	 */
+	public static double[] round(final double[] vs, final int decimals) {
+		for (int i = 0; i < vs.length; i++) {
+			vs[i] = round(vs[i], decimals);
+		}
+		return vs;
 	}
 
 	/**
