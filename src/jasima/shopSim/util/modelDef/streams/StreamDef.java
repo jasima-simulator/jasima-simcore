@@ -35,12 +35,14 @@ public abstract class StreamDef extends PropertySupport {
 		String parms = ss.get(1);
 
 		StreamDefFact fact = streamFactoryReg.get(type);
-		if (fact == null)
+		if (fact == null) {
 			errors.add(String.format(
 					"Invalid stream type '%s'. Supported types are: '%s'.",
 					type,
 					streamFactoryReg.keySet().toString()
 							.replaceAll("[\\[\\]]", "")));
+			return null;
+		}
 
 		StreamDef res = fact.stringToStreamDef(parms, errors);
 		return res;
