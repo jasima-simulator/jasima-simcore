@@ -4,8 +4,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 
-public class PropertySupport {
+public class PropertySupport implements Serializable {
 
 	private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
 			this);
