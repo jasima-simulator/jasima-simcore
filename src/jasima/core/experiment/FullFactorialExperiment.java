@@ -45,6 +45,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 	public FullFactorialExperiment() {
 		super();
+		setAbortUponBaseExperimentAbort(false);
 		factors = new LinkedHashMap<String, List<Object>>();
 	}
 
@@ -181,7 +182,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 			addExperimentForConf(is);
 		} while (createNextCombination(is, numValuesPerFactor));
 
-		print("executing experiments ...");
+		print("executing " + experiments.size() + " experiments ...");
 	}
 
 	private static boolean createNextCombination(int[] is,

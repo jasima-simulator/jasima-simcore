@@ -72,6 +72,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	public MultipleReplicationExperiment() {
 		super();
 
+		setAbortUponBaseExperimentAbort(true);
 		setCommonRandomNumbers(false);
 	}
 
