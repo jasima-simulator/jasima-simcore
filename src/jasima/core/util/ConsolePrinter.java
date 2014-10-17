@@ -128,10 +128,32 @@ public class ConsolePrinter extends ExperimentListenerBase {
 			Experiment runExperiment, Map<String, Object> runResults) {
 		if (isPrintStdEvents() && e instanceof AbstractMultiExperiment) {
 			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
-			me.print("finished experiment\t" + me.getNumTasksExecuted() + "/"
-					+ me.getNumTasks() + " in "
-					+ runResults.get(Experiment.RUNTIME) + "s");
+			Number runTime = (Number) runResults.get(Experiment.RUNTIME);
+			Number aborted = (Number) runResults.get(Experiment.EXP_ABORTED);
+			Object errorMsg = runResults.get(Experiment.EXCEPTION_MESSAGE);
+
+			String msg = "finished experiment\t" + me.getNumTasksExecuted()
+					+ "/" + me.getNumTasks() + " in " + String.valueOf(runTime)
+					+ "s";
+			if (aborted != null && aborted.doubleValue() != 0.0) {
+				msg += "; ABORTED";
+				if (errorMsg != null)
+					msg += "; " + toString(errorMsg);
+			}
+			me.print(msg);
 		}
+	}
+
+	private String toString(Object o) {
+		String res;
+		if (o == null) {
+			res = "null";
+		} else if (o.getClass().isArray()) {
+			res = Util.arrayToString(o);
+		} else {
+			res = o.toString();
+		}
+		return res;
 	}
 
 	// getter and setter below
