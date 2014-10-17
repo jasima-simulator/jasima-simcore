@@ -180,6 +180,7 @@ public class RandomFactory implements Serializable {
 		}
 
 		stream.setRndGen(createInstance(name));
+		stream.init();
 
 		return stream;
 	}

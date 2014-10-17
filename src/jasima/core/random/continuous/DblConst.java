@@ -56,6 +56,12 @@ public class DblConst extends DblStream {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		next = 0;
+	}
+
+	@Override
 	public double nextDbl() {
 		double v = values[next];
 		// wrap around
@@ -74,7 +80,7 @@ public class DblConst extends DblStream {
 		DblConst c = (DblConst) super.clone();
 
 		if (values != null)
-			c.values = Arrays.copyOf(values, values.length);
+			c.values = values.clone();
 
 		return c;
 	}
