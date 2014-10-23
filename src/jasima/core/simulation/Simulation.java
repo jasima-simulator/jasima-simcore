@@ -343,6 +343,14 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	}
 
 	/**
+	 * Same as {@link #print(SimMsgCategory, String, Object...)}, but defaulting
+	 * to category {@code INFO}
+	 */
+	public void print(String messageFormatString, Object... params) {
+		print(SimMsgCategory.INFO, messageFormatString, params);
+	}
+
+	/**
 	 * Factory method to create a new event queue.
 	 * 
 	 * @return The event queue to use in this simulation.
