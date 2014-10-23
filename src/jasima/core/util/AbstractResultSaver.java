@@ -54,7 +54,7 @@ public abstract class AbstractResultSaver extends ExperimentListenerBase {
 		int index = 0;
 		String retVal = baseName;
 		while (new File(retVal + extension).exists()) {
-			retVal = baseName + "_" + ++index + extension;
+			retVal = baseName + "_" + ++index;
 		}
 		return retVal;
 	}

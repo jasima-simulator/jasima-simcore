@@ -21,7 +21,7 @@
 package jasima.shopSim.util;
 
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimPrintEvent;
+import jasima.core.util.AbstractResultSaver;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
@@ -29,10 +29,12 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Produces a detailed trace of all events of a {@link JobShop} in a text file.
@@ -167,10 +169,10 @@ public class TraceFileProducer extends ShopListenerBase {
 		shop.installMachineListener(createWSListener(), false);
 	}
 
-//	@Override
-//	protected void print(Simulation sim, SimPrintEvent event) {
-//		print(sim.simTime() + "\tprint\t" + event.getMessage());
-//	}
+	// @Override
+	// protected void print(Simulation sim, SimPrintEvent event) {
+	// print(sim.simTime() + "\tprint\t" + event.getMessage());
+	// }
 
 	protected void print(String line) {
 		log.println(line);
@@ -180,11 +182,12 @@ public class TraceFileProducer extends ShopListenerBase {
 		try {
 			String name = getFileName();
 			if (name == null) {
-				// create name with a random element
-				Random rnd = sim.getRndStreamFactory().createInstance(
-						getClass().getName());
-				name = String.format("jasimaTrace_%05X.txt",
-						rnd.nextInt(0x100000));
+				// create some default name
+				name = "jasimaTrace"
+						+ new SimpleDateFormat("_yyyyMMdd_HHmmss")
+								.format(new Date());
+				// don't overwrite existing
+				name = AbstractResultSaver.findFreeFile(name, ".txt") + ".txt";
 			}
 			log = new PrintWriter(new BufferedWriter(new FileWriter(name)),
 					true);
