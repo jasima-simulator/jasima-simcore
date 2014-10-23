@@ -72,7 +72,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	// fields used during run
 
-	protected Map<String, Object> detailedResults;
+	protected UniqueNamesCheckingHashMap detailedResultsNumeric;
+	protected UniqueNamesCheckingHashMap detailedResultsOther;
 	private Random seedStream;
 	protected List<Experiment> experiments;
 	private int numTasksExecuted;
@@ -84,7 +85,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		experiments = new ArrayList<Experiment>();
 		seedStream = null;
 
-		detailedResults = new UniqueNamesCheckingHashMap();
+		detailedResultsNumeric = new UniqueNamesCheckingHashMap();
+		detailedResultsOther = new UniqueNamesCheckingHashMap();
 		numTasksExecuted = 0;
 
 		for (int i = 0; i < getSkipSeedCount(); i++) {
@@ -198,7 +200,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 			Object val = r.get(key);
 
 			if (shouldKeepDetails(key))
-				detailedResults.put(key + "." + prefix()
+				detailedResultsOther.put(key + "." + prefix()
 						+ padNumTasks(getNumTasksExecuted()), r.get(key));
 
 			if (isProduceAveragedResults()) {
@@ -250,10 +252,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 */
 	protected void handleOtherValue(String key, Object val) {
 		@SuppressWarnings("unchecked")
-		ArrayList<Object> l = (ArrayList<Object>) detailedResults.get(key);
+		ArrayList<Object> l = (ArrayList<Object>) detailedResultsOther.get(key);
 		if (l == null) {
 			l = new ArrayList<Object>();
-			detailedResults.put(key, l);
+			detailedResultsOther.put(key, l);
 		}
 		l.add(val);
 	}
@@ -270,10 +272,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 			key = "baseExperiment." + key;
 		}
 
-		SummaryStat repValues = (SummaryStat) detailedResults.get(key);
+		SummaryStat repValues = (SummaryStat) detailedResultsNumeric.get(key);
 		if (repValues == null) {
 			repValues = new SummaryStat();
-			detailedResults.put(key, repValues);
+			detailedResultsNumeric.put(key, repValues);
 		}
 
 		// store run result, may it be a complex statistic or scalar value
@@ -294,21 +296,36 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	protected void produceResults() {
 		super.produceResults();
 
-		for (String key : detailedResults.keySet()) {
-			Object val = detailedResults.get(key);
+		for (String key : detailedResultsNumeric.keySet()) {
+			Object val = detailedResultsNumeric.get(key);
 
 			if (key.endsWith(NUM_TASKS_EXECUTED))
 				key = "baseExperiment." + key;
 
-			// careful: ValueStat is not immutable, so is it better to create a
+			// careful: SummaryStat is not immutable, so is it better to create
+			// a
 			// clone?
+			assert val instanceof SummaryStat;
+
+			resultMap.put(key, val);
+		}
+
+		for (String key : detailedResultsOther.keySet()) {
+			Object val = detailedResultsOther.get(key);
+
+			if (key.endsWith(NUM_TASKS_EXECUTED))
+				key = "baseExperiment." + key;
+
+			while (resultMap.containsKey(key))
+				key += "@Other";
+
 			if (val instanceof ArrayList) {
 				ArrayList<?> l = (ArrayList<?>) val;
-				resultMap.put(key, l.toArray(new Object[l.size()]));
-			} else {
-				resultMap.put(key, val);
+				val = l.toArray(new Object[l.size()]);
 			}
+			resultMap.put(key, val);
 		}
+
 		resultMap.put(NUM_TASKS_EXECUTED, getNumTasksExecuted());
 	}
 

@@ -104,7 +104,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		// check all measures in "confIntervalMeasure" to have the quality
 		// measured by "errorProb" and "allowancePercentage".
 		for (String name : confIntervalMeasure) {
-			SummaryStat vs = (SummaryStat) detailedResults.get(name);
+			SummaryStat vs = (SummaryStat) detailedResultsNumeric.get(name);
 			if (vs == null)
 				throw new RuntimeException("No results for name '" + name + "'");
 
