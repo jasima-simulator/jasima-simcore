@@ -93,17 +93,48 @@ public abstract class Experiment implements Cloneable, Serializable,
 	}
 
 	public static class ExpPrintEvent extends ExperimentEvent {
+
+		public final Experiment exp;
+		public final ExpMsgCategory category;
+		private String message;
+		private String messageFormatString;
+		private Object[] params;
+
 		public ExpPrintEvent(Experiment exp, ExpMsgCategory category,
 				String message) {
 			super();
+			if (message == null)
+				throw new NullPointerException();
 			this.exp = exp;
 			this.category = category;
 			this.message = message;
 		}
 
-		public final Experiment exp;
-		public final ExpMsgCategory category;
-		public final String message;
+		public ExpPrintEvent(Experiment exp, ExpMsgCategory category,
+				String messageFormatString, Object... params) {
+			super();
+			this.exp = exp;
+			this.category = category;
+			this.messageFormatString = messageFormatString;
+			this.params = params;
+			this.message = null;
+		}
+
+		public String getMessage() {
+			// lazy creation of message only when needed
+			if (message == null) {
+				message = String.format(messageFormatString, params);
+				messageFormatString = null;
+				params = null;
+			}
+
+			return message;
+		}
+
+		@Override
+		public String toString() {
+			return getMessage();
+		}
 	}
 
 	// parameters
@@ -250,6 +281,31 @@ public abstract class Experiment implements Cloneable, Serializable,
 		if (numListener() > 0) {
 			fire(new ExpPrintEvent(this, category, message));
 		}
+	}
+
+	/**
+	 * Triggers a print event of the given category. If an appropriate listener
+	 * is installed, this should produce a message created by the given format
+	 * string and parameters.
+	 * 
+	 * @param messageFormat
+	 *            Format string for the message to produce.
+	 * @param params
+	 *            Parameters to use in the format string.
+	 */
+	public void print(ExpMsgCategory category, String messageFormat,
+			Object... params) {
+		if (numListener() > 0) {
+			fire(new ExpPrintEvent(this, category, messageFormat, params));
+		}
+	}
+
+	/**
+	 * Same as {@link #print(ExpMsgCategory, String, Object...)}, just
+	 * defaulting to the category {@codeINFO}.
+	 */
+	public void print(String messageFormat, Object... params) {
+		print(ExpMsgCategory.INFO, messageFormat, params);
 	}
 
 	/**

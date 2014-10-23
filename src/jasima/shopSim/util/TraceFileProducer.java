@@ -169,7 +169,7 @@ public class TraceFileProducer extends ShopListenerBase {
 
 //	@Override
 //	protected void print(Simulation sim, SimPrintEvent event) {
-//		print(sim.simTime() + "\tprint\t" + event.message);
+//		print(sim.simTime() + "\tprint\t" + event.getMessage());
 //	}
 
 	protected void print(String line) {

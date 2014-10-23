@@ -45,7 +45,8 @@ import java.util.Random;
  * </ol>
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class RandomFactory implements Serializable {
 	private static final long serialVersionUID = 4828925858942593527L;
@@ -99,10 +100,9 @@ public class RandomFactory implements Serializable {
 	public Random createInstance(final String name) {
 		long seed = getSeed(name);
 		if (getSim() != null)
-			getSim().print(
-					SimMsgCategory.DEBUG,
-					"created random stream '" + name + "' with initial seed "
-							+ seed + ".");
+			getSim().print(SimMsgCategory.DEBUG,
+					"created random stream '%s' with initial seed %d.", name,
+					seed);
 		return createRandom(seed);
 	}
 
@@ -138,11 +138,9 @@ public class RandomFactory implements Serializable {
 			if (getSim() != null)
 				getSim().print(
 						SimMsgCategory.WARN,
-						"Collision for random streams named '"
-								+ name
-								+ "' and '"
-								+ s
-								+ "'. If possible use different stream names to avoid problems with comparability/reproducability of results.");
+						"Collision for random streams named '%s' and '%s'. If possible use different stream names to avoid problems with comparability/reproducability of results.",
+						name, s);
+
 			seed = seedStream.nextLong();
 		}
 

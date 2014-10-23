@@ -79,7 +79,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 				name = "exp@" + Integer.toHexString(e.hashCode());
 
 			String msg = String.format(Locale.UK, getLogFormat(), new Date(),
-					event.category.toString(), event.message, name);
+					event.category.toString(), event.getMessage(), name);
 			if (getOut() == null)
 				System.out.println(msg);
 			else
@@ -128,19 +128,21 @@ public class ConsolePrinter extends ExperimentListenerBase {
 			Experiment runExperiment, Map<String, Object> runResults) {
 		if (isPrintStdEvents() && e instanceof AbstractMultiExperiment) {
 			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
+
 			Number runTime = (Number) runResults.get(Experiment.RUNTIME);
 			Number aborted = (Number) runResults.get(Experiment.EXP_ABORTED);
 			Object errorMsg = runResults.get(Experiment.EXCEPTION_MESSAGE);
 
-			String msg = "finished experiment\t" + me.getNumTasksExecuted()
-					+ "/" + me.getNumTasks() + " in " + String.valueOf(runTime)
-					+ "s";
+			String abortStr = "";
 			if (aborted != null && aborted.doubleValue() != 0.0) {
-				msg += "; ABORTED";
+				abortStr = "; ABORTED";
 				if (errorMsg != null)
-					msg += "; " + toString(errorMsg);
+					abortStr += "; " + toString(errorMsg);
 			}
-			me.print(msg);
+
+			me.print("finished experiment %d/%d in %fs%s",
+					me.getNumTasksExecuted(), me.getNumTasks(), runTime,
+					abortStr);
 		}
 	}
 

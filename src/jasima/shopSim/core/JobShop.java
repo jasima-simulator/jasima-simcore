@@ -123,9 +123,9 @@ public class JobShop extends Simulation {
 		nextJob.setJobNum(jobsStarted++);
 
 		if (getMaxJobsInSystem() > 0
-				&& jobsStarted - jobsFinished >= getMaxJobsInSystem()) {
-			print(SimMsgCategory.WARN, "WIP reaches " + getMaxJobsInSystem()
-					+ ", aborting sim.");
+				&& (jobsStarted - jobsFinished) >= getMaxJobsInSystem()) {
+			print(SimMsgCategory.WARN, "WIP reaches %d, aborting sim.",
+					getMaxJobsInSystem());
 			end(); // abort simulation
 		}
 

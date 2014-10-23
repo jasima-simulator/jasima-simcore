@@ -83,13 +83,13 @@ public class RandomFractionalExperiment extends FullFactorialExperiment {
 
 		long numCfgsToCreate = Math.min(getMaxConfigurations(), total);
 
-		print("creating " + numCfgsToCreate + " configurations out of " + total
-				+ " possible...");
+		print("creating %d configurations out of %d possible...",
+				numCfgsToCreate, total);
 		numConfs = 0;
 
 		sampleConfs((int) numCfgsToCreate, numValuesPerFactor);
 
-		print(experiments.size() + " valid configurations found.");
+		print("%d valid configurations found.", experiments.size());
 	}
 
 	private void sampleConfs(int numCfgsToCreate, int[] numValuesPerFactor) {

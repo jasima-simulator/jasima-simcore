@@ -71,17 +71,49 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	}
 
 	public static class SimPrintEvent extends SimEvent {
+		public final Simulation sim;
+		public final SimMsgCategory category;
+		private String messageFormatString;
+		private Object[] params;
+		private String message;
+
 		public SimPrintEvent(Simulation sim, SimMsgCategory category,
 				String message) {
 			super();
+
+			if (message == null)
+				throw new NullPointerException();
+
 			this.sim = sim;
 			this.category = category;
 			this.message = message;
 		}
 
-		public final Simulation sim;
-		public final SimMsgCategory category;
-		public final String message;
+		public SimPrintEvent(Simulation sim, SimMsgCategory category,
+				String messageFormatString, Object... params) {
+			super();
+			this.sim = sim;
+			this.category = category;
+			this.messageFormatString = messageFormatString;
+			this.params = params;
+			this.message = null;
+		}
+
+		public String getMessage() {
+			// lazy creation of message only when needed
+			if (message == null) {
+				message = String.format(messageFormatString, params);
+				messageFormatString = null;
+				params = null;
+			}
+
+			return message;
+		}
+
+		@Override
+		public String toString() {
+			return getMessage();
+		}
 	}
 
 	public static interface EventQueue {
@@ -223,10 +255,13 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 */
 	public void schedule(Event event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio)
-			print(SimMsgCategory.WARN, "Priority inversion.");
+			print(SimMsgCategory.WARN,
+					"Priority inversion (current: %d, scheduled: %d, event=%s).",
+					currPrio, event.getPrio(), event.toString());
 		if (event.getTime() < simTime) {
 			print(SimMsgCategory.ERROR,
-					"Can't schedule an event that is in the past.");
+					"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
+					event.getTime(), event.getPrio(), event.toString());
 			end();
 		}
 		event.eventNum = eventNum++;
@@ -291,6 +326,19 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	public void print(SimMsgCategory category, String message) {
 		if (numListener() > 0) {
 			fire(new SimPrintEvent(this, category, message));
+		}
+	}
+
+	/**
+	 * Triggers a print event of the given category. If an appropriate listener
+	 * is installed, this produces a message defined by the format string
+	 * {@code messageFormatString} (used with the arguments given in
+	 * {@code params}).
+	 */
+	public void print(SimMsgCategory category, String messageFormatString,
+			Object... params) {
+		if (numListener() > 0) {
+			fire(new SimPrintEvent(this, category, messageFormatString, params));
 		}
 	}
 

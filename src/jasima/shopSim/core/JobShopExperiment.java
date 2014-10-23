@@ -34,7 +34,6 @@ import jasima.shopSim.util.ShopListenerBase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * Base class for shop experiments. This class wraps a {@link JobShop}. Derived
@@ -161,9 +160,8 @@ public abstract class JobShopExperiment extends Experiment {
 						.ordinal()];
 				assert cat.toString().equals(event.category.toString());
 
-				String msg = String.format(Locale.UK, "sim_message\t%f\t%s",
-						sim.simTime(), event.message);
-				JobShopExperiment.this.print(cat, msg);
+				JobShopExperiment.this.print(cat, "sim_message\t%f\t%s",
+						sim.simTime(), event);
 			}
 		});
 	}

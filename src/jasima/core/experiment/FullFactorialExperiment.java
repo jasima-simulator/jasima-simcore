@@ -182,7 +182,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 			addExperimentForConf(is);
 		} while (createNextCombination(is, numValuesPerFactor));
 
-		print("executing " + experiments.size() + " experiments ...");
+		print("executing %d experiments ...", experiments.size());
 	}
 
 	private static boolean createNextCombination(int[] is,

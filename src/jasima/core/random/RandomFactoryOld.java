@@ -28,7 +28,8 @@ import java.util.Random;
  * Use {@link RandomFactory} instead.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 @Deprecated
 public class RandomFactoryOld extends RandomFactory {
@@ -64,9 +65,8 @@ public class RandomFactoryOld extends RandomFactory {
 			if (getSim() != null)
 				getSim().print(
 						SimMsgCategory.WARN,
-						"Collision for random stream name '"
-								+ name
-								+ "', if possible use unique stream names to avoid problems with comparability/reproducability of results.");
+						"Collision for random stream name '%s', if possible use unique stream names to avoid problems with comparability/reproducability of results.",
+						name);
 			res = seedStream.nextLong();
 		}
 
