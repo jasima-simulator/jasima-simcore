@@ -251,6 +251,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * Handles arbitrary values "val" by storing them in an object array.
 	 */
 	protected void handleOtherValue(String key, Object val) {
+		if (key.endsWith(EXCEPTION) || key.endsWith(EXCEPTION_MESSAGE)) {
+			key = "baseExperiment." + key;
+		}
+
 		@SuppressWarnings("unchecked")
 		ArrayList<Object> l = (ArrayList<Object>) detailedResultsOther.get(key);
 		if (l == null) {

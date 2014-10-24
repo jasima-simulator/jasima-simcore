@@ -235,8 +235,17 @@ public abstract class Experiment implements Cloneable, Serializable,
 	}
 
 	protected void produceResults() {
-		resultMap.put(RUNTIME, (runTimeReal / 1000.0d));
+		resultMap.put(RUNTIME, runTimeReal());
 		resultMap.put(EXP_ABORTED, aborted);
+	}
+
+	/**
+	 * Returns the run time (in seconds) of an Experiment. The returned value is
+	 * only valid after calling {@link #runExperiment()} and measures the time
+	 * between calling {@link #init()} and the completion of {@link #done()}.
+	 */
+	protected double runTimeReal() {
+		return (runTimeReal / 1000.0d);
 	}
 
 	/**

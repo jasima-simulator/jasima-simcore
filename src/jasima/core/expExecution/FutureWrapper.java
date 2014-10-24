@@ -41,11 +41,13 @@ public class FutureWrapper implements ExperimentFuture {
 
 	private final Experiment experiment;
 	private final Future<Map<String, Object>> future;
+	private final long time;
 
 	public FutureWrapper(Experiment e, Future<Map<String, Object>> future) {
 		super();
 		this.experiment = e;
 		this.future = future;
+		this.time = System.currentTimeMillis();
 	}
 
 	@Override
@@ -88,6 +90,12 @@ public class FutureWrapper implements ExperimentFuture {
 
 			// create "artificial" results map
 			res = new HashMap<String, Object>();
+
+			// estimate runtime by the time between creation of this future and
+			// current time
+			res.put(Experiment.RUNTIME, System.currentTimeMillis() - time);
+
+			// put error indications in result map
 			res.put(Experiment.EXP_ABORTED, 1);
 			res.put(Experiment.EXCEPTION_MESSAGE, cause.getMessage());
 			res.put(Experiment.EXCEPTION, Util.exceptionToString(cause));
