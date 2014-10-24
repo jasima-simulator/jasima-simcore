@@ -93,7 +93,8 @@ public class FutureWrapper implements ExperimentFuture {
 
 			// estimate runtime by the time between creation of this future and
 			// current time
-			res.put(Experiment.RUNTIME, System.currentTimeMillis() - time);
+			res.put(Experiment.RUNTIME,
+					(System.currentTimeMillis() - time) / 1000.0d);
 
 			// put error indications in result map
 			res.put(Experiment.EXP_ABORTED, 1);

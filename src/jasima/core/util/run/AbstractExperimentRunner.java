@@ -21,10 +21,10 @@
 package jasima.core.util.run;
 
 import jasima.core.expExecution.ExperimentExecutor;
+import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.experiment.Experiment.ExperimentEvent;
-import jasima.core.experiment.ExperimentListenerBase;
 import jasima.core.util.AbstractResultSaver;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
@@ -49,6 +49,7 @@ import java.util.Map;
 public abstract class AbstractExperimentRunner {
 
 	protected Map<Object, NotifierListener<Experiment, ExperimentEvent>> listeners = new HashMap<Object, NotifierListener<Experiment, ExperimentEvent>>();
+	protected boolean printResults = false;
 
 	public AbstractExperimentRunner() {
 		listeners.put(ConsolePrinter.class, new ConsolePrinter(
@@ -80,8 +81,7 @@ public abstract class AbstractExperimentRunner {
 			}
 
 		} else if (arg.equals("--printres")) {
-			listeners.put("ResultPrinter", createResultPrinter());
-
+			printResults = true;
 		} else if (arg.equals("--xmlres")) {
 			listeners.put(XmlSaver.class, new XmlSaver());
 
@@ -161,22 +161,22 @@ public abstract class AbstractExperimentRunner {
 			}
 			exp.addNotifierListener(lstnr);
 		}
-
+		
 		try {
-			ExperimentExecutor.getExecutor().runExperiment(exp).get();
+			ExperimentFuture ef = ExperimentExecutor.getExecutor()
+					.runExperiment(exp);
+			Map<String, Object> res = ef.get();
+
+			String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
+			String exc = (String) res.get(Experiment.EXCEPTION);
+			if (msg != null || exc != null) {
+				throw new RuntimeException(msg + " detailed error: " + exc);
+			}
+
+			if (printResults)
+				exp.printResults(res);
 		} catch (InterruptedException e1) {
 			throw new RuntimeException(e1);
 		}
-	}
-
-	protected NotifierListener<Experiment, ExperimentEvent> createResultPrinter() {
-		return new ExperimentListenerBase() {
-			private static final long serialVersionUID = -4495594880800010905L;
-
-			@Override
-			protected void finished(Experiment e, Map<String, Object> results) {
-				e.printResults(results);
-			}
-		};
 	}
 }

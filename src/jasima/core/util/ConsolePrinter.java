@@ -129,9 +129,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 		if (isPrintStdEvents() && e instanceof AbstractMultiExperiment) {
 			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
 
-			Number runTime = (Number) runResults.get(Experiment.RUNTIME);
-			Number aborted = (Number) runResults.get(Experiment.EXP_ABORTED);
-			Object errorMsg = runResults.get(Experiment.EXCEPTION_MESSAGE);
+			Double runTime = (Double) runResults.get(Experiment.RUNTIME);
+			Integer aborted = (Integer) runResults.get(Experiment.EXP_ABORTED);
+			String errorMsg = (String) runResults.get(Experiment.EXCEPTION_MESSAGE);
 
 			String abortStr = "";
 			if (aborted != null && aborted.doubleValue() != 0.0) {

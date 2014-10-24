@@ -81,6 +81,8 @@ public class TestExperimentExceptions {
 		assertNotNull(exc);
 		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);
 		assertEquals(1, abort.intValue());
+		Double runtime = (Double) res.get(Experiment.RUNTIME);
+		assertNotNull(runtime);
 	}
 
 	@Test
