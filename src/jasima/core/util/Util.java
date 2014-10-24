@@ -60,7 +60,8 @@ public class Util {
 		PrintWriter pw = new PrintWriter(sw);
 		t.printStackTrace(pw);
 		String s = sw.toString();
-		return s.replace(System.getProperty("line.separator") + '\t', " \\\\ ");
+		return s.replace(System.getProperty("line.separator") + '\t', " \\\\ ")
+				.trim();
 	}
 
 	/**
