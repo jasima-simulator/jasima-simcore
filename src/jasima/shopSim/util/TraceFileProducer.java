@@ -29,7 +29,6 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -54,6 +53,8 @@ public class TraceFileProducer extends ShopListenerBase {
 	// used during run
 
 	private PrintWriter log;
+
+	private String name;
 
 	public TraceFileProducer() {
 		super();
@@ -180,7 +181,7 @@ public class TraceFileProducer extends ShopListenerBase {
 
 	private void createLogFile(Simulation sim) {
 		try {
-			String name = getFileName();
+			name = getFileName();
 			if (name == null) {
 				// create some default name
 				name = "jasimaTrace"
@@ -194,6 +195,14 @@ public class TraceFileProducer extends ShopListenerBase {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		String n = getFileName();
+		if (n == null)
+			n = name;
+		return getClass().getSimpleName() + "(" + n + ")";
 	}
 
 	// getter/setter for parameter below
