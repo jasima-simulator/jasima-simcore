@@ -24,7 +24,7 @@ import jasima.core.random.RandomFactoryOld;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
-import jasima.shopSim.models.holthaus.HolthausExperiment;
+import jasima.shopSim.models.holthaus.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_genSeed_2reps;
 import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_lookahead;
@@ -185,7 +185,7 @@ public class TestGECCOContinuity {
 	}
 
 	private Map<String, Object> GECCO2010_lookahead(boolean lookahead) {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.addShopListener(new BasicJobStatCollector());
 
 		Bremen_GECCO2010_lookahead pr = new Bremen_GECCO2010_lookahead();
@@ -204,7 +204,7 @@ public class TestGECCOContinuity {
 	}
 
 	private Map<String, Object> genSeed_2reps(boolean lookahead) {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.addShopListener(new BasicJobStatCollector());
 
 		Bremen_GECCO2010_genSeed_2reps pr = new Bremen_GECCO2010_genSeed_2reps();

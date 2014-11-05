@@ -46,7 +46,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * @version 
  *          "$Id$"
  */
-public class HolthausExperiment extends JobShopExperiment {
+public class DynamicShopExperiment extends JobShopExperiment {
 
 	private static final long serialVersionUID = -7289579178397939550L;
 

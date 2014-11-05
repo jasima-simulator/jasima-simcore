@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import jasima.core.experiment.OCBAExperiment.ProblemType;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ExcelSaver;
-import jasima.shopSim.models.holthaus.HolthausExperiment;
+import jasima.shopSim.models.holthaus.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
@@ -48,7 +48,7 @@ public class OCBATest {
 	@Test @Ignore
 	public void prioRuleSelectionShouldGiveExpectedResults() {
 		// create and configure base experiment
-		HolthausExperiment he = new HolthausExperiment();
+		DynamicShopExperiment he = new DynamicShopExperiment();
 		he.setUtilLevel(0.9);
 		he.addShopListener(new BasicJobStatCollector());
 

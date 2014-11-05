@@ -24,8 +24,8 @@ import jasima.core.random.RandomFactoryOld;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
-import jasima.shopSim.models.holthaus.HolthausExperiment;
-import jasima.shopSim.models.holthaus.HolthausExperiment.Scenario;
+import jasima.shopSim.models.holthaus.DynamicShopExperiment;
+import jasima.shopSim.models.holthaus.DynamicShopExperiment.Scenario;
 import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
@@ -53,7 +53,7 @@ public class HolthausSimpleTest {
 
 	@Test
 	public void check1() throws Exception {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(8346);
 		e.addShopListener(new BasicJobStatCollector());
 

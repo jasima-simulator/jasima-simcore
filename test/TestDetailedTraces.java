@@ -25,7 +25,7 @@ import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.BestOfFamilyBatching;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.core.batchForming.MostCompleteBatch;
-import jasima.shopSim.models.holthaus.HolthausExperiment;
+import jasima.shopSim.models.holthaus.DynamicShopExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment.DataSet;
 import jasima.shopSim.prioRules.basic.SPT;
@@ -55,7 +55,7 @@ public class TestDetailedTraces extends ExperimentTest {
 
 	@Test
 	public void holthausResultsShouldBeReproducible() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 

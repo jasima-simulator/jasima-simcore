@@ -28,7 +28,7 @@ import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.BestOfFamilyBatching;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.core.batchForming.MostCompleteBatch;
-import jasima.shopSim.models.holthaus.HolthausExperiment;
+import jasima.shopSim.models.holthaus.DynamicShopExperiment;
 import jasima.shopSim.models.mimac.FlowtimePerProductCollector;
 import jasima.shopSim.models.mimac.MimacExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment.DataSet;
@@ -67,7 +67,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void holthausResultsShouldBeReproducible() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
@@ -88,7 +88,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void holthausResultsShouldBeReproducibleWithLAThreshold0() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setEnableLookAhead(true);
 		e.setSequencingRule(new AdaptiveLAThreshold(0.0)
@@ -112,7 +112,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void holthausResultsShouldBeReproducibleWithLAThreshold50() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setEnableLookAhead(true);
 		e.setSequencingRule(new AdaptiveLAThreshold(0.5)
@@ -137,7 +137,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void holthausResultsShouldBeReproducibleWithLAThreshold100() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setEnableLookAhead(true);
 		e.setSequencingRule(new AdaptiveLAThreshold(1.0)
@@ -162,7 +162,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void holthausMREResultsShouldBeReproducible() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		e.addShopListener(new BasicJobStatCollector());
@@ -187,7 +187,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void holthaus_MRE_FFE_ResultsShouldBeReproducible() {
-		HolthausExperiment e = new HolthausExperiment();
+		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		e.addShopListener(new BasicJobStatCollector());
