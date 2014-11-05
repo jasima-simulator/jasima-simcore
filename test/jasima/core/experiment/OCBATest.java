@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import jasima.core.experiment.OCBAExperiment.ProblemType;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ExcelSaver;
-import jasima.shopSim.models.holthaus.DynamicShopExperiment;
+import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;

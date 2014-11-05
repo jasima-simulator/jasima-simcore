@@ -18,7 +18,7 @@
  *
  * $Id$
  *******************************************************************************/
-package jasima.shopSim.models.holthaus;
+package jasima.shopSim.models.dynamicShop;
 
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblDistribution;

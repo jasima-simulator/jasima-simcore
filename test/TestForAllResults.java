@@ -28,7 +28,7 @@ import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.BestOfFamilyBatching;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.core.batchForming.MostCompleteBatch;
-import jasima.shopSim.models.holthaus.DynamicShopExperiment;
+import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.models.mimac.FlowtimePerProductCollector;
 import jasima.shopSim.models.mimac.MimacExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment.DataSet;

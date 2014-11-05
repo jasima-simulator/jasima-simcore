@@ -24,7 +24,7 @@ import jasima.core.random.RandomFactoryOld;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
-import jasima.shopSim.models.holthaus.DynamicShopExperiment;
+import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_genSeed_2reps;
 import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_lookahead;
