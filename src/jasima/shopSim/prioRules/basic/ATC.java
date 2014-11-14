@@ -20,24 +20,80 @@
  *******************************************************************************/
 package jasima.shopSim.prioRules.basic;
 
-import jasima.shopSim.prioRules.setup.ATCS;
+import jasima.shopSim.core.PR;
+import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.PriorityQueue;
 
 /**
  * This class implements the Apparent Tardiness Costs rule by Vepsalainen and
  * Morton (1987).
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
-public class ATC extends ATCS {
+public class ATC extends PR {
+
+	private static final long serialVersionUID = -5302187389726254037L;
+
+	private double k;
+
+	public ATC() {
+		this(1.0);
+	}
 
 	public ATC(double k) {
-		super(k, 0.0d);
+		super();
+		setK(k);
+	}
+
+	protected double slackNorm;
+
+	/**
+	 * Update procAvg and setupAvg before inherited method is called which in
+	 * turn calls calcPrio(job).
+	 */
+	@Override
+	public void beforeCalc(PriorityQueue<?> q) {
+		int numJobs = 0;
+		slackNorm = 0.0d;
+
+		for (int i = 0; i < q.size(); i++) {
+			PrioRuleTarget j = q.get(i);
+
+			if (arrivesTooLate(j))
+				continue;
+
+			slackNorm += j.currProcTime();
+			numJobs++;
+		}
+		slackNorm = (slackNorm / numJobs) * k;
+
+		super.beforeCalc(q);
+	}
+
+	@Override
+	public double calcPrio(PrioRuleTarget job) {
+		if (arrivesTooLate(job))
+			return PriorityQueue.MIN_PRIO;
+
+		double slack = job.getCurrentOperationDueDate()
+				- job.getShop().simTime() - job.currProcTime();
+		double prod1 = -Math.max(slack, 0.0d) / slackNorm;
+
+		return (job.getWeight() / job.currProcTime()) * Math.exp(prod1);
 	}
 
 	@Override
 	public String getName() {
-		return "ATC(k=" + getK1() + ")";
+		return "ATC(k=" + getK() + ")";
+	}
+
+	public double getK() {
+		return k;
+	}
+
+	public void setK(double k) {
+		this.k = k;
 	}
 
 }

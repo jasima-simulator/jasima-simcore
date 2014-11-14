@@ -35,14 +35,20 @@ import jasima.shopSim.core.PriorityQueue;
  * 
  * @author Christoph Pickardt, 2011-11-15
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class ATCS extends PR {
+
+	private static final long serialVersionUID = -331130943946735200L;
 
 	private double k1;
 	private double k2;
 
 	protected double[][] setupMatrix;
+
+	public ATCS() {
+		this(1.0, 1.0);
+	}
 
 	public ATCS(double k1, double k2) {
 		super();
