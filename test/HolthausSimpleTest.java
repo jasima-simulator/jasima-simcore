@@ -71,7 +71,7 @@ public class HolthausSimpleTest {
 		e.setNumOps(10, 10);
 		e.setDueDateFactor(4.0);
 		e.setUtilLevel(0.95d);
-		e.setStopAfterNumJobs(500+20*2000);
+		e.setStopArrivalsAfterNumJobs(500+20*2000);
 		e.setScenario(Scenario.JOB_SHOP);
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();

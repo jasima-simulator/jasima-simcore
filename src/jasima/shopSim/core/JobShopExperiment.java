@@ -52,7 +52,7 @@ public abstract class JobShopExperiment extends Experiment {
 	// experiment parameters
 	private double simulationLength = Double.NaN;
 	private int maxJobsInSystem = -1;
-	private int maxJobsFinished = -1;
+	private int stopAfterNumJobs = -1;
 	private Boolean enableLookAhead = null;
 
 	private PR sequencingRule;
@@ -82,8 +82,8 @@ public abstract class JobShopExperiment extends Experiment {
 	protected void configureShop() {
 		if (getMaxJobsInSystem() >= 0)
 			shop.setMaxJobsInSystem(getMaxJobsInSystem());
-		if (getMaxJobsFinished() >= 0)
-			shop.setMaxJobsFinished(getMaxJobsFinished());
+		if (getStopAfterNumJobs() >= 0)
+			shop.setStopAfterNumJobs(getStopAfterNumJobs());
 		if (!Double.isNaN(getSimulationLength()))
 			shop.setSimulationLength(getSimulationLength());
 		if (enableLookAhead != null)
@@ -274,6 +274,7 @@ public abstract class JobShopExperiment extends Experiment {
 	//
 	//
 
+	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
 	public void setSimulationLength(double simulationLength) {
 		this.simulationLength = simulationLength;
 	}
@@ -282,6 +283,10 @@ public abstract class JobShopExperiment extends Experiment {
 		return simulationLength;
 	}
 
+	/**
+	 * End simulation if WIP (work in process) reaches this value (<=0: no
+	 * limit; default is -1).
+	 */
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
 		this.maxJobsInSystem = maxJobsInSystem;
 	}
@@ -290,6 +295,10 @@ public abstract class JobShopExperiment extends Experiment {
 		return maxJobsInSystem;
 	}
 
+	/**
+	 * Enable/disable the lookahead mechanism of this shop. If enabled
+	 * dispatching rules can select jobs arriving in the near future.
+	 */
 	public void setEnableLookAhead(Boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
 	}
@@ -298,18 +307,28 @@ public abstract class JobShopExperiment extends Experiment {
 		return enableLookAhead;
 	}
 
-	public void setMaxJobsFinished(int maxJobsFinished) {
-		this.maxJobsFinished = maxJobsFinished;
+	/**
+	 * End simulation if a certain number of jobs was completed (0 (default): no
+	 * limit).
+	 */
+	public void setStopAfterNumJobs(int stopAfterNumJobs) {
+		this.stopAfterNumJobs = stopAfterNumJobs;
 	}
 
-	public int getMaxJobsFinished() {
-		return maxJobsFinished;
+	public int getStopAfterNumJobs() {
+		return stopAfterNumJobs;
 	}
 
 	public PR getSequencingRule() {
 		return sequencingRule;
 	}
 
+	/**
+	 * Sets a certain dispatching rule to be used for sequencing jobs on all
+	 * machines.
+	 * 
+	 * @see #setSequencingRules(PR[])
+	 */
 	public void setSequencingRule(PR sequencingRule) {
 		this.sequencingRule = sequencingRule;
 	}
@@ -318,6 +337,12 @@ public abstract class JobShopExperiment extends Experiment {
 		return batchSequencingRule;
 	}
 
+	/**
+	 * Sets a certain dispatching rule to be used for sequencing batches on all
+	 * batch machines.
+	 * 
+	 * @see #setBatchSequencingRules(PR[])
+	 */
 	public void setBatchSequencingRule(PR batchSequencingRule) {
 		this.batchSequencingRule = batchSequencingRule;
 	}
@@ -326,10 +351,22 @@ public abstract class JobShopExperiment extends Experiment {
 		return batchForming;
 	}
 
+	/**
+	 * Sets a batch forming mechanism to be used on all machines.
+	 * 
+	 * @see #setBatchFormingRules(BatchForming[])
+	 */
 	public void setBatchForming(BatchForming batchForming) {
 		this.batchForming = batchForming;
 	}
 
+	/**
+	 * Sets a sequencing rule for specific machines. To use it
+	 * {@code sequencingRules} has to contain an entry for each machine
+	 * (workstation) in the model.
+	 * 
+	 * @see #setSequencingRule(PR)
+	 */
 	public void setSequencingRules(PR[] sequencingRules) {
 		this.sequencingRules = sequencingRules;
 	}
@@ -338,6 +375,13 @@ public abstract class JobShopExperiment extends Experiment {
 		return sequencingRules;
 	}
 
+	/**
+	 * Sets a batch sequencing rule for specific machines. To use it
+	 * {@code batchSequencingRules} has to contain an entry for each machine
+	 * (workstation) in the model.
+	 * 
+	 * @see #setBatchSequencingRule(PR)
+	 */
 	public void setBatchSequencingRules(PR[] batchSequencingRules) {
 		this.batchSequencingRules = batchSequencingRules;
 	}
@@ -346,6 +390,13 @@ public abstract class JobShopExperiment extends Experiment {
 		return batchSequencingRules;
 	}
 
+	/**
+	 * Sets a batch forming mechanism for specific machines. To use it
+	 * {@code batchFormingRules} has to contain an entry for each machine
+	 * (workstation) in the model.
+	 * 
+	 * @see #setBatchForming(BatchForming)
+	 */
 	public void setBatchFormingRules(BatchForming[] batchFormingRules) {
 		this.batchFormingRules = batchFormingRules;
 	}

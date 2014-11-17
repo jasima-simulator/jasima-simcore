@@ -75,7 +75,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 	private Pair<Integer, Integer> opProcTime = new Pair<Integer, Integer>(
 			DEF_PROC_MIN, DEF_PROC_MAX);
 
-	private int stopAfterNumJobs = 2500;
+	private int stopArrivalsAfterNumJobs = 2500;
 
 	protected JobSource src;
 
@@ -85,7 +85,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 		@SuppressWarnings("serial")
 		ShopListenerBase stopSrc = new ShopListenerBase() {
-			int maxJob = getStopAfterNumJobs();
+			int maxJob = getStopArrivalsAfterNumJobs();
 			int numJobs = maxJob;
 
 			@Override
@@ -109,7 +109,8 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		src = createJobSource();
 		shop.addJobSource(src);
 
-		shop.setMaxJobsFinished(10 * getStopAfterNumJobs());
+		if (getStopAfterNumJobs() <= 0)
+			shop.setStopAfterNumJobs(10 * getStopArrivalsAfterNumJobs());
 	}
 
 	private void createMachines() {
@@ -290,8 +291,8 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		return scenario;
 	}
 
-	public int getStopAfterNumJobs() {
-		return stopAfterNumJobs;
+	public int getStopArrivalsAfterNumJobs() {
+		return stopArrivalsAfterNumJobs;
 	}
 
 	/**
@@ -304,8 +305,8 @@ public class DynamicShopExperiment extends JobShopExperiment {
 	 * @param stopAfterNumJobs
 	 *            The number of jobs after which to stop, default: 2500.
 	 */
-	public void setStopAfterNumJobs(int stopAfterNumJobs) {
-		this.stopAfterNumJobs = stopAfterNumJobs;
+	public void setStopArrivalsAfterNumJobs(int stopAfterNumJobs) {
+		this.stopArrivalsAfterNumJobs = stopAfterNumJobs;
 	}
 
 	public DblStream getWeights() {

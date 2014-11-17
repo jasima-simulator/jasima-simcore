@@ -194,7 +194,7 @@ public class TestGECCOContinuity {
 		e.setBatchForming(new HighestJobBatchingMBS(0.0));
 		e.setEnableLookAhead(lookahead);
 		e.setInitialSeed(-1688276341376791082L);
-		e.setStopAfterNumJobs(500 + 5 * 2000);
+		e.setStopArrivalsAfterNumJobs(500 + 5 * 2000);
 
 		e.runExperiment();
 		e.printResults();
@@ -215,7 +215,7 @@ public class TestGECCOContinuity {
 
 		e.setEnableLookAhead(lookahead);
 		e.setInitialSeed(-1688276341376791082L);
-		e.setStopAfterNumJobs(500 + 5 * 2000);
+		e.setStopArrivalsAfterNumJobs(500 + 5 * 2000);
 
 		e.runExperiment();
 		e.printResults();

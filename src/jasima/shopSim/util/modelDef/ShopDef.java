@@ -8,14 +8,15 @@ import jasima.shopSim.util.ShopConfigurator;
  * {@link JobShop}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ShopDef extends PropertySupport {
 
 	private String name = null;
 	private double simulationLength = 0.0d;
 	private int maxJobsInSystem = 0;
-	private int maxJobsFinished = 0;
+	private int stopAfterNumJobs = 0;
 	private boolean enableLookAhead = false;
 	private WorkstationDef[] workstations = {};
 	private SourceDef[] jobSources = {};
@@ -39,13 +40,13 @@ public class ShopDef extends PropertySupport {
 				this.maxJobsInSystem = maxJobsInSystem);
 	}
 
-	public int getMaxJobsFinished() {
-		return maxJobsFinished;
+	public int getStopAfterNumJobs() {
+		return stopAfterNumJobs;
 	}
 
-	public void setMaxJobsFinished(int maxJobsFinished) {
-		firePropertyChange("maxJobsFinished", this.maxJobsFinished,
-				this.maxJobsFinished = maxJobsFinished);
+	public void setStopAfterNumJobs(int stopAfterNumJobs) {
+		firePropertyChange("stopAfterNumJobs", this.stopAfterNumJobs,
+				this.stopAfterNumJobs = stopAfterNumJobs);
 	}
 
 	public boolean isEnableLookAhead() {

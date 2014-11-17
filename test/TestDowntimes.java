@@ -99,7 +99,7 @@ public class TestDowntimes extends ExperimentTest {
 				}
 			}
 		};
-		e.setMaxJobsFinished(n);
+		e.setStopAfterNumJobs(n);
 		e.setInstFileName(fn);
 		e.setSequencingRule(new FASFS()
 				.setFinalTieBreaker(new TieBreakerFASFS()));

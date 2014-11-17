@@ -62,7 +62,7 @@ public class ShopConfigurator {
 		shop.setName(shopDef.getName());
 		shop.setSimulationLength(shopDef.getSimulationLength());
 		shop.setEnableLookAhead(shopDef.isEnableLookAhead());
-		shop.setMaxJobsFinished(shopDef.getMaxJobsFinished());
+		shop.setStopAfterNumJobs(shopDef.getStopAfterNumJobs());
 		shop.setMaxJobsInSystem(shopDef.getMaxJobsInSystem());
 
 		// create all machines

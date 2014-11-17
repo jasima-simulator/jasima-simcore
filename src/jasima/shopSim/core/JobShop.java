@@ -49,7 +49,7 @@ public class JobShop extends Simulation {
 
 	// parameters
 	private int maxJobsInSystem = 0;
-	private int maxJobsFinished = 0;
+	private int stopAfterNumJobs = 0;
 	private boolean enableLookAhead = false;
 
 	public JobSource[] sources = {};
@@ -106,9 +106,7 @@ public class JobShop extends Simulation {
 	public void jobFinished(Job j) {
 		jobsFinished++;
 
-		if (getMaxJobsFinished() > 0 && jobsFinished >= getMaxJobsFinished()) {
-			// System.out.println("" + getMaxJobsFinished()
-			// + " jobs finished, aborting sim (job starvation?).");
+		if (getStopAfterNumJobs() > 0 && jobsFinished >= getStopAfterNumJobs()) {
 			end(); // abort simulation
 		}
 
@@ -184,7 +182,8 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Enable the lookahead mechanism of this shop.
+	 * Enable the lookahead mechanism of this shop. If enabled dispatching rules
+	 * can select jobs arriving from in the near future.
 	 * 
 	 * @param enableLookAhead
 	 *            Whether to enable or disable lookahead.
@@ -214,11 +213,11 @@ public class JobShop extends Simulation {
 	 * End simulation if a certain number of jobs was completed (0 (default): no
 	 * limit).
 	 * 
-	 * @param maxJobsFinished
+	 * @param stopAfterNumJobs
 	 *            The number of jobs to finish.
 	 */
-	public void setMaxJobsFinished(int maxJobsFinished) {
-		this.maxJobsFinished = maxJobsFinished;
+	public void setStopAfterNumJobs(int stopAfterNumJobs) {
+		this.stopAfterNumJobs = stopAfterNumJobs;
 	}
 
 	/**
@@ -226,8 +225,8 @@ public class JobShop extends Simulation {
 	 * 
 	 * @return The number of jobs to complete before terminating the simulation.
 	 */
-	public int getMaxJobsFinished() {
-		return maxJobsFinished;
+	public int getStopAfterNumJobs() {
+		return stopAfterNumJobs;
 	}
 
 	/**

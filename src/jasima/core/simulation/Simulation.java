@@ -213,7 +213,8 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
 	/**
 	 * Override this method to perform initializations after {@link #init()},
-	 * but before running the simulation.
+	 * but before running the simulation. This method is usually used to
+	 * schedule initial events.
 	 */
 	protected void beforeRun() {
 		// schedule simulation end
