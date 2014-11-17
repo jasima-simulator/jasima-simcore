@@ -59,8 +59,6 @@ public class JobShop extends Simulation {
 	public int jobsFinished;
 	public int jobsStarted;
 
-	private boolean strangePriorities;
-
 	// fields used during event notification
 	public Job lastJobReleased;
 	public Job lastJobFinished;
@@ -93,14 +91,6 @@ public class JobShop extends Simulation {
 
 		for (WorkStation m : machines)
 			m.done();
-
-		strangePriorities = false;
-		for (WorkStation m : machines) {
-			if (m.queue.strangePrioValuesFound) {
-				strangePriorities = true;
-				break;
-			}
-		}
 	}
 
 	public void jobFinished(Job j) {
@@ -144,8 +134,6 @@ public class JobShop extends Simulation {
 		res.put("numJobsFinished", jobsFinished);
 		res.put("numJobsStarted", jobsStarted);
 		res.put("numWIP", jobsStarted - jobsFinished);
-
-		res.put("strangePriorities", strangePriorities ? 1 : 0);
 
 		for (WorkStation m : machines) {
 			m.produceResults(res);

@@ -86,8 +86,6 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 
 	private final Comparator<ListEntry<T>> comparator;
 
-	public boolean strangePrioValuesFound = false;
-
 	protected ListEntry<T>[] nodes_; // the tree nodes, packed into an array
 	protected int count_ = 0; // number of used slots
 
@@ -362,11 +360,7 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 		assert vs.length == rules.length;
 
 		for (int j = 0; j < vs.length; j++) {
-			double d = vs[j] = rules[j].calcPrio(le.elem);
-
-			if (!strangePrioValuesFound)
-				strangePrioValuesFound = Double.isInfinite(d)
-						|| Double.isNaN(d);
+			vs[j] = rules[j].calcPrio(le.elem);
 		}
 	}
 
