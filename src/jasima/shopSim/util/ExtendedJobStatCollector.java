@@ -31,7 +31,7 @@ import jasima.shopSim.core.WorkStation;
 import java.util.Map;
 
 /**
- * Collects some basic job statistics: cMax (completion time of last job
+ * Collects a variety of job statistics: cMax (completion time of last job
  * finished), percentage tardy, lateness, number of tardy jobs, flowtime,
  * tardiness, conditional tardiness, and weighted variants of the latter 4
  * objective functions. A further statistic, "noProcTime", is computed as
@@ -42,7 +42,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class BasicJobStatCollector extends ShopListenerBase {
+public class ExtendedJobStatCollector extends ShopListenerBase {
 
 	private static final long serialVersionUID = -6311778884767987852L;
 

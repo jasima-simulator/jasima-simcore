@@ -35,7 +35,7 @@ import java.util.Map;
  * on job releases/job completions.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
- * @see BasicJobStatCollector
+ * @see ExtendedJobStatCollector
  * @version 
  *          "$Id$"
  */

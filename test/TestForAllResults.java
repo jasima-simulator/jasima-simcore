@@ -38,7 +38,7 @@ import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.meta.AdaptiveLAThreshold;
 import jasima.shopSim.prioRules.setup.SetupAvoidance;
 import jasima.shopSim.prioRules.weighted.WMOD;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 import jasima.shopSim.util.BatchStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
 
@@ -71,7 +71,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
@@ -95,7 +95,7 @@ public class TestForAllResults extends ExperimentTest {
 				.setFinalTieBreaker(new SPT()
 						.setFinalTieBreaker(new TieBreakerFASFS())));
 
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
@@ -119,7 +119,7 @@ public class TestForAllResults extends ExperimentTest {
 				.setFinalTieBreaker(new SPT()
 						.setFinalTieBreaker(new TieBreakerFASFS())));
 
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
@@ -144,7 +144,7 @@ public class TestForAllResults extends ExperimentTest {
 				.setFinalTieBreaker(new SPT()
 						.setFinalTieBreaker(new TieBreakerFASFS())));
 
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
@@ -165,7 +165,7 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
@@ -190,7 +190,7 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
@@ -388,7 +388,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSimulationLength(5 * 365 * 24 * 60);
 		e.setSequencingRule(pr);
 		e.setBatchForming(batchForming);
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 		return e;
 	}
@@ -407,7 +407,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setScenario(DataSet.FAB4r);
 		e.setSimulationLength(5 * 365 * 24 * 60);
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 		e.addShopListener(new FlowtimePerProductCollector());
 

@@ -31,7 +31,7 @@ import jasima.shopSim.models.mimac.MimacExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment.DataSet;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.setup.ATCS;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
@@ -68,7 +68,7 @@ public class TestMIMAC {
 		e.setMaxJobsInSystem(3 * 250);
 		e.setEnableLookAhead(false);
 
-		BasicJobStatCollector stats = new BasicJobStatCollector();
+		ExtendedJobStatCollector stats = new ExtendedJobStatCollector();
 		stats.setInitialPeriod(365 * 24 * 60);
 		e.addShopListener(stats);
 

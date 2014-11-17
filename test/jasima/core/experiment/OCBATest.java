@@ -29,7 +29,7 @@ import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class OCBATest {
 		// create and configure base experiment
 		DynamicShopExperiment he = new DynamicShopExperiment();
 		he.setUtilLevel(0.9);
-		he.addShopListener(new BasicJobStatCollector());
+		he.addShopListener(new ExtendedJobStatCollector());
 
 		// create OCBA experiment
 		OCBAExperiment ocbaExperiment = new OCBAExperiment();

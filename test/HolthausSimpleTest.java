@@ -29,7 +29,7 @@ import jasima.shopSim.models.dynamicShop.DynamicShopExperiment.Scenario;
 import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 import jasima.shopSim.util.BatchStatCollector;
 
 import java.util.Map;
@@ -55,7 +55,7 @@ public class HolthausSimpleTest {
 	public void check1() throws Exception {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(8346);
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 
 		PR sr = new FCFS();
 		PR sr2 = new IgnoreFutureJobs(sr);

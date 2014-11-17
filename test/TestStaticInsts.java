@@ -41,7 +41,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 import jasima.shopSim.prioRules.upDownStream.WINQ;
 import jasima.shopSim.prioRules.upDownStream.XWINQ;
 import jasima.shopSim.prioRules.weighted.WSPT;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -120,7 +120,7 @@ public class TestStaticInsts {
 		shopExperiment.setSequencingRule(sr.silentClone()
 				.setFinalTieBreaker(new FCFS())
 				.setFinalTieBreaker(new TieBreakerFASFS()));
-		shopExperiment.addShopListener(new BasicJobStatCollector());
+		shopExperiment.addShopListener(new ExtendedJobStatCollector());
 
 		return shopExperiment;
 	}

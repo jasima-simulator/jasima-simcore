@@ -31,7 +31,7 @@ import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_lookahead;
 import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
@@ -186,7 +186,7 @@ public class TestGECCOContinuity {
 
 	private Map<String, Object> GECCO2010_lookahead(boolean lookahead) {
 		DynamicShopExperiment e = new DynamicShopExperiment();
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 
 		Bremen_GECCO2010_lookahead pr = new Bremen_GECCO2010_lookahead();
 		pr.setTieBreaker(new TieBreakerFASFS());
@@ -205,7 +205,7 @@ public class TestGECCOContinuity {
 
 	private Map<String, Object> genSeed_2reps(boolean lookahead) {
 		DynamicShopExperiment e = new DynamicShopExperiment();
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 
 		Bremen_GECCO2010_genSeed_2reps pr = new Bremen_GECCO2010_genSeed_2reps();
 		pr.setTieBreaker(new TieBreakerFASFS());

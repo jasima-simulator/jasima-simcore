@@ -28,7 +28,7 @@ import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
 import jasima.shopSim.util.TraceFileProducer;
 
@@ -103,7 +103,7 @@ public class TestDowntimes extends ExperimentTest {
 		e.setInstFileName(fn);
 		e.setSequencingRule(new FASFS()
 				.setFinalTieBreaker(new TieBreakerFASFS()));
-		e.addShopListener(new BasicJobStatCollector());
+		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 		e.addShopListener(new TraceFileProducer("log_" + new File(fn).getName()));
 		e.runExperiment();

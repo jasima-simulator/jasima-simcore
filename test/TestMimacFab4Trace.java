@@ -39,7 +39,7 @@ import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.batch.BFASFS;
 import jasima.shopSim.prioRules.batch.LBF;
 import jasima.shopSim.prioRules.setup.SetupAvoidance;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
@@ -381,7 +381,7 @@ public class TestMimacFab4Trace {
 
 		e.setSimulationLength(6 * 365 * 24 * 60);
 		
-		e.addShopListener(new BasicJobStatCollector());  // no warm-up
+		e.addShopListener(new ExtendedJobStatCollector());  // no warm-up
 		
 		e.setEnableLookAhead(false);
 		e.setMaxJobsInSystem(3 * 250);

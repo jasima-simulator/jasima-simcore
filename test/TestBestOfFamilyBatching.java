@@ -37,7 +37,7 @@ import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.batch.LBF;
 import jasima.shopSim.prioRules.batch.MaxBatchSize;
 import jasima.shopSim.prioRules.setup.SST;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public class TestBestOfFamilyBatching {
 
 		e.setSimulationLength(6 * 365 * 24 * 60);
 
-		BasicJobStatCollector stats = new BasicJobStatCollector();
+		ExtendedJobStatCollector stats = new ExtendedJobStatCollector();
 		stats.setInitialPeriod(1 * 365 * 24 * 60);
 		e.addShopListener(stats);
 

@@ -47,7 +47,7 @@ import jasima.shopSim.prioRules.weighted.LW;
 import jasima.shopSim.prioRules.weighted.WMDD;
 import jasima.shopSim.prioRules.weighted.WMOD;
 import jasima.shopSim.prioRules.weighted.WSPT;
-import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
@@ -102,7 +102,7 @@ public class TestWinterSim2010Continuity {
 
 		e.setSimulationLength(6 * 365 * 24 * 60);
 
-		BasicJobStatCollector stats = new BasicJobStatCollector();
+		ExtendedJobStatCollector stats = new ExtendedJobStatCollector();
 		stats.setInitialPeriod(1 * 365 * 24 * 60);
 		e.addShopListener(stats);
 
