@@ -172,7 +172,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 
 	@Override
 	public String toString() {
-		return "BasicJobStatCollector";
+		return "ExtendedJobStatCollector";
 	}
 
 }
