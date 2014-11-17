@@ -38,7 +38,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class WorkStationListenerBase implements
+public abstract class WorkStationListenerBase implements
 		NotifierListener<WorkStation, WorkStationEvent>, Cloneable {
 
 	@Override

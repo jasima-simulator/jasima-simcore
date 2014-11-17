@@ -19,7 +19,7 @@ import jasima.shopSim.core.WorkStation;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2013-06-28
  * @version "$Id$"
  */
-public class JobListenerBase implements Cloneable,
+public abstract class JobListenerBase implements Cloneable,
 		NotifierListener<Job, JobEvent> {
 
 	public JobListenerBase() {

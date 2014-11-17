@@ -36,7 +36,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
-public class ExperimentListenerBase implements
+public abstract class ExperimentListenerBase implements
 		NotifierListener<Experiment, ExperimentEvent>, Cloneable, Serializable {
 
 	private static final long serialVersionUID = -3880665781275114403L;
