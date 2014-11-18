@@ -37,13 +37,14 @@ import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.batch.LBF;
 import jasima.shopSim.prioRules.batch.MaxBatchSize;
 import jasima.shopSim.prioRules.setup.SST;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.junit.Before;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 

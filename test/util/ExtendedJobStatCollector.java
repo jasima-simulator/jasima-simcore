@@ -18,7 +18,7 @@
  *
  * $Id$
  *******************************************************************************/
-package jasima.shopSim.util;
+package util;
 
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
@@ -27,10 +27,16 @@ import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.util.ShopListenerBase;
 
 import java.util.Map;
 
 /**
+ * This is an old version now only used to maintain compatibility with old test
+ * cases. Don't use for anything new!
+ * <p>
+ * 
+ * 
  * Collects a variety of job statistics: cMax (completion time of last job
  * finished), percentage tardy, lateness, number of tardy jobs, flowtime,
  * tardiness, conditional tardiness, and weighted variants of the latter 4
@@ -42,6 +48,7 @@ import java.util.Map;
  * @version 
  *          "$Id$"
  */
+@Deprecated
 public class ExtendedJobStatCollector extends ShopListenerBase {
 
 	private static final long serialVersionUID = -6311778884767987852L;

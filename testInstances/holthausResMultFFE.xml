@@ -1791,7 +1791,7 @@
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
-      <string>baseExperiment.baseExperiment.numTasks</string>
+      <string>baseExperiment.numTasks</string>
       <jasima.core.statistics.SummaryStat>
         <valSum>28.0</valSum>
         <sumSquare>196.0</sumSquare>

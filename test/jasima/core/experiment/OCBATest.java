@@ -29,7 +29,6 @@ import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -37,6 +36,8 @@ import java.util.Random;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * Basic tests for the {@link OCBAExperiment} class.

@@ -21,8 +21,12 @@
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleReplicationExperiment;
 import jasima.core.random.RandomFactory;
+import jasima.core.simulation.Simulation;
+import jasima.core.simulation.Simulation.SimEvent;
+import jasima.core.util.ExcelSaver;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.XmlUtil;
+import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.BestOfFamilyBatching;
@@ -38,7 +42,7 @@ import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.meta.AdaptiveLAThreshold;
 import jasima.shopSim.prioRules.setup.SetupAvoidance;
 import jasima.shopSim.prioRules.weighted.WMOD;
-import jasima.shopSim.util.ExtendedJobStatCollector;
+import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.BatchStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
 
@@ -48,6 +52,8 @@ import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 
@@ -71,6 +77,10 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
@@ -95,6 +105,11 @@ public class TestForAllResults extends ExperimentTest {
 				.setFinalTieBreaker(new SPT()
 						.setFinalTieBreaker(new TieBreakerFASFS())));
 
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
+
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
@@ -118,6 +133,11 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSequencingRule(new AdaptiveLAThreshold(0.5)
 				.setFinalTieBreaker(new SPT()
 						.setFinalTieBreaker(new TieBreakerFASFS())));
+
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
 
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
@@ -144,6 +164,10 @@ public class TestForAllResults extends ExperimentTest {
 				.setFinalTieBreaker(new SPT()
 						.setFinalTieBreaker(new TieBreakerFASFS())));
 
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
@@ -165,6 +189,10 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
@@ -190,6 +218,10 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 
@@ -214,6 +246,8 @@ public class TestForAllResults extends ExperimentTest {
 		ffe.addKeepResultName("tardMean");
 		ffe.addKeepResultName("flowMean");
 
+		ffe.addNotifierListener(new ExcelSaver());
+		
 		ffe.runExperiment();
 		ffe.printResults();
 

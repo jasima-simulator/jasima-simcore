@@ -30,11 +30,14 @@ import jasima.shopSim.core.JobShop;
 import java.io.Serializable;
 import java.util.Map;
 
+import util.ExtendedJobStatCollector;
+
 /**
  * This class can be used as a base class for classes collecting results based
  * on job releases/job completions.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
+ * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
  * @version 
  *          "$Id$"

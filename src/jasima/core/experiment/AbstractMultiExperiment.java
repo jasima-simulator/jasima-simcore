@@ -270,12 +270,6 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * mean()-value.
 	 */
 	protected void handleNumericValue(String key, Object val) {
-		// ensure there is an entry "key" also in "results"
-		if (key.endsWith(RUNTIME) || key.endsWith(NUM_TASKS_EXECUTED)
-				|| key.endsWith(EXP_ABORTED)) {
-			key = "baseExperiment." + key;
-		}
-
 		SummaryStat repValues = (SummaryStat) detailedResultsNumeric.get(key);
 		if (repValues == null) {
 			repValues = new SummaryStat();
@@ -296,29 +290,31 @@ public abstract class AbstractMultiExperiment extends Experiment {
 					+ val.getClass().getName());
 	}
 
+	protected boolean isSpecialKey(String key) {
+		return key.endsWith(RUNTIME) || key.endsWith(NUM_TASKS_EXECUTED)
+				|| key.endsWith(EXP_ABORTED);
+	}
+
 	@Override
 	protected void produceResults() {
 		super.produceResults();
 
 		for (String key : detailedResultsNumeric.keySet()) {
-			Object val = detailedResultsNumeric.get(key);
+			SummaryStat val = (SummaryStat) detailedResultsNumeric.get(key);
 
-			if (key.endsWith(NUM_TASKS_EXECUTED))
+			if (isSpecialKey(key)) {
 				key = "baseExperiment." + key;
+			} else {
+				key = key;// + ".mean";
+			}
 
-			// careful: SummaryStat is not immutable, so is it better to create
-			// a
-			// clone?
-			assert val instanceof SummaryStat;
-
+			// careful: SummaryStat is not immutable, so it might be better to
+			// create a clone?
 			resultMap.put(key, val);
 		}
 
 		for (String key : detailedResultsOther.keySet()) {
 			Object val = detailedResultsOther.get(key);
-
-			if (key.endsWith(NUM_TASKS_EXECUTED))
-				key = "baseExperiment." + key;
 
 			while (resultMap.containsKey(key))
 				key += "@Other";

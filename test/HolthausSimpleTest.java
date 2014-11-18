@@ -21,7 +21,10 @@
 import static org.junit.Assert.assertEquals;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
+import jasima.core.simulation.Simulation;
+import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
@@ -29,13 +32,15 @@ import jasima.shopSim.models.dynamicShop.DynamicShopExperiment.Scenario;
 import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
-import jasima.shopSim.util.ExtendedJobStatCollector;
+import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.BatchStatCollector;
 
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 
@@ -55,8 +60,14 @@ public class HolthausSimpleTest {
 	public void check1() throws Exception {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(8346);
+		
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
+		
 		e.addShopListener(new ExtendedJobStatCollector());
-
+		
 		PR sr = new FCFS();
 		PR sr2 = new IgnoreFutureJobs(sr);
 		// PR<Object, Job> sr2 = new InversRule(new InversRule(sr));

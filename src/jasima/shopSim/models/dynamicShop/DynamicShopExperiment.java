@@ -34,13 +34,20 @@ import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ShopListenerBase;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 /**
  * Simulates dynamic job shops and flow shops, based on some parameters. See
- * Holthaus and Rajendran (1999) for details.
+ * Rajendran, C.; Holthaus O.:
+ * "A Comparative Study of Dispatching Rules in Dynamic Flowshops and Jobshops",
+ * European Journal of Operational Research 116 (1999) 1, S. 156-170 for
+ * details.
+ * <p>
+ * An experiment of this type by default contains a
+ * {@link BasicJobStatCollector}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
@@ -79,9 +86,24 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 	protected JobSource src;
 
+	public DynamicShopExperiment() {
+		super();
+		addShopListener(new BasicJobStatCollector());
+	}
+
 	@Override
 	public void init() {
 		super.init();
+
+		if (getNumOpsMin() > getNumOpsMax())
+			throw new IllegalArgumentException(String.format(
+					"invalid range for numOps: [%d; %d]", getNumOpsMin(),
+					getNumOpsMax()));
+
+		if (getOpProcTimeMin() > getOpProcTimeMax())
+			throw new IllegalArgumentException(String.format(
+					"invalid range for opProcTime: [%d; %d]",
+					getOpProcTimeMin(), getOpProcTimeMax()));
 
 		@SuppressWarnings("serial")
 		ShopListenerBase stopSrc = new ShopListenerBase() {
@@ -245,12 +267,24 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		this.numMachines = numMachines;
 	}
 
+	/** Returns the minimum number of operations of a job. */
 	public int getNumOpsMin() {
 		return numOps.a;
 	}
 
+	/** Sets the minimum number of operations of a job. */
+	public void setNumOpsMin(int min) {
+		numOps = new Pair<Integer, Integer>(min, numOps.b);
+	}
+
+	/** Returns the maximum number of operations of a job. */
 	public int getNumOpsMax() {
 		return numOps.b;
+	}
+
+	/** Sets the maximum number of operations of a job. */
+	public void setNumOpsMax(int max) {
+		numOps = new Pair<Integer, Integer>(numOps.a, max);
 	}
 
 	public void setNumOps(int min, int max) {
@@ -259,6 +293,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		numOps = new Pair<Integer, Integer>(min, max);
 	}
 
+	/** Returns the minimum processing time of an operation. */
 	public int getOpProcTimeMin() {
 		return opProcTime.a;
 	}
@@ -268,6 +303,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		opProcTime = new Pair<Integer, Integer>(min, opProcTime.b);
 	}
 
+	/** Returns the maximum processing time of an operation. */
 	public int getOpProcTimeMax() {
 		return opProcTime.b;
 	}
@@ -283,6 +319,10 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		opProcTime = new Pair<Integer, Integer>(min, max);
 	}
 
+	/**
+	 * Sets the scenario to use. This can be either {@code JOB_SHOP} or
+	 * {@code FLOW_SHOP}.
+	 */
 	public void setScenario(Scenario scenario) {
 		this.scenario = scenario;
 	}

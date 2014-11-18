@@ -28,7 +28,6 @@ import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
 import jasima.shopSim.util.TraceFileProducer;
 
@@ -40,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 

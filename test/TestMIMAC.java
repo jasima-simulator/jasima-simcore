@@ -31,13 +31,14 @@ import jasima.shopSim.models.mimac.MimacExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment.DataSet;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.setup.ATCS;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 

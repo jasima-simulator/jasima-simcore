@@ -21,7 +21,10 @@
 import static org.junit.Assert.assertEquals;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
+import jasima.core.simulation.Simulation;
+import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
@@ -31,12 +34,14 @@ import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_lookahead;
 import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
-import jasima.shopSim.util.ExtendedJobStatCollector;
+import jasima.shopSim.util.BasicJobStatCollector;
 
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 
@@ -186,6 +191,12 @@ public class TestGECCOContinuity {
 
 	private Map<String, Object> GECCO2010_lookahead(boolean lookahead) {
 		DynamicShopExperiment e = new DynamicShopExperiment();
+
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
+		
 		e.addShopListener(new ExtendedJobStatCollector());
 
 		Bremen_GECCO2010_lookahead pr = new Bremen_GECCO2010_lookahead();
@@ -205,6 +216,12 @@ public class TestGECCOContinuity {
 
 	private Map<String, Object> genSeed_2reps(boolean lookahead) {
 		DynamicShopExperiment e = new DynamicShopExperiment();
+		
+		// remove default BasicJobStatCollector
+		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		e.setShopListener(null);
+
 		e.addShopListener(new ExtendedJobStatCollector());
 
 		Bremen_GECCO2010_genSeed_2reps pr = new Bremen_GECCO2010_genSeed_2reps();

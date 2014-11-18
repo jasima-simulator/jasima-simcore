@@ -47,7 +47,6 @@ import jasima.shopSim.prioRules.weighted.LW;
 import jasima.shopSim.prioRules.weighted.WMDD;
 import jasima.shopSim.prioRules.weighted.WMOD;
 import jasima.shopSim.prioRules.weighted.WSPT;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
@@ -55,6 +54,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.junit.Before;
 import org.junit.Test;
 
+import util.ExtendedJobStatCollector;
 import util.Wintersim2010GPRules.GPRuleSize09;
 import util.Wintersim2010GPRules.GPRuleSize110;
 import util.Wintersim2010GPRules.GPRuleSize12;

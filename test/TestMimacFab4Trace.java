@@ -39,12 +39,13 @@ import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.batch.BFASFS;
 import jasima.shopSim.prioRules.batch.LBF;
 import jasima.shopSim.prioRules.setup.SetupAvoidance;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 

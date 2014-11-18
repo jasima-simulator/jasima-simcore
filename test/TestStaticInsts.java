@@ -41,7 +41,6 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 import jasima.shopSim.prioRules.upDownStream.WINQ;
 import jasima.shopSim.prioRules.upDownStream.XWINQ;
 import jasima.shopSim.prioRules.weighted.WSPT;
-import jasima.shopSim.util.ExtendedJobStatCollector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,6 +51,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Test;
+
+import util.ExtendedJobStatCollector;
 
 /**
  * 
