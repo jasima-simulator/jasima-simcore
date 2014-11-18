@@ -246,8 +246,6 @@ public class TestForAllResults extends ExperimentTest {
 		ffe.addKeepResultName("tardMean");
 		ffe.addKeepResultName("flowMean");
 
-		ffe.addNotifierListener(new ExcelSaver());
-		
 		ffe.runExperiment();
 		ffe.printResults();
 
