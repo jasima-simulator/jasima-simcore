@@ -305,7 +305,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 			if (isSpecialKey(key)) {
 				key = "baseExperiment." + key;
 			} else {
-				key = key;// + ".mean";
+				key = key; // +".mean";
 			}
 
 			// careful: SummaryStat is not immutable, so it might be better to

@@ -17,7 +17,8 @@ import jasima.shopSim.core.WorkStation;
  * on job releases/job completions.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2013-06-28
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class JobListenerBase implements Cloneable,
 		NotifierListener<Job, JobEvent> {
@@ -73,6 +74,11 @@ public abstract class JobListenerBase implements Cloneable,
 	@Override
 	public JobListenerBase clone() throws CloneNotSupportedException {
 		return (JobListenerBase) super.clone();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 
 }

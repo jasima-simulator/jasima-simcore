@@ -30,8 +30,6 @@ import jasima.shopSim.core.JobShop;
 import java.io.Serializable;
 import java.util.Map;
 
-import util.ExtendedJobStatCollector;
-
 /**
  * This class can be used as a base class for classes collecting results based
  * on job releases/job completions.
@@ -133,6 +131,11 @@ public abstract class ShopListenerBase implements
 
 	public void setIgnoreFirst(int ignoreFirst) {
 		this.ignoreFirst = ignoreFirst;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 
 }

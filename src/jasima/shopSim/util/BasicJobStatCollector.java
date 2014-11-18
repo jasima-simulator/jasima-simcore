@@ -29,19 +29,17 @@ import java.util.Map;
 
 /**
  * Collects a variety of job statistics: cMax (completion time of last job
- * finished), percentage tardy, lateness, number of tardy jobs, flowtime,
- * tardiness, conditional tardiness, and weighted variants of the latter 4
- * objective functions. A further statistic, "noProcTime", is computed as
- * flowtime minus the sum of all processing times. It therefore only measures
- * reducible components of the flowtime, i.e., waiting and setup times.
+ * finished), percentage tardy, number of tardy jobs, flowtime, tardiness. For
+ * additional kpi's see {@link ExtendedJobStatCollector}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
  *          "$Id$"
+ * @see ExtendedJobStatCollector
  */
 public class BasicJobStatCollector extends ShopListenerBase {
 
-	private static final long serialVersionUID = -4380086876136803696L;
+	private static final long serialVersionUID = -4011992602302111428L;
 
 	private SummaryStat flowtime;
 	private SummaryStat tardiness;
@@ -90,7 +88,7 @@ public class BasicJobStatCollector extends ShopListenerBase {
 		res.put("cMax", cMax);
 	}
 
-	private void put(Map<String, Object> res, SummaryStat ss) {
+	public static void put(Map<String, Object> res, SummaryStat ss) {
 		res.put(ss.getName(), ss);
 	}
 

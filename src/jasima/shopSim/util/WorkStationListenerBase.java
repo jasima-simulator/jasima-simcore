@@ -95,6 +95,11 @@ public abstract class WorkStationListenerBase implements
 	}
 
 	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
