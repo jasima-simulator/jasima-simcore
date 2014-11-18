@@ -285,10 +285,6 @@
       <int>0</int>
     </entry>
     <entry>
-      <string>strangePriorities</string>
-      <int>0</int>
-    </entry>
-    <entry>
       <string>m0.qLen</string>
       <jasima.core.statistics.TimeWeightedSummaryStat>
         <valSum>130825.05976027125</valSum>

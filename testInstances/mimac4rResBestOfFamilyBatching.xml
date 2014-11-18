@@ -1623,10 +1623,6 @@
     </jasima.core.statistics.SummaryStat>
   </entry>
   <entry>
-    <string>strangePriorities</string>
-    <int>0</int>
-  </entry>
-  <entry>
     <string>D1-9.capUtil</string>
     <jasima.core.statistics.SummaryStat>
       <valSum>50068.0</valSum>

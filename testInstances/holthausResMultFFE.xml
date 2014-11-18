@@ -687,19 +687,6 @@
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
-      <string>strangePriorities</string>
-      <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
-        <weightSum>4.0</weightSum>
-        <numObs>4</numObs>
-        <max>0.0</max>
-        <min>0.0</min>
-        <lastValue>0.0</lastValue>
-        <lastWeight>1.0</lastWeight>
-      </jasima.core.statistics.SummaryStat>
-    </entry>
-    <entry>
       <string>m0.qLen</string>
       <jasima.core.statistics.SummaryStat>
         <valSum>9.751727855447989</valSum>
