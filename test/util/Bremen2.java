@@ -18,9 +18,11 @@
  *
  * $Id$
  *******************************************************************************/
-package jasima.shopSim.prioRules.gp;
+package util;
 
+import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
 /**
@@ -28,30 +30,18 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version $Id$
  */
-public class Warwick1 extends GPRuleBase {
+public class Bremen2 extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
+		if (j.isFuture())
+			return PriorityQueue.MIN_PRIO;
+
 		double p = j.getCurrentOperation().procTime;
 		double winq = jasima.shopSim.prioRules.upDownStream.WINQ.winq(j);
-		double winq2 = jasima.shopSim.prioRules.upDownStream.XWINQ.xwinq(j);
-		double tiq = j.getShop().simTime() - j.getArriveTime();
 		double npt = PTPlusWINQPlusNPT.npt(j);
-		double rpt = j.remainingProcTime();
 
-		return div(
-				div(ifte(
-						div(tiq, p),
-						div(tiq,
-								add(max(mul(p, p), add(1, div(tiq, p))),
-										mul(winq2, npt))), div(tiq, p)),
-						max(tiq,
-								div(ifte(
-										add(max(mul(winq2, npt), sub(winq, rpt)),
-												winq),
-										div(max(add(1, winq), max(0, tiq)),
-												add(mul(p, p), winq)),
-										div(tiq, p)), add(1, 1)))), p);
+		return -p * (p + winq) * (p + npt);
 	}
 
 }

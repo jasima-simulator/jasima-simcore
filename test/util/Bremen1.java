@@ -18,9 +18,11 @@
  *
  * $Id$
  *******************************************************************************/
-package jasima.shopSim.prioRules.gp;
+package util;
 
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.PriorityQueue;
+import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
 /**
@@ -28,58 +30,27 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version $Id$
  */
-public class Warwick2 extends GPRuleBase {
+public class Bremen1 extends GPRuleBase {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
+		if (j.isFuture())
+			return PriorityQueue.MIN_PRIO;
+
 		double p = j.getCurrentOperation().procTime;
 		double winq = jasima.shopSim.prioRules.upDownStream.WINQ.winq(j);
-		double winq2 = jasima.shopSim.prioRules.upDownStream.XWINQ.xwinq(j);
 		double tiq = j.getShop().simTime() - j.getArriveTime();
 		double npt = PTPlusWINQPlusNPT.npt(j);
 		double tis = j.getShop().simTime() - j.getRelDate();
-		double odd = j.getCurrentOperationDueDate() - j.getShop().simTime();
+		double ol = j.numOpsLeft();
 
-		return div(
-				div(div(mul(
-						tiq,
-						ifte(tiq,
-								div(div(div(
-										div(mul(tiq,
-												mul(tiq,
-														ifte(tiq,
-																div(div(max(
-																		tis,
-																		mul(p,
-																				p)),
-																		tiq), p),
-																max(npt, winq)))),
-												p), max(0, tiq)), tiq), p),
-								max(p, winq2))),
-						max(sub(div(
-								mul(tiq,
-										ifte(tiq,
-												div(max(mul(winq2, npt),
-														max(mul(p, p),
-																div(1, p))), p),
-												max(add(1, max(tis, odd)), 1))),
-								tiq), max(tiq, 0)),
-								max(mul(max(
-										mul(winq2, npt),
-										max(mul(p, p),
-												div(div(div(div(tiq, p),
-														max(p, winq2)),
-														max(div(ifte(
-																tiq,
-																div(div(tiq, p),
-																		max(p,
-																				winq2)),
-																add(p, p)), p),
-																tiq)), p))), p),
-										1))),
-						max(mul(winq2, npt),
-								max(add(p, div(ifte(tiq, 0, add(p, p)), p)),
-										odd))), p);
+		return -(p * (npt - npt / p) * winq //
+		+ p * (max(p, ol - tiq) * (max(p - npt, p / (tis + p)) + 1) + 1) //
+		);
+		// p vor die Klammer zu ziehen, gibt leider wieder minimal schlechtere
+		// Ergebnisse
+		// return - p * ((npt-npt/p) * winq
+		// + ( max(p, ol - tiq) * ( max(p - npt, p / (tis + p)) + 1) + 1 ));
 	}
 
 }

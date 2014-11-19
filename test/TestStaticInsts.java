@@ -32,8 +32,6 @@ import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.basic.SLK;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
-import jasima.shopSim.prioRules.gp.Bremen1;
-import jasima.shopSim.prioRules.gp.Bremen2;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.prioRules.meta.Inverse;
 import jasima.shopSim.prioRules.upDownStream.IFTMinusUITPlusNPT;
@@ -52,6 +50,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import util.Bremen1;
+import util.Bremen2;
 import util.ExtendedJobStatCollector;
 
 /**
