@@ -36,6 +36,10 @@ import java.util.Map;
 /**
  * This class uses Java's serialization mechanism to save experiment results in
  * a binary file.
+ * <p>
+ * 
+ * This file can later is later converted to a final output format, so usually a
+ * subclass of {@code ResultSaver} is used, e.g., {@link ExcelSaver}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
