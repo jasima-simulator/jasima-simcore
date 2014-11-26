@@ -176,10 +176,10 @@ public class TestBestOfFamilyBatching {
 
 		Map<String, Object> res = runExp(new BestOfFamilyBatching(), br, null);
 
-		check("flowMean", 10069.4671, 0.0001, res);
-		check("tardMean", 1750.3194, 0.0001, res);
+		check("flowMean.mean", 10069.4671, 0.0001, res);
+		check("tardMean.mean", 1750.3194, 0.0001, res);
 		check("tardPercentage", 0.3753, 0.0001, res);
-		check("weightedTardMean", 3691.5796, 0.0001, res);
+		check("weightedTardMean.mean", 3691.5796, 0.0001, res);
 		check("numJobsFinished", 32777.4500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
 		// check("flowMean", 12295.6741, 0.0001, res);
@@ -205,10 +205,10 @@ public class TestBestOfFamilyBatching {
 
 		Map<String, Object> res = runExp(new BestOfFamilyBatching(), br, null);
 
-		check("flowMean", 10101.8194, 0.0001, res);
-		check("tardMean", 1772.3249, 0.0001, res);
+		check("flowMean.mean", 10101.8194, 0.0001, res);
+		check("tardMean.mean", 1772.3249, 0.0001, res);
 		check("tardPercentage", 0.3823, 0.0001, res);
-		check("weightedTardMean", 3766.1882, 0.0001, res);
+		check("weightedTardMean.mean", 3766.1882, 0.0001, res);
 		check("numJobsFinished", 32777.4500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
 		// check("flowMean", 12350.4961, 0.0001, res);
@@ -234,10 +234,10 @@ public class TestBestOfFamilyBatching {
 
 		Map<String, Object> res = runExp(new BestOfFamilyBatching(), br, null);
 
-		check("flowMean", 10034.7960, 0.0001, res);
-		check("tardMean", 1658.0615, 0.0001, res);
+		check("flowMean.mean", 10034.7960, 0.0001, res);
+		check("tardMean.mean", 1658.0615, 0.0001, res);
 		check("tardPercentage", 0.3659, 0.0001, res);
-		check("weightedTardMean", 3467.2397, 0.0001, res);
+		check("weightedTardMean.mean", 3467.2397, 0.0001, res);
 		check("numJobsFinished", 32776.8500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
 		// check("flowMean", 12278.4196, 0.0001, res);
@@ -263,10 +263,10 @@ public class TestBestOfFamilyBatching {
 
 		Map<String, Object> res = runExp(new BestOfFamilyBatching(), br, null);
 
-		check("flowMean", 10047.0413, 0.0001, res);
-		check("tardMean", 1667.5664, 0.0001, res);
+		check("flowMean.mean", 10047.0413, 0.0001, res);
+		check("tardMean.mean", 1667.5664, 0.0001, res);
 		check("tardPercentage", 0.3712, 0.0001, res);
-		check("weightedTardMean", 3461.0373, 0.0001, res);
+		check("weightedTardMean.mean", 3461.0373, 0.0001, res);
 		check("numJobsFinished", 32778.4000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
 		// check("flowMean", 12290.5842, 0.0001, res);
@@ -294,10 +294,10 @@ public class TestBestOfFamilyBatching {
 
 		Map<String, Object> res = runExp(new BestOfFamilyBatching(), br, null);
 
-		check("flowMean", 10042.3550, 0.0001, res);
-		check("tardMean", 1659.1827, 0.0001, res);
+		check("flowMean.mean", 10042.3550, 0.0001, res);
+		check("tardMean.mean", 1659.1827, 0.0001, res);
 		check("tardPercentage", 0.3727, 0.0001, res);
-		check("weightedTardMean", 3445.0120, 0.0001, res);
+		check("weightedTardMean.mean", 3445.0120, 0.0001, res);
 		check("numJobsFinished", 32778.4500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
 	}

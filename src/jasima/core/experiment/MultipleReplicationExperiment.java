@@ -21,6 +21,7 @@
 package jasima.core.experiment;
 
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.Pair;
 
 import java.util.ArrayList;
 
@@ -104,12 +105,14 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		// check all measures in "confIntervalMeasure" to have the quality
 		// measured by "errorProb" and "allowancePercentage".
 		for (String name : confIntervalMeasure) {
-			SummaryStat vs = (SummaryStat) detailedResultsNumeric.get(name);
+			@SuppressWarnings("unchecked")
+			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
+					.get(name);
+			SummaryStat vs = data.b;
 			if (vs == null)
 				throw new RuntimeException("No results for name '" + name + "'");
 
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
-			// allowance = Math.max(allowance, 1.0d);
 
 			double interv = 2 * vs.confIntRangeSingle(getErrorProb());
 			if (interv > allowance)

@@ -248,7 +248,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		ffe.runExperiment();
 		ffe.printResults();
-
+		
 		checkResults(ffe.getResults(), new File(
 				"testInstances/holthausResMultFFE.xml"));
 	}
@@ -384,6 +384,7 @@ public class TestForAllResults extends ExperimentTest {
 			XmlUtil.saveXML(actual, new File(f.getName()));
 
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
+		checkKeySets(actual, expected);
 		checkResults(actual, expected);
 	}
 
@@ -457,7 +458,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		ffe.runExperiment();
 		ffe.printResults();
-
+		
 		checkResults(ffe.getResults(), new File(
 				"testInstances/mimac4r_MRE_FFE.xml"));
 	}

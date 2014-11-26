@@ -86,9 +86,9 @@ public class TestMimacFab4Trace {
 
 		check("numJobsFinished", 368, PREC, res);
 		check("numJobsStarted", 459, PREC, res);
-		check("flowMean", 6029.62771739, PREC, res);
+		check("flowMean.mean", 6029.62771739, PREC, res);
 		check("flowVariance", 33224290.69754028, PREC, res);
-		check("tardMean", 171.646709778, PREC, res);
+		check("tardMean.mean", 171.646709778, PREC, res);
 		check("tardVariance", 202426.989185687, PREC, res);
 	}
 
@@ -118,9 +118,9 @@ public class TestMimacFab4Trace {
 		check("simTime", 40899, PREC, res);
 		check("numJobsFinished", 333, PREC, res);
 		check("numJobsStarted", 433, PREC, res);
-		check("flowMean", 6532.60961, 0.0001, res);
+		check("flowMean.mean", 6532.60961, 0.0001, res);
 		check("flowVariance", 25613492.5, 0.1, res);
-		check("tardMean", 422.5537, 0.0001, res);
+		check("tardMean.mean", 422.5537, 0.0001, res);
 		check("tardVariance", 446308.7631, 0.0001, res);
 	}
 

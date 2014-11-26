@@ -161,11 +161,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.4500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10070.2970, 0.0001, res);
-		check("tardMean", 1753.1818, 0.0001, res);
+		check("flowMean.mean", 10070.2970, 0.0001, res);
+		check("tardMean.mean", 1753.1818, 0.0001, res);
 		// check("tardPercentage", 0.3125, 0.0001, res);
 		check("tardPercentage", 0.3736, 0.0001, res);
-		check("weightedTardMean", 3677.5170, 0.0001, res);
+		check("weightedTardMean.mean", 3677.5170, 0.0001, res);
 	}
 
 	private PR maxWeight(PR pr) {
@@ -182,11 +182,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32707.0500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10101.1469, 0.0001, res);
-		check("tardMean", 1770.0235, 0.0001, res);
+		check("flowMean.mean", 10101.1469, 0.0001, res);
+		check("tardMean.mean", 1770.0235, 0.0001, res);
 		// check("tardPercentage", 0.3191, 0.0001, res);
 		check("tardPercentage", 0.3814, 0.0001, res);
-		check("weightedTardMean", 3742.1392, 0.0001, res);
+		check("weightedTardMean.mean", 3742.1392, 0.0001, res);
 	}
 
 	@Test
@@ -197,11 +197,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.5000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10018.6897, 0.0001, res);
-		check("tardMean", 1642.8410, 0.0001, res);
+		check("flowMean.mean", 10018.6897, 0.0001, res);
+		check("tardMean.mean", 1642.8410, 0.0001, res);
 		// check("tardPercentage", 0.3052, 0.0001, res);
 		check("tardPercentage", 0.3648, 0.0001, res);
-		check("weightedTardMean", 3437.3248, 0.0001, res);
+		check("weightedTardMean.mean", 3437.3248, 0.0001, res);
 	}
 
 	@Test
@@ -212,11 +212,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.1500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10057.2664, 0.0001, res);
-		check("tardMean", 1679.9226, 0.0001, res);
+		check("flowMean.mean", 10057.2664, 0.0001, res);
+		check("tardMean.mean", 1679.9226, 0.0001, res);
 		// check("tardPercentage", 0.3097, 0.0001, res);
 		check("tardPercentage", 0.3701, 0.0001, res);
-		check("weightedTardMean", 3454.8380, 0.0001, res);
+		check("weightedTardMean.mean", 3454.8380, 0.0001, res);
 	}
 
 	@Test
@@ -229,11 +229,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32707.6500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10170.5404, 0.0001, res);
-		check("tardMean", 1944.7933, 0.0001, res);
+		check("flowMean.mean", 10170.5404, 0.0001, res);
+		check("tardMean.mean", 1944.7933, 0.0001, res);
 		// check("tardPercentage", 0.3072, 0.0001, res);
 		check("tardPercentage", 0.3672, 0.0001, res);
-		check("weightedTardMean", 4218.3188, 0.0001, res);
+		check("weightedTardMean.mean", 4218.3188, 0.0001, res);
 	}
 
 	@Test
@@ -244,11 +244,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.5500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10041.8125, 0.0001, res);
-		check("tardMean", 1657.5252, 0.0001, res);
+		check("flowMean.mean", 10041.8125, 0.0001, res);
+		check("tardMean.mean", 1657.5252, 0.0001, res);
 		// check("tardPercentage", 0.3109, 0.0001, res);
 		check("tardPercentage", 0.3716, 0.0001, res);
-		check("weightedTardMean", 3430.1873, 0.0001, res);
+		check("weightedTardMean.mean", 3430.1873, 0.0001, res);
 	}
 
 	@Test
@@ -259,11 +259,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32706.5000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10153.5018, 0.0001, res);
-		check("tardMean", 1803.6232, 0.0001, res);
+		check("flowMean.mean", 10153.5018, 0.0001, res);
+		check("tardMean.mean", 1803.6232, 0.0001, res);
 		// check("tardPercentage", 0.3218, 0.0001, res);
 		check("tardPercentage", 0.3846, 0.0001, res);
-		check("weightedTardMean", 3819.4722, 0.0001, res);
+		check("weightedTardMean.mean", 3819.4722, 0.0001, res);
 	}
 
 	@Test
@@ -274,11 +274,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32697.4500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 11082.5380, 0.0001, res);
-		check("tardMean", 1046.7995, 0.0001, res);
+		check("flowMean.mean", 11082.5380, 0.0001, res);
+		check("tardMean.mean", 1046.7995, 0.0001, res);
 		// check("tardPercentage", 0.4229, 0.0001, res);
 		check("tardPercentage", 0.5053, 0.0001, res);
-		check("weightedTardMean", 2548.0594, 0.0001, res);
+		check("weightedTardMean.mean", 2548.0594, 0.0001, res);
 	}
 
 	@Test
@@ -289,11 +289,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32692.3000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 11505.4612, 0.0001, res);
-		check("tardMean", 1783.2683, 0.0001, res);
+		check("flowMean.mean", 11505.4612, 0.0001, res);
+		check("tardMean.mean", 1783.2683, 0.0001, res);
 		// check("tardPercentage", 0.3355, 0.0001, res);
 		check("tardPercentage", 0.4009, 0.0001, res);
-		check("weightedTardMean", 4244.5752, 0.0001, res);
+		check("weightedTardMean.mean", 4244.5752, 0.0001, res);
 	}
 
 	@Test
@@ -304,11 +304,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32700.1000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10983.6102, 0.0001, res);
-		check("tardMean", 1014.3326, 0.0001, res);
+		check("flowMean.mean", 10983.6102, 0.0001, res);
+		check("tardMean.mean", 1014.3326, 0.0001, res);
 		// check("tardPercentage", 0.3498, 0.0001, res);
 		check("tardPercentage", 0.4180, 0.0001, res);
-		check("weightedTardMean", 2356.2522, 0.0001, res);
+		check("weightedTardMean.mean", 2356.2522, 0.0001, res);
 	}
 
 	@Test
@@ -319,11 +319,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.3000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10032.9246, 0.0001, res);
-		check("tardMean", 580.5907, 0.0001, res);
+		check("flowMean.mean", 10032.9246, 0.0001, res);
+		check("tardMean.mean", 580.5907, 0.0001, res);
 		// check("tardPercentage", 0.2650, 0.0001, res);
 		check("tardPercentage", 0.3167, 0.0001, res);
-		check("weightedTardMean", 1679.9557, 0.0001, res);
+		check("weightedTardMean.mean", 1679.9557, 0.0001, res);
 	}
 
 	@Test
@@ -334,11 +334,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.3000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10032.9246, 0.0001, res);
-		check("tardMean", 580.5907, 0.0001, res);
+		check("flowMean.mean", 10032.9246, 0.0001, res);
+		check("tardMean.mean", 580.5907, 0.0001, res);
 		// check("tardPercentage", 0.2650, 0.0001, res);
 		check("tardPercentage", 0.3167, 0.0001, res);
-		check("weightedTardMean", 1679.9557, 0.0001, res);
+		check("weightedTardMean.mean", 1679.9557, 0.0001, res);
 	}
 
 	@Test
@@ -349,11 +349,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.6000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10101.0870, 0.0001, res);
-		check("tardMean", 880.6234, 0.0001, res);
+		check("flowMean.mean", 10101.0870, 0.0001, res);
+		check("tardMean.mean", 880.6234, 0.0001, res);
 		// check("tardPercentage", 0.2165, 0.0001, res);
 		check("tardPercentage", 0.2587, 0.0001, res);
-		check("weightedTardMean", 1472.4718, 0.0001, res);
+		check("weightedTardMean.mean", 1472.4718, 0.0001, res);
 	}
 
 	@Test
@@ -364,11 +364,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32710.1000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10029.1028, 0.0001, res);
-		check("tardMean", 383.4620, 0.0001, res);
+		check("flowMean.mean", 10029.1028, 0.0001, res);
+		check("tardMean.mean", 383.4620, 0.0001, res);
 		// check("tardPercentage", 0.2241, 0.0001, res);
 		check("tardPercentage", 0.2679, 0.0001, res);
-		check("weightedTardMean", 1031.1627, 0.0001, res);
+		check("weightedTardMean.mean", 1031.1627, 0.0001, res);
 	}
 
 	@Test
@@ -379,11 +379,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.5000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10078.0765, 0.0001, res);
-		check("tardMean", 409.4973, 0.0001, res);
+		check("flowMean.mean", 10078.0765, 0.0001, res);
+		check("tardMean.mean", 409.4973, 0.0001, res);
 		// check("tardPercentage", 0.1909, 0.0001, res);
 		check("tardPercentage", 0.2281, 0.0001, res);
-		check("weightedTardMean", 915.9900, 0.0001, res);
+		check("weightedTardMean.mean", 915.9900, 0.0001, res);
 	}
 
 	@Test
@@ -394,11 +394,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.5000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10162.4517, 0.0001, res);
-		check("tardMean", 364.1026, 0.0001, res);
+		check("flowMean.mean", 10162.4517, 0.0001, res);
+		check("tardMean.mean", 364.1026, 0.0001, res);
 		// check("tardPercentage", 0.2372, 0.0001, res);
 		check("tardPercentage", 0.2835, 0.0001, res);
-		check("weightedTardMean", 797.1564, 0.0001, res);
+		check("weightedTardMean.mean", 797.1564, 0.0001, res);
 	}
 
 	@Test
@@ -409,11 +409,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.5500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10133.4703, 0.0001, res);
-		check("tardMean", 342.7144, 0.0001, res);
+		check("flowMean.mean", 10133.4703, 0.0001, res);
+		check("tardMean.mean", 342.7144, 0.0001, res);
 		// check("tardPercentage", 0.2395, 0.0001, res);
 		check("tardPercentage", 0.2862, 0.0001, res);
-		check("weightedTardMean", 755.3759, 0.0001, res);
+		check("weightedTardMean.mean", 755.3759, 0.0001, res);
 	}
 
 	@Test
@@ -424,11 +424,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.1500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10253.5779, 0.0001, res);
-		check("tardMean", 388.6433, 0.0001, res);
+		check("flowMean.mean", 10253.5779, 0.0001, res);
+		check("tardMean.mean", 388.6433, 0.0001, res);
 		// check("tardPercentage", 0.2129, 0.0001, res);
 		check("tardPercentage", 0.2545, 0.0001, res);
-		check("weightedTardMean", 793.1874, 0.0001, res);
+		check("weightedTardMean.mean", 793.1874, 0.0001, res);
 	}
 
 	@Test
@@ -439,11 +439,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.0500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10092.4825, 0.0001, res);
-		check("tardMean", 371.7807, 0.0001, res);
+		check("flowMean.mean", 10092.4825, 0.0001, res);
+		check("tardMean.mean", 371.7807, 0.0001, res);
 		// check("tardPercentage", 0.2012, 0.0001, res);
 		check("tardPercentage", 0.2404, 0.0001, res);
-		check("weightedTardMean", 724.8903, 0.0001, res);
+		check("weightedTardMean.mean", 724.8903, 0.0001, res);
 	}
 
 	@Test
@@ -454,11 +454,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32706.7500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10164.0467, 0.0001, res);
-		check("tardMean", 343.5415, 0.0001, res);
+		check("flowMean.mean", 10164.0467, 0.0001, res);
+		check("tardMean.mean", 343.5415, 0.0001, res);
 		// check("tardPercentage", 0.2372, 0.0001, res);
 		check("tardPercentage", 0.2835, 0.0001, res);
-		check("weightedTardMean", 728.5141, 0.0001, res);
+		check("weightedTardMean.mean", 728.5141, 0.0001, res);
 	}
 
 	@Test
@@ -469,11 +469,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32707.6000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10133.3648, 0.0001, res);
-		check("tardMean", 410.8700, 0.0001, res);
+		check("flowMean.mean", 10133.3648, 0.0001, res);
+		check("tardMean.mean", 410.8700, 0.0001, res);
 		// check("tardPercentage", 0.1857, 0.0001, res);
 		check("tardPercentage", 0.2219, 0.0001, res);
-		check("weightedTardMean", 746.2192, 0.0001, res);
+		check("weightedTardMean.mean", 746.2192, 0.0001, res);
 	}
 
 	@Test
@@ -484,11 +484,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.2000, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10163.9971, 0.0001, res);
-		check("tardMean", 367.7475, 0.0001, res);
+		check("flowMean.mean", 10163.9971, 0.0001, res);
+		check("tardMean.mean", 367.7475, 0.0001, res);
 		// check("tardPercentage", 0.1910, 0.0001, res);
 		check("tardPercentage", 0.2283, 0.0001, res);
-		check("weightedTardMean", 728.1442, 0.0001, res);
+		check("weightedTardMean.mean", 728.1442, 0.0001, res);
 	}
 
 	@Test
@@ -499,11 +499,11 @@ public class TestWinterSim2010Continuity {
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.0500, 0.0001, res);
 		check("baseExperiment.expAborted", 0.0, 0.0001, res);
-		check("flowMean", 10105.1822, 0.0001, res);
-		check("tardMean", 396.8288, 0.0001, res);
+		check("flowMean.mean", 10105.1822, 0.0001, res);
+		check("tardMean.mean", 396.8288, 0.0001, res);
 		// check("tardPercentage", 0.1941, 0.0001, res);
 		check("tardPercentage", 0.2320, 0.0001, res);
-		check("weightedTardMean", 697.0609, 0.0001, res);
+		check("weightedTardMean.mean", 697.0609, 0.0001, res);
 	}
 
 }

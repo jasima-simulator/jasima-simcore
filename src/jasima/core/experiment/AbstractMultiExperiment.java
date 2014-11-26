@@ -23,6 +23,7 @@ package jasima.core.experiment;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -270,24 +271,40 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * mean()-value.
 	 */
 	protected void handleNumericValue(String key, Object val) {
-		SummaryStat repValues = (SummaryStat) detailedResultsNumeric.get(key);
-		if (repValues == null) {
-			repValues = new SummaryStat();
-			detailedResultsNumeric.put(key, repValues);
-		}
+		Double v;
+		boolean wasSummaryStat;
 
-		// store run result, may it be a complex statistic or scalar value
+		// store run result, which can be a complex statistic or scalar value
 		if (val instanceof SummaryStat) {
 			SummaryStat vs = (SummaryStat) val;
+			wasSummaryStat = true;
 			if (vs.numObs() > 0)
-				repValues.value(vs.mean());
+				v = vs.mean();
+			else
+				v = null;
 		} else if (val instanceof Number) {
 			Number n = (Number) val;
-			repValues.value(n.doubleValue());
+			v = n.doubleValue();
+			wasSummaryStat = false;
 		} else
 			// should never occur
 			throw new AssertionError("Illegal experiment result type: "
 					+ val.getClass().getName());
+
+		// get/create entry in "detailedResultsNumeric"
+		Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
+				.get(key);
+		if (data == null) {
+			data = new Pair<Boolean, SummaryStat>(wasSummaryStat,
+					new SummaryStat());
+			detailedResultsNumeric.put(key, data);
+		}
+		SummaryStat repValues = data.b;
+
+		// store value
+		if (v != null) {
+			repValues.value(v.doubleValue());
+		}
 	}
 
 	protected boolean isSpecialKey(String key) {
@@ -300,12 +317,17 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		super.produceResults();
 
 		for (String key : detailedResultsNumeric.keySet()) {
-			SummaryStat val = (SummaryStat) detailedResultsNumeric.get(key);
+			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
+					.get(key);
+			SummaryStat val = data.b;
 
 			if (isSpecialKey(key)) {
 				key = "baseExperiment." + key;
 			} else {
-				key = key; // +".mean";
+				// was base result already a SummaryStat?
+				if (data.a == true) {
+					key = key + ".mean";
+				}
 			}
 
 			// careful: SummaryStat is not immutable, so it might be better to
