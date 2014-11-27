@@ -26,8 +26,8 @@ import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ import java.util.Random;
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 
-	private static final long serialVersionUID = 4018379771127550074L;
+	private static final long serialVersionUID = 2285355204835181022L;
 
 	public static final String NUM_TASKS_EXECUTED = "numTasks";
 
@@ -68,7 +68,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	private boolean commonRandomNumbers = true;
 	private int skipSeedCount = 0;
 	private boolean abortUponBaseExperimentAbort = false;
-	protected HashSet<String> keepResults = new HashSet<String>();
+	private String[] keepResults = new String[0];
 	private boolean produceAveragedResults = true;
 
 	// fields used during run
@@ -292,6 +292,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 					+ val.getClass().getName());
 
 		// get/create entry in "detailedResultsNumeric"
+		@SuppressWarnings("unchecked")
 		Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
 				.get(key);
 		if (data == null) {
@@ -317,6 +318,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		super.produceResults();
 
 		for (String key : detailedResultsNumeric.keySet()) {
+			@SuppressWarnings("unchecked")
 			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
 					.get(key);
 			SummaryStat val = data.b;
@@ -351,28 +353,59 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		resultMap.put(NUM_TASKS_EXECUTED, getNumTasksExecuted());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public AbstractMultiExperiment clone() throws CloneNotSupportedException {
 		AbstractMultiExperiment mre = (AbstractMultiExperiment) super.clone();
 
-		mre.keepResults = (HashSet<String>) keepResults.clone();
+		if (keepResults != null)
+			mre.keepResults = keepResults.clone();
 
 		return mre;
 	}
 
 	public void addKeepResultName(String name) {
-		keepResults.add(name);
+		// temporarily convert to list
+		ArrayList<String> list = new ArrayList<String>(
+				Arrays.asList(keepResults));
+		list.add(name);
+		// convert back to array
+		keepResults = list.toArray(new String[list.size()]);
 	}
 
-	public void removeKeepResultName(String name) {
-		keepResults.remove(name);
+	public boolean removeKeepResultName(String name) {
+		// temporarily convert to list
+		ArrayList<String> list = new ArrayList<String>(
+				Arrays.asList(keepResults));
+		boolean res = list.remove(name);
+		// convert back to array
+		keepResults = list.toArray(new String[list.size()]);
+
+		return res;
 	}
 
 	public boolean isKeepTaskResults() {
-		return keepResults.size() > 0;
+		return keepResults.length > 0;
 	}
 
+	public String[] getKeepResults() {
+		return keepResults;
+	}
+
+	/**
+	 * Sets the names of all results where detailed results of all
+	 * sub-experiment executions should be preserved.
+	 */
+	public void setKeepResults(String[] keepResults) {
+		this.keepResults = keepResults;
+	}
+
+	/**
+	 * If this attribute is set to {@code true}, sub-experiments will be
+	 * executed concurrently in parallel. Setting this property to {@code false}
+	 * (therefore using only a single CPU core) is sometimes useful for
+	 * debugging purposes or when fine-grained control over parallelization of
+	 * nested (multi-)experiments is required.
+	 */
 	public void setAllowParallelExecution(boolean allowParallelExecution) {
 		this.allowParallelExecution = allowParallelExecution;
 	}
@@ -381,7 +414,15 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		return allowParallelExecution;
 	}
 
-	public void setCommonRandomNumbers(boolean commonRandomNumbers) {
+	/**
+	 * Whether to use the variance reduction technique of common random numbers.
+	 * If set to true, all sub-experiments are executed using the same random
+	 * seed, so random influences will be the same for all sub-experiments. If
+	 * set to {@code false}, all sub-experiments will be assigned a different
+	 * {@code initialSeed}, depending only on this experiment's
+	 * {@code initialSeed}.
+	 */
+	protected void setCommonRandomNumbers(boolean commonRandomNumbers) {
 		this.commonRandomNumbers = commonRandomNumbers;
 	}
 
@@ -394,18 +435,24 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		return false;
 	}
 
+	/**
+	 * Before starting, throw away this many seed values. This is feature is
+	 * useful to resume interrupted operations.
+	 */
 	public void setSkipSeedCount(int skipSeedCount) {
 		this.skipSeedCount = skipSeedCount;
 	}
 
-	/*
-	 * Before starting throw away this many seed values -- useful to resume
-	 * interrupted operastions.
-	 */
 	public int getSkipSeedCount() {
 		return skipSeedCount;
 	}
 
+	/**
+	 * If set to {@code true}, this experiment aborts immediately (indicating an
+	 * abort in its results) after the first sub-experiment aborting. If this is
+	 * set to {@code false}, execution of sub-experiments continues, ignoring
+	 * aborting experiments.
+	 */
 	public void setAbortUponBaseExperimentAbort(
 			boolean abortUponBaseExperimentAbort) {
 		this.abortUponBaseExperimentAbort = abortUponBaseExperimentAbort;
@@ -419,6 +466,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		return produceAveragedResults;
 	}
 
+	/**
+	 * Whether or not to produce averaged results across all sub-experiments as
+	 * a result of this experiment.
+	 */
 	public void setProduceAveragedResults(boolean produceAveragedResults) {
 		this.produceAveragedResults = produceAveragedResults;
 	}

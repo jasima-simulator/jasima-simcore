@@ -213,4 +213,10 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 		handleConfig(c);
 	}
 
+	// just make public
+	@Override
+	public void setCommonRandomNumbers(boolean commonRandomNumbers) {
+		super.setCommonRandomNumbers(commonRandomNumbers);
+	}
+
 }

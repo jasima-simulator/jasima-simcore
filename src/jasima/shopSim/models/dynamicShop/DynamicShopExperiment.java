@@ -37,6 +37,8 @@ import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ShopListenerBase;
 
+import java.util.Arrays;
+
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 /**
@@ -94,6 +96,11 @@ public class DynamicShopExperiment extends JobShopExperiment {
 	@Override
 	public void init() {
 		super.init();
+
+		if (getScenario() == null)
+			throw new IllegalArgumentException(String.format(
+					"No scenario specified, should be one of %s.",
+							Arrays.toString(Scenario.values())));
 
 		if (getNumOpsMin() > getNumOpsMax())
 			throw new IllegalArgumentException(String.format(

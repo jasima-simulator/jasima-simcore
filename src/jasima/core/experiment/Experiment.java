@@ -400,6 +400,9 @@ public abstract class Experiment implements Cloneable, Serializable,
 		return true;
 	}
 
+	/**
+	 * Set some descriptive name for this experiment.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -412,6 +415,10 @@ public abstract class Experiment implements Cloneable, Serializable,
 		return initialSeed;
 	}
 
+	/**
+	 * Sets the initial seed for this experiment. If an experiment makes use of
+	 * random influences, they should all and solely depend on this value.
+	 */
 	public void setInitialSeed(long s) {
 		initialSeed = s;
 	}
