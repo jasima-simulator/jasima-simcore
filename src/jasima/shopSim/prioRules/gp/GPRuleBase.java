@@ -24,10 +24,15 @@ import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 
 /**
+ * Abstract base class that can be used for rules generated with Genetic
+ * Programming. In addition to standard {@code PR} it only defines static
+ * methods for some commonly used arithmetic functions.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
+@SuppressWarnings("serial")
 public abstract class GPRuleBase extends PR {
 
 	@Override

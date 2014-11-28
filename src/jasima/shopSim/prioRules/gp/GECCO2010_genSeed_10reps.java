@@ -21,32 +21,36 @@
 package jasima.shopSim.prioRules.gp;
 
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.PriorityQueue;
+import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
 /**
+ * A rule from "Towards Improved Dispatching Rules for Complex Shop Floor
+ * Scenarios—a Genetic Programming Approach", Hildebrandt, Heger, Scholz-Reiter,
+ * GECCO 2010, doi:10.1145/1830483.1830530
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
-public class Bremen_GECCO2010_lookahead extends GPRuleBase {
+public class GECCO2010_genSeed_10reps extends GPRuleBase {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
+		if (j.isFuture())
+			return PriorityQueue.MIN_PRIO;
+
 		double p = j.getCurrentOperation().procTime;
-		double winq2 = jasima.shopSim.prioRules.upDownStream.XWINQ.xwinq(j);
+		double winq = jasima.shopSim.prioRules.upDownStream.WINQ.winq(j);
 		double tiq = j.getShop().simTime() - j.getArriveTime();
 		double npt = PTPlusWINQPlusNPT.npt(j);
+		double tis = j.getShop().simTime() - j.getRelDate();
 		double ol = j.numOpsLeft();
 
-		return p
-				* (ifte(tiq
-						* (p / ((tiq + npt - 1) * (winq2 + npt)) + winq2)
-						/ ifte(ifte(ol * p / (tiq * winq2), 1 / p, 2 * npt - ol
-								/ ((p + npt) * tiq)), 1 / p, 1), 1 / p, tiq - 1)
-						/ (winq2 + (p * p)
-								/ ((1 - 2 * npt) / (2 * p + npt) + 2 * npt)) + 1 / (p * (p + npt))
-
-				);
+		return -p
+				* ((npt - npt / p) * winq + (max(p, ol - tiq)
+						* (max(p - npt, p / (tis + p)) + 1) + 1));
 	}
 
 }

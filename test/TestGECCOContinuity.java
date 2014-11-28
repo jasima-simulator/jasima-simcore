@@ -29,8 +29,8 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
-import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_genSeed_2reps;
-import jasima.shopSim.prioRules.gp.Bremen_GECCO2010_lookahead;
+import jasima.shopSim.prioRules.gp.GECCO2010_genSeed_2reps;
+import jasima.shopSim.prioRules.gp.GECCO2010_lookahead;
 import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
@@ -199,7 +199,7 @@ public class TestGECCOContinuity {
 		
 		e.addShopListener(new ExtendedJobStatCollector());
 
-		Bremen_GECCO2010_lookahead pr = new Bremen_GECCO2010_lookahead();
+		GECCO2010_lookahead pr = new GECCO2010_lookahead();
 		pr.setTieBreaker(new TieBreakerFASFS());
 		e.setSequencingRule(new IgnoreFutureJobs(pr));
 		e.setBatchForming(new HighestJobBatchingMBS(0.0));
@@ -224,7 +224,7 @@ public class TestGECCOContinuity {
 
 		e.addShopListener(new ExtendedJobStatCollector());
 
-		Bremen_GECCO2010_genSeed_2reps pr = new Bremen_GECCO2010_genSeed_2reps();
+		GECCO2010_genSeed_2reps pr = new GECCO2010_genSeed_2reps();
 		pr.setTieBreaker(new TieBreakerFASFS());
 
 		e.setSequencingRule(new IgnoreFutureJobs(pr));

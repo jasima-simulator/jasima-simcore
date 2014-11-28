@@ -29,9 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A rule from
+ * "Generating dispatching rules for semiconductor manufacturing to minimize weighted tardiness"
+ * , WinterSim 2010, doi:10.1109/WSC.2010.5678946.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class WSC2010_GPRuleSize98 extends GPRuleBase {
 
