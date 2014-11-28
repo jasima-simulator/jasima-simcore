@@ -2,7 +2,7 @@ Jasima uses some third party libraries/source code. Their licenses can be found 
 
 
 --------------------------------------------------------------------------------
-Apache Commons Math library, version 3.0  (http://commons.apache.org/math/)
+Apache Commons Math library, version 3.3  (http://commons.apache.org/math/)
 
 Apache Commons Math
 Copyright 2001-2012 The Apache Software Foundation
@@ -33,7 +33,7 @@ All rights reserved.
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-License of the Apache Commons Math library, version 3.0:
+License of the Apache Commons Math library, version 3.3:
 
 Apache Commons Math
 Copyright 2001-2012 The Apache Software Foundation
