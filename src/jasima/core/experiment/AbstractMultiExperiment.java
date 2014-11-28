@@ -436,8 +436,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	}
 
 	/**
-	 * Before starting, throw away this many seed values. This is feature is
-	 * useful to resume interrupted operations.
+	 * Before starting, throw away this many seed values. This setting can be
+	 * useful to resume interrupted sub-experiments.
 	 */
 	public void setSkipSeedCount(int skipSeedCount) {
 		this.skipSeedCount = skipSeedCount;

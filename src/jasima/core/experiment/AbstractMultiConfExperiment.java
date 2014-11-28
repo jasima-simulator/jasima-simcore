@@ -203,7 +203,8 @@ public abstract class AbstractMultiConfExperiment extends
 	}
 
 	/**
-	 * Sets the base experiment that is executed multiple times.
+	 * Sets the base experiment that is executed multiple times in various
+	 * configurations.
 	 */
 	public void setBaseExperiment(Experiment baseExperiment) {
 		this.baseExperiment = baseExperiment;
@@ -213,6 +214,10 @@ public abstract class AbstractMultiConfExperiment extends
 		return configurationValidator;
 	}
 
+	/**
+	 * Sets a {@link ConfigurationValidator}, which is used to veto certain
+	 * impossible factor combinations.
+	 */
 	public void setConfigurationValidator(
 			ConfigurationValidator configurationValidator) {
 		this.configurationValidator = configurationValidator;

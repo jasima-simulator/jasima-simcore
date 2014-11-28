@@ -21,6 +21,7 @@
 package jasima.core.experiment;
 
 import jasima.core.experiment.Experiment.ExperimentEvent;
+import jasima.core.random.RandomFactory;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
@@ -364,16 +365,6 @@ public abstract class Experiment implements Cloneable, Serializable,
 		}
 	}
 
-	// /**
-	// * Runs the experiment and returns results. This method implements the
-	// * {@link Callable} interface.
-	// */
-	// @Override
-	// public Map<String, Object> call() throws Exception {
-	// runExperiment();
-	// return getResults();
-	// }
-
 	/**
 	 * Sets the nesting level. This method is only for internal purposes.
 	 */
@@ -394,7 +385,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	/**
 	 * This method is used internally to decide how to execute an experiment. If
 	 * this method returns true (default), it does not spawn child experiments
-	 * to produce it's results.
+	 * to produce its results.
 	 */
 	public boolean isLeafExperiment() {
 		return true;
@@ -418,9 +409,11 @@ public abstract class Experiment implements Cloneable, Serializable,
 	/**
 	 * Sets the initial seed for this experiment. If an experiment makes use of
 	 * random influences, they should all and solely depend on this value.
+	 * 
+	 * @see RandomFactory
 	 */
-	public void setInitialSeed(long s) {
-		initialSeed = s;
+	public void setInitialSeed(long initialSeed) {
+		this.initialSeed = initialSeed;
 	}
 
 	//

@@ -30,6 +30,7 @@ import java.util.Random;
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
  *          "$Id$"
+ * @deprecated Use {@link RandomFactory} instead.
  */
 @Deprecated
 public class RandomFactoryOld extends RandomFactory {
