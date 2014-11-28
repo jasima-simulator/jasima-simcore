@@ -58,6 +58,13 @@ public abstract class GPRuleBase extends PR {
 		return v1 / v2;
 	}
 
+	public static final double divProtected(final double v1, final double v2) {
+		if (v2 == 0.0)
+			return 1.0;
+		else
+			return v1 / v2;
+	}
+
 	public static final double sub(final double v1, final double v2) {
 		return v1 - v2;
 	}
@@ -73,4 +80,9 @@ public abstract class GPRuleBase extends PR {
 	public static final double neg(final double v1) {
 		return -v1;
 	}
+
+	public static final double abs(double v1) {
+		return Math.abs(v1);
+	}
+
 }
