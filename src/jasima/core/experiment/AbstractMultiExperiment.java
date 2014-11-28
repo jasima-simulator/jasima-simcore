@@ -75,9 +75,9 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	protected UniqueNamesCheckingHashMap detailedResultsNumeric;
 	protected UniqueNamesCheckingHashMap detailedResultsOther;
-	private Random seedStream;
+	protected Random seedStream;
 	protected List<Experiment> experiments;
-	private int numTasksExecuted;
+	protected int numTasksExecuted;
 
 	@Override
 	public void init() {

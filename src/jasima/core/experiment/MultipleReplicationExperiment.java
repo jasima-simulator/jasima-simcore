@@ -103,6 +103,9 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		if (!isNumRunsDynamic())
 			return false;
 
+		if (numTasksExecuted>=getMaxReplications())
+			return false;
+		
 		// check all measures in "confIntervalMeasure" to have the quality
 		// measured by "errorProb" and "allowancePercentage".
 		for (String name : confIntervalMeasure) {
@@ -117,6 +120,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
 
 			double interv = 2 * vs.confIntRangeSingle(getErrorProb());
+			
 			if (interv > allowance)
 				return true;
 		}
