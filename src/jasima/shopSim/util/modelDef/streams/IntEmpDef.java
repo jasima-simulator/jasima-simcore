@@ -85,6 +85,18 @@ public class IntEmpDef extends StreamDef {
 	}
 
 	@Override
+	public IntEmpDef clone() throws CloneNotSupportedException {
+		IntEmpDef c = (IntEmpDef) super.clone();
+
+		if (values != null)
+			c.values = values.clone();
+		if (probs != null)
+			c.probs = probs.clone();
+
+		return c;
+	}
+
+	@Override
 	public DblStream createStream() {
 		return new IntEmpirical(getProbs().clone(), getValues().clone());
 	}

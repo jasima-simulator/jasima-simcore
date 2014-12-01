@@ -1,16 +1,16 @@
 package jasima.shopSim.util.modelDef.streams;
 
-import jasima.core.random.continuous.DblConst;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.discrete.IntConst;
+import jasima.core.random.discrete.IntStream;
 import jasima.core.util.Util;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class DblConstDef extends StreamDef {
+public class IntConstDef extends StreamDef {
 
 	public static final String PARAM_VALUES = "values";
-	public static final String TYPE_STRING = "const";
+	public static final String TYPE_STRING = "intConst";
 
 	public static final StreamDefFact FACTORY = new StreamDefFact() {
 		@Override
@@ -19,27 +19,27 @@ public class DblConstDef extends StreamDef {
 		}
 
 		@Override
-		public DblConstDef stringToStreamDef(String params, List<String> errors) {
-			double[] ll;
+		public IntConstDef stringToStreamDef(String params, List<String> errors) {
+			int[] ll;
 			try {
-				ll = Util.parseDblList(params);
+				ll = Util.parseIntList(params);
 			} catch (NumberFormatException nfe) {
 				errors.add(String.format("invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
 
-			DblConstDef res = new DblConstDef();
+			IntConstDef res = new IntConstDef();
 			res.setValues(ll);
 			return res;
 		}
 	};
 
-	public DblConstDef() {
+	public IntConstDef() {
 		super();
 	}
 
-	private double[] values;
+	private int[] values;
 
 	@Override
 	public String toString() {
@@ -49,8 +49,13 @@ public class DblConstDef extends StreamDef {
 	}
 
 	@Override
-	public DblConstDef clone() throws CloneNotSupportedException {
-		DblConstDef c = (DblConstDef) super.clone();
+	public IntStream createStream() {
+		return new IntConst(getValues().clone());
+	}
+
+	@Override
+	public IntConstDef clone() throws CloneNotSupportedException {
+		IntConstDef c = (IntConstDef) super.clone();
 
 		if (values != null)
 			c.values = values.clone();
@@ -58,16 +63,11 @@ public class DblConstDef extends StreamDef {
 		return c;
 	}
 
-	@Override
-	public DblStream createStream() {
-		return new DblConst(getValues().clone());
-	}
-
-	public double[] getValues() {
+	public int[] getValues() {
 		return values;
 	}
 
-	public void setValues(double[] values) {
+	public void setValues(int[] values) {
 		firePropertyChange(PARAM_VALUES, this.values, this.values = values);
 	}
 

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public abstract class StreamDef extends PropertySupport {
+public abstract class StreamDef extends PropertySupport implements Cloneable {
 
 	public interface StreamDefFact {
 
@@ -48,6 +48,11 @@ public abstract class StreamDef extends PropertySupport {
 		return res;
 	}
 
+	@Override
+	public StreamDef clone() throws CloneNotSupportedException {
+		return (StreamDef) super.clone();
+	}
+
 	private static HashMap<String, StreamDefFact> streamFactoryReg = new HashMap<String, StreamDefFact>();
 
 	public static void registerStreamFactory(StreamDefFact fact) {
@@ -61,6 +66,7 @@ public abstract class StreamDef extends PropertySupport {
 		registerStreamFactory(DblTriangularDef.FACTORY);
 		registerStreamFactory(IntUniformDef.FACTORY);
 		registerStreamFactory(IntEmpDef.FACTORY);
+		registerStreamFactory(IntConstDef.FACTORY);
 	}
 
 }
