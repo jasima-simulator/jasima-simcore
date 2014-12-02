@@ -62,8 +62,8 @@ public class IntEmpDef extends StreamDef {
 
 	};
 
-	private double[] probs = null;
-	private int[] values = null;
+	private double[] probs = {};
+	private int[] values = {};
 
 	public IntEmpDef() {
 		super();
@@ -74,12 +74,14 @@ public class IntEmpDef extends StreamDef {
 		String params = "";
 
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < probs.length; i++) {
-			sb.append('<').append(values[i]).append(',').append(probs[i])
-					.append(">,");
+		if (probs != null) {
+			for (int i = 0; i < probs.length; i++) {
+				sb.append('<').append(values[i]).append(',').append(probs[i])
+						.append(">,");
+			}
+			if (sb.length() > 0)
+				params = sb.substring(0, sb.length() - 1);
 		}
-		if (sb.length() > 0)
-			params = sb.substring(0, sb.length() - 1);
 
 		return String.format("%s(%s)", FACTORY.getTypeString(), params);
 	}
@@ -115,6 +117,10 @@ public class IntEmpDef extends StreamDef {
 
 	public void setValues(int[] values) {
 		firePropertyChange(PARAM_VALUES, this.values, this.values = values);
+	}
+
+	static {
+		registerStreamFactory(IntEmpDef.FACTORY);
 	}
 
 }

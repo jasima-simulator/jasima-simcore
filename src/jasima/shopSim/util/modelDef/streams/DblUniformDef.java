@@ -82,4 +82,8 @@ public class DblUniformDef extends StreamDef {
 				this.maxValue = maxValue);
 	}
 
+	static {
+		registerStreamFactory(DblUniformDef.FACTORY);
+	}
+
 }

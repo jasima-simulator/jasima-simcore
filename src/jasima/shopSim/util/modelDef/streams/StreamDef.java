@@ -18,6 +18,10 @@ public abstract class StreamDef extends PropertySupport implements Cloneable {
 
 	}
 
+	public StreamDef() {
+		super();
+	}
+
 	public abstract DblStream createStream();
 
 	public static StreamDef parseDblStream(String s, List<String> errors) {
@@ -53,20 +57,26 @@ public abstract class StreamDef extends PropertySupport implements Cloneable {
 		return (StreamDef) super.clone();
 	}
 
-	private static HashMap<String, StreamDefFact> streamFactoryReg = new HashMap<String, StreamDefFact>();
+	private static HashMap<String, StreamDefFact> streamFactoryReg;
 
 	public static void registerStreamFactory(StreamDefFact fact) {
 		streamFactoryReg.put(fact.getTypeString(), fact);
 	}
 
 	static {
-		registerStreamFactory(DblConstDef.FACTORY);
-		registerStreamFactory(DblExponentialDef.FACTORY);
-		registerStreamFactory(DblUniformDef.FACTORY);
-		registerStreamFactory(DblTriangularDef.FACTORY);
-		registerStreamFactory(IntUniformDef.FACTORY);
-		registerStreamFactory(IntEmpDef.FACTORY);
-		registerStreamFactory(IntConstDef.FACTORY);
+		streamFactoryReg = new HashMap<String, StreamDefFact>();
+
+		@SuppressWarnings("unused")
+		Class<?> c;
+
+		// trigger class load, so sub-classes can register themselves
+		c = DblConstDef.class;
+		c = DblExponentialDef.class;
+		c = DblUniformDef.class;
+		c = DblTriangularDef.class;
+		c = IntUniformDef.class;
+		c = IntEmpDef.class;
+		c = IntConstDef.class;
 	}
 
 }

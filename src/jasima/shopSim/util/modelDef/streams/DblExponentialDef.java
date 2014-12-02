@@ -62,4 +62,8 @@ public class DblExponentialDef extends StreamDef {
 		firePropertyChange(PARAM_MEAN, this.mean, this.mean = mean);
 	}
 
+	static {
+		registerStreamFactory(DblExponentialDef.FACTORY);
+	}
+
 }

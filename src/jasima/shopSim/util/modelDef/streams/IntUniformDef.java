@@ -81,4 +81,8 @@ public class IntUniformDef extends StreamDef {
 				this.maxValue = maxValue);
 	}
 
+	static {
+		registerStreamFactory(IntUniformDef.FACTORY);
+	}
+
 }

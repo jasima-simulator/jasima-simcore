@@ -93,4 +93,8 @@ public class DblTriangularDef extends StreamDef {
 				this.modeValue = modeValue);
 	}
 
+	static {
+		registerStreamFactory(DblTriangularDef.FACTORY);
+	}
+
 }

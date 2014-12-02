@@ -71,4 +71,8 @@ public class DblConstDef extends StreamDef {
 		firePropertyChange(PARAM_VALUES, this.values, this.values = values);
 	}
 
+	static {
+		registerStreamFactory(DblConstDef.FACTORY);
+	}
+
 }
