@@ -5,6 +5,7 @@ import jasima.core.random.continuous.DblTriangular;
 import jasima.core.util.Util;
 
 import java.util.List;
+import java.util.Locale;
 
 public class DblTriangularDef extends StreamDef {
 
@@ -57,7 +58,7 @@ public class DblTriangularDef extends StreamDef {
 
 	@Override
 	public String toString() {
-		return String.format("%s(%f,%f,%f)", FACTORY.getTypeString(),
+		return String.format(Locale.US, "%s(%s,%s,%s)", FACTORY.getTypeString(),
 				getMinValue(), getModeValue(), getMaxValue());
 	}
 
