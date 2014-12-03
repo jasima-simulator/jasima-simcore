@@ -79,11 +79,11 @@ public class ExcelSaver extends ResultSaver {
 	private static final String SHEET_NAME_MAX = "sub-exp. max";
 	private static final String SHEET_NAME_SD = "sub-exp. stdDev";
 	private static final String SHEET_NAME_COUNT = "sub-exp. count";
-	private static final String SHEET_NAME_SUM = "sub-exp. sum";
+//	private static final String SHEET_NAME_SUM = "sub-exp. sum";
 
 	private static final String[] SUB_RES_SHEETS = { SHEET_NAME_MEAN,
-			SHEET_NAME_MIN, SHEET_NAME_MAX, SHEET_NAME_SD, SHEET_NAME_COUNT,
-			SHEET_NAME_SUM };
+			SHEET_NAME_MIN, SHEET_NAME_MAX, SHEET_NAME_SD, SHEET_NAME_COUNT/*,
+			SHEET_NAME_SUM*/ };
 
 	private static final long serialVersionUID = 342144249972918192L;
 
@@ -482,7 +482,7 @@ public class ExcelSaver extends ResultSaver {
 					addCell(SHEET_NAME_MAX, row, col.sortedIndex, s.max());
 					addCell(SHEET_NAME_SD, row, col.sortedIndex, s.stdDev());
 					addCell(SHEET_NAME_COUNT, row, col.sortedIndex, s.numObs());
-					addCell(SHEET_NAME_SUM, row, col.sortedIndex, s.sum());
+//					addCell(SHEET_NAME_SUM, row, col.sortedIndex, s.sum());
 				} else
 					addCell(SHEET_NAME_MEAN, row, col.sortedIndex, cd.value);
 			}
