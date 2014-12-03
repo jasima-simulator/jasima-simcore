@@ -21,6 +21,7 @@
 package jasima.core.util;
 
 import jasima.core.experiment.Experiment;
+import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.statistics.SummaryStat;
 
 import java.io.BufferedInputStream;
@@ -188,6 +189,9 @@ public class ExcelSaver extends ResultSaver {
 		File tmp = new File(getActualResultBaseName() + SER_EXTENSION);
 		File out = new File(getActualResultBaseName() + XLS_EXTENSION);
 
+		e.print(ExpMsgCategory.INFO, "writing results to Excel file '%s'...",
+				out.getName());
+
 		try {
 			convertFile(tmp, out);
 		} catch (IOException ex) {
@@ -196,6 +200,8 @@ public class ExcelSaver extends ResultSaver {
 
 		if (!isKeepDataFile())
 			tmp.delete();
+
+		e.print(ExpMsgCategory.INFO, "done.");
 	}
 
 	@Override
@@ -226,7 +232,7 @@ public class ExcelSaver extends ResultSaver {
 
 			boolean isSubExp = true;
 			try {
-				int row = 2;
+				int row = 1;
 				while (true) {
 					CellData cd = (CellData) is.readObject();
 					if (cd.colIdx == -3) {
@@ -440,21 +446,28 @@ public class ExcelSaver extends ResultSaver {
 		}
 
 		boolean params = true;
-		addCellEachSheet(0, 0, "parameters (only shown on sheet '"
-				+ SHEET_NAME_MEAN + "')");
+		addHeaderCell(SHEET_NAME_MEAN, 0, 0, "parameters:");
 		for (ColumnData cd : sortedColumns) {
 			if (cd.sortedIndex == -1)
 				continue;
 
 			if (!cd.isParamColumn && params) {
-				addCellEachSheet(0, cd.sortedIndex, "results start here");
+				addCellEachSheet(0, cd.sortedIndex + 1, "results:");
 				params = false;
 			}
 
+			// increase sortedIndex so we have additional columns for
+			// "parameters:" and "results:"
+			if (!params) {
+				cd.sortedIndex += 2;
+			} else {
+				cd.sortedIndex++;
+			}
+
 			if (!cd.isParamColumn)
-				addCellEachSheet(1, cd.sortedIndex, cd.name);
+				addCellEachSheet(0, cd.sortedIndex, cd.name);
 			else
-				addHeaderCell(SHEET_NAME_MEAN, 1, cd.sortedIndex, cd.name);
+				addHeaderCell(SHEET_NAME_MEAN, 0, cd.sortedIndex, cd.name);
 		}
 	}
 
