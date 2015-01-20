@@ -21,7 +21,7 @@
 package jasima.core.random.continuous;
 
 import jasima.core.random.RandomFactory;
-import jasima.shopSim.util.modelDef.streams.StreamDef;
+import jasima.shopSim.util.modelDef.streams.DblStreamDef;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -49,8 +49,8 @@ public abstract class DblStream implements Serializable, Cloneable {
 
 	public abstract double nextDbl();
 
-	public StreamDef createStreamDefFromStream() {
-		return StreamDef.createStreamDefFromStream(this);
+	public DblStreamDef createStreamDefFromStream() {
+		return DblStreamDef.createStreamDefFromStream(this);
 	}
 
 	@Override
