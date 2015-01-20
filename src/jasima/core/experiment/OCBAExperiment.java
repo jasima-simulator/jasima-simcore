@@ -385,26 +385,30 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 * determines how many additional runs each design should have for the next
 	 * iteration of simulation.
 	 * 
-	 * @param s_mean
-	 *            [i]: sample mean of design i, i=0,1,..,ND-1
-	 * 
-	 * @param s_var
-	 *            [i]: sample variance of design i, i=0,1,..,ND-1
-	 * 
-	 * @param n
-	 *            [i]: number of simulation replication of design i,
-	 *            i=0,1,..,ND-1
 	 * 
 	 * @param add_budget
-	 *            : the additional simulation budget
-	 * 
-	 * @param type
-	 *            : type of optimization problem. type=1, MIN problem; type=2,
-	 *            MAX problem
+	 *            The total number of additional replications that can be
+	 *            performed.
 	 * 
 	 * @return additional number of simulation replication assigned to design i,
 	 *         i=0,1,..,ND-1
 	 */
+//	 * @param s_mean
+//	 *            [i]: sample mean of design i, i=0,1,..,ND-1
+//	 * 
+//	 * @param s_var
+//	 *            [i]: sample variance of design i, i=0,1,..,ND-1
+//	 * 
+//	 * @param n
+//	 *            [i]: number of simulation replication of design i,
+//	 *            i=0,1,..,ND-1
+//	 * 
+//	 * @param add_budget
+//	 *            : the additional simulation budget
+//	 * 
+//	 * @param type
+//	 *            : type of optimization problem. type=1, MIN problem; type=2,
+//	 *            MAX problem
 	protected int[] ocba(int add_budget) {
 		final int nd = stats.length;
 

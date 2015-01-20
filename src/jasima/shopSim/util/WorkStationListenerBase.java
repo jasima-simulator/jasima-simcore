@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Possible base class for workstation listeners. Delegates all events to
  * seperate methods. Additional events can be processed by overriding
- * {@link #handleOther(WorkStation, WorkStationEvent)}.
+ * {@link #handleOther(WorkStation, WorkStation.WorkStationEvent)}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 

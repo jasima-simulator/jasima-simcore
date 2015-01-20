@@ -63,7 +63,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 *            The factor name. This should be the name of a Java Beans
 	 *            Property of the base experiment, otherwise execution of the
 	 *            experiment will fail. In case {@code value} is a
-	 *            {@link ComplexFactorSetter}, name can be arbitrary.
+	 *            {@link AbstractMultiConfExperiment.ComplexFactorSetter}, name can be arbitrary.
 	 * @param value
 	 *            The value to test for factor {@code name}.
 	 */

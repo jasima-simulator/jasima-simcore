@@ -88,7 +88,7 @@ public class ExcelSaver extends ResultSaver {
 	private static final long serialVersionUID = 342144249972918192L;
 
 	/**
-	 * This main method can be used to manually convert a {@code.jasResBin} file
+	 * This main method can be used to manually convert a {@code .jasResBin} file
 	 * to Excel format.
 	 */
 	public static void main(String[] args) {

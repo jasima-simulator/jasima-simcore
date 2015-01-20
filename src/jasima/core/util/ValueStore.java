@@ -20,7 +20,7 @@ public interface ValueStore {
 	 *            The key name.
 	 * @param value
 	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(String)
+	 * @see #valueStoreGet(Object)
 	 */
 	public void valueStorePut(Object key, Object value);
 

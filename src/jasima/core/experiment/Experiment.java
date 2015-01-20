@@ -312,7 +312,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	/**
 	 * Same as {@link #print(ExpMsgCategory, String, Object...)}, just
-	 * defaulting to the category {@codeINFO}.
+	 * defaulting to the category {@code INFO}.
 	 */
 	public void print(String messageFormat, Object... params) {
 		print(ExpMsgCategory.INFO, messageFormat, params);
@@ -320,8 +320,6 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	/**
 	 * Prints the results of this experiments to {@link System#out}.
-	 * 
-	 * @param res
 	 */
 	public final void printResults(Map<String, Object> res) {
 		ConsolePrinter.printResults(this, res);
@@ -329,8 +327,6 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	/**
 	 * Prints the results of this experiments to {@link System#out}.
-	 * 
-	 * @param res
 	 */
 	public final void printResults() {
 		ConsolePrinter.printResults(this, getResults());
