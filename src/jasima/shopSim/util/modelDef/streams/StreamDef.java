@@ -10,11 +10,15 @@ import java.util.StringTokenizer;
 
 public abstract class StreamDef extends PropertySupport implements Cloneable {
 
+	private static final long serialVersionUID = -3013662965159027666L;
+
 	public interface StreamDefFact {
 
 		public String getTypeString();
 
 		public StreamDef stringToStreamDef(String params, List<String> errors);
+
+		public StreamDef streamToStreamDef(DblStream stream);
 
 	}
 
@@ -50,6 +54,15 @@ public abstract class StreamDef extends PropertySupport implements Cloneable {
 
 		StreamDef res = fact.stringToStreamDef(parms, errors);
 		return res;
+	}
+
+	public static StreamDef createStreamDefFromStream(DblStream stream) {
+		for (StreamDefFact fact : streamFactoryReg.values()) {
+			StreamDef sd = fact.streamToStreamDef(stream);
+			if (sd != null)
+				return sd;
+		}
+		return null;
 	}
 
 	@Override

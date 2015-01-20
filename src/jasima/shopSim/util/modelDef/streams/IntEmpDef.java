@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class IntEmpDef extends StreamDef {
+public class IntEmpDef extends IntStreamDef {
 
 	public static final String PARAM_PROBS = "probs";
 	public static final String PARAM_VALUES = "values";
@@ -60,10 +60,31 @@ public class IntEmpDef extends StreamDef {
 			return res;
 		}
 
+		@Override
+		public StreamDef streamToStreamDef(DblStream stream) {
+			if (stream instanceof IntEmpirical) {
+				IntEmpirical s = (IntEmpirical) stream;
+				IntEmpDef def = new IntEmpDef();
+
+				double[] probs = def.getProbs();
+				if (probs != null)
+					probs = probs.clone();
+				def.setProbs(probs);
+
+				int[] values = def.getValues();
+				if (values != null)
+					values = values.clone();
+				def.setValues(values);
+
+				return def;
+			} else
+				return null;
+		}
+
 	};
 
-	private double[] probs = {};
-	private int[] values = {};
+	private double[] probs = { 1.0 };
+	private int[] values = { 0 };
 
 	public IntEmpDef() {
 		super();

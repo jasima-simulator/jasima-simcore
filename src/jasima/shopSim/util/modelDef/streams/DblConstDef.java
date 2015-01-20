@@ -7,7 +7,7 @@ import jasima.core.util.Util;
 import java.util.Arrays;
 import java.util.List;
 
-public class DblConstDef extends StreamDef {
+public class DblConstDef extends DblStreamDef {
 
 	public static final String PARAM_VALUES = "values";
 	public static final String TYPE_STRING = "const";
@@ -33,13 +33,29 @@ public class DblConstDef extends StreamDef {
 			res.setValues(ll);
 			return res;
 		}
+
+		@Override
+		public StreamDef streamToStreamDef(DblStream stream) {
+			if (stream instanceof DblConst) {
+				DblConst s = (DblConst) stream;
+				DblConstDef def = new DblConstDef();
+
+				double[] values = s.getValues();
+				if (values != null)
+					values = values.clone();
+				def.setValues(values);
+
+				return def;
+			} else
+				return null;
+		}
 	};
 
 	public DblConstDef() {
 		super();
 	}
 
-	private double[] values;
+	private double[] values = { 1.0, 2.0, 3.0 };
 
 	@Override
 	public String toString() {
@@ -60,7 +76,7 @@ public class DblConstDef extends StreamDef {
 
 	@Override
 	public DblStream createStream() {
-		return new DblConst(getValues().clone());
+		return new DblConst(getValues() != null ? getValues().clone() : null);
 	}
 
 	public double[] getValues() {

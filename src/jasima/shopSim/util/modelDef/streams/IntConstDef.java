@@ -1,5 +1,6 @@
 package jasima.shopSim.util.modelDef.streams;
 
+import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntConst;
 import jasima.core.random.discrete.IntStream;
 import jasima.core.util.Util;
@@ -7,7 +8,7 @@ import jasima.core.util.Util;
 import java.util.Arrays;
 import java.util.List;
 
-public class IntConstDef extends StreamDef {
+public class IntConstDef extends IntStreamDef {
 
 	public static final String PARAM_VALUES = "values";
 	public static final String TYPE_STRING = "intConst";
@@ -33,13 +34,29 @@ public class IntConstDef extends StreamDef {
 			res.setValues(ll);
 			return res;
 		}
+
+		@Override
+		public StreamDef streamToStreamDef(DblStream stream) {
+			if (stream instanceof IntConst) {
+				IntConst s = (IntConst) stream;
+				IntConstDef def = new IntConstDef();
+
+				int[] values = s.getValues();
+				if (values != null)
+					values = values.clone();
+				def.setValues(values);
+
+				return def;
+			} else
+				return null;
+		}
 	};
 
 	public IntConstDef() {
 		super();
 	}
 
-	private int[] values;
+	private int[] values = { 1, 2, 3 };
 
 	@Override
 	public String toString() {
@@ -50,7 +67,7 @@ public class IntConstDef extends StreamDef {
 
 	@Override
 	public IntStream createStream() {
-		return new IntConst(getValues().clone());
+		return new IntConst(getValues() != null ? getValues().clone() : null);
 	}
 
 	@Override

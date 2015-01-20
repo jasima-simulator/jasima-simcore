@@ -6,7 +6,7 @@ import jasima.core.util.Util;
 
 import java.util.List;
 
-public class DblUniformDef extends StreamDef {
+public class DblUniformDef extends DblStreamDef {
 
 	public static final String PARAM_MAX_VALUE = "maxValue";
 	public static final String PARAM_MIN_VALUE = "minValue";
@@ -42,6 +42,20 @@ public class DblUniformDef extends StreamDef {
 			return res;
 		}
 
+		@Override
+		public StreamDef streamToStreamDef(DblStream stream) {
+			if (stream instanceof DblUniformRange) {
+				DblUniformRange s = (DblUniformRange) stream;
+				DblUniformDef def = new DblUniformDef();
+
+				def.setMinValue(s.min());
+				def.setMaxValue(s.max());
+
+				return def;
+			} else
+				return null;
+		}
+
 	};
 
 	private double minValue = 0.0;
@@ -53,10 +67,8 @@ public class DblUniformDef extends StreamDef {
 
 	@Override
 	public String toString() {
-		String params = Double.toString(getMinValue()) + ","
-				+ Double.toString(getMaxValue());
-
-		return String.format("%s(%s)", FACTORY.getTypeString(), params);
+		return String.format("%s(%s,%s)", FACTORY.getTypeString(),
+				getMinValue(), getMaxValue());
 	}
 
 	@Override

@@ -21,6 +21,7 @@
 package jasima.core.random.continuous;
 
 import jasima.core.random.RandomFactory;
+import jasima.shopSim.util.modelDef.streams.StreamDef;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -48,6 +49,10 @@ public abstract class DblStream implements Serializable, Cloneable {
 
 	public abstract double nextDbl();
 
+	public StreamDef createStreamDefFromStream() {
+		return StreamDef.createStreamDefFromStream(this);
+	}
+
 	@Override
 	public DblStream clone() throws CloneNotSupportedException {
 		if (rndGen != null)
@@ -60,6 +65,10 @@ public abstract class DblStream implements Serializable, Cloneable {
 		return rndGen;
 	}
 
+	/**
+	 * Sets the random number generator to be used if this stream has a random
+	 * component.
+	 */
 	public void setRndGen(Random rndGen) {
 		this.rndGen = rndGen;
 	}

@@ -72,8 +72,8 @@ public class IntConst extends IntStream {
 
 	public void setValues(int... vs) {
 		this.values = vs;
-		min = Util.min(vs);
-		max = Util.max(vs);
+		min = vs.length==0 ? 0: Util.min(vs);
+		max = vs.length==0 ? 0: Util.max(vs);
 	}
 
 	@Override

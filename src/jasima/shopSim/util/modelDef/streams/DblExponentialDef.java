@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
-public class DblExponentialDef extends StreamDef {
+public class DblExponentialDef extends DblStreamDef {
 
 	public static final String PARAM_MEAN = "mean";
 	public static final String TYPE_STRING = "dblExp";
@@ -35,6 +35,22 @@ public class DblExponentialDef extends StreamDef {
 			return res;
 		}
 
+		@Override
+		public StreamDef streamToStreamDef(DblStream stream) {
+			if (stream instanceof DblDistribution) {
+				DblDistribution s = (DblDistribution) stream;
+				if (s.getDistribution() instanceof ExponentialDistribution) {
+					ExponentialDistribution dist = (ExponentialDistribution) s
+							.getDistribution();
+					DblExponentialDef def = new DblExponentialDef();
+					def.setMean(dist.getMean());
+					return def;
+				}
+			}
+
+			return null;
+		}
+
 	};
 
 	private double mean = 1.0;
@@ -45,8 +61,7 @@ public class DblExponentialDef extends StreamDef {
 
 	@Override
 	public String toString() {
-		String params = Double.toString(getMean());
-		return String.format("%s(%s)", FACTORY.getTypeString(), params);
+		return String.format("%s(%s)", FACTORY.getTypeString(), getMean());
 	}
 
 	@Override

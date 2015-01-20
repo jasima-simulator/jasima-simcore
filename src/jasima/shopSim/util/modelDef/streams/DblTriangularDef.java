@@ -7,7 +7,7 @@ import jasima.core.util.Util;
 import java.util.List;
 import java.util.Locale;
 
-public class DblTriangularDef extends StreamDef {
+public class DblTriangularDef extends DblStreamDef {
 
 	public static final String PARAM_MAX_VALUE = "maxValue";
 	public static final String PARAM_MODE_VALUE = "modeValue";
@@ -46,6 +46,21 @@ public class DblTriangularDef extends StreamDef {
 			return res;
 		}
 
+		@Override
+		public StreamDef streamToStreamDef(DblStream stream) {
+			if (stream instanceof DblTriangular) {
+				DblTriangular s = (DblTriangular) stream;
+				DblTriangularDef def = new DblTriangularDef();
+
+				def.setMinValue(s.getMin());
+				def.setModeValue(s.getMode());
+				def.setMaxValue(s.getMax());
+
+				return def;
+			} else
+				return null;
+		}
+
 	};
 
 	private double minValue = 0.0;
@@ -58,8 +73,9 @@ public class DblTriangularDef extends StreamDef {
 
 	@Override
 	public String toString() {
-		return String.format(Locale.US, "%s(%s,%s,%s)", FACTORY.getTypeString(),
-				getMinValue(), getModeValue(), getMaxValue());
+		return String.format(Locale.US, "%s(%s,%s,%s)",
+				FACTORY.getTypeString(), getMinValue(), getModeValue(),
+				getMaxValue());
 	}
 
 	@Override
