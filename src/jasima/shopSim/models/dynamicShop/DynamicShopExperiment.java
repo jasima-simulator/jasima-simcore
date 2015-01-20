@@ -38,6 +38,7 @@ import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ShopListenerBase;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
@@ -57,33 +58,21 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  */
 public class DynamicShopExperiment extends JobShopExperiment {
 
-	private static final long serialVersionUID = -7289579178397939550L;
+	private static final long serialVersionUID = -7289579158397939550L;
 
 	public enum Scenario {
 		JOB_SHOP, FLOW_SHOP
 	};
 
-	private static final double DEF_UTIL = 0.85d;
-	private static final double DEF_DUE_DATE = 4.0d;
-	private static final int DEF_MACHINES = 10;
-	private static final int DEF_OPS_MIN = -1;
-	private static final int DEF_OPS_MAX = -1;
-	private static final Integer DEF_PROC_MIN = 1;
-	private static final Integer DEF_PROC_MAX = 49;
-
 	private static final double MINUTES_PER_DAY = 24 * 60;
 
-	private double utilLevel = DEF_UTIL;
-	private double dueDateFactor = DEF_DUE_DATE;
-	private int numMachines = DEF_MACHINES;
+	private double utilLevel = 0.85d;
+	private DblStream dueDateFactor = new DblConst(4.0d);
+	private int numMachines = 10;
 	private Scenario scenario = Scenario.JOB_SHOP;
 	private DblStream weights = null;
-
-	private Pair<Integer, Integer> numOps = new Pair<Integer, Integer>(
-			DEF_OPS_MIN, DEF_OPS_MAX);
-	private Pair<Integer, Integer> opProcTime = new Pair<Integer, Integer>(
-			DEF_PROC_MIN, DEF_PROC_MAX);
-
+	private Pair<Integer, Integer> numOps = new Pair<Integer, Integer>(-1, -1);
+	private DblStream procTimes = new IntUniformRange(1, 49);
 	private int stopArrivalsAfterNumJobs = 2500;
 
 	protected JobSource src;
@@ -100,17 +89,14 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		if (getScenario() == null)
 			throw new IllegalArgumentException(String.format(
 					"No scenario specified, should be one of %s.",
-							Arrays.toString(Scenario.values())));
+					Arrays.toString(Scenario.values())));
 
 		if (getNumOpsMin() > getNumOpsMax())
 			throw new IllegalArgumentException(String.format(
 					"invalid range for numOps: [%d; %d]", getNumOpsMin(),
 					getNumOpsMax()));
 
-		if (getOpProcTimeMin() > getOpProcTimeMax())
-			throw new IllegalArgumentException(String.format(
-					"invalid range for opProcTime: [%d; %d]",
-					getOpProcTimeMin(), getOpProcTimeMax()));
+		Objects.requireNonNull(procTimes);
 
 		@SuppressWarnings("serial")
 		ShopListenerBase stopSrc = new ShopListenerBase() {
@@ -119,6 +105,8 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 			@Override
 			protected void jobFinished(JobShop shop, Job j) {
+				// stop arrivals after the first, e.g., 2500, jobs were
+				// completed
 				if (j.getJobNum() < maxJob) {
 					if (--numJobs == 0) {
 						src.stopArrivals = true;
@@ -206,13 +194,17 @@ public class DynamicShopExperiment extends JobShopExperiment {
 				getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines());
 		src.setNumOps(numOps);
 
-		src.setProcTimes(new IntUniformRange("procTimesStream",
-				getOpProcTimeMin(), getOpProcTimeMax()));
+		// src.setProcTimes(new IntUniformRange("procTimesStream",
+		// getOpProcTimeMin(), getOpProcTimeMax()));
+
+		DblStream procTimes2 = Util.cloneIfPossible(getProcTimes());
+		procTimes2.setName("procTimesStream");
+		src.setProcTimes(procTimes2);
 
 		src.setMachIdx(new IntUniformRange("machIdxStream", 0,
 				getNumMachines() - 1));
 
-		src.setDueDateFactors(new DblConst(getDueDateFactor()));
+		src.setDueDateFactors(Util.cloneIfPossible(getDueDateFactor()));
 
 		if (getWeights() != null)
 			try {
@@ -237,7 +229,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		int opsMax = getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines();
 
 		double meanOps = 0.5d * (opsMax + opsMin);
-		double meanOpProc = 0.5d * (getOpProcTimeMax() + getOpProcTimeMin());
+		double meanOpProc = getProcTimes().getNumericalMean();
 
 		double jobsPerDay = getUtilLevel() * getNumMachines() * MINUTES_PER_DAY
 				/ (meanOps * meanOpProc);
@@ -248,6 +240,11 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		return utilLevel;
 	}
 
+	/**
+	 * Sets the desired utilization level for all machines. Machine utilization
+	 * approaches this value in the long term; short term results might differ
+	 * due to random influences in the arrival process.
+	 */
 	public void setUtilLevel(double utilLevel) {
 		if (utilLevel < 0.0d || utilLevel > 1.0d)
 			throw new IllegalArgumentException("" + utilLevel);
@@ -255,11 +252,18 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		this.utilLevel = utilLevel;
 	}
 
-	public double getDueDateFactor() {
+	public DblStream getDueDateFactor() {
 		return dueDateFactor;
 	}
 
-	public void setDueDateFactor(double dueDateFactor) {
+	/**
+	 * Sets the due date tightness of jobs by specifying a due date factor. The
+	 * {@link DblStream} is used to calculate a job's due date as a multiple of
+	 * a job's processing time. If for instance a due date factor of 2 is
+	 * returned for a certain job then the due date is set to the job's release
+	 * date plus twice the raw processing time of all operations of this job.
+	 */
+	public void setDueDateFactor(DblStream dueDateFactor) {
 		this.dueDateFactor = dueDateFactor;
 	}
 
@@ -267,6 +271,9 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		return numMachines;
 	}
 
+	/**
+	 * Sets the number of machines on the shop floor.
+	 */
 	public void setNumMachines(int numMachines) {
 		if (numMachines < 1)
 			throw new IllegalArgumentException("" + numMachines);
@@ -298,32 +305,6 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		if (min < 0 || (max < min))
 			throw new IllegalArgumentException("[" + min + ";" + max + "]");
 		numOps = new Pair<Integer, Integer>(min, max);
-	}
-
-	/** Returns the minimum processing time of an operation. */
-	public int getOpProcTimeMin() {
-		return opProcTime.a;
-	}
-
-	/** Sets the minimum processing time of an operation. */
-	public void setOpProcTimeMin(int min) {
-		opProcTime = new Pair<Integer, Integer>(min, opProcTime.b);
-	}
-
-	/** Returns the maximum processing time of an operation. */
-	public int getOpProcTimeMax() {
-		return opProcTime.b;
-	}
-
-	/** Sets the maximum processing time of an operation. */
-	public void setOpProcTimeMax(int max) {
-		opProcTime = new Pair<Integer, Integer>(opProcTime.a, max);
-	}
-
-	public void setOpProcTime(int min, int max) {
-		if (min < 0 || (max < min))
-			throw new IllegalArgumentException("[" + min + ";" + max + "]");
-		opProcTime = new Pair<Integer, Integer>(min, max);
 	}
 
 	/**
@@ -370,6 +351,17 @@ public class DynamicShopExperiment extends JobShopExperiment {
 	 */
 	public void setWeights(DblStream weights) {
 		this.weights = weights;
+	}
+
+	public DblStream getProcTimes() {
+		return procTimes;
+	}
+
+	/**
+	 * Sets the processing times for each operation.
+	 */
+	public void setProcTimes(DblStream procTimes) {
+		this.procTimes = procTimes;
 	}
 
 }

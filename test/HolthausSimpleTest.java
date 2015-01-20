@@ -21,6 +21,7 @@
 import static org.junit.Assert.assertEquals;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
+import jasima.core.random.continuous.DblConst;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.statistics.SummaryStat;
@@ -45,7 +46,8 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: HolthausSimpleTest.java 207 2014-11-18 19:09:11Z
+ *          THildebrandt@gmail.com $
  */
 public class HolthausSimpleTest {
 
@@ -60,14 +62,14 @@ public class HolthausSimpleTest {
 	public void check1() throws Exception {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(8346);
-		
+
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
-		
+
 		e.addShopListener(new ExtendedJobStatCollector());
-		
+
 		PR sr = new FCFS();
 		PR sr2 = new IgnoreFutureJobs(sr);
 		// PR<Object, Job> sr2 = new InversRule(new InversRule(sr));
@@ -80,9 +82,9 @@ public class HolthausSimpleTest {
 
 		e.setNumMachines(10);
 		e.setNumOps(10, 10);
-		e.setDueDateFactor(4.0);
+		e.setDueDateFactor(new DblConst(4.0));
 		e.setUtilLevel(0.95d);
-		e.setStopArrivalsAfterNumJobs(500+20*2000);
+		e.setStopArrivalsAfterNumJobs(500 + 20 * 2000);
 		e.setScenario(Scenario.JOB_SHOP);
 
 		BatchStatCollector batchStatCollector = new BatchStatCollector();
