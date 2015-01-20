@@ -61,7 +61,7 @@ public class IntEmpDef extends IntStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof IntEmpirical) {
 				IntEmpirical s = (IntEmpirical) stream;
 				IntEmpDef def = new IntEmpDef();

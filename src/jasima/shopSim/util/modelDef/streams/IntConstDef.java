@@ -36,7 +36,7 @@ public class IntConstDef extends IntStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof IntConst) {
 				IntConst s = (IntConst) stream;
 				IntConstDef def = new IntConstDef();

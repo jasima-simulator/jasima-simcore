@@ -35,7 +35,7 @@ public class DblConstDef extends DblStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof DblConst) {
 				DblConst s = (DblConst) stream;
 				DblConstDef def = new DblConstDef();

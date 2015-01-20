@@ -44,7 +44,7 @@ public class IntUniformDef extends IntStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof IntUniformRange) {
 				IntUniformRange s = (IntUniformRange) stream;
 				IntUniformDef def = new IntUniformDef();

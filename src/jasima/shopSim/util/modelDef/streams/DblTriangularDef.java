@@ -47,7 +47,7 @@ public class DblTriangularDef extends DblStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof DblTriangular) {
 				DblTriangular s = (DblTriangular) stream;
 				DblTriangularDef def = new DblTriangularDef();

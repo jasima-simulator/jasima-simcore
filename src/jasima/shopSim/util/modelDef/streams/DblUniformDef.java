@@ -43,7 +43,7 @@ public class DblUniformDef extends DblStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof DblUniformRange) {
 				DblUniformRange s = (DblUniformRange) stream;
 				DblUniformDef def = new DblUniformDef();

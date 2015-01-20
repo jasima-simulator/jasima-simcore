@@ -36,7 +36,7 @@ public class DblExponentialDef extends DblStreamDef {
 		}
 
 		@Override
-		public StreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblStream stream) {
 			if (stream instanceof DblDistribution) {
 				DblDistribution s = (DblDistribution) stream;
 				if (s.getDistribution() instanceof ExponentialDistribution) {

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public abstract class StreamDef extends PropertySupport implements Cloneable {
+public abstract class DblStreamDef extends PropertySupport implements Cloneable {
 
 	private static final long serialVersionUID = -3013662965159027666L;
 
@@ -16,19 +16,19 @@ public abstract class StreamDef extends PropertySupport implements Cloneable {
 
 		public String getTypeString();
 
-		public StreamDef stringToStreamDef(String params, List<String> errors);
+		public DblStreamDef stringToStreamDef(String params, List<String> errors);
 
-		public StreamDef streamToStreamDef(DblStream stream);
+		public DblStreamDef streamToStreamDef(DblStream stream);
 
 	}
 
-	public StreamDef() {
+	public DblStreamDef() {
 		super();
 	}
 
 	public abstract DblStream createStream();
 
-	public static StreamDef parseDblStream(String s, List<String> errors) {
+	public static DblStreamDef parseDblStream(String s, List<String> errors) {
 		StringTokenizer sst = new StringTokenizer(s, "()", false);
 		ArrayList<String> ss = new ArrayList<String>();
 		while (sst.hasMoreTokens()) {
@@ -52,13 +52,13 @@ public abstract class StreamDef extends PropertySupport implements Cloneable {
 			return null;
 		}
 
-		StreamDef res = fact.stringToStreamDef(parms, errors);
+		DblStreamDef res = fact.stringToStreamDef(parms, errors);
 		return res;
 	}
 
-	public static StreamDef createStreamDefFromStream(DblStream stream) {
+	public static DblStreamDef createStreamDefFromStream(DblStream stream) {
 		for (StreamDefFact fact : streamFactoryReg.values()) {
-			StreamDef sd = fact.streamToStreamDef(stream);
+			DblStreamDef sd = fact.streamToStreamDef(stream);
 			if (sd != null)
 				return sd;
 		}
@@ -66,8 +66,8 @@ public abstract class StreamDef extends PropertySupport implements Cloneable {
 	}
 
 	@Override
-	public StreamDef clone() throws CloneNotSupportedException {
-		return (StreamDef) super.clone();
+	public DblStreamDef clone() throws CloneNotSupportedException {
+		return (DblStreamDef) super.clone();
 	}
 
 	private static HashMap<String, StreamDefFact> streamFactoryReg;
