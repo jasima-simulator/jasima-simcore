@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import java.util.Arrays;
 
 /**
@@ -28,13 +30,15 @@ import java.util.Arrays;
  * again with the first number.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class DblConst extends DblStream {
 
 	private static final long serialVersionUID = -2122011743105354569L;
 
 	private double[] values;
+	private Double mean;
 
 	private int next;
 
@@ -52,7 +56,21 @@ public class DblConst extends DblStream {
 	}
 
 	public void setValues(double... vs) {
+		this.mean = null;
 		this.values = vs;
+	}
+
+	@Override
+	public double getNumericalMean() {
+		// lazy initialization of "mean" upon first call
+		if (mean == null) {
+			if (values == null || values.length == 0)
+				mean = Double.NaN;
+			else
+				mean = Util.sum(values) / values.length;
+		}
+		
+		return mean;
 	}
 
 	@Override

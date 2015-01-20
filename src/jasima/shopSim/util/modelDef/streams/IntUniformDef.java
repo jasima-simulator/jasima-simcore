@@ -49,8 +49,8 @@ public class IntUniformDef extends IntStreamDef {
 				IntUniformRange s = (IntUniformRange) stream;
 				IntUniformDef def = new IntUniformDef();
 
-				def.setMinValue(s.min());
-				def.setMaxValue(s.max());
+				def.setMinValue(s.getMin());
+				def.setMaxValue(s.getMax());
 
 				return def;
 			} else

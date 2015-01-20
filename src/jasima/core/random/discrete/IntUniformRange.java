@@ -27,11 +27,12 @@ import java.util.Random;
  * both min and max).
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class IntUniformRange extends IntStream {
 
-	private static final long serialVersionUID = -7338352768070870971L;
+	private static final long serialVersionUID = -7138352768070870971L;
 
 	private int min, max, range;
 
@@ -54,13 +55,11 @@ public class IntUniformRange extends IntStream {
 		setName(name);
 	}
 
-	@Override
-	public int min() {
+	public int getMin() {
 		return min;
 	}
 
-	@Override
-	public int max() {
+	public int getMax() {
 		return max;
 	}
 
@@ -80,6 +79,11 @@ public class IntUniformRange extends IntStream {
 	@Override
 	public int nextInt() {
 		return min + rndGen.nextInt(range + 1);
+	}
+
+	@Override
+	public double getNumericalMean() {
+		return (((long) min) + max) / 2.0;
 	}
 
 	@Override

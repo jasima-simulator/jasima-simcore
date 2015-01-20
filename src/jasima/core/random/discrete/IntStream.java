@@ -29,7 +29,8 @@ import jasima.core.random.continuous.DblStream;
  * an abstract base class.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public abstract class IntStream extends DblStream {
 
@@ -39,14 +40,10 @@ public abstract class IntStream extends DblStream {
 		super();
 	}
 
-	public abstract int min();
-
-	public abstract int max();
-
 	public abstract int nextInt();
 
 	@Override
-	public double nextDbl() {
+	public final double nextDbl() {
 		return nextInt();
 	}
 

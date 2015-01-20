@@ -31,11 +31,12 @@ import java.util.Random;
  * , and can be arbitrary positive numbers as long as they sum up to 1.0.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class IntEmpirical extends IntStream {
 
-	private static final long serialVersionUID = -8591371451592742035L;
+	private static final long serialVersionUID = -8591371451392742035L;
 
 	public IntEmpirical() {
 		this(null, null, null, null);
@@ -74,6 +75,7 @@ public class IntEmpirical extends IntStream {
 
 	private double[] probs = null;
 	private int[] vals = null;
+	private Double mean = null;
 
 	public double[] getProbabilities() {
 		return probs;
@@ -93,8 +95,13 @@ public class IntEmpirical extends IntStream {
 
 		this.probs = probs;
 		this.vals = values;
+		this.mean = null;
 	}
 
+	/**
+	 * Sets only probabilities. In this case {@link #nextInt()} will produce
+	 * integers in the range {@code [0, probs.length-1]}.
+	 */
 	public void setProbabilities(double[] probs) {
 		setProbabilities(probs, null);
 	}
@@ -114,13 +121,20 @@ public class IntEmpirical extends IntStream {
 	}
 
 	@Override
-	public int max() {
-		return vals != null ? Util.max(vals) : probs.length - 1;
-	}
+	public double getNumericalMean() {
+		if (mean == null) {
+			if (probs == null || probs.length == 0) {
+				mean = Double.NaN;
+			} else {
+				mean = 0.0;
+				for (int i = 0; i < probs.length; i++) {
+					int value = vals == null ? i : vals[i];
+					mean += probs[i] * value;
+				}
+			}
+		}
 
-	@Override
-	public int min() {
-		return vals != null ? Util.min(vals) : 0;
+		return mean;
 	}
 
 	@Override

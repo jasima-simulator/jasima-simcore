@@ -26,7 +26,8 @@ import org.apache.commons.math3.distribution.RealDistribution;
 
 /**
  * Returns an arbitrarily distributed random number stream. Its distribution is
- * determined by an arbitrary {@link RealDistribution}.
+ * determined by an arbitrary {@link RealDistribution} object from the Apache
+ * Commons Math library.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
@@ -76,6 +77,15 @@ public class DblDistribution extends DblStream {
 	@Override
 	public double nextDbl() {
 		return distribution.inverseCumulativeProbability(rndGen.nextDouble());
+	}
+
+	@Override
+	public double getNumericalMean() {
+		if (distribution == null) {
+			return Double.NaN;
+		} else {
+			return distribution.getNumericalMean();
+		}
 	}
 
 	@Override

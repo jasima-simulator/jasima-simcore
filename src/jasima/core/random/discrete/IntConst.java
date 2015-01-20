@@ -35,27 +35,16 @@ import java.util.Arrays;
  */
 public class IntConst extends IntStream {
 
-	private static final long serialVersionUID = -3297743869223820992L;
+	private static final long serialVersionUID = -3297743869123820992L;
 
 	private int[] values;
+	private Double mean;
 
 	private int next;
-
-	private int min, max;
 
 	public IntConst(int... vs) {
 		super();
 		setValues(vs);
-	}
-
-	@Override
-	public int min() {
-		return min;
-	}
-
-	@Override
-	public int max() {
-		return max;
 	}
 
 	@Override
@@ -72,8 +61,20 @@ public class IntConst extends IntStream {
 
 	public void setValues(int... vs) {
 		this.values = vs;
-		min = vs.length==0 ? 0: Util.min(vs);
-		max = vs.length==0 ? 0: Util.max(vs);
+		this.mean = null;
+	}
+
+	@Override
+	public double getNumericalMean() {
+		// lazy initialization of "mean" upon first call
+		if (mean == null) {
+			if (values == null || values.length == 0)
+				mean = Double.NaN;
+			else
+				mean = ((double) Util.sum(values)) / values.length;
+		}
+
+		return mean;
 	}
 
 	@Override

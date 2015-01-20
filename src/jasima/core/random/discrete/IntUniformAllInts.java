@@ -28,7 +28,8 @@ import java.util.Random;
  * {@link java.util.Random#nextInt()}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class IntUniformAllInts extends IntStream {
 
@@ -53,18 +54,13 @@ public class IntUniformAllInts extends IntStream {
 	}
 
 	@Override
-	public int max() {
-		return Integer.MAX_VALUE;
-	}
-
-	@Override
-	public int min() {
-		return Integer.MIN_VALUE;
-	}
-
-	@Override
 	public int nextInt() {
 		return rndGen.nextInt();
+	}
+
+	@Override
+	public double getNumericalMean() {
+		return (((long) Integer.MAX_VALUE) + Integer.MIN_VALUE) / 2.0;
 	}
 
 	@Override

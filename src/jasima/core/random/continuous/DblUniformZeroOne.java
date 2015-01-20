@@ -27,7 +27,8 @@ import java.util.Random;
  * delegates to the underlying method {@link java.util.Random#nextDouble()}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class DblUniformZeroOne extends DblStream {
 
@@ -54,6 +55,11 @@ public class DblUniformZeroOne extends DblStream {
 	@Override
 	public double nextDbl() {
 		return rndGen.nextDouble();
+	}
+
+	@Override
+	public double getNumericalMean() {
+		return 0.5;
 	}
 
 	@Override

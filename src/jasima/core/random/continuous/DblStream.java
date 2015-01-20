@@ -31,7 +31,8 @@ import java.util.Random;
  * random number generator.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id: DblStream.java 512 2015-01-20 16:52:46Z THildebrandt@gmail.com$"
  */
 public abstract class DblStream implements Serializable, Cloneable {
 
@@ -47,12 +48,30 @@ public abstract class DblStream implements Serializable, Cloneable {
 	public void init() {
 	}
 
+	/**
+	 * Returns the next number in this number stream.
+	 */
 	public abstract double nextDbl();
 
-	public DblStreamDef createStreamDefFromStream() {
+	/**
+	 * Returns the arithmetic mean of the values returned by {@link #nextDbl()}.
+	 */
+	public abstract double getNumericalMean();
+
+	/**
+	 * Creates a {@link DblStreamDef} object from this stream. This method only
+	 * delegates to {@link DblStreamDef#createStreamDefFromStream(DblStream)}
+	 * and therefore is final.
+	 */
+	public final DblStreamDef createStreamDefFromStream() {
 		return DblStreamDef.createStreamDefFromStream(this);
 	}
 
+	/**
+	 * Clones the current number stream. This method fails with a
+	 * {@link CloneNotSupportedException} if there is a random number generator
+	 * associated with this stream.
+	 */
 	@Override
 	public DblStream clone() throws CloneNotSupportedException {
 		if (rndGen != null)
@@ -61,6 +80,10 @@ public abstract class DblStream implements Serializable, Cloneable {
 		return (DblStream) super.clone();
 	}
 
+	/**
+	 * Returns the random number generator currently associated with this
+	 * stream.
+	 */
 	public Random getRndGen() {
 		return rndGen;
 	}
@@ -73,6 +96,9 @@ public abstract class DblStream implements Serializable, Cloneable {
 		this.rndGen = rndGen;
 	}
 
+	/**
+	 * Returns the stream's name.
+	 */
 	public String getName() {
 		return name;
 	}

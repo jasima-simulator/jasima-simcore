@@ -23,7 +23,7 @@ package jasima.core.simulation.arrivalprocess;
 import jasima.core.random.continuous.DblStream;
 
 /**
- * Base class for arrival processes.
+ * Base class for arrival processes, i.e., calculating absolute arrival times.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
  * @version 
@@ -46,6 +46,15 @@ public abstract class ArrivalProcess extends DblStream {
 	}
 
 	public abstract double nextDbl();
+
+	/**
+	 * A mean value for an arrival process is usually undefined, therefore this
+	 * method throws an {@link UnsupportedOperationException}.
+	 */
+	@Override
+	public double getNumericalMean() {
+		throw new UnsupportedOperationException();
+	}
 
 	public double getInitialState() {
 		return initialState;
