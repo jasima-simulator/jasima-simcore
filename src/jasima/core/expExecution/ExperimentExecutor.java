@@ -30,9 +30,10 @@ import java.util.Collection;
  * Abstract Factory pattern, therefore ExperimentExecutor.getExecutor() has to
  * be called to create executor instances. This call is delegated to a
  * non-abstract implementation of ExperimentExecutor. Which ExperimentExecutor
- * to use is determined by a system property "jasima.core.ExperimentExecutor".
- * As a default, a {@link ThreadPoolExecutor} with a number of threads equal to
- * the number of available processors is used.
+ * to use is determined by a system property "
+ * {@code jasima.core.expExecution.ExperimentExecutor}". As a default, a
+ * {@link ForkJoinPoolExecutor} is used (with a maximum number of threads equal
+ * to the number of available processors).
  * 
  * @author Torsten Hildebrandt
  * @version 

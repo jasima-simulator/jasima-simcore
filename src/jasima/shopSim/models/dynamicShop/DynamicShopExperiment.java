@@ -91,11 +91,6 @@ public class DynamicShopExperiment extends JobShopExperiment {
 					"No scenario specified, should be one of %s.",
 					Arrays.toString(Scenario.values())));
 
-		if (getNumOpsMin() > getNumOpsMax())
-			throw new IllegalArgumentException(String.format(
-					"invalid range for numOps: [%d; %d]", getNumOpsMin(),
-					getNumOpsMax()));
-
 		Objects.requireNonNull(procTimes);
 
 		@SuppressWarnings("serial")
@@ -189,13 +184,19 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		arrivals.setName("arrivalStream");
 		src.setArrivalProcess(arrivals);
 
-		IntUniformRange numOps = new IntUniformRange("numOpsStream",
-				getNumOpsMin() > 0 ? getNumOpsMin() : getNumMachines(),
-				getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines());
+		int min = getNumOpsMin() > 0 ? getNumOpsMin() : getNumMachines();
+		int max = getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines();
+		if (min > max)
+			throw new IllegalArgumentException(String.format(
+					"invalid range for numOps: [%d; %d]", getNumOpsMin(),
+					getNumOpsMax()));
+		if (max > getNumMachines())
+			throw new IllegalArgumentException(
+					String.format(
+							"Can't have more operations (%d) than there are machines (%d).",
+							max, getNumMachines()));
+		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);
 		src.setNumOps(numOps);
-
-		// src.setProcTimes(new IntUniformRange("procTimesStream",
-		// getOpProcTimeMin(), getOpProcTimeMax()));
 
 		DblStream procTimes2 = Util.cloneIfPossible(getProcTimes());
 		procTimes2.setName("procTimesStream");
@@ -286,12 +287,20 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		return numOps.a;
 	}
 
-	/** Sets the minimum number of operations of a job. */
+	/**
+	 * Sets the minimum number of operations of a job. Setting this to a value
+	 * {@code <=0} uses the number of machines, i.e., each job has to visit each
+	 * machine exactly once.
+	 */
 	public void setNumOpsMin(int min) {
 		numOps = new Pair<Integer, Integer>(min, numOps.b);
 	}
 
-	/** Returns the maximum number of operations of a job. */
+	/**
+	 * Returns the maximum number of operations of a job. Setting this to a
+	 * value {@code <=0} uses the number of machines, i.e., a job with the
+	 * maximum number of operations has to visit each machine exactly once.
+	 */
 	public int getNumOpsMax() {
 		return numOps.b;
 	}
@@ -358,7 +367,8 @@ public class DynamicShopExperiment extends JobShopExperiment {
 	}
 
 	/**
-	 * Sets the processing times for each operation.
+	 * Determines the processing times for each operation. This is a mandatory
+	 * setting.
 	 */
 	public void setProcTimes(DblStream procTimes) {
 		this.procTimes = procTimes;

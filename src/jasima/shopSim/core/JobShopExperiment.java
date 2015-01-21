@@ -50,10 +50,10 @@ public abstract class JobShopExperiment extends Experiment {
 	private static final long serialVersionUID = 2660935009898060395L;
 
 	// experiment parameters
-	private double simulationLength = Double.NaN;
-	private int maxJobsInSystem = -1;
-	private int stopAfterNumJobs = -1;
-	private Boolean enableLookAhead = null;
+	private double simulationLength = 0.0d;
+	private int maxJobsInSystem = 0;
+	private int stopAfterNumJobs = 0;
+	private boolean enableLookAhead = false;
 
 	private PR sequencingRule;
 	private PR batchSequencingRule;
@@ -80,14 +80,10 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	protected void configureShop() {
-		if (getMaxJobsInSystem() >= 0)
-			shop.setMaxJobsInSystem(getMaxJobsInSystem());
-		if (getStopAfterNumJobs() >= 0)
-			shop.setStopAfterNumJobs(getStopAfterNumJobs());
-		if (!Double.isNaN(getSimulationLength()))
-			shop.setSimulationLength(getSimulationLength());
-		if (enableLookAhead != null)
-			shop.setEnableLookAhead(isEnableLookAhead());
+		shop.setMaxJobsInSystem(getMaxJobsInSystem());
+		shop.setStopAfterNumJobs(getStopAfterNumJobs());
+		shop.setSimulationLength(getSimulationLength());
+		shop.setEnableLookAhead(isEnableLookAhead());
 	}
 
 	protected void postConfigShop() {
@@ -296,20 +292,21 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	/**
-	 * Enable/disable the lookahead mechanism of this shop. If enabled
-	 * dispatching rules can select jobs arriving in the near future.
+	 * Enable/disable the lookahead mechanism of this shop. If enabled,
+	 * dispatching rules can select jobs arriving in the near future (i.e., jobs
+	 * already processed on an immediate predecessor machine).
 	 */
-	public void setEnableLookAhead(Boolean enableLookAhead) {
+	public void setEnableLookAhead(boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
 	}
 
-	public Boolean isEnableLookAhead() {
+	public boolean isEnableLookAhead() {
 		return enableLookAhead;
 	}
 
 	/**
-	 * End simulation if a certain number of jobs was completed (0 (default): no
-	 * limit).
+	 * End simulation if a certain number of jobs was completed (<=0 (default):
+	 * no limit).
 	 */
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
 		this.stopAfterNumJobs = stopAfterNumJobs;
