@@ -38,14 +38,16 @@ import java.util.Collection;
  * @version 
  *          "$Id$"
  * @see ThreadPoolExecutor
+ * @see ForkJoinPoolExecutor
  */
 public abstract class ExperimentExecutor {
 
-	public static final String EXECUTOR_FACTORY = "jasima.core.ExperimentExecutor";
-	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class
+	public static final String EXECUTOR_FACTORY = ExperimentExecutor.class
+			.getName();
+	public static final String DEFAULT_FACTORY = ForkJoinPoolExecutor.class
 			.getName();
 
-	private static ExperimentExecutor execFactoryInst = null;
+	private static volatile ExperimentExecutor execFactoryInst = null;
 
 	public static ExperimentExecutor getExecutor() {
 		if (execFactoryInst == null) {
@@ -81,10 +83,31 @@ public abstract class ExperimentExecutor {
 		super();
 	}
 
+	/**
+	 * Runs an experiment usually in an asynchronous ways. Therefore an
+	 * {@link ExperimentFuture} is returned to access results once they become
+	 * available.
+	 * 
+	 * @param e
+	 *            The experiment to execute.
+	 * @return An {@link ExperimentFuture} to access experiment results.
+	 */
 	public abstract ExperimentFuture runExperiment(Experiment e);
 
+	/**
+	 * Shuts down this {@link ExperimentExecutor}.
+	 */
 	public abstract void shutdownNow();
 
+	/**
+	 * Execute many experiments at once. The implementation here simply calls
+	 * {@link #runExperiment(Experiment)} for all experiments in {@code es}.
+	 * 
+	 * @param es
+	 *            A list of {@link Experiment}s to run.
+	 * @return A {@link Collection} of {@link ExperimentFuture}s, one for each
+	 *         submitted experiment.
+	 */
 	public Collection<ExperimentFuture> runAllExperiments(
 			Collection<? extends Experiment> es) {
 		ArrayList<ExperimentFuture> res = new ArrayList<ExperimentFuture>(
@@ -97,11 +120,16 @@ public abstract class ExperimentExecutor {
 		return res;
 	}
 
-	// use only for testing purposes!
-	public static synchronized void clearInst() {
-		if (execFactoryInst != null)
-			execFactoryInst.shutdownNow();
-		execFactoryInst = null;
+	/**
+	 * Clears the singleton {@link ExperimentExecutor} instance. Use this method
+	 * only for testing purposes!
+	 */
+	public static void clearInst() {
+		synchronized (ExperimentExecutor.class) {
+			if (execFactoryInst != null)
+				execFactoryInst.shutdownNow();
+			execFactoryInst = null;
+		}
 	}
 
 }

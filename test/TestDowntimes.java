@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import util.ExtendedJobStatCollector;
@@ -45,14 +46,16 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class TestDowntimes extends ExperimentTest {
 
 	@Test
+	@Ignore
 	public void test_js02x05() throws Exception {
-		Map<String, Object> res = new HashMap<String, Object>(
-				test("testInstances/js02x05.txt", 5));
+		Map<String, Object> res = new HashMap<String, Object>(test(
+				"testInstances/js02x05.txt", 5));
 		res.remove("weightedCondTardMax");
 		res.remove("weightedCondTardVariance");
 		res.remove("weightedCondTardMean");
@@ -68,9 +71,10 @@ public class TestDowntimes extends ExperimentTest {
 	}
 
 	@Test
+	@Ignore
 	public void test_js01x02() throws Exception {
-		Map<String, Object> res = new HashMap<String, Object>(
-				test("testInstances/js01x03.txt", 3));
+		Map<String, Object> res = new HashMap<String, Object>(test(
+				"testInstances/js01x03.txt", 3));
 		res.remove("weightedCondTardMax");
 		res.remove("weightedCondTardVariance");
 		res.remove("weightedCondTardMean");

@@ -16,14 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.expExecution;
 
 import jasima.core.experiment.Experiment;
 
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
+import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An implementation of {@link ExperimentExecutor} using a {@link ForkJoinPool}
@@ -33,26 +36,57 @@ import java.util.concurrent.RecursiveTask;
  * complete.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-09-05
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
-	private ForkJoinPool pool = new ForkJoinPool();
+	public static final String POOL_SIZE_SETTING = ForkJoinPoolExecutor.class
+			.getName() + ".numThreads";
+
+	private ForkJoinPool pool;
 
 	protected ForkJoinPoolExecutor() {
 		super();
+		pool = createPool();
+	}
+
+	private ForkJoinPool createPool() {
+		int numThreads = Runtime.getRuntime().availableProcessors();
+		String sizeStr = System.getProperty(POOL_SIZE_SETTING);
+		if (sizeStr != null)
+			numThreads = Integer.parseInt(sizeStr.trim());
+
+		ForkJoinWorkerThreadFactory threadFactory = new ForkJoinWorkerThreadFactory() {
+			private AtomicInteger n = new AtomicInteger(-1);
+
+			@Override
+			public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
+				ForkJoinWorkerThread t = ForkJoinPool.defaultForkJoinWorkerThreadFactory
+						.newThread(pool);
+				t.setName("jasimaWorker" + n.addAndGet(1));
+				t.setDaemon(true);
+				return t;
+			}
+		};
+
+		return new ForkJoinPool(numThreads, threadFactory, null, false);
 	}
 
 	@SuppressWarnings("serial")
 	@Override
-	public Future<Map<String, Object>> runExperiment(final Experiment e) {
-		return pool.submit(new RecursiveTask<Map<String, Object>>() {
-			@Override
-			public Map<String, Object> compute() {
-				e.runExperiment();
-				return e.getResults();
-			}
-		});
+	public ExperimentFuture runExperiment(final Experiment e) {
+		ForkJoinTask<Map<String, Object>> task;
+		synchronized (pool) {
+			task = pool.submit(new RecursiveTask<Map<String, Object>>() {
+				@Override
+				public Map<String, Object> compute() {
+					e.runExperiment();
+					return e.getResults();
+				}
+			});
+		}
+		return new FutureWrapper(e, task);
 	}
 
 	@Override

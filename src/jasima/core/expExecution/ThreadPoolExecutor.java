@@ -44,7 +44,8 @@ import java.util.concurrent.ThreadFactory;
  */
 public class ThreadPoolExecutor extends ExperimentExecutor {
 
-	public static final String POOL_SIZE = "jasima.core.ThreadPoolExecutor.numThreads";
+	public static final String POOL_SIZE_SETTING = ThreadPoolExecutor.class
+			.getName() + ".numThreads";
 
 	// an executor service for each nesting level
 	private Map<Integer, ExecutorService> insts = new HashMap<Integer, ExecutorService>();
@@ -93,7 +94,7 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	private ExecutorService createExecService(int nestingLevel) {
 		int numThreads = Runtime.getRuntime().availableProcessors();
 
-		String sizeStr = System.getProperty(POOL_SIZE);
+		String sizeStr = System.getProperty(POOL_SIZE_SETTING);
 		if (sizeStr != null)
 			numThreads = Integer.parseInt(sizeStr.trim());
 
