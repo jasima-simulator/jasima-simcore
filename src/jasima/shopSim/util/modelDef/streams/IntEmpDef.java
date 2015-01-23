@@ -66,12 +66,12 @@ public class IntEmpDef extends IntStreamDef {
 				IntEmpirical s = (IntEmpirical) stream;
 				IntEmpDef def = new IntEmpDef();
 
-				double[] probs = def.getProbs();
+				double[] probs = s.getProbabilities();
 				if (probs != null)
 					probs = probs.clone();
 				def.setProbs(probs);
 
-				int[] values = def.getValues();
+				int[] values = s.getValues();
 				if (values != null)
 					values = values.clone();
 				def.setValues(values);
@@ -83,8 +83,8 @@ public class IntEmpDef extends IntStreamDef {
 
 	};
 
-	private double[] probs = { 1.0 };
-	private int[] values = { 0 };
+	private double[] probs = { 0.7, 0.3 };
+	private int[] values = { 1, 2 };
 
 	public IntEmpDef() {
 		super();
@@ -95,14 +95,19 @@ public class IntEmpDef extends IntStreamDef {
 		String params = "";
 
 		StringBuilder sb = new StringBuilder();
-		if (probs != null) {
-			for (int i = 0; i < probs.length; i++) {
-				sb.append('<').append(values[i]).append(',').append(probs[i])
-						.append(">,");
-			}
-			if (sb.length() > 0)
-				params = sb.substring(0, sb.length() - 1);
+
+		int n = probs != null ? probs.length : 0;
+		int m = values != null ? values.length : 0;
+		for (int i = 0; i < Math.max(n, m); i++) {
+			String v = values != null && i < values.length ? Integer
+					.toString(values[i]) : "?";
+			String p = probs != null && i < probs.length ? Double
+					.toString(probs[i]) : "?";
+
+			sb.append('<').append(v).append(',').append(p).append(">;");
 		}
+		if (sb.length() > 0)
+			params = sb.substring(0, sb.length() - 1);
 
 		return String.format("%s(%s)", FACTORY.getTypeString(), params);
 	}

@@ -149,4 +149,26 @@ public class IntEmpirical extends IntStream {
 		return c;
 	}
 
+	@Override
+	public String toString() {
+		String params = "";
+
+		StringBuilder sb = new StringBuilder();
+
+		int n = probs != null ? probs.length : 0;
+		int m = vals != null ? vals.length : 0;
+		for (int i = 0; i < Math.max(n, m); i++) {
+			String v = vals != null && i < vals.length ? Integer
+					.toString(vals[i]) : "?";
+			String p = probs != null && i < probs.length ? Double
+					.toString(probs[i]) : "?";
+
+			sb.append('<').append(v).append(',').append(p).append(">;");
+		}
+		if (sb.length() > 0)
+			params = sb.substring(0, sb.length() - 1);
+
+		return String.format("%s(%s)", this.getClass().getSimpleName(), params);
+	}
+
 }
