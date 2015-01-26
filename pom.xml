@@ -1,8 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- version: $Id: pom.xml 218 2014-11-28 14:13:09Z THildebrandt@gmail.com 
-		$ -->
+	<!-- version: "$Id: pom.xml 218 2014-11-28 14:13:09Z THildebrandt@gmail.com$" -->
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -15,7 +15,7 @@
 	<version>1.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Jasima</name>
+	<name>jasima</name>
 	<description>JAva SImulatior for MAnufacturing and logistics - A framework for discrete event simulation and computer experiments with a main focus on modelling and analyzing logistic/manufacturing systems.</description> <!-- TODO -->
 	<url>http://jasima.googlecode.com/</url>
 	<inceptionYear>2011</inceptionYear>
@@ -172,6 +172,17 @@
 					<tagBase>https://jasima.googlecode.com/svn/tags/jasima</tagBase>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.5</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
 		</plugins>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -192,6 +203,16 @@
 			</testResource>
 		</testResources>
 	</build>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<issueManagement>
 		<url>https://code.google.com/p/jasima/issues/list</url>
 		<system>google code</system>
