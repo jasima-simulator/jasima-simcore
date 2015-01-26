@@ -12,7 +12,7 @@
 
 	<groupId>com.googlecode.jasima</groupId>
 	<artifactId>jasima-main</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Jasima</name>
@@ -197,8 +197,8 @@
 		<system>google code</system>
 	</issueManagement>
 	<scm>
-		<connection>scm:svn:http://jasima.googlecode.com/svn/tags/jasima/jasima-main-1.2.0</connection>
-		<developerConnection>scm:svn:https://jasima.googlecode.com/svn/tags/jasima/jasima-main-1.2.0</developerConnection>
-		<url>http://jasima.googlecode.com/svn/tags/jasima/jasima-main-1.2.0</url>
+		<connection>scm:svn:http://jasima.googlecode.com/svn/trunk/jasima</connection>
+		<developerConnection>scm:svn:https://jasima.googlecode.com/svn/trunk/jasima</developerConnection>
+		<url>http://jasima.googlecode.com/svn/trunk/jasima</url>
 	</scm>
 </project>
