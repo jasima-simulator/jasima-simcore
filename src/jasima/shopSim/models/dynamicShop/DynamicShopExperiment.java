@@ -48,11 +48,12 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * details.
  * <p>
  * An experiment of this type by default contains a
- * {@link BasicJobStatCollector}.
+ * {@code BasicJobStatCollector}.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
  *          "$Id$"
+ * @see BasicJobStatCollector
  */
 public class DynamicShopExperiment extends JobShopExperiment {
 
