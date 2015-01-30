@@ -30,8 +30,8 @@ import java.util.Collection;
  * non-abstract implementation of ExperimentExecutor. Which ExperimentExecutor
  * to use is determined by a system property "
  * {@code jasima.core.expExecution.ExperimentExecutor}". As a default, a
- * {@link ForkJoinPoolExecutor} is used (with a maximum number of threads equal
- * to the number of available processors).
+ * {@link ThreadPoolExecutor} is used (with a maximum number of threads equal to
+ * the number of available processors).
  * 
  * @author Torsten Hildebrandt
  * @version 
@@ -43,7 +43,7 @@ public abstract class ExperimentExecutor {
 
 	public static final String EXECUTOR_FACTORY = ExperimentExecutor.class
 			.getName();
-	public static final String DEFAULT_FACTORY = ForkJoinPoolExecutor.class
+	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class
 			.getName();
 
 	private static volatile ExperimentExecutor execFactoryInst = null;

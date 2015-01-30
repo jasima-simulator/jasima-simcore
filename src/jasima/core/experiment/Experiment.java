@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import jasima.core.expExecution.ExperimentExecutor;
+import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.random.RandomFactory;
 import jasima.core.util.ConsolePrinter;
@@ -248,6 +250,25 @@ public abstract class Experiment implements Cloneable, Serializable,
 	}
 
 	/**
+	 * This is a convenience method to run a sub experiment without having to
+	 * worry about {@code ExperimentExecutor} and {@code nestingLevel}.
+	 * 
+	 * @param sub
+	 *            The sub-experiment to run.
+	 * @return An {@link ExperimentFuture} to access results.
+	 * @see #isLeafExperiment()
+	 */
+	public ExperimentFuture executeSubExperiment(Experiment sub) {
+		if (isLeafExperiment()) {
+			print(ExpMsgCategory.WARN,
+					"Experiment '%s' is executing sub-experiments. Please override its method isLeafExperiment() to return false.",
+					this.getClass().getName());
+		}
+		sub.nestingLevel(nestingLevel() + 1);
+		return ExperimentExecutor.getExecutor().runExperiment(sub);
+	}
+
+	/**
 	 * Retrieves a list containing the name and current value of this class's
 	 * properties.
 	 */
@@ -379,7 +400,10 @@ public abstract class Experiment implements Cloneable, Serializable,
 	/**
 	 * This method is used internally to decide how to execute an experiment. If
 	 * this method returns true (default), it does not spawn child experiments
-	 * to produce its results.
+	 * to produce its results. Descendants have to override this method to
+	 * return false, if an Experiment is executing sub-experiments.
+	 * 
+	 * @see #executeSubExperiment(Experiment)
 	 */
 	public boolean isLeafExperiment() {
 		return true;
