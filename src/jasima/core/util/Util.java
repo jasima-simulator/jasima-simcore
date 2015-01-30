@@ -163,6 +163,12 @@ public class Util {
 			return (E) Integer.valueOf(o.toString());
 		}
 
+		if (klass == long.class || klass == Long.class) {
+			if (o instanceof Number)
+				return (E) (Long) ((Number) o).longValue();
+			return (E) Long.valueOf(o.toString());
+		}
+
 		if (klass == double.class || klass == Double.class) {
 			if (o instanceof Number)
 				return (E) (Double) ((Number) o).doubleValue();
@@ -183,6 +189,32 @@ public class Util {
 
 		if (klass.isEnum()) {
 			return (E) Enum.valueOf(klass.asSubclass(Enum.class), o.toString());
+		}
+
+		if (klass == byte.class || klass == Byte.class) {
+			if (o instanceof Number)
+				return (E) (Byte) ((Number) o).byteValue();
+			return (E) Byte.valueOf(o.toString());
+		}
+
+		if (klass == short.class || klass == Short.class) {
+			if (o instanceof Number)
+				return (E) (Short) ((Number) o).shortValue();
+			return (E) Short.valueOf(o.toString());
+		}
+
+		if (klass == float.class || klass == Float.class) {
+			if (o instanceof Number)
+				return (E) (Float) ((Number) o).floatValue();
+			return (E) Float.valueOf(o.toString());
+		}
+
+		if (klass == char.class || klass == Character.class) {
+			if (o instanceof Character)
+				return (E) (Character) o;
+			String s = o.toString();
+			if (s.length() == 1)
+				return (E) new Character(s.charAt(0));
 		}
 
 		throw new IllegalArgumentException(String.format(
