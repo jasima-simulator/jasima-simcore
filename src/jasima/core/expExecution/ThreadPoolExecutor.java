@@ -26,6 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Default implementation of an ExecutorFactory returning an Executor that uses
@@ -54,8 +55,7 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 
 	@Override
 	public ExperimentFuture runExperiment(final Experiment e) {
-		ExecutorService es = getExecutorInstance(e.isLeafExperiment(),
-				e.nestingLevel());
+		ExecutorService es = getExecutorInstance(e.nestingLevel());
 		return new FutureWrapper(e,
 				es.submit(new Callable<Map<String, Object>>() {
 					@Override
@@ -74,35 +74,32 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 		insts.clear();
 	}
 
-	private synchronized ExecutorService getExecutorInstance(boolean isLeaf,
-			int nestingLevel) {
-		if (isLeaf)
-			nestingLevel = -1;
-
+	private synchronized ExecutorService getExecutorInstance(int nestingLevel) {
 		ExecutorService inst = insts.get(nestingLevel);
 		if (inst == null) {
 			inst = createExecService(nestingLevel);
-
 			insts.put(nestingLevel, inst);
 		}
 
 		return inst;
 	}
 
-	private ExecutorService createExecService(int nestingLevel) {
+	private ExecutorService createExecService(final int nestingLevel) {
 		int numThreads = Runtime.getRuntime().availableProcessors();
-
 		String sizeStr = System.getProperty(POOL_SIZE_SETTING);
 		if (sizeStr != null)
 			numThreads = Integer.parseInt(sizeStr.trim());
 
 		ThreadFactory threadFactory = new ThreadFactory() {
 			final ThreadFactory defFactory = Executors.defaultThreadFactory();
+			final AtomicInteger numCreated = new AtomicInteger(0);
 
 			@Override
 			public Thread newThread(Runnable r) {
 				Thread t = defFactory.newThread(r);
 				t.setDaemon(true);
+				t.setName("jasimaWorker-" + nestingLevel + "-"
+						+ numCreated.addAndGet(1));
 				return t;
 			}
 		};

@@ -428,11 +428,6 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		return commonRandomNumbers;
 	}
 
-	@Override
-	public boolean isLeafExperiment() {
-		return false;
-	}
-
 	/**
 	 * Before starting, throw away this many seed values. This setting can be
 	 * useful to resume interrupted sub-experiments.

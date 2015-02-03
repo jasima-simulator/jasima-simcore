@@ -256,14 +256,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * @param sub
 	 *            The sub-experiment to run.
 	 * @return An {@link ExperimentFuture} to access results.
-	 * @see #isLeafExperiment()
 	 */
 	public ExperimentFuture executeSubExperiment(Experiment sub) {
-		if (isLeafExperiment()) {
-			print(ExpMsgCategory.WARN,
-					"Experiment '%s' is executing sub-experiments. Please override its method isLeafExperiment() to return false.",
-					this.getClass().getName());
-		}
 		sub.nestingLevel(nestingLevel() + 1);
 		return ExperimentExecutor.getExecutor().runExperiment(sub);
 	}
@@ -395,18 +389,6 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 */
 	public int nestingLevel() {
 		return nestingLevel;
-	}
-
-	/**
-	 * This method is used internally to decide how to execute an experiment. If
-	 * this method returns true (default), it does not spawn child experiments
-	 * to produce its results. Descendants have to override this method to
-	 * return false, if an Experiment is executing sub-experiments.
-	 * 
-	 * @see #executeSubExperiment(Experiment)
-	 */
-	public boolean isLeafExperiment() {
-		return true;
 	}
 
 	/**
