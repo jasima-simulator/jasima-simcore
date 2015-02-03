@@ -77,15 +77,13 @@ public class ForkJoinPoolExecutor extends ExperimentExecutor {
 	@Override
 	public ExperimentFuture runExperiment(final Experiment e) {
 		ForkJoinTask<Map<String, Object>> task;
-		synchronized (pool) {
-			task = pool.submit(new RecursiveTask<Map<String, Object>>() {
-				@Override
-				public Map<String, Object> compute() {
-					e.runExperiment();
-					return e.getResults();
-				}
-			});
-		}
+		task = pool.submit(new RecursiveTask<Map<String, Object>>() {
+			@Override
+			public Map<String, Object> compute() {
+				e.runExperiment();
+				return e.getResults();
+			}
+		});
 		return new FutureWrapper(e, task);
 	}
 
