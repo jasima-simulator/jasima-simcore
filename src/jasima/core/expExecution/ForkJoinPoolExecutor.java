@@ -75,7 +75,7 @@ public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
 	@SuppressWarnings("serial")
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e) {
+	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
 		ForkJoinTask<Map<String, Object>> task;
 		task = pool.submit(new RecursiveTask<Map<String, Object>>() {
 			@Override

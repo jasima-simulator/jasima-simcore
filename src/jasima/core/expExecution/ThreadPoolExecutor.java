@@ -54,7 +54,7 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	}
 
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e) {
+	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
 		ExecutorService es = getExecutorInstance(e.nestingLevel());
 		return new FutureWrapper(e,
 				es.submit(new Callable<Map<String, Object>>() {

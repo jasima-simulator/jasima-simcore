@@ -116,7 +116,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 				// as they are stored in tasks
 				int n = 0;
 				Collection<ExperimentFuture> allFutures = ExperimentExecutor
-						.getExecutor().runAllExperiments(experiments);
+						.getExecutor().runAllExperiments(experiments, this);
 				Iterator<ExperimentFuture> it = allFutures.iterator();
 				while (it.hasNext()) {
 					ExperimentFuture f = it.next();
@@ -143,7 +143,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 					experiments.set(i, null);
 
 					if (aborted == 0) {
-						ExperimentFuture future = ex.runExperiment(e);
+						ExperimentFuture future = ex.runExperiment(e, this);
 						getAndStoreResults(e, future);
 					} else {
 						break; // for i

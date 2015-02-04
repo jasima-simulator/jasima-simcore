@@ -89,9 +89,13 @@ public abstract class ExperimentExecutor {
 	 * 
 	 * @param e
 	 *            The experiment to execute.
+	 * @param parent
+	 *            The parent experiment of "e". This might be null.
+	 * 
 	 * @return An {@link ExperimentFuture} to access experiment results.
 	 */
-	public abstract ExperimentFuture runExperiment(Experiment e);
+	public abstract ExperimentFuture runExperiment(Experiment e,
+			Experiment parent);
 
 	/**
 	 * Shuts down this {@link ExperimentExecutor}.
@@ -104,16 +108,19 @@ public abstract class ExperimentExecutor {
 	 * 
 	 * @param es
 	 *            A list of {@link Experiment}s to run.
+	 * @param parent
+	 *            The parent experiment of "es". This might be null.
+	 * 
 	 * @return A {@link Collection} of {@link ExperimentFuture}s, one for each
 	 *         submitted experiment.
 	 */
 	public Collection<ExperimentFuture> runAllExperiments(
-			Collection<? extends Experiment> es) {
+			Collection<? extends Experiment> es, Experiment parent) {
 		ArrayList<ExperimentFuture> res = new ArrayList<ExperimentFuture>(
 				es.size());
 
 		for (Experiment e : es) {
-			res.add(runExperiment(e));
+			res.add(runExperiment(e, parent));
 		}
 
 		return res;

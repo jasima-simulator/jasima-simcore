@@ -259,7 +259,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 */
 	public ExperimentFuture executeSubExperiment(Experiment sub) {
 		sub.nestingLevel(nestingLevel() + 1);
-		return ExperimentExecutor.getExecutor().runExperiment(sub);
+		return ExperimentExecutor.getExecutor().runExperiment(sub, this);
 	}
 
 	/**

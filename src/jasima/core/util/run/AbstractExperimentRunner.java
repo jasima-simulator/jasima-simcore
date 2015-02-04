@@ -159,10 +159,10 @@ public abstract class AbstractExperimentRunner {
 			}
 			exp.addNotifierListener(lstnr);
 		}
-		
+
 		try {
 			ExperimentFuture ef = ExperimentExecutor.getExecutor()
-					.runExperiment(exp);
+					.runExperiment(exp, null);
 			Map<String, Object> res = ef.get();
 
 			String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);

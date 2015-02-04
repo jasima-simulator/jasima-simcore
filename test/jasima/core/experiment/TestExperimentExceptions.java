@@ -89,7 +89,8 @@ public class TestExperimentExceptions {
 		ExceptionExperiment e = new ExceptionExperiment();
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e);
+		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e,
+				null);
 		Map<String, Object> res = ef.get();
 
 		// should produce error messages
@@ -108,7 +109,8 @@ public class TestExperimentExceptions {
 		FullFactorialExperiment e = new FullFactorialExperiment();
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e);
+		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e,
+				null);
 		Map<String, Object> res = ef.get();
 
 		// should produce error messages, no base experiment set
@@ -128,7 +130,8 @@ public class TestExperimentExceptions {
 		e.setAbortUponBaseExperimentAbort(false);
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e);
+		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e,
+				null);
 		Map<String, Object> res = ef.get();
 		e.printResults(res);
 
@@ -156,7 +159,8 @@ public class TestExperimentExceptions {
 		e.setAbortUponBaseExperimentAbort(true);
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e);
+		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e,
+				null);
 		Map<String, Object> res = ef.get();
 		e.printResults(res);
 
