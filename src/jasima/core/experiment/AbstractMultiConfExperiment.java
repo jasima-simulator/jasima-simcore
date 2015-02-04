@@ -109,9 +109,19 @@ public abstract class AbstractMultiConfExperiment extends
 		if (isValidConfiguration(conf)) {
 			numConfs++;
 			try {
-				experiments.add(createExperimentForConf(conf));
+				Experiment exp = createExperimentForConf(conf);
+				experiments.add(exp);
 			} catch (final Exception e) {
 				print(ExpMsgCategory.ERROR, e.getMessage());
+				print(ExpMsgCategory.DEBUG, "%s", new Object() {
+					@Override
+					public String toString() {
+						// lazy conversion to String only when message is
+						// actually printed
+						return Util.exceptionToString(e);
+					}
+				});
+
 				experiments.add(new Experiment() {
 
 					private static final long serialVersionUID = 4259612422796656502L;
