@@ -38,6 +38,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 	private static final long serialVersionUID = 1612150171949724274L;
 
+	private int maxConfigurations = 1000000;
+
 	private ArrayList<String> factorNames;
 	private Map<String, List<Object>> factors;
 
@@ -61,7 +63,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 *            The factor name. This should be the name of a Java Beans
 	 *            Property of the base experiment, otherwise execution of the
 	 *            experiment will fail. In case {@code value} is a
-	 *            {@link AbstractMultiConfExperiment.ComplexFactorSetter}, name can be arbitrary.
+	 *            {@link AbstractMultiConfExperiment.ComplexFactorSetter}, name
+	 *            can be arbitrary.
 	 * @param value
 	 *            The value to test for factor {@code name}.
 	 */
@@ -161,26 +164,44 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 	@Override
 	protected void createExperiments() {
-		print("building configurations ...");
-
 		int numFactors = getFactorNames().size();
 		int[] numValuesPerFactor = new int[numFactors];
 		factorNames = new ArrayList<String>(getFactorNames());
 
 		// calculate totals
+		long total = 1;
 		int i = 0;
 		for (String name : factorNames) {
 			int n = getFactorValues(name).size();
 			numValuesPerFactor[i++] = n;
+
+			long last = total;
+			total *= n;
+			// check for overflow
+			if (total < last) {
+				throw new RuntimeException("Too many combinations.");
+			}
 		}
+
+		print(ExpMsgCategory.INFO,
+				"building and validating configurations, %d theoretical combinations ...",
+				total);
 
 		// create and add experiments
 		int[] is = new int[numFactors];
 		do {
 			addExperimentForConf(is);
+			if (getMaxConfigurations() > 0
+					&& experiments.size() > getMaxConfigurations()) {
+				throw new RuntimeException(
+						String.format(
+								"More than %d configurations. Consider reducing the number of factors and/or factor values or using an optimization algorithm instead.",
+								getMaxConfigurations()));
+			}
 		} while (createNextCombination(is, numValuesPerFactor));
 
-		print("executing %d experiments ...", experiments.size());
+		print(ExpMsgCategory.INFO, "executing %d experiments ...",
+				experiments.size());
 	}
 
 	private static boolean createNextCombination(int[] is,
@@ -211,10 +232,28 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 		handleConfig(c);
 	}
 
-	// just make public
+	// just make public, so it appears as a property in the GUI
 	@Override
 	public void setCommonRandomNumbers(boolean commonRandomNumbers) {
 		super.setCommonRandomNumbers(commonRandomNumbers);
+	}
+
+	/**
+	 * Returns the current setting for the maximum number of configurations to
+	 * run.
+	 */
+	public int getMaxConfigurations() {
+		return maxConfigurations;
+	}
+
+	/**
+	 * Sets the maximum number of configurations (i.e., sub-experiments) that
+	 * are allowed to execute. The default value is 1,000,000. If there are more
+	 * valid configurations/factor combinations, then the
+	 * {@code FullFactorialExperiment} will abort in the initialization phase.
+	 */
+	public void setMaxConfigurations(int maxConfigurations) {
+		this.maxConfigurations = maxConfigurations;
 	}
 
 }
