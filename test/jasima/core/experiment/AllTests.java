@@ -29,7 +29,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ TestExperimentAbort.class, OCBATest.class,
-		TestExperimentExceptions.class })
+		TestExperimentExceptions.class, TestFFEFactorSetting.class })
 public class AllTests {
 
 }
