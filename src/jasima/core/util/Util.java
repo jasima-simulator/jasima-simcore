@@ -383,6 +383,9 @@ public class Util {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T cloneIfPossible(T o) {
+		if (o == null)
+			return null;
+
 		// array?
 		Class<?> o2 = o.getClass().getComponentType();
 		if (o2 == null)
