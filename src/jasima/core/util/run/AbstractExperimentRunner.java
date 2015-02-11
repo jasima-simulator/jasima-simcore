@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.util.run;
 
+import static java.lang.System.lineSeparator;
+import static java.util.Arrays.asList;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
@@ -26,12 +28,26 @@ import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.util.AbstractResultSaver;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
+import jasima.core.util.Pair;
+import jasima.core.util.Util;
 import jasima.core.util.XmlSaver;
+import jasima.core.util.XmlUtil;
 import jasima.core.util.observer.NotifierListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.util.KeyValuePair;
 
 /**
  * Base class for experiment runner utility classes.
@@ -40,70 +56,125 @@ import java.util.Map;
  * @see ExcelExperimentRunner
  * 
  * @author Robin Kreis
- * @author Torsten Hildebrandt, 2013-01-08
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
 public abstract class AbstractExperimentRunner {
 
-	protected Map<Object, NotifierListener<Experiment, ExperimentEvent>> listeners = new HashMap<Object, NotifierListener<Experiment, ExperimentEvent>>();
+	protected Map<Object, NotifierListener<Experiment, ExperimentEvent>> listeners;
 	protected boolean printResults = false;
+	protected String experimentFileName = null;
+
+	protected OptionParser optsParser;
+	protected ArrayList<Pair<String, Object>> manualProps;
 
 	public AbstractExperimentRunner() {
+		super();
+		listeners = new HashMap<Object, NotifierListener<Experiment, ExperimentEvent>>();
 		listeners.put(ConsolePrinter.class, new ConsolePrinter(
 				ExpMsgCategory.INFO));
+		manualProps = new ArrayList<>();
 	}
 
-	protected AbstractExperimentRunner parseArgs(String[] args) {
-		for (String arg : args) {
-			if (!parseOption(arg)) {
-				if (arg.startsWith("--")) {
-					printUsageAndExit("Unknown option: %s%n", arg);
-				}
-				if (!parseArg(arg)) {
-					printUsageAndExit();
-				}
+	protected OptionParser createParser() {
+		OptionParser p = new OptionParser();
+
+		p.acceptsAll(asList("h", "?", "help"), "Display this help text.")
+				.forHelp();
+
+		ExpMsgCategory[] values = ExpMsgCategory.values();
+		String logLevels = Arrays.toString(values).replaceAll("[\\[\\]]", "");
+		p.acceptsAll(
+				asList("l", "log"),
+				String.format("Set log level to one of %s. Default: INFO.",
+						logLevels)).withRequiredArg().describedAs("level");
+
+		p.accepts("xmlres", "Save results in XML format.").withOptionalArg()
+				.describedAs("filename");
+		p.accepts("xlsres", "Save results in Excel format.").withOptionalArg()
+				.describedAs("filename");
+
+		p.accepts("printres", "Print results to console.");
+
+		p.accepts("D", "Sets a property to a certain value.").withRequiredArg()
+				.describedAs("property=value");
+
+		return p;
+	}
+
+	public AbstractExperimentRunner parseArgs(String[] args) {
+		optsParser = createParser();
+
+		try {
+			OptionSet opts = optsParser.parse(args);
+			if (opts.has("help"))
+				printUsageAndExit();
+
+			processOptions(opts);
+
+			List<?> argList = new ArrayList<>(opts.nonOptionArguments());
+			handleRemainingArgs(argList);
+			if (argList.size() > 0) {
+				throw new RuntimeException(String.format(
+						"unrecognized command line parameters: %s",
+						Arrays.toString(argList.toArray())));
 			}
+		} catch (RuntimeException e1) {
+			e1.printStackTrace();
+			printUsageAndExit(e1.getLocalizedMessage());
 		}
+
 		return this;
 	}
 
-	protected boolean parseOption(String arg) {
-		if (arg.startsWith("--log=")) {
-			ExpMsgCategory cat = ExpMsgCategory.valueOf(arg.substring(
-					"--log=".length()).toUpperCase(Locale.ROOT));
+	protected void handleRemainingArgs(List<?> argList) {
+	}
+
+	protected void processOptions(OptionSet opts) {
+		if (opts.has("log")) {
+			String vs = (String) opts.valueOf("log");
+
+			ExpMsgCategory cat = Enum.valueOf(ExpMsgCategory.class,
+					vs.toUpperCase(Locale.US));
 			if (cat == ExpMsgCategory.OFF) {
 				listeners.remove(ConsolePrinter.class);
 			} else {
 				listeners.put(ConsolePrinter.class, new ConsolePrinter(cat));
 			}
-
-		} else if (arg.equals("--printres")) {
-			printResults = true;
-		} else if (arg.equals("--xmlres")) {
-			listeners.put(XmlSaver.class, new XmlSaver());
-
-		} else if (arg.startsWith("--xmlres=")) {
-			XmlSaver xs = new XmlSaver();
-			xs.setResultFileName(arg.substring("--xmlres=".length()));
-			listeners.put(XmlSaver.class, xs);
-
-		} else if (arg.equals("--xlsres")) {
-			listeners.put(ExcelSaver.class, new ExcelSaver());
-
-		} else if (arg.startsWith("--xlsres=")) {
-			ExcelSaver es = new ExcelSaver();
-			es.setResultFileName(arg.substring("--xlsres=".length()));
-			listeners.put(ExcelSaver.class, es);
-
-		} else {
-			return false;
 		}
-		return true;
-	}
 
-	protected boolean parseArg(String arg) {
-		return false;
+		if (opts.has("printres")) {
+			printResults = true;
+		}
+
+		if (opts.has("xmlres")) {
+			String xmlFileName = (String) opts.valueOf("xmlres");
+			if (xmlFileName == null) {
+				listeners.put(XmlSaver.class, new XmlSaver());
+			} else {
+				XmlSaver xs = new XmlSaver();
+				xs.setResultFileName(xmlFileName);
+				listeners.put(XmlSaver.class, xs);
+			}
+		}
+
+		if (opts.has("xlsres")) {
+			String xlsFileName = (String) opts.valueOf("xlsres");
+			if (xlsFileName == null) {
+				listeners.put(ExcelSaver.class, new ExcelSaver());
+			} else {
+				ExcelSaver es = new ExcelSaver();
+				es.setResultFileName(xlsFileName);
+				listeners.put(ExcelSaver.class, es);
+			}
+		}
+
+		for (Object o : opts.valuesOf("D")) {
+			String s = (String) o;
+			KeyValuePair v = KeyValuePair.valueOf(s);
+			manualProps.add(new Pair<String, Object>(v.key, v.value));
+		}
 	}
 
 	protected void printErrorAndExit(int exitCode, String format,
@@ -114,39 +185,52 @@ public abstract class AbstractExperimentRunner {
 
 	protected void printUsageAndExit(String format, Object... args) {
 		System.err.printf(format, args);
+		System.err.println();
+		System.err.println();
 		printUsageAndExit();
 	}
 
-	protected String getArgInfo() {
-		return "[options]";
-	}
-
-	protected String getOptInfo() {
-		return String.format(""
-				+ "    --log=OFF         Don't show any log messages.%n"
-				+ "    --log=ERROR       Show only errors.%n"
-				+ "    --log=WARN        Show errors and warnings.%n"
-				+ "    --log=INFO        Also show info messages.%n"
-				+ "    --log=DEBUG       Also show debug messages.%n"
-				+ "    --log=TRACE       Also show trace messages.%n"
-				+ "    --printres        Print results to console.%n"
-				+ "    --xmlres=<file>   Save results in XML format%n"
-				+ "    --xlsres=<file>   Save results in Excel format%n");
-	}
-
 	protected void printUsageAndExit() {
-		System.err.printf("Usage: java %s %s%n%s", getClass().getName(),
-				getArgInfo(), getOptInfo());
+		try {
+			System.err.println(getHelpCmdLineText());
+			System.err.println();
+			if (optsParser == null)
+				optsParser = createParser();
+			optsParser.printHelpOn(System.err);
+			System.err.println();
+			System.err.println(getHelpFooterText());
+		} catch (IOException ignore) {
+		}
 		System.exit(1);
+	}
+
+	protected String getHelpFooterText() {
+		return "All parameter names are CASE-SENSITIVE. For detailed information see "
+				+ lineSeparator() + "http://jasima.googlecode.com.";
+	}
+
+	protected String getHelpCmdLineText() {
+		return getClass().getName();
 	}
 
 	protected abstract Experiment createExperiment();
 
 	protected String getResultFileNameHint() {
-		return null;
+		return experimentFileName;
 	}
 
-	protected void run() {
+	public void run() {
+		try {
+			Experiment exp = configureExperiment();
+			doRun(exp);
+		} catch (Throwable t) {
+			printErrorAndExit(10, "%s: %s", getResultFileNameHint(),
+					t.getLocalizedMessage());
+		}
+	}
+
+	protected Experiment configureExperiment() {
+		// create and configure experiment
 		Experiment exp = createExperiment();
 		String resultFileNameHint = getResultFileNameHint();
 
@@ -160,6 +244,12 @@ public abstract class AbstractExperimentRunner {
 			exp.addNotifierListener(lstnr);
 		}
 
+		exp = setPropsFromCmdLine(exp);
+		return exp;
+	}
+
+	protected void doRun(Experiment exp) {
+		// run experiment
 		try {
 			ExperimentFuture ef = ExperimentExecutor.getExecutor()
 					.runExperiment(exp, null);
@@ -176,5 +266,56 @@ public abstract class AbstractExperimentRunner {
 		} catch (InterruptedException e1) {
 			throw new RuntimeException(e1);
 		}
+	}
+
+	protected Experiment setPropsFromCmdLine(Experiment exp) {
+		// sort props by number of segments so we set parent properties first
+		Collections.sort(manualProps, new Comparator<Pair<String, Object>>() {
+			@Override
+			public int compare(Pair<String, Object> p1, Pair<String, Object> p2) {
+				int i1 = numSegments(p1.a);
+				int i2 = numSegments(p2.a);
+
+				return i1 - i2;
+			}
+		});
+
+		for (Pair<String, Object> p : manualProps) {
+			Object value = p.b;
+			if ("null".equals(value)) {
+				value = null;
+			} else if (value instanceof String) {
+				String s = (String) value;
+				// read value from xml file?
+				if (s.startsWith("@")) {
+					if (s.startsWith("@@")) {
+						// unescape @
+						s = s.substring(1);
+					} else {
+						// read value from xml file
+						value = XmlUtil.loadXML(new File(s.substring(1)));
+					}
+				}
+			}
+			Util.setProperty(exp, p.a, value);
+		}
+
+		return exp;
+	}
+
+	/**
+	 * Counts the number of dots '.' in a String.
+	 */
+	public static int numSegments(String a) {
+		if (a == null || a.length() == 0)
+			return 0;
+
+		int res = 1;
+		int from = -1;
+		while ((from = a.indexOf('.', from + 1)) >= 0) {
+			res++;
+		}
+
+		return res;
 	}
 }

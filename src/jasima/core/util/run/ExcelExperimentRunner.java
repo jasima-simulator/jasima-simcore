@@ -21,48 +21,42 @@ package jasima.core.util.run;
 import jasima.core.experiment.Experiment;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Loads an experiment from an XLS file and executes it on the command line.
  * 
  * @author Robin Kreis
- * @author Torsten Hildebrandt, 2013-01-08
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
 public class ExcelExperimentRunner extends AbstractExperimentRunner {
 
-	protected String experimentFileName = null;
+	private static final String MSG_NO_EXP_FILE = "No experiment file name given.";
 
 	@Override
-	protected AbstractExperimentRunner parseArgs(String[] args) {
-		super.parseArgs(args);
-		if (experimentFileName == null) {
-			printUsageAndExit("No experiment file name given.%n");
+	protected void handleRemainingArgs(List<?> argList) {
+		super.handleRemainingArgs(argList);
+
+		if (argList.size() == 0) {
+			throw new RuntimeException(MSG_NO_EXP_FILE);
 		}
-		return this;
-	}
 
-	protected boolean parseArg(String arg) {
-		if (experimentFileName == null) {
-			experimentFileName = arg;
-		} else {
-			return false;
-		}
-		return true;
+		// we have to have at least one argument
+		experimentFileName = (String) argList.remove(0);
 	}
 
 	@Override
-	protected String getArgInfo() {
-		return String.format("%s <xlsFile>", super.getArgInfo());
+	protected String getHelpCmdLineText() {
+		return "usage: " + getClass().getName() + " <xlsFileName> [options]";
 	}
 
 	@Override
-	protected String getOptInfo() {
-		return String
-				.format("%s"
-						+ "    <xlsFile>         The file name of an Excel Experiment.%n",
-						super.getOptInfo());
+	protected String getHelpFooterText() {
+		return "<xlsFileName>        The file name of an Excel Experiment."
+				+ System.lineSeparator() + System.lineSeparator()
+				+ super.getHelpFooterText();
 	}
 
 	@Override
@@ -74,16 +68,6 @@ public class ExcelExperimentRunner extends AbstractExperimentRunner {
 	protected Experiment createExperiment() {
 		return new ExcelExperimentReader(new File(experimentFileName))
 				.createExperiment();
-	}
-
-	@Override
-	protected void run() {
-		try {
-			super.run();
-		} catch (Throwable t) {
-			printErrorAndExit(10, "%s: %s", experimentFileName,
-					t.getLocalizedMessage());
-		}
 	}
 
 	public static void main(String[] args) {

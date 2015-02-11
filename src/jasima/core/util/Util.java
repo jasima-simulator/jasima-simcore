@@ -39,7 +39,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 import java.util.StringTokenizer;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 
 /**
  * Some static utility methods that don't really fit anywhere else.
@@ -369,6 +373,93 @@ public class Util {
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static final String PROP_JASIMA_EXPERIMENT = "jasima.experiment";
+	private static final String PROP_SUN_JAVA_COMMAND = "sun.java.command";
+
+	/**
+	 * Tries to find the main class of a java run. This is attempted by looking
+	 * up the system properties {@code jasima.experiment} and
+	 * {@code sun.java.command} first. If this does not lead to a valid
+	 * classname (e.g., if started with "-jar" option) an attempt is made to
+	 * interpret the property as the name of a jar file. The manifest of this
+	 * jar is then searched for its entry {@code Main-Class}.
+	 * <p />
+	 * This code is necessary because Java has no virtual static methods and
+	 * therefore there is no equivalent to the keyword {@code this} in a static
+	 * method.
+	 */
+	public static Class<?> getMainClass() throws ClassNotFoundException {
+		Properties props = System.getProperties();
+
+		String main = (String) findEntryCaseInsensitive(props,
+				PROP_JASIMA_EXPERIMENT);
+		if (main == null) {
+			main = (String) findEntryCaseInsensitive(props,
+					PROP_SUN_JAVA_COMMAND);
+		}
+		if (main == null) {
+			throw new RuntimeException(String.format(
+					"Couldn't find properties '%s' or '%s'.",
+					PROP_SUN_JAVA_COMMAND, PROP_JASIMA_EXPERIMENT));
+		}
+
+		// strip any arguments, if present
+		String classOrJar;
+		try (Scanner s = new Scanner(main)) {
+			classOrJar = s.next();
+		}
+
+		try {
+			// try to find as class directly
+			Class<?> klazz = Util.class.getClassLoader().loadClass(classOrJar);
+			return klazz;
+		} catch (ClassNotFoundException e) {
+			// try to interpret as jar and load main class name from manifest.mf
+			try {
+				return loadFromJar(classOrJar);
+			} catch (IOException ignore) {
+				// re-throw e;
+				throw e;
+			}
+		}
+	}
+
+	private static Class<?> loadFromJar(String classOrJar) throws IOException,
+			ClassNotFoundException {
+		try (JarFile jar = new JarFile(classOrJar)) {
+			Map<String, Attributes> jarEntries = jar.getManifest().getEntries();
+			// is app using "jar in jar" export from eclipse? in this case
+			// main-class is JarRsrcLoader
+			Attributes o = (Attributes) findEntryCaseInsensitive(jarEntries,
+					"Rsrc-Main-Class");
+			if (o == null || o.size() == 0) {
+				// regular main class
+				o = (Attributes) findEntryCaseInsensitive(jarEntries,
+						"Main-Class");
+			}
+			assert o.size() == 1;
+
+			// get first entry from 'o'
+			String cName = (String) o.values().iterator().next();
+
+			// try to load cName
+			Class<?> klazz = Util.class.getClassLoader().loadClass(cName);
+			return klazz;
+		}
+	}
+
+	private static Object findEntryCaseInsensitive(Map<?, ?> jarEntries,
+			String entry) {
+		entry = entry.toLowerCase();
+		for (Object o : jarEntries.keySet()) {
+			String s = ((String) o).toLowerCase();
+			if (entry.equals(s)) {
+				return jarEntries.get(o);
+			}
+		}
+		return null;
 	}
 
 	/**

@@ -27,6 +27,7 @@ import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.run.CommandLineRunner;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
@@ -89,8 +90,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 	public static final ExperimentEvent EXPERIMENT_FINISHING = new ExperimentEvent();
 	public static final ExperimentEvent EXPERIMENT_FINISHED = new ExperimentEvent();
 
-	public enum ExpMsgCategory {
-		OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL
+	public static enum ExpMsgCategory {
+		OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL;
 	}
 
 	public static class ExpPrintEvent extends ExperimentEvent {
@@ -452,6 +453,18 @@ public abstract class Experiment implements Cloneable, Serializable,
 	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	// ******************* static methods ************************
+
+	public static void main(String[] args) throws Exception {
+		// create instance of the Experiment sub-class that was specified as
+		// Java's main class
+		Class<?> klazz = Util.getMainClass();
+		Experiment expInstance = (Experiment) klazz.newInstance();
+
+		// parse command line arguments and run
+		new CommandLineRunner(expInstance).parseArgs(args).run();
 	}
 
 }
