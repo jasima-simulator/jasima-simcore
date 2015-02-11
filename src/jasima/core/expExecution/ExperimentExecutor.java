@@ -104,7 +104,8 @@ public abstract class ExperimentExecutor {
 
 	/**
 	 * Execute many experiments at once. The implementation here simply calls
-	 * {@link #runExperiment(Experiment)} for all experiments in {@code es}.
+	 * {@link #runExperiment(Experiment,Experiment)} for all experiments in
+	 * {@code es}.
 	 * 
 	 * @param es
 	 *            A list of {@link Experiment}s to run.
