@@ -40,8 +40,8 @@ public class CommandLineRunner extends AbstractExperimentRunner {
 		for (PropertyDescriptor prop : props) {
 			Class<?> type = prop.getPropertyType();
 
-			String description = String.format("Property of type '%s'",
-					type.getName());
+			String description = type.isPrimitive() ? "" : String.format(
+					"Property of type '%s'", type.getName());
 			if (type.isEnum()) {
 				String enumValues = Arrays.toString(type.getEnumConstants())
 						.replaceAll("[\\[\\]]", "");

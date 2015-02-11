@@ -63,7 +63,7 @@ import joptsimple.util.KeyValuePair;
 public abstract class AbstractExperimentRunner {
 
 	protected Map<Object, NotifierListener<Experiment, ExperimentEvent>> listeners;
-	protected boolean printResults = false;
+	protected boolean hideResults = false;
 	protected String experimentFileName = null;
 
 	protected OptionParser optsParser;
@@ -95,7 +95,7 @@ public abstract class AbstractExperimentRunner {
 		p.accepts("xlsres", "Save results in Excel format.").withOptionalArg()
 				.describedAs("filename");
 
-		p.accepts("printres", "Print results to console.");
+		p.accepts("nores", "Does not print results to console.");
 
 		p.accepts("D", "Sets a property to a certain value.").withRequiredArg()
 				.describedAs("property=value");
@@ -144,8 +144,8 @@ public abstract class AbstractExperimentRunner {
 			}
 		}
 
-		if (opts.has("printres")) {
-			printResults = true;
+		if (opts.has("nores")) {
+			hideResults = true;
 		}
 
 		if (opts.has("xmlres")) {
@@ -261,7 +261,7 @@ public abstract class AbstractExperimentRunner {
 				throw new RuntimeException(msg + " detailed error: " + exc);
 			}
 
-			if (printResults)
+			if (!hideResults)
 				exp.printResults(res);
 		} catch (InterruptedException e1) {
 			throw new RuntimeException(e1);
