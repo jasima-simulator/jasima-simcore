@@ -16,7 +16,8 @@ import joptsimple.OptionSet;
  * This class is used indirectly by Experiments to configure and run them.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * 
  * @see Experiment#main(String[])
  */
@@ -39,11 +40,12 @@ public class CommandLineRunner extends AbstractExperimentRunner {
 		for (PropertyDescriptor prop : props) {
 			Class<?> type = prop.getPropertyType();
 
-			String description = "";
+			String description = String.format("Property of type '%s'",
+					type.getName());
 			if (type.isEnum()) {
 				String enumValues = Arrays.toString(type.getEnumConstants())
 						.replaceAll("[\\[\\]]", "");
-				description = String.format("possible values: %s", enumValues);
+				description = String.format("Possible values: %s", enumValues);
 			}
 
 			p.accepts(prop.getName(), description).withRequiredArg()
