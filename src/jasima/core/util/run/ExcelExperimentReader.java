@@ -48,7 +48,7 @@ import com.thoughtworks.xstream.io.StreamException;
  * {@link FullFactorialExperiment}s from such a file.
  * 
  * @author Robin Kreis
- * @author Torsten Hildebrandt, 2013-01-08
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -102,6 +102,7 @@ public class ExcelExperimentReader {
 		}
 	}
 
+	//TODO: use same code as CommandLineRunner
 	protected static Class<?> findClass(String name) {
 		// fully qualified class name?
 		try {

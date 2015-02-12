@@ -121,8 +121,7 @@ public abstract class AbstractExperimentRunner {
 						Arrays.toString(argList.toArray())));
 			}
 		} catch (RuntimeException e1) {
-			e1.printStackTrace();
-			printUsageAndExit(e1.getLocalizedMessage());
+			printUsageAndExit(String.valueOf(e1.getLocalizedMessage()));
 		}
 
 		return this;
@@ -194,8 +193,6 @@ public abstract class AbstractExperimentRunner {
 		try {
 			System.err.println(getHelpCmdLineText());
 			System.err.println();
-			if (optsParser == null)
-				optsParser = createParser();
 			optsParser.printHelpOn(System.err);
 			System.err.println();
 			System.err.println(getHelpFooterText());
@@ -293,7 +290,8 @@ public abstract class AbstractExperimentRunner {
 						s = s.substring(1);
 					} else {
 						// read value from xml file
-						value = XmlUtil.loadXML(new File(s.substring(1)));
+						s = s.substring(1);
+						value = loadXmlFile(s);
 					}
 				}
 			}
@@ -303,10 +301,89 @@ public abstract class AbstractExperimentRunner {
 		return exp;
 	}
 
+	private static Object loadXmlFile(String fileName) {
+		Object o = XmlUtil.loadXML(new File(fileName));
+		return o;
+	}
+
+	public static final String[] CLASS_SEARCH_PATH = {
+			"jasima.core.experiment", //
+			"jasima.core.expExecution", //
+			"jasima.core.random", //
+			"jasima.core.random.continuous", //
+			"jasima.core.random.discrete", //
+			"jasima.core.simulation", //
+			"jasima.core.simulation.arrivalprocess", //
+			"jasima.core.statistics", //
+			"jasima.core.util", //
+			"jasima.core.util.observer", //
+			"jasima.core.util.run", //
+			"jasima.shopSim.core", //
+			"jasima.shopSim.core.batchForming", //
+			"jasima.shopSim.models.dynamicShop", //
+			"jasima.shopSim.models.mimac", //
+			"jasima.shopSim.models.staticShop", //
+			"jasima.shopSim.prioRules.basic", //
+			"jasima.shopSim.prioRules.batch", //
+			"jasima.shopSim.prioRules.gp", //
+			"jasima.shopSim.prioRules.meta", //
+			"jasima.shopSim.prioRules.setup", //
+			"jasima.shopSim.prioRules.upDownStream", //
+			"jasima.shopSim.prioRules.weighted", //
+			"jasima.shopSim.util", //
+			"jasima.shopSim.util.modelDef", //
+			"jasima.shopSim.util.modelDef.streams", //
+	};
+
+	public static Object loadClassOrXmlFile(String classOrFilename,
+			ClassLoader l) {
+		// try to find a class of the given name first
+		Object o = searchAndInstanciateClass(classOrFilename, l);
+
+		if (o == null) {
+			// try to load from file
+			o = loadXmlFile(classOrFilename);
+		}
+
+		return o;
+	}
+
+	private static Object searchAndInstanciateClass(String classOrFilename,
+			ClassLoader l) {
+		// try direct match first
+		Class<?> klazz = load(classOrFilename, l);
+
+		// try matches from the class search path
+		if (klazz == null)
+			for (String packageName : CLASS_SEARCH_PATH) {
+				klazz = load(packageName + "." + classOrFilename, l);
+				if (klazz != null)
+					break; // for loop
+			}
+
+		if (klazz != null) {
+			try {
+				return klazz.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		} else {
+			return null;
+		}
+	}
+
+	private static Class<?> load(String classOrFilename, ClassLoader l) {
+		try {
+			return l.loadClass(classOrFilename);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Counts the number of dots '.' in a String.
 	 */
-	public static int numSegments(String a) {
+	private static int numSegments(String a) {
 		if (a == null || a.length() == 0)
 			return 0;
 

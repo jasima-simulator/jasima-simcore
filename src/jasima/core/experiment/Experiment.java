@@ -461,10 +461,9 @@ public abstract class Experiment implements Cloneable, Serializable,
 		// create instance of the Experiment sub-class that was specified as
 		// Java's main class
 		Class<?> klazz = Util.getMainClass();
-		Experiment expInstance = (Experiment) klazz.newInstance();
 
 		// parse command line arguments and run
-		new CommandLineRunner(expInstance).parseArgs(args).run();
+		new CommandLineRunner(klazz.getName(), true).parseArgs(args).run();
 	}
 
 }
