@@ -31,10 +31,8 @@ import jasima.core.util.ExcelSaver;
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
 import jasima.core.util.XmlSaver;
-import jasima.core.util.XmlUtil;
 import jasima.core.util.observer.NotifierListener;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,8 +63,7 @@ public abstract class AbstractExperimentRunner {
 	protected Map<Object, NotifierListener<Experiment, ExperimentEvent>> listeners;
 	protected boolean hideResults = false;
 	protected String experimentFileName = null;
-
-	protected OptionParser optsParser;
+	protected String[] packageSearchPath = Util.DEF_CLASS_SEARCH_PATH;
 	protected ArrayList<Pair<String, Object>> manualProps;
 
 	public AbstractExperimentRunner() {
@@ -77,9 +74,7 @@ public abstract class AbstractExperimentRunner {
 		manualProps = new ArrayList<>();
 	}
 
-	protected OptionParser createParser() {
-		OptionParser p = new OptionParser();
-
+	protected void createGenericOptions(OptionParser p) {
 		p.acceptsAll(asList("h", "?", "help"), "Display this help text.")
 				.forHelp();
 
@@ -100,26 +95,17 @@ public abstract class AbstractExperimentRunner {
 		p.accepts("D", "Sets a property to a certain value.").withRequiredArg()
 				.describedAs("property=value");
 
-		return p;
+		p.accepts("p", "Add an entry to the package search path.")
+				.withRequiredArg().describedAs("packageName");
+	}
+
+	protected boolean createAdditionalOptions(OptionParser p) {
+		return false;
 	}
 
 	public AbstractExperimentRunner parseArgs(String[] args) {
-		optsParser = createParser();
-
 		try {
-			OptionSet opts = optsParser.parse(args);
-			if (opts.has("help"))
-				printUsageAndExit();
-
-			processOptions(opts);
-
-			List<?> argList = new ArrayList<>(opts.nonOptionArguments());
-			handleRemainingArgs(argList);
-			if (argList.size() > 0) {
-				throw new RuntimeException(String.format(
-						"unrecognized command line parameters: %s",
-						Arrays.toString(argList.toArray())));
-			}
+			doParseArgs(args);
 		} catch (RuntimeException e1) {
 			printUsageAndExit(String.valueOf(e1.getLocalizedMessage()));
 		}
@@ -127,10 +113,32 @@ public abstract class AbstractExperimentRunner {
 		return this;
 	}
 
+	protected void doParseArgs(String[] args) {
+		// create parser and parse command line
+		OptionParser optsParser = new OptionParser();
+		createGenericOptions(optsParser);
+		createAdditionalOptions(optsParser);
+
+		OptionSet opts = optsParser.parse(args);
+
+		processOptions(opts);
+
+		List<?> argList = new ArrayList<>(opts.nonOptionArguments());
+		handleRemainingArgs(argList);
+		if (argList.size() > 0) {
+			throw new RuntimeException(String.format(
+					"unrecognized command line parameters: %s",
+					Arrays.toString(argList.toArray())));
+		}
+	}
+
 	protected void handleRemainingArgs(List<?> argList) {
 	}
 
 	protected void processOptions(OptionSet opts) {
+		if (opts.has("help"))
+			printUsageAndExit();
+
 		if (opts.has("log")) {
 			String vs = (String) opts.valueOf("log");
 
@@ -174,6 +182,11 @@ public abstract class AbstractExperimentRunner {
 			KeyValuePair v = KeyValuePair.valueOf(s);
 			manualProps.add(new Pair<String, Object>(v.key, v.value));
 		}
+
+		for (Object o : opts.valuesOf("p")) {
+			packageSearchPath = Util.addToArray(packageSearchPath, (String) o,
+					String.class);
+		}
 	}
 
 	protected void printErrorAndExit(int exitCode, String format,
@@ -192,9 +205,24 @@ public abstract class AbstractExperimentRunner {
 	protected void printUsageAndExit() {
 		try {
 			System.err.println(getHelpCmdLineText());
+
+			// print additional options if any
+			OptionParser op2 = new OptionParser();
+			if (createAdditionalOptions(op2)) {
+				System.err.println();
+				System.err.println("Experiment properties (top-level):");
+				System.err.println("==================================");
+				op2.printHelpOn(System.err);
+			}
+
+			// print generic options
 			System.err.println();
-			optsParser.printHelpOn(System.err);
-			System.err.println();
+			System.err.println("Generic options:");
+			System.err.println("================");
+			OptionParser op1 = new OptionParser();
+			createGenericOptions(op1);
+			op1.printHelpOn(System.err);
+
 			System.err.println(getHelpFooterText());
 		} catch (IOException ignore) {
 		}
@@ -202,7 +230,8 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	protected String getHelpFooterText() {
-		return "All parameter names are CASE-SENSITIVE. For detailed information see "
+		return lineSeparator()
+				+ "All parameter names are CASE-SENSITIVE. For detailed information see "
 				+ lineSeparator() + "http://jasima.googlecode.com.";
 	}
 
@@ -246,7 +275,6 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	protected void doRun(Experiment exp) {
-		// run experiment
 		try {
 			ExperimentFuture ef = ExperimentExecutor.getExecutor()
 					.runExperiment(exp, null);
@@ -255,7 +283,7 @@ public abstract class AbstractExperimentRunner {
 			String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
 			String exc = (String) res.get(Experiment.EXCEPTION);
 			if (msg != null || exc != null) {
-				throw new RuntimeException(msg + " detailed error: " + exc);
+				throw new RuntimeException(msg + "; detailed error: " + exc);
 			}
 
 			if (!hideResults)
@@ -275,124 +303,34 @@ public abstract class AbstractExperimentRunner {
 
 				return i1 - i2;
 			}
+
+			/**
+			 * Counts the number of dots '.' in a String.
+			 */
+			private int numSegments(String a) {
+				if (a == null || a.length() == 0)
+					return 0;
+
+				int res = 1;
+				int from = -1;
+				while ((from = a.indexOf('.', from + 1)) >= 0) {
+					res++;
+				}
+
+				return res;
+			}
 		});
 
+		// try to set each property
 		for (Pair<String, Object> p : manualProps) {
+			String name = p.a;
 			Object value = p.b;
-			if ("null".equals(value)) {
-				value = null;
-			} else if (value instanceof String) {
-				String s = (String) value;
-				// read value from xml file?
-				if (s.startsWith("@")) {
-					if (s.startsWith("@@")) {
-						// unescape @
-						s = s.substring(1);
-					} else {
-						// read value from xml file
-						s = s.substring(1);
-						value = loadXmlFile(s);
-					}
-				}
-			}
-			Util.setProperty(exp, p.a, value);
+
+			Util.setPropertyEx(exp, name, value, getClass().getClassLoader(),
+					packageSearchPath);
 		}
 
 		return exp;
 	}
 
-	private static Object loadXmlFile(String fileName) {
-		Object o = XmlUtil.loadXML(new File(fileName));
-		return o;
-	}
-
-	public static final String[] CLASS_SEARCH_PATH = {
-			"jasima.core.experiment", //
-			"jasima.core.expExecution", //
-			"jasima.core.random", //
-			"jasima.core.random.continuous", //
-			"jasima.core.random.discrete", //
-			"jasima.core.simulation", //
-			"jasima.core.simulation.arrivalprocess", //
-			"jasima.core.statistics", //
-			"jasima.core.util", //
-			"jasima.core.util.observer", //
-			"jasima.core.util.run", //
-			"jasima.shopSim.core", //
-			"jasima.shopSim.core.batchForming", //
-			"jasima.shopSim.models.dynamicShop", //
-			"jasima.shopSim.models.mimac", //
-			"jasima.shopSim.models.staticShop", //
-			"jasima.shopSim.prioRules.basic", //
-			"jasima.shopSim.prioRules.batch", //
-			"jasima.shopSim.prioRules.gp", //
-			"jasima.shopSim.prioRules.meta", //
-			"jasima.shopSim.prioRules.setup", //
-			"jasima.shopSim.prioRules.upDownStream", //
-			"jasima.shopSim.prioRules.weighted", //
-			"jasima.shopSim.util", //
-			"jasima.shopSim.util.modelDef", //
-			"jasima.shopSim.util.modelDef.streams", //
-	};
-
-	public static Object loadClassOrXmlFile(String classOrFilename,
-			ClassLoader l) {
-		// try to find a class of the given name first
-		Object o = searchAndInstanciateClass(classOrFilename, l);
-
-		if (o == null) {
-			// try to load from file
-			o = loadXmlFile(classOrFilename);
-		}
-
-		return o;
-	}
-
-	private static Object searchAndInstanciateClass(String classOrFilename,
-			ClassLoader l) {
-		// try direct match first
-		Class<?> klazz = load(classOrFilename, l);
-
-		// try matches from the class search path
-		if (klazz == null)
-			for (String packageName : CLASS_SEARCH_PATH) {
-				klazz = load(packageName + "." + classOrFilename, l);
-				if (klazz != null)
-					break; // for loop
-			}
-
-		if (klazz != null) {
-			try {
-				return klazz.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			return null;
-		}
-	}
-
-	private static Class<?> load(String classOrFilename, ClassLoader l) {
-		try {
-			return l.loadClass(classOrFilename);
-		} catch (ClassNotFoundException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Counts the number of dots '.' in a String.
-	 */
-	private static int numSegments(String a) {
-		if (a == null || a.length() == 0)
-			return 0;
-
-		int res = 1;
-		int from = -1;
-		while ((from = a.indexOf('.', from + 1)) >= 0) {
-			res++;
-		}
-
-		return res;
-	}
 }

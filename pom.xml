@@ -146,7 +146,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>jasima.core.util.run.XmlExperimentRunner</mainClass>
+							<mainClass>jasima.core.util.run.ConsoleRunner</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

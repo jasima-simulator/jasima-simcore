@@ -54,6 +54,38 @@ import java.util.jar.JarFile;
 public class Util {
 
 	/**
+	 * Class search path containing all packaged in jasima-main.
+	 */
+	public static final String[] DEF_CLASS_SEARCH_PATH = {
+			"jasima.core.experiment", //
+			"jasima.core.expExecution", //
+			"jasima.core.random", //
+			"jasima.core.random.continuous", //
+			"jasima.core.random.discrete", //
+			"jasima.core.simulation", //
+			"jasima.core.simulation.arrivalprocess", //
+			"jasima.core.statistics", //
+			"jasima.core.util", //
+			"jasima.core.util.observer", //
+			"jasima.core.util.run", //
+			"jasima.shopSim.core", //
+			"jasima.shopSim.core.batchForming", //
+			"jasima.shopSim.models.dynamicShop", //
+			"jasima.shopSim.models.mimac", //
+			"jasima.shopSim.models.staticShop", //
+			"jasima.shopSim.prioRules.basic", //
+			"jasima.shopSim.prioRules.batch", //
+			"jasima.shopSim.prioRules.gp", //
+			"jasima.shopSim.prioRules.meta", //
+			"jasima.shopSim.prioRules.setup", //
+			"jasima.shopSim.prioRules.upDownStream", //
+			"jasima.shopSim.prioRules.weighted", //
+			"jasima.shopSim.util", //
+			"jasima.shopSim.util.modelDef", //
+			"jasima.shopSim.util.modelDef.streams", //
+	};
+
+	/**
 	 * Converts an exception's stack trace to a single line string.
 	 */
 	public static String exceptionToString(Throwable t) {
@@ -62,8 +94,7 @@ public class Util {
 		PrintWriter pw = new PrintWriter(sw);
 		t.printStackTrace(pw);
 		String s = sw.toString();
-		return s.replace(System.getProperty("line.separator") + '\t', " \\\\ ")
-				.trim();
+		return s.replace(System.lineSeparator() + '\t', " \\\\ ").trim();
 	}
 
 	/**
@@ -124,7 +155,21 @@ public class Util {
 	}
 
 	/**
-	 * Attempts trivial type conversion. This methods supports all cating
+	 * A {@code TypeConversionException} is thrown, when the conversion between
+	 * types in {@link Util#convert(Object, Class)} fails.
+	 */
+	public static class TypeConversionException extends
+			IllegalArgumentException {
+		private static final long serialVersionUID = -6958941745746368647L;
+
+		public TypeConversionException(String s) {
+			super(s);
+		}
+
+	}
+
+	/**
+	 * Attempts trivial type conversion. This methods supports all casting
 	 * conversions (JLS 5.5) and always returns null when the input object is
 	 * null. If the target type is {@link String}, the result is the return
 	 * value of the input object's {@link Object#toString()} method. Any object
@@ -136,7 +181,7 @@ public class Util {
 	 * @param klass
 	 *            the target type
 	 * @return the converted object
-	 * @throws IllegalArgumentException
+	 * @throws TypeConversionException
 	 *             if the conversion is not supported
 	 * @throws NumberFormatException
 	 *             if the input object is not assignable to {@link Number} and
@@ -187,7 +232,7 @@ public class Util {
 			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
 					|| str.equalsIgnoreCase("0"))
 				return (E) Boolean.FALSE;
-			throw new IllegalArgumentException(String.format(
+			throw new TypeConversionException(String.format(
 					"Can't convert %s to bool.", o));
 		}
 
@@ -221,14 +266,14 @@ public class Util {
 				return (E) new Character(s.charAt(0));
 		}
 
-		throw new IllegalArgumentException(String.format(
-				"Can't convert from %s to %s.",
-				o.getClass().getCanonicalName(), klass.getCanonicalName()));
+		throw new TypeConversionException(String.format(
+				"Can't convert from '%s' to '%s'.", o.getClass().getName(),
+				klass.getName()));
 	}
 
 	/**
 	 * Sets a property named with propPath to a certain value using reflection.
-	 * 
+	 * <p />
 	 * Example: setProperty( obj, "a.b.c", 5 ); is equivalent to a direct call
 	 * obj.getA().getB().setC(5)
 	 */
@@ -273,10 +318,150 @@ public class Util {
 	}
 
 	/**
+	 * Attempts to set an object's property to a certain value. In addition to
+	 * the method {@link #setProperty(Object, String, Object)}, this method
+	 * tries to instantiate classes given by classname or load xml-serialized
+	 * objects, if a simple {@link #setProperty(Object, String, Object)} is not
+	 * successful.
+	 * 
+	 * @param o
+	 *            The object whose property has to be set.
+	 * @param propName
+	 *            Name of the property to be set.
+	 * @param value
+	 *            The value to set this property to. If this is a String and
+	 *            setting the value by ffff fails, this is interpreted as a
+	 *            class name of file name.
+	 * @param loader
+	 *            The classloader to use when new classes have to be
+	 *            initialized.
+	 * @param packageSearchPath
+	 *            The package search path to use for looking up abbreviated
+	 *            class names.
+	 * 
+	 * @see #loadClassOrXmlFile(String, ClassLoader, String[])
+	 * @see #searchAndInstanciateClass(String, ClassLoader, String[])
+	 * @see #loadXmlFile(String)
+	 */
+	public static void setPropertyEx(Object o, String propName, Object value,
+			ClassLoader loader, String[] packageSearchPath) {
+		if ("@null".equals(value)) {
+			Util.setProperty(o, propName, null);
+		} else if (value instanceof String) {
+			String s = (String) value;
+			try {
+				Util.setProperty(o, propName, s);
+			} catch (RuntimeException e) {
+				if (e.getCause() instanceof TypeConversionException) {
+					// try to interpret 's' as class or file name
+					value = loadClassOrXmlFile(s, loader, packageSearchPath);
+					if (value != null) {
+						Util.setProperty(o, propName, value);
+						return;
+					}
+				}
+				// still no luck? give up
+				throw e;
+			}
+		} else {
+			// try to use value as is
+			Util.setProperty(o, propName, value);
+		}
+	}
+
+	/**
+	 * Attempts to load an object from a xml-file {@code fileName}. If such a
+	 * file does not exist or is not readable, {@code null} will be returned.
+	 * 
+	 * @see XmlUtil#loadXML(File)
+	 */
+	public static Object loadXmlFile(String fileName) {
+		File f = new File(fileName);
+		if (!f.canRead())
+			return null;
+
+		Object o = XmlUtil.loadXML(f);
+		return o;
+	}
+
+	/**
+	 * Tries to instantiate a class given by {@code classOrFilename}. If this
+	 * does not succeed, {@code classOrFilename} is interpreted as a file name
+	 * of an xml-serialized object and attempted to be loaded. If this is also
+	 * not successful, {@code null} will be returned.
+	 * 
+	 * @see #searchAndInstanciateClass(String, ClassLoader, String[])
+	 * @see #loadXmlFile(String)
+	 */
+	public static Object loadClassOrXmlFile(String classOrFilename,
+			ClassLoader l, String[] packageSearchPath) {
+		// try to find a class of the given name first
+		Object o = searchAndInstanciateClass(classOrFilename, l,
+				packageSearchPath);
+
+		if (o == null) {
+			// try to load from file
+			o = loadXmlFile(classOrFilename);
+		}
+
+		return o;
+	}
+
+	/**
+	 * Load an instantiate a class using classloader {@code l}. If a class
+	 * {@code className} is not found, it is searched for in the package search
+	 * path.
+	 * <p />
+	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"}
+	 * and the package search path {@code searchPath} contains an entry
+	 * {@code "jasima.core.experiment"}, then the class
+	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be
+	 * looked up and instantiated.
+	 * <p />
+	 * If no matching class could be found, {@code null} will be returned.
+	 */
+	public static Object searchAndInstanciateClass(String className,
+			ClassLoader l, String[] searchPath) {
+		// try direct match first
+		Class<?> klazz = load(className, l);
+
+		// try matches from the class search path
+		if (klazz == null)
+			for (String packageName : searchPath) {
+				klazz = load(packageName + "." + className, l);
+				if (klazz != null)
+					break; // for loop
+			}
+
+		if (klazz != null) {
+			try {
+				return klazz.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Loads a class named {@code classname} using the classloader {@code l}.
+	 * Instead of raising a {@code ClassNotFoundException}, {@code null} will be
+	 * returned.
+	 */
+	private static Class<?> load(String classname, ClassLoader l) {
+		try {
+			return l.loadClass(classname);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Determines the type of a property named with propPath using reflection.
 	 * 
 	 * This method interprets propPath the same way as
-	 * {@link #getProperty(Object, String)} does.
+	 * {@link #getPropertyValue(Object, String)} does.
 	 */
 	public static Class<?> getPropertyType(Object o, String propPath) {
 		try {
@@ -314,12 +499,13 @@ public class Util {
 	}
 
 	/**
-	 * Gets a property named with propPath using reflection.
-	 * 
+	 * Gets the current value of a property named with propPath using
+	 * reflection.
+	 * <p />
 	 * Example: getProperty( obj, "a.b.c" ); is equivalent to a direct call
 	 * obj.getA().getB().getC()
 	 */
-	public static Object getProperty(Object o, String propPath) {
+	public static Object getPropertyValue(Object o, String propPath) {
 		try {
 			String[] segments = propPath.split("\\.");
 			// call getters until we finally arrive where we can call the
@@ -353,8 +539,8 @@ public class Util {
 	}
 
 	/**
-	 * Finds (bean) properties of <code>o</code> which have both getter and
-	 * setter methods.
+	 * Finds (bean) properties of {@code o} which have both getter and setter
+	 * methods.
 	 */
 	public static PropertyDescriptor[] findWritableProperties(Object o) {
 		try {
@@ -470,7 +656,8 @@ public class Util {
 	 * 
 	 * @param o
 	 *            The object to be cloned.
-	 * @return A clone of o was cloneable, or otherwise the original object.
+	 * @return A clone of {@code o} if it was cloneable, or otherwise the
+	 *         original object.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T cloneIfPossible(T o) {
@@ -483,11 +670,12 @@ public class Util {
 			o2 = o.getClass();
 
 		if (Cloneable.class.isAssignableFrom(o2)) {
+			// TODO: deep clone arrays?
 			// o or an array's components are clonable
 			try {
 				Method cloneMethod = o.getClass().getMethod("clone",
 						new Class[] {});
-				return (T) cloneMethod.invoke(o, new Object[] {});
+				return (T) cloneMethod.invoke(o);
 			} catch (NoSuchMethodException ignore) {
 				// clonable, but no public clone-method, return o as is
 			} catch (Exception e) {
@@ -857,7 +1045,8 @@ public class Util {
 
 	/**
 	 * @return True, if the absolute value of their differences of two double
-	 *         values is smaller than the constant EPSILON (default: 10^-10).
+	 *         values is smaller than the constant {@link #EPSILON} (default:
+	 *         {@value #EPSILON}).
 	 */
 	public static boolean equals(final double v1, final double v2) {
 		return Math.abs(v1 - v2) < EPSILON;
@@ -887,6 +1076,8 @@ public class Util {
 				return Arrays.toString((double[]) arbitraryArray);
 			else if (compType == Float.TYPE)
 				return Arrays.toString((float[]) arbitraryArray);
+			else if (compType == Character.TYPE)
+				return Arrays.toString((char[]) arbitraryArray);
 			else
 				throw new AssertionError();
 		} else

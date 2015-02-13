@@ -55,8 +55,7 @@ public class ExcelExperimentRunner extends AbstractExperimentRunner {
 	@Override
 	protected String getHelpFooterText() {
 		return "<xlsFileName>        The file name of an Excel Experiment."
-				+ System.lineSeparator() + System.lineSeparator()
-				+ super.getHelpFooterText();
+				+ System.lineSeparator() + super.getHelpFooterText();
 	}
 
 	@Override

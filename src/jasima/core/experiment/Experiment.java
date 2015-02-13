@@ -27,7 +27,7 @@ import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
-import jasima.core.util.run.CommandLineRunner;
+import jasima.core.util.run.ConsoleRunner;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
@@ -461,9 +461,10 @@ public abstract class Experiment implements Cloneable, Serializable,
 		// create instance of the Experiment sub-class that was specified as
 		// Java's main class
 		Class<?> klazz = Util.getMainClass();
+		Experiment e = (Experiment) klazz.newInstance();
 
 		// parse command line arguments and run
-		new CommandLineRunner(klazz.getName(), true).parseArgs(args).run();
+		new ConsoleRunner(e).parseArgs(args).run();
 	}
 
 }
