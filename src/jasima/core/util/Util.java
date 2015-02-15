@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
@@ -52,6 +53,18 @@ import java.util.jar.JarFile;
  * @version "$Id$"
  */
 public class Util {
+
+	/**
+	 * The current jasima version.
+	 */
+	public static final String VERSION = "1.2.1-SNAPSHOT";
+	
+	public static final String ID_STRING = "JASIMA, v"+VERSION+"; http://jasima.googlecode.com/";
+
+	/**
+	 * The default locale used, e.g., to format strings.
+	 */
+	public static Locale DEF_LOCALE = Locale.US;
 
 	/**
 	 * Class search path containing all packaged in jasima-main.

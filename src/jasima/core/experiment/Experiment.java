@@ -33,6 +33,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -122,10 +123,21 @@ public abstract class Experiment implements Cloneable, Serializable,
 			this.message = null;
 		}
 
+		/**
+		 * Returns this message formatted as a {@code String} using the default
+		 * {@link Locale}.
+		 */
 		public String getMessage() {
+			return getMessage(Util.DEF_LOCALE);
+		}
+
+		/**
+		 * Returns this message formatted using the given {@link Locale}.
+		 */
+		public String getMessage(Locale locale) {
 			// lazy creation of message only when needed
 			if (message == null) {
-				message = String.format(messageFormatString, params);
+				message = String.format(locale, messageFormatString, params);
 				messageFormatString = null;
 				params = null;
 			}

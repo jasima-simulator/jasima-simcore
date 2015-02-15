@@ -42,9 +42,10 @@ import java.util.Map;
  */
 public class ConsolePrinter extends ExperimentListenerBase {
 
-	private static final long serialVersionUID = 6722626849679009735L;
+	private static final long serialVersionUID = 6722626849679009737L;
 
 	private ExpMsgCategory logLevel = ExpMsgCategory.INFO;
+	private Locale locale = Util.DEF_LOCALE;
 	private String logFormat = "%1$tT.%1$tL\t%4$s\t%2$s\t%3$s";
 	private PrintWriter out = null;
 	private boolean printStdEvents = true;
@@ -76,8 +77,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 			if (name == null)
 				name = "exp@" + Integer.toHexString(e.hashCode());
 
-			String msg = String.format(Locale.UK, getLogFormat(), new Date(),
-					event.category.toString(), event.getMessage(), name);
+			String msg = String.format(getLocale(), getLogFormat(), new Date(),
+					event.category.toString(), event.getMessage(getLocale()),
+					name);
 			if (getOut() == null)
 				System.out.println(msg);
 			else
@@ -87,8 +89,12 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 	@Override
 	protected void starting(final Experiment e) {
-		if (isPrintStdEvents())
+		if (isPrintStdEvents()) {
+			e.print("**********************************************************************");
+			e.print(Util.ID_STRING);
+			e.print("**********************************************************************");
 			e.print("starting...");
+		}
 	}
 
 	@Override
@@ -129,7 +135,8 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 			Double runTime = (Double) runResults.get(Experiment.RUNTIME);
 			Integer aborted = (Integer) runResults.get(Experiment.EXP_ABORTED);
-			String errorMsg = (String) runResults.get(Experiment.EXCEPTION_MESSAGE);
+			String errorMsg = (String) runResults
+					.get(Experiment.EXCEPTION_MESSAGE);
 
 			String abortStr = "";
 			if (aborted != null && aborted.doubleValue() != 0.0) {
@@ -201,6 +208,20 @@ public class ConsolePrinter extends ExperimentListenerBase {
 		this.printStdEvents = printStdEvents;
 	}
 
+	public Locale getLocale() {
+		return locale;
+	}
+
+	/**
+	 * Sets the {@link Locale} that is used when formatting messages. The
+	 * default is {@code Locale.US}.
+	 * 
+	 * @see Util#DEF_LOCALE
+	 */
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
 	// static utility methods below
 
 	/**
@@ -261,7 +282,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 			for (String k : valStatNames) {
 				SummaryStat vs = (SummaryStat) res.get(k);
-				out.printf(Locale.ENGLISH,
+				out.printf(Util.DEF_LOCALE,
 						"%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f\n", k, vs.mean(),
 						vs.min(), vs.max(), vs.stdDev(), vs.numObs(), vs.sum());
 			}

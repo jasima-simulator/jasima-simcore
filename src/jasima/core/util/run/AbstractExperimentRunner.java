@@ -205,6 +205,8 @@ public abstract class AbstractExperimentRunner {
 	protected void printUsageAndExit() {
 		try {
 			System.err.println(getHelpCmdLineText());
+			System.err.println();
+			System.err.println(Util.ID_STRING);
 
 			// print additional options if any
 			OptionParser op2 = new OptionParser();
