@@ -22,12 +22,12 @@ import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.random.RandomFactory;
+import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
-import jasima.core.util.run.ConsoleRunner;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;

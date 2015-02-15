@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util.run;
+package jasima.core.run;
 
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;

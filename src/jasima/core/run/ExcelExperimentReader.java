@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util.run;
+package jasima.core.run;
 
 import static jasima.core.experiment.AbstractMultiConfExperiment.KEY_EXPERIMENT;
 import jasima.core.experiment.AbstractMultiConfExperiment;

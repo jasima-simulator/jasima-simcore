@@ -1,4 +1,4 @@
-package jasima.core.util.run;
+package jasima.core.run;
 
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
