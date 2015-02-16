@@ -249,6 +249,10 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	public void run() {
+		System.out.println("**********************************************************************");
+		System.out.println(Util.ID_STRING);
+		System.out.println("**********************************************************************");
+		System.out.println();
 		try {
 			Experiment exp = configureExperiment();
 			doRun(exp);

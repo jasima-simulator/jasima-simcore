@@ -90,9 +90,6 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	@Override
 	protected void starting(final Experiment e) {
 		if (isPrintStdEvents()) {
-			e.print("**********************************************************************");
-			e.print(Util.ID_STRING);
-			e.print("**********************************************************************");
 			e.print("starting...");
 		}
 	}
