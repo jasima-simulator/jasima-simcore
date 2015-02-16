@@ -146,7 +146,9 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>jasima.core.util.run.ConsoleRunner</mainClass>
+							<mainClass>jasima.core.run.ConsoleRunner</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 					</archive>
 				</configuration>

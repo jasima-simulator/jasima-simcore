@@ -50,16 +50,18 @@ import java.util.jar.JarFile;
  * Some static utility methods that don't really fit anywhere else.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class Util {
 
 	/**
 	 * The current jasima version.
 	 */
-	public static final String VERSION = "1.2.1-SNAPSHOT";
-	
-	public static final String ID_STRING = "JASIMA, v"+VERSION+"; http://jasima.googlecode.com/";
+	public static final String VERSION = getVersion();
+
+	public static final String ID_STRING = "JASIMA, v" + VERSION
+			+ "; http://jasima.googlecode.com/";
 
 	/**
 	 * The default locale used, e.g., to format strings.
@@ -1115,6 +1117,14 @@ public class Util {
 			res.put(prefix + "Max", vs.max());
 		if (vs.numObs() >= 2)
 			res.put(prefix + "Variance", vs.variance());
+	}
+
+	/**
+	 * Utility method to get the current package's version.
+	 */
+	private static String getVersion() {
+		String v = Util.class.getPackage().getImplementationVersion();
+		return v == null ? "<not_found>" : v;
 	}
 
 }
