@@ -50,7 +50,7 @@ import joptsimple.util.KeyValuePair;
 /**
  * Base class for experiment runner utility classes.
  * 
- * @see XmlExperimentRunner
+ * @see ConsoleRunner
  * @see ExcelExperimentRunner
  * 
  * @author Robin Kreis
