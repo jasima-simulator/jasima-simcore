@@ -55,6 +55,12 @@ import java.util.jar.JarFile;
 public class Util {
 
 	/**
+	 * Special String value that is recognized as {@code null} in
+	 * {@link #setPropertyEx(Object, String, Object, ClassLoader, String[])}.
+	 */
+	public static final String NULL = "@null";
+
+	/**
 	 * The current jasima version.
 	 */
 	public static final String VERSION = getVersion();
@@ -368,7 +374,7 @@ public class Util {
 	 */
 	public static void setPropertyEx(Object o, String propName, Object value,
 			ClassLoader loader, String[] packageSearchPath) {
-		if ("@null".equals(value)) {
+		if (NULL.equals(value)) {
 			Util.setProperty(o, propName, null);
 		} else if (value instanceof String) {
 			String s = (String) value;
@@ -445,6 +451,15 @@ public class Util {
 	 */
 	public static Object searchAndInstanciateClass(String className,
 			ClassLoader l, String[] searchPath) {
+		// does it look like containing a list of parameters we have to parse?
+		if (className.contains("(")) {
+			ListTokenizer t = new ListTokenizer(className);
+			
+			if (t.nextTokenNoWhitespace()!=STRING)
+				throw new RuntimeException("Input looks strange: '%s'"+className);
+			className = t.n
+		}
+		
 		// try direct match first
 		Class<?> klazz = load(className, l);
 
