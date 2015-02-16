@@ -20,6 +20,7 @@ package jasima.core.experiment;
 
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Pair;
+import jasima.core.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,9 +102,9 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		if (!isNumRunsDynamic())
 			return false;
 
-		if (numTasksExecuted>=getMaxReplications())
+		if (numTasksExecuted >= getMaxReplications())
 			return false;
-		
+
 		// check all measures in "confIntervalMeasure" to have the quality
 		// measured by "errorProb" and "allowancePercentage".
 		for (String name : confIntervalMeasure) {
@@ -112,13 +113,13 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 					.get(name);
 			SummaryStat vs = data.b;
 			if (vs == null)
-				throw new RuntimeException(String.format(
+				throw new RuntimeException(String.format(Util.DEF_LOCALE,
 						"No results for name '%s'.", name));
 
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
 
 			double interv = 2 * vs.confIntRangeSingle(getErrorProb());
-			
+
 			if (interv > allowance)
 				return true;
 		}
@@ -192,7 +193,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 */
 	public void setErrorProb(double errorProb) {
 		if (errorProb <= 0.0 || errorProb >= 1.0)
-			throw new IllegalArgumentException(String.format(
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
 					"errorProb should be in the interval (0,1). invalid: %f",
 					errorProb));
 		this.errorProb = errorProb;
@@ -223,6 +224,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		if (allowancePercentage <= 0.0 || allowancePercentage >= 1.0)
 			throw new IllegalArgumentException(
 					String.format(
+							Util.DEF_LOCALE,
 							"allowancePercentage should be in the interval (0,1). invalid: %f",
 							allowancePercentage));
 		this.allowancePercentage = allowancePercentage;

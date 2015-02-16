@@ -86,7 +86,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		super.init();
 
 		if (getScenario() == null)
-			throw new IllegalArgumentException(String.format(
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
 					"No scenario specified, should be one of %s.",
 					Arrays.toString(Scenario.values())));
 
@@ -186,12 +186,13 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		int min = getNumOpsMin() > 0 ? getNumOpsMin() : getNumMachines();
 		int max = getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines();
 		if (min > max)
-			throw new IllegalArgumentException(String.format(
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
 					"invalid range for numOps: [%d; %d]", getNumOpsMin(),
 					getNumOpsMax()));
 		if (max > getNumMachines())
 			throw new IllegalArgumentException(
 					String.format(
+							Util.DEF_LOCALE,
 							"Can't have more operations (%d) than there are machines (%d).",
 							max, getNumMachines()));
 		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);

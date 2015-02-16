@@ -20,12 +20,15 @@ package jasima.shopSim.util.modelDef.streams;
 
 import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
+import jasima.core.util.Util;
 
 import java.util.List;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 public class DblExponentialDef extends DblStreamDef {
+
+	private static final long serialVersionUID = 332888720647354355L;
 
 	public static final String PARAM_MEAN = "mean";
 	public static final String TYPE_STRING = "dblExp";
@@ -43,7 +46,7 @@ public class DblExponentialDef extends DblStreamDef {
 			try {
 				d = Double.parseDouble(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
@@ -79,7 +82,8 @@ public class DblExponentialDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format("%s(%s)", FACTORY.getTypeString(), getMean());
+		return String.format(Util.DEF_LOCALE, "%s(%s)",
+				FACTORY.getTypeString(), getMean());
 	}
 
 	@Override

@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.statistics;
 
+import jasima.core.util.Util;
+
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.Iterator;
@@ -37,7 +39,8 @@ import java.util.Locale;
  * </ul>
  * 
  * @author Robin Kreis <r.kreis@uni-bremen.de>, 2012-09-07
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class QuantileEstimator extends SummaryStat implements
 		Iterable<QuantileEstimator.Bar> {
@@ -363,7 +366,7 @@ public class QuantileEstimator extends SummaryStat implements
 	@Override
 	public String toString() {
 		if (p2_q.length > 10) {
-			return String.format(
+			return String.format(Util.DEF_LOCALE,
 					"[10%%<%f, median: %f, 90%%<%f; %d more markers]",
 					quantile(0.1), quantile(0.5), quantile(0.9),
 					p2_q.length - 3);

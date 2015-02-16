@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.statistics;
 
+import jasima.core.util.Util;
+
 /**
  * A {@link SummaryStat} which weights values according to the time. As result
  * statistics the values returned by {@link #mean()}, {@link #min()}, and
@@ -59,7 +61,7 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	@Override
 	public void value(double value, double time) {
 		if (time < lastTime())
-			throw new IllegalArgumentException(String.format(
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
 					"negative time span (lastTime=%f,time=%f).", lastTime(),
 					time));
 		super.value(lastValue, time - lastTime());

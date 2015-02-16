@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import jasima.core.util.Util;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -195,6 +197,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 					&& experiments.size() > getMaxConfigurations()) {
 				throw new RuntimeException(
 						String.format(
+								Util.DEF_LOCALE,
 								"More than %d configurations. Consider reducing the number of factors and/or factor values or using an optimization algorithm instead.",
 								getMaxConfigurations()));
 			}

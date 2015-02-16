@@ -82,8 +82,9 @@ public abstract class AbstractExperimentRunner {
 		String logLevels = Arrays.toString(values).replaceAll("[\\[\\]]", "");
 		p.acceptsAll(
 				asList("l", "log"),
-				String.format("Set log level to one of %s. Default: INFO.",
-						logLevels)).withRequiredArg().describedAs("level");
+				String.format(Util.DEF_LOCALE,
+						"Set log level to one of %s. Default: INFO.", logLevels))
+				.withRequiredArg().describedAs("level");
 
 		p.accepts("xmlres", "Save results in XML format.").withOptionalArg()
 				.describedAs("filename");
@@ -126,7 +127,7 @@ public abstract class AbstractExperimentRunner {
 		List<?> argList = new ArrayList<>(opts.nonOptionArguments());
 		handleRemainingArgs(argList);
 		if (argList.size() > 0) {
-			throw new RuntimeException(String.format(
+			throw new RuntimeException(String.format(Util.DEF_LOCALE,
 					"unrecognized command line parameters: %s",
 					Arrays.toString(argList.toArray())));
 		}

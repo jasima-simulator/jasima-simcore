@@ -28,6 +28,8 @@ import java.util.List;
 
 public class IntConstDef extends IntStreamDef {
 
+	private static final long serialVersionUID = -4870221883421631767L;
+
 	public static final String PARAM_VALUES = "values";
 	public static final String TYPE_STRING = "intConst";
 
@@ -43,7 +45,7 @@ public class IntConstDef extends IntStreamDef {
 			try {
 				ll = Util.parseIntList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
@@ -80,7 +82,8 @@ public class IntConstDef extends IntStreamDef {
 	public String toString() {
 		String s = Arrays.toString(getValues()).replace("[", "")
 				.replace("]", "");
-		return String.format("%s(%s)", FACTORY.getTypeString(), s);
+		return String.format(Util.DEF_LOCALE, "%s(%s)",
+				FACTORY.getTypeString(), s);
 	}
 
 	@Override

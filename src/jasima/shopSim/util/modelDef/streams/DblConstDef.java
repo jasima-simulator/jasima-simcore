@@ -27,6 +27,8 @@ import java.util.List;
 
 public class DblConstDef extends DblStreamDef {
 
+	private static final long serialVersionUID = -2859329292507063575L;
+
 	public static final String PARAM_VALUES = "values";
 	public static final String TYPE_STRING = "const";
 
@@ -42,7 +44,7 @@ public class DblConstDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
@@ -79,7 +81,8 @@ public class DblConstDef extends DblStreamDef {
 	public String toString() {
 		String s = Arrays.toString(getValues()).replace("[", "")
 				.replace("]", "");
-		return String.format("%s(%s)", FACTORY.getTypeString(), s);
+		return String.format(Util.DEF_LOCALE, "%s(%s)",
+				FACTORY.getTypeString(), s);
 	}
 
 	@Override

@@ -26,6 +26,8 @@ import java.util.List;
 
 public class IntUniformDef extends IntStreamDef {
 
+	private static final long serialVersionUID = 741813233923786283L;
+
 	public static final String PARAM_MAX_VALUE = "maxValue";
 	public static final String PARAM_MIN_VALUE = "minValue";
 	public static final String TYPE_STRING = "intUnif";
@@ -44,13 +46,14 @@ public class IntUniformDef extends IntStreamDef {
 			try {
 				ll = Util.parseIntList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 2) {
 				errors.add(String
-						.format("invalid number of parameters (2 required, min and max value): '%s'",
+						.format(Util.DEF_LOCALE,
+								"invalid number of parameters (2 required, min and max value): '%s'",
 								params));
 				return null;
 			}
@@ -86,8 +89,8 @@ public class IntUniformDef extends IntStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format("%s(%d,%d)", FACTORY.getTypeString(),
-				getMinValue(), getMaxValue());
+		return String.format(Util.DEF_LOCALE, "%s(%d,%d)",
+				FACTORY.getTypeString(), getMinValue(), getMaxValue());
 	}
 
 	@Override

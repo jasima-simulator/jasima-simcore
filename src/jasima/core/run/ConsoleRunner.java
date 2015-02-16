@@ -55,7 +55,8 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 			if (!main.startsWith("-")) {
 				// no, could be class or file name
 				experimentFileName = main;
-				experiment = (Experiment) Util.loadClassOrXmlFile(main, getClass().getClassLoader(), packageSearchPath);
+				experiment = (Experiment) Util.loadClassOrXmlFile(main,
+						getClass().getClassLoader(), packageSearchPath);
 				if (experiment == null)
 					printErrorAndExit(1, MSG_NO_EXP_FILE);
 
@@ -83,13 +84,14 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 				Class<?> type = prop.getPropertyType();
 
 				String description = type.isPrimitive() ? "" : String.format(
-						"Property of type '%s'", type.getName());
+						Util.DEF_LOCALE, "Property of type '%s'",
+						type.getName());
 				if (type.isEnum()) {
 					String enumValues = Arrays
 							.toString(type.getEnumConstants()).replaceAll(
 									"[\\[\\]]", "");
-					description = String.format("Possible values: %s",
-							enumValues);
+					description = String.format(Util.DEF_LOCALE,
+							"Possible values: %s", enumValues);
 				}
 
 				p.accepts(prop.getName(), description).withRequiredArg()

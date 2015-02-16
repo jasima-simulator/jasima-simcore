@@ -26,6 +26,8 @@ import java.util.List;
 
 public class DblUniformDef extends DblStreamDef {
 
+	private static final long serialVersionUID = -586246159696640227L;
+
 	public static final String PARAM_MAX_VALUE = "maxValue";
 	public static final String PARAM_MIN_VALUE = "minValue";
 	public static final String TYPE_STRING = "dblUnif";
@@ -44,13 +46,14 @@ public class DblUniformDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 2) {
 				errors.add(String
-						.format("invalid number of parameters (2 required, min and max value): '%s'",
+						.format(Util.DEF_LOCALE,
+								"invalid number of parameters (2 required, min and max value): '%s'",
 								params));
 				return null;
 			}
@@ -85,8 +88,8 @@ public class DblUniformDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format("%s(%s,%s)", FACTORY.getTypeString(),
-				getMinValue(), getMaxValue());
+		return String.format(Util.DEF_LOCALE, "%s(%s,%s)",
+				FACTORY.getTypeString(), getMinValue(), getMaxValue());
 	}
 
 	@Override

@@ -255,7 +255,7 @@ public class Util {
 			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
 					|| str.equalsIgnoreCase("0"))
 				return (E) Boolean.FALSE;
-			throw new TypeConversionException(String.format(
+			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
 					"Can't convert %s to bool.", o));
 		}
 
@@ -289,7 +289,7 @@ public class Util {
 				return (E) new Character(s.charAt(0));
 		}
 
-		throw new TypeConversionException(String.format(
+		throw new TypeConversionException(String.format(Util.DEF_LOCALE,
 				"Can't convert from '%s' to '%s'.", o.getClass().getName(),
 				klass.getName()));
 	}
@@ -609,7 +609,7 @@ public class Util {
 					PROP_SUN_JAVA_COMMAND);
 		}
 		if (main == null) {
-			throw new RuntimeException(String.format(
+			throw new RuntimeException(String.format(Util.DEF_LOCALE,
 					"Couldn't find properties '%s' or '%s'.",
 					PROP_SUN_JAVA_COMMAND, PROP_JASIMA_EXPERIMENT));
 		}

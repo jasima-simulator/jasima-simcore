@@ -166,7 +166,8 @@ public class IntEmpirical extends IntStream {
 		if (sb.length() > 0)
 			params = sb.substring(0, sb.length() - 1);
 
-		return String.format("%s(%s)", this.getClass().getSimpleName(), params);
+		return String.format(Util.DEF_LOCALE, "%s(%s)", this.getClass()
+				.getSimpleName(), params);
 	}
 
 }

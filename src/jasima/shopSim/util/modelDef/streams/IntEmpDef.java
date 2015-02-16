@@ -29,6 +29,8 @@ import java.util.StringTokenizer;
 
 public class IntEmpDef extends IntStreamDef {
 
+	private static final long serialVersionUID = 6302098802706171687L;
+
 	public static final String PARAM_PROBS = "probs";
 	public static final String PARAM_VALUES = "values";
 	public static final String TYPE_STRING = "intEmp";
@@ -53,7 +55,7 @@ public class IntEmpDef extends IntStreamDef {
 					l.add(new Pair<Integer, Double>(v1, p1));
 				}
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
@@ -66,7 +68,7 @@ public class IntEmpDef extends IntStreamDef {
 				probs[i] = p.b;
 			}
 			if (Math.abs(Util.sum(probs) - 1.0) > 1e-6) {
-				errors.add(String.format(
+				errors.add(String.format(Util.DEF_LOCALE,
 						"probabilities have to sum to 1.0, current sum is %f.",
 						Util.sum(probs)));
 				return null;
@@ -127,7 +129,8 @@ public class IntEmpDef extends IntStreamDef {
 		if (sb.length() > 0)
 			params = sb.substring(0, sb.length() - 1);
 
-		return String.format("%s(%s)", FACTORY.getTypeString(), params);
+		return String.format(Util.DEF_LOCALE, "%s(%s)",
+				FACTORY.getTypeString(), params);
 	}
 
 	@Override

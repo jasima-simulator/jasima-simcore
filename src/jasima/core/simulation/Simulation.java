@@ -100,7 +100,8 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		public String getMessage() {
 			// lazy creation of message only when needed
 			if (message == null) {
-				message = String.format(messageFormatString, params);
+				message = String.format(Util.DEF_LOCALE, messageFormatString,
+						params);
 				messageFormatString = null;
 				params = null;
 			}

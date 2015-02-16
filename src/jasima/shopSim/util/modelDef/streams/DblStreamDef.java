@@ -19,6 +19,7 @@
 package jasima.shopSim.util.modelDef.streams;
 
 import jasima.core.random.continuous.DblStream;
+import jasima.core.util.Util;
 import jasima.shopSim.util.modelDef.PropertySupport;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public abstract class DblStreamDef extends PropertySupport implements Cloneable 
 		StreamDefFact fact = streamFactoryReg.get(type);
 		if (fact == null) {
 			errors.add(String.format(
+					Util.DEF_LOCALE,
 					"Invalid stream type '%s'. Supported types are: '%s'.",
 					type,
 					streamFactoryReg.keySet().toString()

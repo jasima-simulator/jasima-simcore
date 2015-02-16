@@ -27,6 +27,8 @@ import java.util.Locale;
 
 public class DblTriangularDef extends DblStreamDef {
 
+	private static final long serialVersionUID = 2748975328234554477L;
+
 	public static final String PARAM_MAX_VALUE = "maxValue";
 	public static final String PARAM_MODE_VALUE = "modeValue";
 	public static final String PARAM_MIN_VALUE = "minValue";
@@ -46,13 +48,14 @@ public class DblTriangularDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format("invalid number: %s",
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
 						nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 3) {
 				errors.add(String
-						.format("invalid number of parameters (3 required, min, mode, and max value): '%s'",
+						.format(Util.DEF_LOCALE,
+								"invalid number of parameters (3 required, min, mode, and max value): '%s'",
 								params));
 				return null;
 			}
