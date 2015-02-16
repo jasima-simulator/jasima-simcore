@@ -50,8 +50,7 @@ import java.util.jar.JarFile;
  * Some static utility methods that don't really fit anywhere else.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class Util {
 
@@ -60,6 +59,15 @@ public class Util {
 	 */
 	public static final String VERSION = getVersion();
 
+	/**
+	 * Default VERSION used when no version information is available from
+	 * package (e.g., during a run from within Eclipse).
+	 */
+	public static final String DEFAULT_VERSION = "1.2.1-DEVELOP";
+
+	/**
+	 * Descriptive String showing name, current version and project URL.
+	 */
 	public static final String ID_STRING = "JASIMA, v" + VERSION
 			+ "; http://jasima.googlecode.com/";
 
@@ -1124,7 +1132,7 @@ public class Util {
 	 */
 	private static String getVersion() {
 		String v = Util.class.getPackage().getImplementationVersion();
-		return v == null ? "<not_found>" : v;
+		return v == null ? DEFAULT_VERSION : v;
 	}
 
 }
