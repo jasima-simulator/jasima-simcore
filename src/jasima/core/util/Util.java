@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -379,11 +380,22 @@ public class Util {
 		} else if (value instanceof String) {
 			String s = (String) value;
 			try {
+				// try to use s as is
 				Util.setProperty(o, propName, s);
 			} catch (RuntimeException e) {
 				if (e.getCause() instanceof TypeConversionException) {
-					// try to interpret 's' as class or file name
-					value = loadClassOrXmlFile(s, loader, packageSearchPath);
+					Pair<String, Map<String, Object>> parsed = ListTokenizer
+							.parseClassAndPropDef(s);
+					try {
+						value = createObjectTree(parsed, loader,
+								packageSearchPath, false);
+					} catch (RuntimeException ex) {
+						ex.printStackTrace();
+						value = null;
+					}
+//
+//					// try to interpret 's' as class or file name
+//					value = loadClassOrXmlFile(s, loader, packageSearchPath);
 					if (value != null) {
 						Util.setProperty(o, propName, value);
 						return;
@@ -396,6 +408,29 @@ public class Util {
 			// try to use value as is
 			Util.setProperty(o, propName, value);
 		}
+	}
+
+	private static Object createObjectTree(
+			Pair<String, Map<String, Object>> parsed, ClassLoader loader,
+			String[] packageSearchPath, boolean sub) {
+		Object root = loadClassOrXmlFile(parsed.a, loader, packageSearchPath);
+		if (root != null && parsed.b != null) {
+			Map<String, Object> props = parsed.b;
+			for (Entry<String, Object> e : props.entrySet()) {
+				String propName = e.getKey();
+				Object value = e.getValue();
+
+				if (value instanceof Pair) {
+					value = createObjectTree(
+							(Pair<String, Map<String, Object>>) value, loader,
+							packageSearchPath, true);
+				}
+
+				// plain value
+				setPropertyEx(root, propName, value, loader, packageSearchPath);
+			}
+		}
+		return root;
 	}
 
 	/**
@@ -451,15 +486,16 @@ public class Util {
 	 */
 	public static Object searchAndInstanciateClass(String className,
 			ClassLoader l, String[] searchPath) {
-		// does it look like containing a list of parameters we have to parse?
-		if (className.contains("(")) {
-			ListTokenizer t = new ListTokenizer(className);
-			
-			if (t.nextTokenNoWhitespace()!=STRING)
-				throw new RuntimeException("Input looks strange: '%s'"+className);
-			className = t.n
-		}
-		
+		// // does it look like containing a list of parameters we have to
+		// parse?
+		// if (className.contains("(")) {
+		// ListTokenizer t = new ListTokenizer(className);
+		//
+		// if (t.nextTokenNoWhitespace()!=STRING)
+		// throw new RuntimeException("Input looks strange: '%s'"+className);
+		// className = t.n
+		// }
+
 		// try direct match first
 		Class<?> klazz = load(className, l);
 

@@ -1,5 +1,8 @@
 package jasima.core.util;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -9,7 +12,8 @@ import java.util.Objects;
  * ";", "=".
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class ListTokenizer {
 
@@ -28,21 +32,24 @@ public class ListTokenizer {
 
 		private static final long serialVersionUID = 3473197915435659395L;
 
-		private int errorPos;
 		private String msg;
+		private Object[] msgParams;
 
-		public ParseException(int errorPos, String msg) {
+		public ParseException(int errorPos, String msg, Object... msgParams) {
 			super();
-			this.errorPos = errorPos;
 			this.msg = msg;
+			this.msgParams = new Object[1 + msgParams.length];
+			this.msgParams[0] = errorPos;
+			for (int i = 0; i < msgParams.length; i++) {
+				this.msgParams[i + 1] = msgParams[i];
+			}
 		}
 
 		@Override
 		public String getMessage() {
 			return String.format(Util.DEF_LOCALE,
-					"Parse error after position %d: %s", errorPos, msg);
+					"Parse error at or before position %d: " + msg, msgParams);
 		}
-
 	}
 
 	private String input;
@@ -89,11 +96,16 @@ public class ListTokenizer {
 	 * a problem splitting the input string in tokens.
 	 */
 	public TokenType nextToken() {
-		if (currPos >= input.length())
-			return null;
-
 		tokenStart = currPos;
 		tokenContainsEscapedChars = false;
+
+		// end of input?
+		if (currPos >= input.length()) {
+			tokenEnd = tokenStart = currPos;
+			currPos++;
+			tokenType = null;
+			return null;
+		}
 
 		char c = input.charAt(currPos);
 		currPos++;
@@ -144,7 +156,6 @@ public class ListTokenizer {
 	private void readStringToken(char firstChar) {
 		boolean isQuoted = false;
 		if (firstChar == '"') {
-			tokenStart++;
 			isQuoted = true;
 		}
 
@@ -196,26 +207,40 @@ public class ListTokenizer {
 
 		if (isQuoted) {
 			if (c == '"') {
-				tokenEnd = currPos;
 				currPos++;
 			} else {
 				throw new ParseException(tokenStart,
 						"Quoted string not closed.");
 			}
-		} else {
-			tokenEnd = currPos;
 		}
+		tokenEnd = currPos;
 	}
 
 	/**
 	 * Returns the portion of the input text that is associated with the current
-	 * token.
+	 * token. This method does not return surrounding quotes of a quoted
+	 * {@code STRING} and unescapes any escaped characters.
 	 */
 	public String currTokenText() {
+		// was pushBackToken() called before
+		if (currPos == tokenStart)
+			throw new IllegalStateException();
+
+		if (tokenType == null)
+			return null; // end of input
+
+		int start = tokenStart;
+		int end = tokenEnd;
+		if (input.charAt(start) == '"') {
+			assert tokenType == TokenType.STRING;
+			start++;
+			end--;
+			assert start <= end;
+		}
 		if (tokenContainsEscapedChars) {
 			boolean escape = false;
-			StringBuilder sb = new StringBuilder(tokenEnd - tokenStart);
-			for (int i = tokenStart; i < tokenEnd; i++) {
+			StringBuilder sb = new StringBuilder(end - start);
+			for (int i = start; i < end; i++) {
 				char c = input.charAt(i);
 				if (escape) {
 					sb.append(c);
@@ -232,7 +257,43 @@ public class ListTokenizer {
 
 			return sb.toString();
 		} else
-			return input.substring(tokenStart, tokenEnd);
+			return input.substring(start, end);
+	}
+
+	public TokenType currTokenType() {
+		// was pushBackToken() called before?
+		if (currPos == tokenStart)
+			throw new IllegalStateException();
+
+		return tokenType;
+	}
+
+	public int currTokenStart() {
+		// was pushBackToken() called before?
+		if (currPos == tokenStart)
+			throw new IllegalStateException();
+
+		return tokenStart;
+	}
+
+	public int currTokenEnd() {
+		// was pushBackToken() called before?
+		if (currPos == tokenStart)
+			throw new IllegalStateException();
+
+		return tokenEnd;
+	}
+
+	/**
+	 * Resets the current reading position back to beginning of the current
+	 * token, so {@link #nextToken()} will see the same token again. This is
+	 * useful, if a parser detects a token he can't handle but has to pass back
+	 * to a parent parser for proper processing.
+	 */
+	public void pushBackToken() {
+		if (currPos == tokenStart)
+			throw new IllegalStateException(); // this works only once
+		currPos = tokenStart;
 	}
 
 	/**
@@ -240,6 +301,97 @@ public class ListTokenizer {
 	 */
 	public void setInput(String input) {
 		this.input = Objects.requireNonNull(input);
+	}
+
+	// *************************** static methods ***************************
+
+	/**
+	 * Constructs a new ListTokenizer around {@code input} and then calls
+	 * {@link #parseClassAndPropDef(ListTokenizer)}.
+	 * 
+	 */
+	public static Pair<String, Map<String, Object>> parseClassAndPropDef(
+			String input) {
+		ListTokenizer tk = new ListTokenizer(input);
+		Pair<String, Map<String, Object>> res = parseClassAndPropDef(tk);
+
+		// full input read?
+		if (tk.nextToken() != null) {
+			throw new ParseException(tk.currTokenStart(),
+					"There is data after the last token.");
+		}
+
+		return res;
+	}
+
+	/**
+	 * Parses class/property definitions in a form similar to: "
+	 * {@code a.b.c.ATC(prop1=abc;prop2=1.23;prop3=Test(abc=xyz;def=123))}"
+	 * 
+	 */
+	public static Pair<String, Map<String, Object>> parseClassAndPropDef(
+			ListTokenizer tk) {
+		// required class name
+		TokenType token = tk.nextTokenNoWhitespace();
+		assureTokenTypes(tk, token, TokenType.STRING);
+		String className = tk.currTokenText();
+		Map<String, Object> params = null;
+
+		// optional parameter list in round parenthesis
+		token = tk.nextTokenNoWhitespace();
+		if (token == TokenType.PARENS_OPEN) {
+			params = new LinkedHashMap<>();
+			while (true) {
+				// name
+				token = tk.nextTokenNoWhitespace();
+				assureTokenTypes(tk, token, TokenType.STRING,
+						TokenType.PARENS_CLOSE);
+				if (token == TokenType.PARENS_CLOSE)
+					break; // end of parameter list
+				String paramName = tk.currTokenText();
+
+				// equals
+				assureTokenTypes(tk, tk.nextTokenNoWhitespace(),
+						TokenType.EQUALS);
+
+				// value
+				Pair<String, Map<String, Object>> paramValue = parseClassAndPropDef(tk);
+				assert paramValue != null;
+
+				// save parsed parameter
+				params.put(paramName, //
+						paramValue.b != null ? paramValue : paramValue.a);
+
+				// more parameters?
+				token = tk.nextTokenNoWhitespace();
+				assureTokenTypes(tk, token, TokenType.SEMICOLON,
+						TokenType.PARENS_CLOSE);
+				if (token == TokenType.SEMICOLON) {
+					// nothing special, start next iteration
+				} else if (token == TokenType.PARENS_CLOSE) {
+					break; // found end of list
+				}
+			}
+		} else {
+			// let parent handle it
+			tk.pushBackToken();
+		}
+
+		return new Pair<String, Map<String, Object>>(className, params);
+	}
+
+	private static void assureTokenTypes(ListTokenizer tk, TokenType actual,
+			TokenType... expected) {
+		for (TokenType e : expected) {
+			if (actual == e)
+				return;
+		}
+
+		String msg = "expected one of: %s, but found: %s, '%s'";
+		if (expected.length == 1)
+			msg = "expected %s, but found: %s, '%s'";
+		throw new ParseException(tk.currTokenStart(), msg,
+				Arrays.deepToString(expected), actual, tk.currTokenText());
 	}
 
 }
