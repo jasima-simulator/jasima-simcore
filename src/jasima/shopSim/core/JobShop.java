@@ -19,6 +19,7 @@
 package jasima.shopSim.core;
 
 import jasima.core.simulation.Simulation;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.WorkStation.WorkStationEvent;
@@ -153,7 +154,7 @@ public class JobShop extends Simulation {
 		for (WorkStation m : machines) {
 			NotifierListener<WorkStation, WorkStationEvent> ml = listener;
 			if (cloneIfPossible)
-				ml = Util.cloneIfPossible(listener);
+				ml = TypeUtil.cloneIfPossible(listener);
 			m.addNotifierListener(ml);
 		}
 	}

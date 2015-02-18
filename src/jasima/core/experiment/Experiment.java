@@ -24,6 +24,7 @@ import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
@@ -282,7 +283,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	public Map<String, Object> getPropsWithValues() {
 		Map<String, Object> props = new LinkedHashMap<String, Object>();
 
-		PropertyDescriptor[] pds = Util.findWritableProperties(this);
+		PropertyDescriptor[] pds = TypeUtil.findWritableProperties(this);
 		for (PropertyDescriptor pd : pds) {
 			try {
 				props.put(pd.getName(), pd.getReadMethod().invoke(this));
@@ -472,7 +473,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	public static void main(String[] args) throws Exception {
 		// create instance of the Experiment sub-class that was specified as
 		// Java's main class
-		Class<?> klazz = Util.getMainClass();
+		Class<?> klazz = TypeUtil.getMainClass();
 		Experiment e = (Experiment) klazz.newInstance();
 
 		// parse command line arguments and run

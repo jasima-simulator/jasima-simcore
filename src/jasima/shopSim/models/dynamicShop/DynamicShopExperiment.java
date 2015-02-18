@@ -24,6 +24,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.core.util.Pair;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.shopSim.core.DynamicJobSource;
 import jasima.shopSim.core.Job;
@@ -198,14 +199,14 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);
 		src.setNumOps(numOps);
 
-		DblStream procTimes2 = Util.cloneIfPossible(getProcTimes());
+		DblStream procTimes2 = TypeUtil.cloneIfPossible(getProcTimes());
 		procTimes2.setName("procTimesStream");
 		src.setProcTimes(procTimes2);
 
 		src.setMachIdx(new IntUniformRange("machIdxStream", 0,
 				getNumMachines() - 1));
 
-		src.setDueDateFactors(Util.cloneIfPossible(getDueDateFactor()));
+		src.setDueDateFactors(TypeUtil.cloneIfPossible(getDueDateFactor()));
 
 		if (getWeights() != null)
 			try {

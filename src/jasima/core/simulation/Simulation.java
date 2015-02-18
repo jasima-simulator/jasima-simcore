@@ -20,6 +20,7 @@ package jasima.core.simulation;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation.SimEvent;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
@@ -425,7 +426,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	public NotifierListener<Simulation, SimEvent> installSimulationListener(
 			NotifierListener<Simulation, SimEvent> l, boolean cloneIfPossbile) {
 		if (cloneIfPossbile)
-			l = Util.cloneIfPossible(l);
+			l = TypeUtil.cloneIfPossible(l);
 		addNotifierListener(l);
 		return l;
 	}

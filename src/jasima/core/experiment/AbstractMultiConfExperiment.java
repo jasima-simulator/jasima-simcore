@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 
 import java.io.Serializable;
@@ -178,8 +179,8 @@ public abstract class AbstractMultiConfExperiment extends
 					&& p.getValue() instanceof ComplexFactorSetter) {
 				((ComplexFactorSetter) p.getValue()).configureExperiment(e);
 			} else {
-				Util.setProperty(e, p.getKey(),
-						Util.cloneIfPossible(p.getValue()));
+				TypeUtil.setProperty(e, p.getKey(),
+						TypeUtil.cloneIfPossible(p.getValue()));
 			}
 		}
 

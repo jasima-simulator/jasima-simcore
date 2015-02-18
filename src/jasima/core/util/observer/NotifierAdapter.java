@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.util.observer;
 
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 
 import java.io.Serializable;
@@ -128,7 +129,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 
 		c.listeners = new ArrayList<NotifierListener<N, E>>(listeners.size());
 		for (int i = 0, n = listeners.size(); i < n; i++) {
-			NotifierListener<N, E> clone = Util.cloneIfPossible(listeners
+			NotifierListener<N, E> clone = TypeUtil.cloneIfPossible(listeners
 					.get(i));
 			c.listeners.add(clone);
 		}

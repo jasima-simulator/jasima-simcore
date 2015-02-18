@@ -4,6 +4,7 @@ import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import jasima.core.experiment.Experiment;
 import jasima.core.util.Pair;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 
 import java.beans.PropertyDescriptor;
@@ -55,7 +56,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 			if (!main.startsWith("-")) {
 				// no, could be class or file name
 				experimentFileName = main;
-				experiment = (Experiment) Util.loadClassOrXmlFile(main,
+				experiment = (Experiment) TypeUtil.loadClassOrXmlFile(main,
 						getClass().getClassLoader(), packageSearchPath);
 				if (experiment == null)
 					printErrorAndExit(1, MSG_NO_EXP_FILE);
@@ -77,7 +78,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	@Override
 	protected boolean createAdditionalOptions(OptionParser p) {
 		if (experiment != null) {
-			beanProps = Util.findWritableProperties(experiment);
+			beanProps = TypeUtil.findWritableProperties(experiment);
 
 			// create a command line option for each top level property
 			for (PropertyDescriptor prop : beanProps) {

@@ -29,6 +29,7 @@ import jasima.core.util.AbstractResultSaver;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
 import jasima.core.util.Pair;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.XmlSaver;
 import jasima.core.util.observer.NotifierListener;
@@ -333,7 +334,7 @@ public abstract class AbstractExperimentRunner {
 			String name = p.a;
 			Object value = p.b;
 
-			Util.setPropertyEx(exp, name, value, getClass().getClassLoader(),
+			TypeUtil.setPropertyEx(exp, name, value, getClass().getClassLoader(),
 					packageSearchPath);
 		}
 

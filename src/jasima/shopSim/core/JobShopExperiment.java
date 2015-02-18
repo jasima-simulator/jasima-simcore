@@ -23,7 +23,7 @@ import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.simulation.Simulation.SimPrintEvent;
-import jasima.core.util.Util;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.WorkStation.WorkStationEvent;
 import jasima.shopSim.core.batchForming.BatchForming;
@@ -138,7 +138,7 @@ public abstract class JobShopExperiment extends Experiment {
 				NotifierListener<WorkStation, WorkStationEvent>[] mls = machListenerSpecific
 						.get(machName);
 				for (NotifierListener<WorkStation, WorkStationEvent> ml : mls) {
-					ml = Util.cloneIfPossible(ml);
+					ml = TypeUtil.cloneIfPossible(ml);
 					ws.addNotifierListener(ml);
 				}
 			}
@@ -243,19 +243,21 @@ public abstract class JobShopExperiment extends Experiment {
 		if (batchForming != null)
 			clone.batchForming = batchForming.clone();
 
-		clone.sequencingRules = Util.deepCloneArrayIfPossible(sequencingRules);
-		clone.batchSequencingRules = Util
+		clone.sequencingRules = TypeUtil
+				.deepCloneArrayIfPossible(sequencingRules);
+		clone.batchSequencingRules = TypeUtil
 				.deepCloneArrayIfPossible(batchSequencingRules);
-		clone.batchFormingRules = Util
+		clone.batchFormingRules = TypeUtil
 				.deepCloneArrayIfPossible(batchFormingRules);
-		clone.shopListener = Util.deepCloneArrayIfPossible(shopListener);
-		clone.machineListener = Util.deepCloneArrayIfPossible(machineListener);
+		clone.shopListener = TypeUtil.deepCloneArrayIfPossible(shopListener);
+		clone.machineListener = TypeUtil
+				.deepCloneArrayIfPossible(machineListener);
 
 		if (machListenerSpecific != null) {
 			clone.machListenerSpecific = new HashMap<String, NotifierListener<WorkStation, WorkStationEvent>[]>();
 			for (String name : machListenerSpecific.keySet()) {
-				clone.machListenerSpecific.put(name,
-						Util.cloneIfPossible(machListenerSpecific.get(name)));
+				clone.machListenerSpecific.put(name, TypeUtil
+						.cloneIfPossible(machListenerSpecific.get(name)));
 			}
 		}
 

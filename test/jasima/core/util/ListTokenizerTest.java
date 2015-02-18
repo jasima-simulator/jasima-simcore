@@ -3,8 +3,8 @@ package jasima.core.util;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import jasima.core.util.ListTokenizer.ParseException;
-import jasima.core.util.ListTokenizer.TokenType;
+import jasima.core.util.ArgListTokenizer.ParseException;
+import jasima.core.util.ArgListTokenizer.TokenType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class ListTokenizerTest {
 
 	public static List<String> tokenize(String toParse) {
 		ArrayList<String> token = new ArrayList<>();
-		ListTokenizer t = new ListTokenizer();
+		ArgListTokenizer t = new ArgListTokenizer();
 		t.setInput(toParse);
 		while (t.nextToken() != null) {
 			String text = t.currTokenText();
@@ -99,7 +99,7 @@ public class ListTokenizerTest {
 
 	@Test
 	public void testPushback1() {
-		ListTokenizer lt = new ListTokenizer("\"\"");
+		ArgListTokenizer lt = new ArgListTokenizer("\"\"");
 		assertThat(lt.nextToken(), is(TokenType.STRING));
 		assertThat(lt.currTokenText(), is(""));
 
@@ -114,7 +114,7 @@ public class ListTokenizerTest {
 
 	@Test
 	public void testPushback2() {
-		ListTokenizer lt = new ListTokenizer("\"\";");
+		ArgListTokenizer lt = new ArgListTokenizer("\"\";");
 		assertThat(lt.nextToken(), is(TokenType.STRING));
 		assertThat(lt.currTokenText(), is(""));
 		assertThat(lt.nextToken(), is(TokenType.SEMICOLON));
@@ -131,7 +131,7 @@ public class ListTokenizerTest {
 
 	@Test
 	public void testPushback3() {
-		ListTokenizer lt = new ListTokenizer("\"\";");
+		ArgListTokenizer lt = new ArgListTokenizer("\"\";");
 
 		assertThat(lt.nextToken(), is(TokenType.STRING));
 		assertThat(lt.currTokenType(), is(TokenType.STRING));
@@ -159,43 +159,4 @@ public class ListTokenizerTest {
 		lt.currTokenText();
 	}
 
-	@Test
-	public void parseClassAndPropDefTest() {
-		String input = "a.b.c.ATC(prop1=abc;prop2=1.23;prop3=Test(abc=xyz;def=123))";
-		Pair<String, Map<String, Object>> parseRes = ListTokenizer
-				.parseClassAndPropDef(input);
-
-		assertThat(parseRes.a, is("a.b.c.ATC"));
-
-		Map<String, Object> map1 = parseRes.b;
-
-		assertThat((String) map1.get("prop1"), is("abc"));
-		assertThat((String) map1.get("prop2"), is("1.23"));
-
-		@SuppressWarnings("unchecked")
-		Pair<String, Map<String, Object>> sub = (Pair<String, Map<String, Object>>) map1
-				.get("prop3");
-		assertThat(sub.a, is("Test"));
-
-		Map<String, Object> map2 = sub.b;
-
-		assertThat((String) map2.get("abc"), is("xyz"));
-		assertThat((String) map2.get("def"), is("123"));
-	}
-
-	@Test
-	public void parseClassAndPropDefTest2() {
-		String input = "a.b.c.ATC(prop1=abc;";
-		thrown.expect(ParseException.class);
-		ListTokenizer.parseClassAndPropDef(input);
-		assert false;
-	}
-
-	@Test
-	public void parseClassAndPropDefTest3() {
-		String input = "a.b.c.ATC;def";
-		thrown.expect(ParseException.class);
-		ListTokenizer.parseClassAndPropDef(input);
-		assert false;
-	}
 }

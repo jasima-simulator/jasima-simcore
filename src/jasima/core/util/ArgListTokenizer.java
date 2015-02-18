@@ -15,7 +15,7 @@ import java.util.Objects;
  * @version 
  *          "$Id$"
  */
-public class ListTokenizer {
+public class ArgListTokenizer {
 
 	/**
 	 * The recognized tokens.
@@ -60,11 +60,11 @@ public class ListTokenizer {
 	private TokenType tokenType;
 	private boolean tokenContainsEscapedChars;
 
-	public ListTokenizer() {
+	public ArgListTokenizer() {
 		this(null);
 	}
 
-	public ListTokenizer(String input) {
+	public ArgListTokenizer(String input) {
 		super();
 		reset();
 		this.input = input;
@@ -303,95 +303,5 @@ public class ListTokenizer {
 		this.input = Objects.requireNonNull(input);
 	}
 
-	// *************************** static methods ***************************
-
-	/**
-	 * Constructs a new ListTokenizer around {@code input} and then calls
-	 * {@link #parseClassAndPropDef(ListTokenizer)}.
-	 * 
-	 */
-	public static Pair<String, Map<String, Object>> parseClassAndPropDef(
-			String input) {
-		ListTokenizer tk = new ListTokenizer(input);
-		Pair<String, Map<String, Object>> res = parseClassAndPropDef(tk);
-
-		// full input read?
-		if (tk.nextToken() != null) {
-			throw new ParseException(tk.currTokenStart(),
-					"There is data after the last token.");
-		}
-
-		return res;
-	}
-
-	/**
-	 * Parses class/property definitions in a form similar to: "
-	 * {@code a.b.c.ATC(prop1=abc;prop2=1.23;prop3=Test(abc=xyz;def=123))}"
-	 * 
-	 */
-	public static Pair<String, Map<String, Object>> parseClassAndPropDef(
-			ListTokenizer tk) {
-		// required class name
-		TokenType token = tk.nextTokenNoWhitespace();
-		assureTokenTypes(tk, token, TokenType.STRING);
-		String className = tk.currTokenText();
-		Map<String, Object> params = null;
-
-		// optional parameter list in round parenthesis
-		token = tk.nextTokenNoWhitespace();
-		if (token == TokenType.PARENS_OPEN) {
-			params = new LinkedHashMap<>();
-			while (true) {
-				// name
-				token = tk.nextTokenNoWhitespace();
-				assureTokenTypes(tk, token, TokenType.STRING,
-						TokenType.PARENS_CLOSE);
-				if (token == TokenType.PARENS_CLOSE)
-					break; // end of parameter list
-				String paramName = tk.currTokenText();
-
-				// equals
-				assureTokenTypes(tk, tk.nextTokenNoWhitespace(),
-						TokenType.EQUALS);
-
-				// value
-				Pair<String, Map<String, Object>> paramValue = parseClassAndPropDef(tk);
-				assert paramValue != null;
-
-				// save parsed parameter
-				params.put(paramName, //
-						paramValue.b != null ? paramValue : paramValue.a);
-
-				// more parameters?
-				token = tk.nextTokenNoWhitespace();
-				assureTokenTypes(tk, token, TokenType.SEMICOLON,
-						TokenType.PARENS_CLOSE);
-				if (token == TokenType.SEMICOLON) {
-					// nothing special, start next iteration
-				} else if (token == TokenType.PARENS_CLOSE) {
-					break; // found end of list
-				}
-			}
-		} else {
-			// let parent handle it
-			tk.pushBackToken();
-		}
-
-		return new Pair<String, Map<String, Object>>(className, params);
-	}
-
-	private static void assureTokenTypes(ListTokenizer tk, TokenType actual,
-			TokenType... expected) {
-		for (TokenType e : expected) {
-			if (actual == e)
-				return;
-		}
-
-		String msg = "expected one of: %s, but found: %s, '%s'";
-		if (expected.length == 1)
-			msg = "expected %s, but found: %s, '%s'";
-		throw new ParseException(tk.currTokenStart(), msg,
-				Arrays.deepToString(expected), actual, tk.currTokenText());
-	}
 
 }

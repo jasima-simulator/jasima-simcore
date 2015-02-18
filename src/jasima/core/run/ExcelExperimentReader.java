@@ -23,7 +23,7 @@ import jasima.core.experiment.AbstractMultiConfExperiment;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleConfigurationExperiment;
-import jasima.core.util.Util;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.XmlUtil;
 
 import java.io.File;
@@ -92,8 +92,8 @@ public class ExcelExperimentReader {
 
 		@Override
 		public void configureExperiment(Experiment e) {
-			Class<?> type = Util.getPropertyType(e, propPath);
-			Util.setProperty(e, propPath, evoke(cell, type));
+			Class<?> type = TypeUtil.getPropertyType(e, propPath);
+			TypeUtil.setProperty(e, propPath, evoke(cell, type));
 		}
 
 		@Override
@@ -102,7 +102,7 @@ public class ExcelExperimentReader {
 		}
 	}
 
-	//TODO: use same code as CommandLineRunner
+	// TODO: use same code as CommandLineRunner
 	protected static Class<?> findClass(String name) {
 		// fully qualified class name?
 		try {
@@ -131,7 +131,7 @@ public class ExcelExperimentReader {
 	protected static <T> T evoke(Cell cell, Class<T> type) {
 		Object val = getCellValue(cell);
 		try {
-			return Util.convert(val, type);
+			return TypeUtil.convert(val, type);
 		} catch (IllegalArgumentException ex) {
 			// ignore
 		}
@@ -263,7 +263,7 @@ public class ExcelExperimentReader {
 					}
 					Class<?> type;
 					try {
-						type = Util.getPropertyType(experiment, key);
+						type = TypeUtil.getPropertyType(experiment, key);
 					} catch (RuntimeException e) {
 						throw new RuntimeException("Can't find property '"
 								+ experiment.getClass().getSimpleName()
@@ -271,7 +271,7 @@ public class ExcelExperimentReader {
 					}
 					Object val = evoke(paramSheet.getCell(1, i), type);
 					try {
-						Util.setProperty(experiment, key, val);
+						TypeUtil.setProperty(experiment, key, val);
 					} catch (RuntimeException e) {
 						throw new RuntimeException("Can't write to property '"
 								+ experiment.getClass().getSimpleName()
