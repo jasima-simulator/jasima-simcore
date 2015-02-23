@@ -28,7 +28,8 @@ import org.junit.runners.Suite;
  *          "$Id$"
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.util.ListTokenizerTest.class })
+@Suite.SuiteClasses({ jasima.core.util.ArgListTokenizerTest.class,
+		jasima.core.util.ArgListParserTest.class })
 public class AllTests {
 
 }

@@ -33,8 +33,8 @@ public class ArgListParserTest {
 		assertNull(p1.getParams());
 		
 		ParseTree p2 = map1.get("prop2");
-		assertThat(p1.getClassOrXmlName(), is("1.23"));
-		assertNull(p1.getParams());
+		assertThat(p2.getClassOrXmlName(), is("1.23"));
+		assertNull(p2.getParams());
 
 		ParseTree p3 = map1.get("prop3");
 		assertThat(p3.getClassOrXmlName(), is("Test"));

@@ -15,7 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class ListTokenizerTest {
+public class ArgListTokenizerTest {
 
 	public static List<String> tokenize(String toParse) {
 		ArrayList<String> token = new ArrayList<>();
