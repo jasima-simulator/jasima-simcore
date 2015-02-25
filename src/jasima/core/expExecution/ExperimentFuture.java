@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
  * throw an {@link ExecutionException}. Instead a result map is returned
  * containing the exception message and the exception in text format.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  * @see FutureWrapper

@@ -23,7 +23,7 @@ import java.util.HashMap;
 /**
  * Common abstract base class for {@link Job}s and {@link Batch}es.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

@@ -32,7 +32,7 @@ import java.util.Map;
  * Systematically tests all possible combinations of various factors and their
  * values on a base experiment.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -85,11 +85,12 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
+	 * <p>
 	 * Convenience method to set a factor "factorName" for all possible values
 	 * of an enumeration.
-	 * <p />
-	 * 
-	 * Say an experiment has a property "color" of type ColorEnum
+	 * </p>
+	 * <p>
+	 * Say an experiment has a property "color" of type {@code ColorEnum}
 	 * 
 	 * <pre>
 	 * enum ColorEnum {

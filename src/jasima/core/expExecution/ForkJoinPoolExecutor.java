@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * possible starvation of worker threads waiting for sub-experiments to
  * complete.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-09-05
+ * @author Torsten Hildebrandt, 2012-09-05
  * @version 
  *          "$Id$"
  */
@@ -75,7 +75,8 @@ public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
 	@SuppressWarnings("serial")
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
+	public ExperimentFuture runExperiment(final Experiment e,
+			final Experiment parent) {
 		ForkJoinTask<Map<String, Object>> task;
 		task = pool.submit(new RecursiveTask<Map<String, Object>>() {
 			@Override

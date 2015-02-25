@@ -27,14 +27,17 @@ import java.util.HashSet;
 import java.util.Random;
 
 /**
+ * <p>
  * Allows to run a certain maximum number of experiments chosen randomly. This
  * number of experiments run is usually smaller than the number of possible
  * factor combinations, i.e., only a fraction of possible designs is tested.
+ * </p>
  * <p>
  * The implementation of this class ensures, that each value of a factor occurs
  * equally often (there are no guarantees about value combinations, however).
+ * </p>
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-06-08
+ * @author Torsten Hildebrandt, 2012-06-08
  * @version 
  *          "$Id$"
  */

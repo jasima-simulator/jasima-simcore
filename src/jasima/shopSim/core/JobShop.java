@@ -32,7 +32,7 @@ import java.util.Map;
  * Implements a shop simulation. Despite its name the scenario not necessarily
  * has to be a job shop.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -146,7 +146,7 @@ public class JobShop extends Simulation {
 	 *            The machine listener to add.
 	 * @param cloneIfPossible
 	 *            whether to try to clone a new instance for each machine using
-	 *            {@link Util#cloneIfPossible(Object)}.
+	 *            {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
 	public void installMachineListener(
 			NotifierListener<WorkStation, WorkStationEvent> listener,
@@ -197,8 +197,8 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * End simulation if a certain number of jobs was completed (<=0 (default):
-	 * no limit).
+	 * End simulation if a certain number of jobs was completed (%lt;=0
+	 * (default): no limit).
 	 * 
 	 * @param stopAfterNumJobs
 	 *            The number of jobs to finish.

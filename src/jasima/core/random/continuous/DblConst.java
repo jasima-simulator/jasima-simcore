@@ -27,7 +27,7 @@ import java.util.Arrays;
  * exactly this order. After the last value being returned the sequence starts
  * again with the first number.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -67,7 +67,7 @@ public class DblConst extends DblStream {
 			else
 				mean = Util.sum(values) / values.length;
 		}
-		
+
 		return mean;
 	}
 

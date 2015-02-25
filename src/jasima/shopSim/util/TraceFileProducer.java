@@ -38,7 +38,7 @@ import java.util.Date;
  * Creating this file is rather slow, so this class is mainly useful for
  * debugging purposes.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-24
+ * @author Torsten Hildebrandt, 2012-08-24
  * @version 
  *          "$Id$"
  */

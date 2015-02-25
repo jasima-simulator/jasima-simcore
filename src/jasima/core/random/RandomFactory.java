@@ -28,11 +28,13 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
+ * <p>
  * This class provides functionality to create (independent) random number
  * streams. These streams are dependent on a base seed ({@link #setSeed(long)})
  * and a stream name (provided as a parameter to {@link #createInstance(String)}
  * ).
- * <p />
+ * </p>
+ * <p>
  * Behaviour of this class can be modified in two ways using system properties.
  * <ol>
  * <li>A property {@link #RANDOM_FACTORY_PROP_KEY} can be used to change the
@@ -42,7 +44,7 @@ import java.util.Random;
  * {@link #RANDOM_CLASS_PROP_KEY}.
  * </ol>
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

@@ -25,15 +25,18 @@ import java.util.Random;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
+ * <p>
  * This class can be used to create a non-stationary arrival process, i.e., if
  * (inter-)arrivals do not follow a single distribution. To do so, a DblStream
  * with mean of 1 (e.g., an exponential distribution with rate 1) and the
  * inverse cumulative expectation function have to be provided.
- * <p />
+ * </p>
+ * <p>
  * For details see, e.g., Law: "Simulation Modelling and Analysis", how to
  * create non-stationary (Poisson) processes.
+ * </p>
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
+ * @author Torsten Hildebrandt, 2012-08-07
  * @version 
  *          "$Id$"
  */

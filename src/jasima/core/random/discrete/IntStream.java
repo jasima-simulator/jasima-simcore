@@ -26,7 +26,7 @@ import jasima.core.random.continuous.DblStream;
  * in the interval [min(),max()], i.e. including both min() and max(). This is
  * an abstract base class.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

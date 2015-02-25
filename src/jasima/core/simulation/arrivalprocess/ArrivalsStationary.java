@@ -30,7 +30,7 @@ import java.util.Random;
  * 
  * @see DblStream
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
+ * @author Torsten Hildebrandt, 2012-08-07
  * @version 
  *          "$Id$"
  */

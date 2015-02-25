@@ -28,16 +28,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * <p>
  * This class creates a single batch per family according to the used sequencing
  * rule. Later a machine's sequencingRule (optionally batchSequencingRule) is
  * used to choose one of them to process.
- * <p />
+ * </p>
+ * <p>
  * If there are more than maxBatchSize jobs for a family, jobs are sequenced
  * using the sequencingRule first and the best maxBatchSize jobs of the family
  * are used to form the batch.
  * 
  * @author Torsten Hildebrandt, 2010-10-25
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class BestOfFamilyBatching extends BatchForming {
 

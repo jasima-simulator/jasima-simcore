@@ -37,7 +37,7 @@ import org.junit.rules.ErrorCollector;
  * from {@code ExperimentTest} and calling {@link #checkResults(Map, Map)} many
  * results of an experiment can be validated with a single method call.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-08
+ * @author Torsten Hildebrandt, 2012-08-08
  * @version 
  *          "$Id$"
  */

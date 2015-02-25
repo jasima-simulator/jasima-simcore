@@ -32,7 +32,8 @@ import java.util.Map;
  * This class can be used as a base class for classes collecting results based
  * on job releases/job completions.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
+ * @author Torsten Hildebrandt, 2012-08-21
+ * 
  * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
  * @version 

@@ -15,13 +15,16 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 /**
+ * <p>
  * Main class to load and run an experiment from the command line. The
  * experiment can be specified by either the class name (in this case a new
  * experiment of this type will be created) or by specifying the name of an xml
  * file containing an experiment (e.g., created with the gui).
- * <p />
+ * </p>
+ * <p>
  * Furthermore this class is used indirectly by Experiments to configure and run
  * them.
+ * </p>
  * 
  * @author Torsten Hildebrandt
  * @version 

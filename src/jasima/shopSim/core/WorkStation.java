@@ -45,7 +45,7 @@ import java.util.Set;
  * Class to represent a workstation. A workstation is a collection of identical
  * {@link IndividualMachine}s sharing a common queue.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

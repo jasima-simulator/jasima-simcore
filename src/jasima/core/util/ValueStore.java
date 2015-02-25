@@ -25,8 +25,9 @@ import java.util.Set;
  * This interface provides a simple get/put-mechanism to store a value
  * associated with a key object, similar to a @link {@link HashMap}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @author Torsten Hildebrandt
+ * @version 
+ *          "$Id$"
  */
 public interface ValueStore {
 

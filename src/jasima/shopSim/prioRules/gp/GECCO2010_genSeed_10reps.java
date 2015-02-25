@@ -28,7 +28,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  * Scenarios—a Genetic Programming Approach", Hildebrandt, Heger, Scholz-Reiter,
  * GECCO 2010, doi:10.1145/1830483.1830530
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

@@ -45,7 +45,7 @@ import java.util.Map;
  * <li>numTardyWeighted
  * </ul>
  * 
- * @author Torsten Hildebrandt <torsten@jasimaSolutions.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  * @see BasicJobStatCollector

@@ -34,7 +34,7 @@ import java.util.Random;
 /**
  * Parent class of an experiment which runs a number of child experiments.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

@@ -27,7 +27,7 @@ import java.util.List;
  * This class represents a single machine, which is part of a
  * {@link WorkStation}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -85,7 +85,7 @@ public class IndividualMachine {
 		procStarted = -1.0d;
 
 		workStation.activated(this);
-		
+
 		downReason = null;
 	}
 
@@ -118,7 +118,7 @@ public class IndividualMachine {
 			procStarted = shop.simTime();
 			procFinished = shop.simTime();
 			state = MachineState.DOWN;
-			this.downReason = downReason; 
+			this.downReason = downReason;
 			curJob = null;
 
 			workStation.takenDown(this);

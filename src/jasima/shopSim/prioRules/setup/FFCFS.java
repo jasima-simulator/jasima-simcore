@@ -24,11 +24,13 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 
 /**
+ * <p>
  * This class implements the Family First Come First Served rule, developed by
  * Flynn (1987), which assigns highest priority to all jobs that belong to the
  * family which includes the job that arrived first to the queue, see also
  * Pickardt and Branke (2012).
- * <p />
+ * </p>
+ * <p>
  * This rule should be used with another rule to distinguish jobs of the
  * selected family.
  * 

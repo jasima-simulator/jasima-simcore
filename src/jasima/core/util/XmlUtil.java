@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * Provides utility methods to read and write arbitrary Java objects as xml
  * (xml-Serialization using the xstream library).
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-07-13
+ * @author Torsten Hildebrandt, 2012-07-13
  * @version $Id$
  */
 public class XmlUtil {

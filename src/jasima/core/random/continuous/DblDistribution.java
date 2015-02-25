@@ -27,7 +27,7 @@ import org.apache.commons.math3.distribution.RealDistribution;
  * determined by an arbitrary {@link RealDistribution} object from the Apache
  * Commons Math library.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

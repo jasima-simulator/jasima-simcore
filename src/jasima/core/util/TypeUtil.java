@@ -33,7 +33,7 @@ public class TypeUtil {
 
 	/**
 	 * A {@code TypeConversionException} is thrown, when the conversion between
-	 * types in {@link Util#convert(Object, Class)} fails.
+	 * types in {@link #convert(Object, Class)} fails.
 	 */
 	public static class TypeConversionException extends
 			IllegalArgumentException {
@@ -149,8 +149,10 @@ public class TypeUtil {
 	}
 
 	/**
+	 * <p>
 	 * Sets a property named with propPath to a certain value using reflection.
-	 * <p />
+	 * </p>
+	 * <p>
 	 * Example: setProperty( obj, "a.b.c", 5 ); is equivalent to a direct call
 	 * obj.getA().getB().setC(5)
 	 */
@@ -313,16 +315,19 @@ public class TypeUtil {
 	}
 
 	/**
+	 * <p>
 	 * Load an instantiate a class using classloader {@code l}. If a class
 	 * {@code className} is not found, it is searched for in the package search
 	 * path.
-	 * <p />
+	 * </p>
+	 * <p>
 	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"}
 	 * and the package search path {@code searchPath} contains an entry
 	 * {@code "jasima.core.experiment"}, then the class
 	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be
 	 * looked up and instantiated.
-	 * <p />
+	 * </p>
+	 * <p>
 	 * If no matching class could be found, {@code null} will be returned.
 	 */
 	public static Object searchAndInstanciateClass(String className,
@@ -414,9 +419,11 @@ public class TypeUtil {
 	}
 
 	/**
+	 * <p>
 	 * Gets the current value of a property named with propPath using
 	 * reflection.
-	 * <p />
+	 * </p>
+	 * <p>
 	 * Example: getProperty( obj, "a.b.c" ); is equivalent to a direct call
 	 * obj.getA().getB().getC()
 	 */
@@ -539,13 +546,15 @@ public class TypeUtil {
 	private static final String PROP_SUN_JAVA_COMMAND = "sun.java.command";
 
 	/**
+	 * <p>
 	 * Tries to find the main class of a java run. This is attempted by looking
 	 * up the system properties {@code jasima.experiment} and
 	 * {@code sun.java.command} first. If this does not lead to a valid
 	 * classname (e.g., if started with "-jar" option) an attempt is made to
 	 * interpret the property as the name of a jar file. The manifest of this
 	 * jar is then searched for its entry {@code Main-Class}.
-	 * <p />
+	 * </p>
+	 * <p>
 	 * This code is necessary because Java has no virtual static methods and
 	 * therefore there is no equivalent to the keyword {@code this} in a static
 	 * method.

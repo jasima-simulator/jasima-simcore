@@ -28,8 +28,9 @@ import java.util.Arrays;
  * are returned once. The sequence returned is not random at all, i.e. this
  * class does not use the inherited rndGen.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @author Torsten Hildebrandt
+ * @version 
+ *          "$Id$"
  */
 public class IntConst extends IntStream {
 

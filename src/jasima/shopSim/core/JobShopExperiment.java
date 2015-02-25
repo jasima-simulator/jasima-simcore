@@ -280,7 +280,7 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	/**
-	 * End simulation if WIP (work in process) reaches this value (<=0: no
+	 * End simulation if WIP (work in process) reaches this value (&lt;=0: no
 	 * limit; default is -1).
 	 */
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
@@ -305,8 +305,8 @@ public abstract class JobShopExperiment extends Experiment {
 	}
 
 	/**
-	 * End simulation if a certain number of jobs was completed (<=0 (default):
-	 * no limit).
+	 * End simulation if a certain number of jobs was completed (&lt;=0
+	 * (default): no limit).
 	 */
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
 		this.stopAfterNumJobs = stopAfterNumJobs;

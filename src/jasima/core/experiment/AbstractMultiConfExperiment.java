@@ -30,10 +30,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
+ * <p>
  * Base class for experiments that execute variations of a
  * {@code baseExperiment} by changing its properties.
+ * </p>
  * <p>
- * 
  * The order in which properties are applied is determined by the length of the
  * property name to guarantee that sub-properties are set after the object
  * containing them. This also applies when {@link ComplexFactorSetter} is used.
@@ -42,8 +43,9 @@ import java.util.Map.Entry;
  * {@link #KEY_EXPERIMENT}, which is regarded has having a length of -2.
  * {@link #KEY_EXPERIMENT} can be present in any number of configurations. If it
  * is present in all configurations, baseExperiment need not be set.
+ * </p>
  * 
- * @author Robin Kreis <r.kreis@uni-bremen.de>
+ * @author Robin Kreis
  * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"

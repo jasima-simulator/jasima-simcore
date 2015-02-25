@@ -303,5 +303,4 @@ public class ArgListTokenizer {
 		this.input = Objects.requireNonNull(input);
 	}
 
-
 }

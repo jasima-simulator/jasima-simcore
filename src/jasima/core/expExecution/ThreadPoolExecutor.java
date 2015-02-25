@@ -29,13 +29,16 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * <p>
  * Default implementation of an ExecutorFactory returning an Executor that uses
  * up to {@code Runtime.getRuntime().availableProcessors()} threads to execute
  * tasks concurrently. This number of threads can be overridden by setting the
  * system property "jasima.core.expExecution.ThreadPoolExecutor.numThreads".
- * <p />
+ * </p>
+ * <p>
  * In order to prevent starvation of worker threads waiting for sub-experiments
  * to complete, there is a thread pool for each nesting level of experiments.
+ * </p>
  * 
  * @author Torsten Hildebrandt
  * @version 
@@ -54,7 +57,8 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	}
 
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
+	public ExperimentFuture runExperiment(final Experiment e,
+			final Experiment parent) {
 		ExecutorService es = getExecutorInstance(e.nestingLevel());
 		return new FutureWrapper(e,
 				es.submit(new Callable<Map<String, Object>>() {

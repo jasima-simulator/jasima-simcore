@@ -28,7 +28,7 @@ public class OperationDef extends PropertySupport {
 	public static final String PROP_SETUP = "setup";
 	public static final String PROP_BATCH_FAMILY = "batchFamily";
 	public static final String PROP_MAX_BATCH_SIZE = "maxBatchSize";
-	
+
 	private String name;
 	private double procTime;
 	private WorkstationDef workstation;
@@ -41,7 +41,8 @@ public class OperationDef extends PropertySupport {
 	}
 
 	public void setProcTime(double procTime) {
-		firePropertyChange(PROP_PROC_TIME, this.procTime, this.procTime = procTime);
+		firePropertyChange(PROP_PROC_TIME, this.procTime,
+				this.procTime = procTime);
 	}
 
 	public WorkstationDef getWorkstation() {

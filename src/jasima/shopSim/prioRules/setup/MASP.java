@@ -26,11 +26,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * <p>
  * This class implements the Minimum Average Setup plus Processing time rule,
  * developed by Russell and Philipoom (1991), which assigns highest priority to
  * all jobs that belong to the family with the shortest processing time per job,
  * see also Pickardt and Branke (2012).
- * <p />
+ * </p>
+ * <p>
  * This rule should be used with another rule to distinguish jobs of the
  * selected family.
  * 

@@ -32,7 +32,7 @@ import java.util.Map;
  * Produces basic statistics for each workstation it is installed on (like
  * utilization, average queue length, average setup time per operation).
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

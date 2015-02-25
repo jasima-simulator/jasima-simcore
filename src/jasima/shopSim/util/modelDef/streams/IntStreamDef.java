@@ -21,7 +21,7 @@ package jasima.shopSim.util.modelDef.streams;
 /**
  * Abstract base class for definitions of integer streams.
  * 
- * @author Torsten Hildebrandt <torsten@jasimaSolutions.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

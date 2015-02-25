@@ -25,7 +25,7 @@ import java.util.Random;
  * values. This class just delegates to the underlying method
  * {@link java.util.Random#nextInt()}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

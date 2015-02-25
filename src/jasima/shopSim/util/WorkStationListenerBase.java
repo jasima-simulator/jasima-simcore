@@ -32,7 +32,7 @@ import java.util.Map;
  * seperate methods. Additional events can be processed by overriding
  * {@link #handleOther(WorkStation, WorkStation.WorkStationEvent)}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

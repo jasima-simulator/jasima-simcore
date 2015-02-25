@@ -23,13 +23,15 @@ import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.prioRules.setup.ATCS;
 
 /**
+ * <p>
  * This class implements a version of the Batch ATC with Setups rule by Mason et
  * al. (2002). The implementation is an analogous batch extension of the ATCS
  * rule by Lee and Pinedo (1997). Variant1 is another BATCS implementation
  * motivated by a paper by Mehta and Uzsoy (1998). The main difference lies
  * within the calculation of the slack of a batch, where the Variant1 takes into
  * account all jobs in the batch instead of only the most urgent one.
- * <p />
+ * </p>
+ * <p>
  * BATCS is supposed to be applied together with BestOfFamilyBatching to choose
  * among batches of different families.
  * 

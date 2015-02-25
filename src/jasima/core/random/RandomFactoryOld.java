@@ -25,7 +25,7 @@ import java.util.Random;
 /**
  * Use {@link RandomFactory} instead.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  * @deprecated Use {@link RandomFactory} instead.

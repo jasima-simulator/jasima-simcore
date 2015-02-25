@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Prints experiment messages to the console.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

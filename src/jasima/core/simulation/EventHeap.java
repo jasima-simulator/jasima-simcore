@@ -26,7 +26,7 @@ import java.io.Serializable;
  * An implementation of {@link jasima.core.simulation.Simulation.EventQueue}
  * using an array-based heap.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-30
+ * @author Torsten Hildebrandt, 2012-08-30
  * @version 
  *          "$Id$"
  */

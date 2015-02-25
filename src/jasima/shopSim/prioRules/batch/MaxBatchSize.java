@@ -27,7 +27,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  * batch that uses most of the available capacity of the machine.
  * 
  * @author Christoph Pickardt, 2011-11-14
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class MaxBatchSize extends PR {
 

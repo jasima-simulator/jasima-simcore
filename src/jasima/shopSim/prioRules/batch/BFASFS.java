@@ -22,10 +22,12 @@ import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 
 /**
+ * <p>
  * This class implements a batch version of the FASFS rule. Its main purpose is
  * to be used as a tie-breaker for priority rules that operate on batches, e.g.
  * BATCS.
- * <p />
+ * </p>
+ * <p>
  * BFASFS is supposed to be applied together with BestOfFamilyBatching to choose
  * among batches of different families.
  * 

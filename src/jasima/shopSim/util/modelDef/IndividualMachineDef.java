@@ -25,7 +25,7 @@ public class IndividualMachineDef extends PropertySupport {
 	private double machRelDate = 0.0;
 	private String initialSetup = WorkStation.DEF_SETUP_STR;
 	private String name = null;
-	private WorkstationDef workstation = null; 
+	private WorkstationDef workstation = null;
 
 	public double getMachRelDate() {
 		return machRelDate;
@@ -58,7 +58,8 @@ public class IndividualMachineDef extends PropertySupport {
 	}
 
 	public void setWorkstation(WorkstationDef workstation) {
-		firePropertyChange("workstation", this.workstation, this.workstation = workstation);
+		firePropertyChange("workstation", this.workstation,
+				this.workstation = workstation);
 	}
 
 }

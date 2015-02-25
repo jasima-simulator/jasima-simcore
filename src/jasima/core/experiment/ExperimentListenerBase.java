@@ -30,7 +30,7 @@ import java.util.Map;
  * This class can be used as a base class for experiment listeners. It delegates
  * all events of {@link Experiment} to separate methods.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

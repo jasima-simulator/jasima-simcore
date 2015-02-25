@@ -31,7 +31,7 @@ import java.util.Map;
  * "Generating dispatching rules for semiconductor manufacturing to minimize weighted tardiness"
  * , WinterSim 2010, doi:10.1109/WSC.2010.5678946.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

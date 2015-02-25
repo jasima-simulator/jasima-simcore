@@ -38,15 +38,18 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
+ * <p>
  * An Experiment is something that produces results depending on various
  * parameters. The usual lifecycle is to create an experiment, set parameters to
  * their proper values, execute the experiment by calling it's runExperiment()
  * method. After execution a set of results are available using the getResults()
  * methods.
+ * </p>
  * <p>
  * Experiments are not supposed to be run more than once, e.g., to run multiple
  * replications of an experiment (see {@link MultipleReplicationExperiment}) you
  * have to create multiple instances. Therefore experiments should be cloneable.
+ * </p>
  * <p>
  * This class is intended as the base class for Experiments doing something
  * useful. This class only has a single parameter "initialSeed" (see
@@ -55,15 +58,18 @@ import java.util.Map;
  * experiment runtime. This means two experiments having the same initialSeed
  * and all other experiment parameters being the same should behave
  * deterministically and produce exactly the same results.
+ * </p>
  * <p>
  * The only result produced by this class is "runTime" (type Double), which
  * measures the real time required to execute an experiment.
+ * </p>
  * <p>
  * Experiments can have listeners registered, which are informed of an
  * experiment's start and completion and can be used by subclasses to provide
  * additional events.
+ * </p>
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id: Experiment.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */

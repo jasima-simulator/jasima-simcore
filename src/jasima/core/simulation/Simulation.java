@@ -33,16 +33,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <p>
  * Base class for a discrete event simulation. This class doesn't do much, but
  * only maintains an event queue and manages simulation time.
- * <p />
+ * </p>
+ * <p>
  * The typical life cycle of a simulation would be to create it, and
  * subsequently set any parameters. Afterwards {@link #init()} has to be called
  * before the actual simulation can be performed in {@link #run()}. After
  * completing a simulation the {@link #done()}-method should be called to
  * perform clean-up, collecting simulation results, etc.
+ * </p>
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-02-08
+ * @author Torsten Hildebrandt, 2012-02-08
  * @version 
  *          "$Id$"
  */
@@ -415,13 +418,13 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * Adds a listener to this simulation. This method only differs from
 	 * {@link #addNotifierListener(NotifierListener)} in its ability to
 	 * (optionally) clone the listener (using
-	 * {@link Util#cloneIfPossible(Object)}) before installing it.
+	 * {@link TypeUtil#cloneIfPossible(Object)}) before installing it.
 	 * 
 	 * @param l
 	 *            The shop listener to add.
 	 * @param cloneIfPossbile
 	 *            whether to try to clone a new instance for each machine using
-	 *            {@link Util#cloneIfPossible(Object)}.
+	 *            {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
 	public NotifierListener<Simulation, SimEvent> installSimulationListener(
 			NotifierListener<Simulation, SimEvent> l, boolean cloneIfPossbile) {

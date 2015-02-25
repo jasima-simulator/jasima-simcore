@@ -237,8 +237,8 @@ public class Util {
 	}
 
 	/**
-	 * Examples: "5" -> {5}; "23,5..10,3" -> {23,5,6,7,8,9,10,3}; "1,2,3" ->
-	 * {1,2,3}
+	 * Examples: "5" -&gt; {5}; "23,5..10,3" -%gt; {23,5,6,7,8,9,10,3}; "1,2,3"
+	 * -%gt; {1,2,3}
 	 */
 	public static int[] parseIntList(String list) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
@@ -262,7 +262,7 @@ public class Util {
 
 	/**
 	 * Converts a list of comma-separated double values (with dot as decimal
-	 * separator) to a double-array. Example: parseDblList("1.23,4.56") ->
+	 * separator) to a double-array. Example: parseDblList("1.23,4.56") -&gt;
 	 * {1.23,4.56}
 	 */
 	public static double[] parseDblList(String s) {

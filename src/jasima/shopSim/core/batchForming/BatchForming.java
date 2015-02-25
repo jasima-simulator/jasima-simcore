@@ -41,7 +41,8 @@ import java.util.Map;
  * 
  * @author Christoph Pickardt, 2010-05-27
  * @author Torsten Hildebrandt, 2010-03-18
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public abstract class BatchForming implements Cloneable, Serializable {
 

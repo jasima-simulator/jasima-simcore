@@ -25,7 +25,7 @@ import jasima.core.util.Util;
  * statistics the values returned by {@link #mean()}, {@link #min()}, and
  * {@link #max()} have defined values.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

@@ -36,7 +36,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
 /**
  * Implements simulations of the MIMAC Scenarios.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2010-03-12
+ * @author Torsten Hildebrandt, 2010-03-12
  * @version 
  *          "$Id$"
  */
@@ -65,7 +65,7 @@ public class MimacExperiment extends JobShopExperiment {
 
 		public synchronized ShopDef getShopDef() {
 			ShopDef def = this.def;
-			
+
 			if (def == null) {
 				TextFileReader reader = createNewReader();
 				def = reader.getShopDef();

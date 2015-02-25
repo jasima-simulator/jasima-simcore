@@ -24,6 +24,7 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 /**
+ * <p>
  * This class provides efficient sampling of up to a certain maximum number of
  * values. A SummaryStat-object provides an efficient means to collect basic
  * summary statistics like mean, min, max, standard deviation. To do so it does
@@ -31,17 +32,21 @@ import java.util.Random;
  * percentile requires storing values, however. To limit the amount of data
  * which has to be stored, sampling can be used and the aforementioned
  * statistics estimated based on this sample.
- * <p />
+ * </p>
+ * <p>
  * This class can sample and store up to a certain maximum number of values.
  * Each value passed to a call of {@link #value(double)} has the same
- * probability of ending up in the final sample accessible by {@link #getData()}.
- * <p />
+ * probability of ending up in the final sample accessible by {@link #getData()}
+ * .
+ * </p>
+ * <p>
  * Which values are selected is determined by a random number generator (see
  * {@link #setRnd(Random)}). If no such random number generator is set,
  * {@link Math#random()} is used.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-07-06
- * @version "$Id$"
+ * @author Torsten Hildebrandt, 2012-07-06
+ * @version 
+ *          "$Id$"
  */
 public class SamplingSummaryStat extends SummaryStat {
 

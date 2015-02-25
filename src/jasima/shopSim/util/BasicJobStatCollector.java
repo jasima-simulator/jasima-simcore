@@ -30,7 +30,7 @@ import java.util.Map;
  * finished), percentage tardy, number of tardy jobs, flowtime, tardiness. For
  * additional kpi's see {@link ExtendedJobStatCollector}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  * @see ExtendedJobStatCollector

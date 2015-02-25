@@ -24,7 +24,7 @@ import java.util.Random;
  * Generates uniformly distributed doubles in the range [0,1.0). This class just
  * delegates to the underlying method {@link java.util.Random#nextDouble()}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

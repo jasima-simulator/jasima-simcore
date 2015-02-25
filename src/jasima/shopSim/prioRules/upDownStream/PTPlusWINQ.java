@@ -26,7 +26,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  * (1997), which is an additive combination of SPT and WINQ.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class PTPlusWINQ extends PR {
 

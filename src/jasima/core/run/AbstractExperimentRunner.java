@@ -250,9 +250,11 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	public void run() {
-		System.out.println("**********************************************************************");
+		System.out
+				.println("**********************************************************************");
 		System.out.println(Util.ID_STRING);
-		System.out.println("**********************************************************************");
+		System.out
+				.println("**********************************************************************");
 		System.out.println();
 		try {
 			Experiment exp = configureExperiment();
@@ -334,8 +336,8 @@ public abstract class AbstractExperimentRunner {
 			String name = p.a;
 			Object value = p.b;
 
-			TypeUtil.setPropertyEx(exp, name, value, getClass().getClassLoader(),
-					packageSearchPath);
+			TypeUtil.setPropertyEx(exp, name, value, getClass()
+					.getClassLoader(), packageSearchPath);
 		}
 
 		return exp;

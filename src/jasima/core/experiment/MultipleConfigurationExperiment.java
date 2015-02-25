@@ -30,8 +30,8 @@ import java.util.Map;
  * value.
  * 
  * @see FullFactorialExperiment
- * @author Robin Kreis <r.kreis@uni-bremen.de>
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2013-01-08
+ * @author Robin Kreis
+ * @author Torsten Hildebrandt, 2013-01-08
  * @version 
  *          "$Id$"
  */

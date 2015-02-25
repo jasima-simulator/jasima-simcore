@@ -25,7 +25,7 @@ import jasima.core.simulation.Simulation.EventQueue;
  * {@link EventQueue} according to their time, priority and event number (to
  * enforce FIFO order of concurrent events with the same priority).
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version $Id$
  */
 public abstract class Event implements Comparable<Event> {

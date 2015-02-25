@@ -26,10 +26,12 @@ import java.util.Iterator;
 import java.util.Locale;
 
 /**
+ * <p>
  * Implements the extended P2-Algorithm. To calculate histograms, median values
  * or arbitrary quantiles. This class also collects all statistical values
  * collected by {@link SummaryStat}.
- * <p />
+ * </p>
+ * <p>
  * The method used is based on the following papers:
  * <ul>
  * <li>Raj Jain, Imrich Chlamtac: The P2 Algorithm for Dynamic Calculation of
@@ -38,7 +40,7 @@ import java.util.Locale;
  * Simulations Councils (1987)
  * </ul>
  * 
- * @author Robin Kreis <r.kreis@uni-bremen.de>, 2012-09-07
+ * @author Robin Kreis, 2012-09-07
  * @version 
  *          "$Id$"
  */

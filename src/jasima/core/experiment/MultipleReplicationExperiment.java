@@ -26,17 +26,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
+ * <p>
  * Runs an arbitrary baseExperiment multiple times (determined by
  * maxReplications()). All numeric results of the base experiment are averaged
  * over the runs, other result types are returned as an array containing all
  * values over the runs.
- * <p />
- * 
+ * </p>
+ * <p>
  * Optionally the maximum number of experiments run can be determined by a
  * confidence interval (t-test). To use this feature you have to tell
  * addConfIntervalMeasure(String) which result(s) of the base experiment to use.
- * <p />
- * 
+ * </p>
+ * <p>
  * In case of dynamic runs the following procedure is followed:
  * <ol>
  * <li>getMinReplications() replications are performed
@@ -53,7 +54,7 @@ import java.util.Arrays;
  * </ol>
  * 
  * @see OCBAExperiment
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -149,11 +150,14 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
+	 * <p>
 	 * Sets the minimum number of replications to perform if the total number of
 	 * replications is dynamic (i.e., if at least 1 result name is given in
 	 * {@code confIntervalMeasure}).
-	 * <p />
+	 * </p>
+	 * <p>
 	 * If the number of runs is not dynamic, this setting has no effect.
+	 * </p>
 	 */
 	public void setMinReplications(int minReplications) {
 		if (minReplications <= 0)
@@ -183,13 +187,16 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
+	 * <p>
 	 * Sets the error probability used when computing the width of the
 	 * confidence interval of {@code confIntervalMeasure}s. The closer this
 	 * setting is to 0, the more replications will be performed (with less
 	 * uncertain results).
-	 * <p />
+	 * </p>
+	 * <p>
 	 * This setting only has an effect if the total number of runs is dynamic.
 	 * Its default value is 0.05.
+	 * </p>
 	 */
 	public void setErrorProb(double errorProb) {
 		if (errorProb <= 0.0 || errorProb >= 1.0)
@@ -204,11 +211,13 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
+	 * <p>
 	 * Sets the desired target quality of results as a percentage of the mean
 	 * across all replications performed so far. Its default value is 0.01,
 	 * i.e., 1%. This setting has no effect if the total number of runs is
 	 * static.
-	 * <p />
+	 * </p>
+	 * <p>
 	 * Let's say after 5 replications the observed mean of a result in
 	 * {@code confIntervalMeasure} is 987.6 with some standard deviation (SD).
 	 * Say this SD together with a certain {@code errorProb} leads to a
@@ -219,6 +228,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 * as the observed uncertainty is not smaller than the target value (20.4
 	 * &gt; 9.876). Therefore further replications would be performed to further
 	 * reduce the uncertainty of results.
+	 * </p>
 	 */
 	public void setAllowancePercentage(double allowancePercentage) {
 		if (allowancePercentage <= 0.0 || allowancePercentage >= 1.0)

@@ -26,7 +26,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * Programming. In addition to standard {@code PR} it only defines static
  * methods for some commonly used arithmetic functions.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

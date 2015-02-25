@@ -372,12 +372,14 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 	}
 
 	/**
+	 * <p>
 	 * Returns priorities of the entries returned by the last call of
 	 * peekLargest or removeLargest. Be careful: do not change the values
 	 * contained in the returned array. The result array is only valid
 	 * immediately after calling peekLargest/removeLargest (array is reused and
 	 * can be overridden by subsequent calls to add()).
-	 * <p/>
+	 * </p>
+	 * <p>
 	 * This method returns null if null (keep machine idle) was returned by
 	 * {@link #peekLargest()} or {@link #removeLargest()}.
 	 */

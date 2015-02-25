@@ -23,8 +23,9 @@ import jasima.shopSim.core.PrioRuleTarget;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @author Torsten Hildebrandt
+ * @version 
+ *          "$Id$"
  */
 public class SetupAvoidance extends PR {
 

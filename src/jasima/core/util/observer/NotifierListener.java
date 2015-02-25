@@ -27,8 +27,9 @@ package jasima.core.util.observer;
  * 
  * Used as a reference: http://forum.java.sun.com/thread.jspa?threadID=576544
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2008-04-13
- * @version "$Id$"
+ * @author Torsten Hildebrandt, 2008-04-13
+ * @version 
+ *          "$Id$"
  */
 public interface NotifierListener<N extends Notifier<N, E>, E> {
 	public void update(N notifier, E event);

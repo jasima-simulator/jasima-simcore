@@ -19,7 +19,7 @@
 package jasima.shopSim.util.modelDef;
 
 public class SourceDef extends PropertySupport {
-	
+
 	public static final String PROP_SHOP = "shop";
 	public static final String PROP_NAME = "name";
 

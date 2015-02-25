@@ -23,10 +23,12 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 
 /**
+ * <p>
  * This class implements the Apparent Tardiness Costs with Setups rule,
  * developed by Lee and Pinedo (1997). This implementation uses an operation due
  * date computed by ODD instead of the global slack.
- * <p />
+ * </p>
+ * <p>
  * The class directly inherits from MaxWaitThresholdRule and the threshold value
  * is also used to calculate queue terminals that only consider jobs which
  * arrive before that the threshold value.

@@ -37,8 +37,9 @@ import jasima.shopSim.util.WorkStationListenerBase;
  * hour.
  * 
  * @see MaintenanceSource
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2014-04-15
- * @version "$Id$"
+ * @author Torsten Hildebrandt, 2014-04-15
+ * @version 
+ *          "$Id$"
  */
 public class DowntimeSource {
 

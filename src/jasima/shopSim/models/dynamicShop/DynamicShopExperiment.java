@@ -51,7 +51,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * An experiment of this type by default contains a
  * {@code BasicJobStatCollector}.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  * @see BasicJobStatCollector

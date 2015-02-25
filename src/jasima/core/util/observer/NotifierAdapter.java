@@ -31,7 +31,7 @@ import java.util.Iterator;
  * Implementation of a {@link Notifier} functionality. A NotifierAdapter handles
  * notifier functionality for some real Notifier.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
@@ -113,10 +113,10 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 	/**
 	 * Provides a deep clone of this {@code NotifierAdapter}, trying to clone
 	 * each Listener contained using the method
-	 * {@link Util#cloneIfPossible(Object)}. Make sure to set the clone's
+	 * {@link TypeUtil#cloneIfPossible(Object)}. Make sure to set the clone's
 	 * notifier to the correct object.
 	 * 
-	 * @see Util#cloneIfPossible(Object)
+	 * @see TypeUtil#cloneIfPossible(Object)
 	 */
 	@Override
 	public NotifierAdapter<N, E> clone() throws CloneNotSupportedException {

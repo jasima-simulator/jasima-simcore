@@ -22,7 +22,7 @@ public class RouteDef extends PropertySupport {
 
 	public static final String PROP_NAME = "name";
 	public static final String PROP_OPERATIONS = "operations";
-	
+
 	private String name;
 	private OperationDef[] operations;
 	private ShopDef shop;

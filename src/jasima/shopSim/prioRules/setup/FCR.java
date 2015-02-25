@@ -24,11 +24,13 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 
 /**
+ * <p>
  * This class implements the Family Critical Ratio rule, developed by Kim and
  * Bobrowski (1994), which assigns highest priority to all jobs that belong to
  * the family which includes the job with the lowest critical ratio, see also
  * Pickardt and Branke (2012).
- * <p />
+ * </p>
+ * <p>
  * This rule should be used with another rule to distinguish jobs of the
  * selected family.
  * 

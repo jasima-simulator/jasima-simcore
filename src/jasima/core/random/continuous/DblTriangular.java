@@ -22,7 +22,7 @@ package jasima.core.random.continuous;
  * Returns a random real number following a triangular distribution as defined
  * by the three parameters min, mode, and max.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

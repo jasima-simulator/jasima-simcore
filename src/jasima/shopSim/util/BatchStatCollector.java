@@ -30,8 +30,9 @@ import java.util.Map;
  * Collects batch statistics (flowtime and tardiness). A batch consists of a
  * certain number of jobs stated in succession.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-21
- * @version "$Id$"
+ * @author Torsten Hildebrandt, 2012-08-21
+ * @version 
+ *          "$Id$"
  */
 public class BatchStatCollector extends ShopListenerBase {
 

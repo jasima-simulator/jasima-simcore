@@ -162,7 +162,7 @@ public class ShopConfigurator {
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return ds;
 	}
 

@@ -28,7 +28,7 @@ import java.util.Random;
  * determined by the probabilities passed to {@link #setProbabilities(double[])}
  * , and can be arbitrary positive numbers as long as they sum up to 1.0.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

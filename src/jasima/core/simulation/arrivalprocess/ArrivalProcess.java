@@ -23,7 +23,7 @@ import jasima.core.random.continuous.DblStream;
 /**
  * Base class for arrival processes, i.e., calculating absolute arrival times.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2012-08-07
+ * @author Torsten Hildebrandt, 2012-08-07
  * @version 
  *          "$Id$"
  */

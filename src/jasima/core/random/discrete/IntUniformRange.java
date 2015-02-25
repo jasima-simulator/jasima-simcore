@@ -24,7 +24,7 @@ import java.util.Random;
  * Generates uniformly distributed integers in the interval [min,max] (including
  * both min and max).
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

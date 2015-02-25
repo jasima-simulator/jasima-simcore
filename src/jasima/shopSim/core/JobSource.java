@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * A job source is an abstract base class for classes producing {@link Job}s.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */

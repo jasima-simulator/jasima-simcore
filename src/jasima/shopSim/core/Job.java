@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Main work unit in a shop.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  * @version "$Id$"
  */
 // TODO: PrioRuleTarget should be an interface

@@ -34,7 +34,7 @@ import jasima.shopSim.core.WorkStation;
  * This class can be used as a base class for classes collecting results based
  * on job releases/job completions.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>, 2013-06-28
+ * @author Torsten Hildebrandt, 2013-06-28
  * @version 
  *          "$Id$"
  */

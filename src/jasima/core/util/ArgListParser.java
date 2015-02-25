@@ -46,9 +46,8 @@ public class ArgListParser {
 
 	/**
 	 * Constructs a new ListTokenizer around {@code input} and then calls
-	 * {@link #parseClassAndPropDef(ArgListTokenizer)}. This class assumes it can
-	 * read and parse the whole string, otherwise it throws a
-	 * {@link ParseException}.
+	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse
+	 * the whole string, otherwise it throws a {@link ParseException}.
 	 */
 	public static ParseTree parseClassAndPropDef(String input) {
 		ArgListTokenizer tk = new ArgListTokenizer(input);
