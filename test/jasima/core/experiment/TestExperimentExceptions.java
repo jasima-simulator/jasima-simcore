@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.ConsolePrinter;
 
 import java.util.Map;
 
@@ -133,7 +134,7 @@ public class TestExperimentExceptions {
 		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e,
 				null);
 		Map<String, Object> res = ef.get();
-		e.printResults(res);
+		ConsolePrinter.printResults(e, res);
 
 		// FFE itself should not produce errors
 		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);
@@ -162,7 +163,7 @@ public class TestExperimentExceptions {
 		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e,
 				null);
 		Map<String, Object> res = ef.get();
-		e.printResults(res);
+		ConsolePrinter.printResults(e, res);
 
 		// FFE itself should not produce errors
 		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);

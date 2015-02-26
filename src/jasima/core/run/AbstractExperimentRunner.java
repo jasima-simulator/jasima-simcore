@@ -253,6 +253,9 @@ public abstract class AbstractExperimentRunner {
 		System.out
 				.println("**********************************************************************");
 		System.out.println(Util.ID_STRING);
+		System.out.println();
+		System.out.println(String.format(Util.DEF_LOCALE, "running on: %s",
+				Util.getEnvString()));
 		System.out
 				.println("**********************************************************************");
 		System.out.println();
@@ -297,7 +300,7 @@ public abstract class AbstractExperimentRunner {
 			}
 
 			if (!hideResults)
-				exp.printResults(res);
+				ConsolePrinter.printResults(exp, res);
 		} catch (InterruptedException e1) {
 			throw new RuntimeException(e1);
 		}

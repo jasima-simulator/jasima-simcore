@@ -567,10 +567,34 @@ public class Util {
 
 	/**
 	 * Utility method to get the current package's version.
+	 * 
+	 * @return The current jasima version as a String.
 	 */
 	private static String getVersion() {
-		String v = Util.class.getPackage().getImplementationVersion();
+		String v = null;
+		if (Util.class.getPackage() != null)
+			v = Util.class.getPackage().getImplementationVersion();
 		return v == null ? DEFAULT_VERSION : v;
+	}
+
+	/**
+	 * Returns a string that characterizes the current execution environment
+	 * (Java and OS) by using various system properties.
+	 * 
+	 * @return The execution environment.
+	 */
+	public static String getEnvString() {
+		String javaVersion = System.getProperty("java.version");
+		String javaVendor = System.getProperty("java.vendor");
+		String javaVmName = System.getProperty("java.vm.name");
+		// String javaRuntimeName = System.getProperty("java.runtime.name");
+
+		String osName = System.getProperty("os.name");
+		String osArch = System.getProperty("os.arch");
+		String osVersion = System.getProperty("os.version");
+
+		return String.format(DEF_LOCALE, "Java v%s, %s (%s); OS: %s (%s, v%s)",
+				javaVersion, javaVmName, javaVendor, osName, osArch, osVersion);
 	}
 
 }

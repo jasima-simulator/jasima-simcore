@@ -29,21 +29,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Systematically tests all possible combinations of various factors and their
- * values on a base experiment.
+ * Systematically tests all possible combinations of various discrete factors
+ * and their values on a base experiment.
  * 
  * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
+ * 
+ * @see RandomFractionalExperiment
+ * @see OCBAExperiment
  */
 public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 	private static final long serialVersionUID = 1612150171949724274L;
 
+	// fields for parameters
 	private int maxConfigurations = 1000000;
-
-	private ArrayList<String> factorNames;
 	private Map<String, List<Object>> factors;
+
+	// fields used during run
+	private ArrayList<String> factorNames;
 
 	public FullFactorialExperiment() {
 		super();
@@ -102,12 +107,18 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * equivalent to manually adding three configurations:
 	 * 
 	 * <pre>
-	 * addFactor(&quot;color&quot;, RED);
-	 * addFactor(&quot;color&quot;, GREEN);
-	 * addFactor(&quot;color&quot;, BLUE);
+	 * addFactor(&quot;color&quot;, ColorEnum.RED);
+	 * addFactor(&quot;color&quot;, ColorEnum.GREEN);
+	 * addFactor(&quot;color&quot;, ColorEnum.BLUE);
 	 * </pre>
 	 * 
 	 * @see #addFactor(String, Object)
+	 * @param factorName
+	 *            name of the factor.
+	 * @param enumClass
+	 *            The enumeration, of which all members will be used as a value.
+	 * @param <E>
+	 *            Any enumeration type.
 	 */
 	public <E extends Enum<?>> void addFactors(String factorName,
 			Class<E> enumClass) {
@@ -123,15 +134,16 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * in {@code values}.
 	 * 
 	 * @see #addFactor(String, Object)
+	 * 
+	 * @param factorName
+	 *            Name of the factor.
+	 * @param values
+	 *            Values to use for this factor.
 	 */
 	public void addFactors(String factorName, Object... values) {
 		for (Object o : values) {
 			addFactor(factorName, o);
 		}
-	}
-
-	public Collection<String> getFactorNames() {
-		return factors.keySet();
 	}
 
 	/**
@@ -141,6 +153,10 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * in {@code values}.
 	 * 
 	 * @see #addFactor(String, Object)
+	 * @param factorName
+	 *            Name of the factor.
+	 * @param values
+	 *            A collection of values to use for this factor.
 	 */
 	public void addFactors(String factorName, Collection<?> values) {
 		for (Object o : values) {
@@ -149,7 +165,21 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
+	 * Returns a read-only collection of all factor names that are currently
+	 * defined.
+	 * 
+	 * @return A collection of all factor names.
+	 */
+	public Collection<String> getFactorNames() {
+		return Collections.unmodifiableSet(factors.keySet());
+	}
+
+	/**
 	 * Returns a list with all values of a certain factor.
+	 * 
+	 * @param name
+	 *            A factor name.
+	 * @return A list with all values for the given factor name.
 	 */
 	public List<?> getFactorValues(String name) {
 		List<Object> res = factors.get(name);
@@ -167,9 +197,9 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 	@Override
 	protected void createExperiments() {
-		int numFactors = getFactorNames().size();
-		int[] numValuesPerFactor = new int[numFactors];
 		factorNames = new ArrayList<String>(getFactorNames());
+		int numFactors = factorNames.size();
+		int[] numValuesPerFactor = new int[numFactors];
 
 		// calculate totals
 		long total = 1;
@@ -206,6 +236,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 		print(ExpMsgCategory.INFO, "executing %d experiments ...",
 				experiments.size());
+
+		factorNames = null;
 	}
 
 	private static boolean createNextCombination(int[] is,
@@ -245,6 +277,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	/**
 	 * Returns the current setting for the maximum number of configurations to
 	 * run.
+	 * 
+	 * @return The maximum number of configurations.
 	 */
 	public int getMaxConfigurations() {
 		return maxConfigurations;
@@ -255,6 +289,9 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * are allowed to execute. The default value is 1,000,000. If there are more
 	 * valid configurations/factor combinations, then the
 	 * {@code FullFactorialExperiment} will abort in the initialization phase.
+	 * 
+	 * @param maxConfigurations
+	 *            The maximum number of configurations to allow.
 	 */
 	public void setMaxConfigurations(int maxConfigurations) {
 		this.maxConfigurations = maxConfigurations;

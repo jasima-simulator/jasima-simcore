@@ -88,7 +88,6 @@ public abstract class AbstractMultiConfExperiment extends
 	}
 
 	// parameters
-
 	private Experiment baseExperiment = null;
 	private ConfigurationValidator configurationValidator = null;
 
@@ -109,43 +108,43 @@ public abstract class AbstractMultiConfExperiment extends
 	protected abstract void createExperiments();
 
 	protected void handleConfig(Map<String, Object> conf) {
-		if (isValidConfiguration(conf)) {
-			numConfs++;
-			try {
-				Experiment exp = createExperimentForConf(conf);
-				experiments.add(exp);
-			} catch (final Exception e) {
-				print(ExpMsgCategory.ERROR, e.getMessage());
-				print(ExpMsgCategory.DEBUG, "%s", new Object() {
-					@Override
-					public String toString() {
-						// lazy conversion to String only when message is
-						// actually printed
-						return Util.exceptionToString(e);
-					}
-				});
+		if (!isValidConfiguration(conf))
+			return;
 
-				experiments.add(new Experiment() {
+		numConfs++;
+		try {
+			Experiment exp = createExperimentForConf(conf);
+			experiments.add(exp);
+		} catch (final Exception e) {
+			print(ExpMsgCategory.ERROR, e.getMessage());
+			print(ExpMsgCategory.DEBUG, "%s", new Object() {
+				@Override
+				public String toString() {
+					// lazy conversion to String only when message is
+					// actually printed
+					return Util.exceptionToString(e);
+				}
+			});
 
-					private static final long serialVersionUID = 4259612422796656502L;
+			experiments.add(new Experiment() {
 
-					@Override
-					protected void produceResults() {
-						aborted++;
-						super.produceResults();
+				private static final long serialVersionUID = 4259612422796656502L;
 
-						resultMap.put(Experiment.EXCEPTION_MESSAGE,
-								e.getMessage());
-						resultMap.put(Experiment.EXCEPTION,
-								Util.exceptionToString(e));
-					}
+				@Override
+				protected void produceResults() {
+					aborted++;
+					super.produceResults();
 
-					@Override
-					protected void performRun() {
-						// do nothing
-					}
-				});
-			}
+					resultMap.put(Experiment.EXCEPTION_MESSAGE, e.getMessage());
+					resultMap.put(Experiment.EXCEPTION,
+							Util.exceptionToString(e));
+				}
+
+				@Override
+				protected void performRun() {
+					// do nothing
+				}
+			});
 		}
 	}
 
@@ -215,7 +214,13 @@ public abstract class AbstractMultiConfExperiment extends
 
 	/**
 	 * Sets the base experiment that is executed multiple times in various
-	 * configurations.
+	 * configurations. Before experiment execution, a copy (clone) of
+	 * {@code baseExperiment} is created and run. Therefore the specific
+	 * experiment instance passed as the {@code baseExperiment} is never
+	 * actually executed.
+	 * 
+	 * @param baseExperiment
+	 *            The base experiment to use.
 	 */
 	public void setBaseExperiment(Experiment baseExperiment) {
 		this.baseExperiment = baseExperiment;
@@ -228,6 +233,9 @@ public abstract class AbstractMultiConfExperiment extends
 	/**
 	 * Sets a {@link ConfigurationValidator}, which is used to veto certain
 	 * impossible factor combinations.
+	 * 
+	 * @param configurationValidator
+	 *            Sets the validator.
 	 */
 	public void setConfigurationValidator(
 			ConfigurationValidator configurationValidator) {

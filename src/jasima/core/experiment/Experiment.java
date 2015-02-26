@@ -41,31 +41,35 @@ import java.util.Map;
  * <p>
  * An Experiment is something that produces results depending on various
  * parameters. The usual lifecycle is to create an experiment, set parameters to
- * their proper values, execute the experiment by calling it's runExperiment()
- * method. After execution a set of results are available using the getResults()
- * methods.
+ * their proper values, execute the experiment by calling it's
+ * {@code runExperiment()} method. After execution a set of results are
+ * available using the {@code getResults()} method.
  * </p>
  * <p>
- * Experiments are not supposed to be run more than once, e.g., to run multiple
- * replications of an experiment (see {@link MultipleReplicationExperiment}) you
- * have to create multiple instances. Therefore experiments should be cloneable.
+ * Experiments are not supposed to be executed more than once, e.g., to run
+ * multiple replications of an experiment (see
+ * {@link MultipleReplicationExperiment}) you have to create multiple instances.
+ * Therefore experiments should be cloneable.
  * </p>
  * <p>
  * This class is intended as the base class for Experiments doing something
- * useful. This class only has a single parameter "initialSeed" (see
- * getInitialSeed()/setInitialSeed()). This parameter is supposed to be used as
- * the starting value for all (pseudo) random number generation activities at
- * experiment runtime. This means two experiments having the same initialSeed
- * and all other experiment parameters being the same should behave
- * deterministically and produce exactly the same results.
+ * useful. Besides a name this class only has a single parameter "initialSeed"
+ * (see {@link #getInitialSeed()}/{@link #setInitialSeed(long)}). This parameter
+ * is supposed to be used as the starting value for all (pseudo) random number
+ * generation activities at experiment runtime. This means two experiments
+ * having the same {@code initialSeed} and all other experiment parameters being
+ * the same should behave deterministically and produce exactly the same
+ * results.
  * </p>
  * <p>
- * The only result produced by this class is "runTime" (type Double), which
- * measures the real time required to execute an experiment.
+ * The only results produced by this class are "runTime" (type Double; measuring
+ * the real time required to execute an experiment) and "expAborted" (type
+ * Integer, a value &gt;0 indicates some problems causing early termination).
  * </p>
  * <p>
- * Experiments can have listeners registered, which are informed of an
- * experiment's start and completion and can be used by subclasses to provide
+ * Experiments can have listeners registered (derived from
+ * {@link ExperimentListenerBase}), which are informed of various events such as
+ * an experiment's start and completion and can be used by subclasses to provide
  * additional events.
  * </p>
  * 
@@ -98,10 +102,16 @@ public abstract class Experiment implements Cloneable, Serializable,
 	public static final ExperimentEvent EXPERIMENT_FINISHING = new ExperimentEvent();
 	public static final ExperimentEvent EXPERIMENT_FINISHED = new ExperimentEvent();
 
+	/**
+	 * Enum for the category of a message produced by an experiment.
+	 */
 	public static enum ExpMsgCategory {
 		OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL;
 	}
 
+	/**
+	 * Class to store print messages of an experiment.
+	 */
 	public static class ExpPrintEvent extends ExperimentEvent {
 
 		public final Experiment exp;
@@ -133,6 +143,9 @@ public abstract class Experiment implements Cloneable, Serializable,
 		/**
 		 * Returns this message formatted as a {@code String} using the default
 		 * {@link Locale}.
+		 * 
+		 * @return The formatted message using the default {@code Locale}.
+		 * @see Util#DEF_LOCALE
 		 */
 		public String getMessage() {
 			return getMessage(Util.DEF_LOCALE);
@@ -140,6 +153,10 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 		/**
 		 * Returns this message formatted using the given {@link Locale}.
+		 * 
+		 * @param locale
+		 *            The {@link Locale} to use when formatting the message.
+		 * @return The formatted message.
 		 */
 		public String getMessage(Locale locale) {
 			// lazy creation of message only when needed
@@ -158,19 +175,20 @@ public abstract class Experiment implements Cloneable, Serializable,
 		}
 	}
 
-	// parameters
-
+	// fields to store parameters
 	private int nestingLevel = 0;
 	private String name = null;
 	private long initialSeed = 0xd23284FEA3L; // just an arbitrary default seed
 
-	// used during run
-
+	// fields used during run
 	private long runTimeReal;
 	protected int aborted;
 	protected Map<String, Object> resultMap;
 
-	// used during event notification
+	/**
+	 * used during event notification and only temporarily contains a reference
+	 * to {@link #resultMap}.
+	 */
 	public Map<String, Object> results;
 
 	public static class UniqueNamesCheckingHashMap extends
@@ -190,21 +208,62 @@ public abstract class Experiment implements Cloneable, Serializable,
 		super();
 	}
 
+	/**
+	 * This method is called to perform any initializations required before the
+	 * experiment is run.
+	 */
 	protected void init() {
 		aborted = 0;
 	}
 
+	/**
+	 * This method is called immediately before {@link #performRun()}, but after
+	 * {@link #init()}.
+	 */
 	protected void beforeRun() {
 	}
 
+	/**
+	 * Contains the code to actually do something useful. This is the only
+	 * abstract method that sub-classes are required to implement.
+	 */
 	protected abstract void performRun();
 
+	/**
+	 * This method can be overridden to perform any required clean-up. It is
+	 * executed immediately after {@link #performRun()}, but before
+	 * {@link #produceResults()} and {@link #finish()}.
+	 */
 	protected void done() {
 	}
 
+	/**
+	 * Populates the result map {@link #resultMap} with values produced during
+	 * {@link #results} experiment execution. The implementation in Experiment
+	 * adds the two results {@value #RUNTIME} and {@value EXP_ABORTED}.
+	 */
+	protected void produceResults() {
+		resultMap.put(RUNTIME, runTimeReal());
+		resultMap.put(EXP_ABORTED, aborted);
+	}
+
+	/**
+	 * This method gives experiments and listeners a chance to view/modify
+	 * results. It is called after {@link #produceResults()}.
+	 */
 	protected void finish() {
 	}
 
+	/**
+	 * Runs the experiment. This is the main method to call to execute an
+	 * experiment. Sub-classes normally don't have to overwrite this method but
+	 * create customized behavior by overriding on of the methods like
+	 * {@link #init()}, {@link #beforeRun()}, {@link #performRun()} (this one is
+	 * required), {@link #done()}, {@link #produceResults()} or
+	 * {@link #finish()}.
+	 * 
+	 * @return The results of experiment execution.
+	 */
 	public Map<String, Object> runExperiment() {
 		try {
 			runTimeReal = System.currentTimeMillis();
@@ -248,22 +307,26 @@ public abstract class Experiment implements Cloneable, Serializable,
 		if (numListener() > 0)
 			fire(EXPERIMENT_FINISHED);
 
+		// return results
 		return getResults();
 	}
 
+	/**
+	 * Returns the result map produced when executing this experiment.
+	 * 
+	 * @return This experiment's results.
+	 */
 	public final Map<String, Object> getResults() {
 		return resultMap;
-	}
-
-	protected void produceResults() {
-		resultMap.put(RUNTIME, runTimeReal());
-		resultMap.put(EXP_ABORTED, aborted);
 	}
 
 	/**
 	 * Returns the run time (in seconds) of an Experiment. The returned value is
 	 * only valid after calling {@link #runExperiment()} and measures the time
 	 * between calling {@link #init()} and the completion of {@link #done()}.
+	 * 
+	 * @return The real time (wall time in seconds) it took to run the
+	 *         experiment.
 	 */
 	protected double runTimeReal() {
 		return (runTimeReal / 1000.0d);
@@ -283,8 +346,10 @@ public abstract class Experiment implements Cloneable, Serializable,
 	}
 
 	/**
-	 * Retrieves a list containing the name and current value of this class's
-	 * properties.
+	 * Retrieves a map containing the name and current value for each of this
+	 * class's properties.
+	 * 
+	 * @return A map of all Java Bean properties and their values.
 	 */
 	public Map<String, Object> getPropsWithValues() {
 		Map<String, Object> props = new LinkedHashMap<String, Object>();
@@ -316,6 +381,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * Triggers a print event of the given category. If an appropriate listener
 	 * is installed, this should produce an output of {@code message}.
 	 * 
+	 * @param category
+	 *            Category of the message.
 	 * @param message
 	 *            The message to print.
 	 * @see ConsolePrinter
@@ -331,6 +398,8 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * is installed, this should produce a message created by the given format
 	 * string and parameters.
 	 * 
+	 * @param category
+	 *            Category of the message.
 	 * @param messageFormat
 	 *            Format string for the message to produce.
 	 * @param params
@@ -346,20 +415,18 @@ public abstract class Experiment implements Cloneable, Serializable,
 	/**
 	 * Same as {@link #print(ExpMsgCategory, String, Object...)}, just
 	 * defaulting to the category {@code INFO}.
+	 * 
+	 * @param messageFormat
+	 *            The format String to use.
+	 * @param params
+	 *            Parameters to use when formatting the message.
 	 */
 	public void print(String messageFormat, Object... params) {
 		print(ExpMsgCategory.INFO, messageFormat, params);
 	}
 
 	/**
-	 * Prints the results of this experiments to {@link System#out}.
-	 */
-	public final void printResults(Map<String, Object> res) {
-		ConsolePrinter.printResults(this, res);
-	}
-
-	/**
-	 * Prints the results of this experiments to {@link System#out}.
+	 * Prints the results of this experiment to {@link System#out}.
 	 */
 	public final void printResults() {
 		ConsolePrinter.printResults(this, getResults());
@@ -382,9 +449,11 @@ public abstract class Experiment implements Cloneable, Serializable,
 	}
 
 	/**
-	 * This is the same as clone(), just without throwing the checked exception
-	 * CloneNotSupportedException. If such an exception occurs, it is wrapped in
-	 * a RuntimeException.
+	 * This is the same as {@code clone()}, just without throwing the checked
+	 * exception {@code CloneNotSupportedException}. If such an exception
+	 * occurs, it is wrapped in a {@code RuntimeException}.
+	 * 
+	 * @return A clone of this experiment.
 	 */
 	public Experiment silentClone() {
 		try {
@@ -396,6 +465,9 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	/**
 	 * Sets the nesting level. This method is only for internal purposes.
+	 * 
+	 * @param nestingLevel
+	 *            The nesting level for this experiment.
 	 */
 	public void nestingLevel(int nestingLevel) {
 		this.nestingLevel = nestingLevel;
@@ -405,7 +477,11 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * The level in the call hierarchy this experiment is executed in.
 	 * Experiments that spawn new sub-experiments (like
 	 * {@link MultipleReplicationExperiment}) are required to increase their
-	 * children's nestingLevel by 1.
+	 * children's nestingLevel by 1. If
+	 * {@link #executeSubExperiment(Experiment)} is used, then this is set
+	 * automatically to the correct value.
+	 * 
+	 * @return This experiment's nesting level.
 	 */
 	public int nestingLevel() {
 		return nestingLevel;
@@ -413,6 +489,9 @@ public abstract class Experiment implements Cloneable, Serializable,
 
 	/**
 	 * Set some descriptive name for this experiment.
+	 * 
+	 * @param name
+	 *            The name of the experiment.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -431,6 +510,9 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * random influences, they should all and solely depend on this value.
 	 * 
 	 * @see RandomFactory
+	 * 
+	 * @param initialSeed
+	 *            The initial seed to use.
 	 */
 	public void setInitialSeed(long initialSeed) {
 		this.initialSeed = initialSeed;

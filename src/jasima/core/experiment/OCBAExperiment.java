@@ -530,12 +530,15 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	/**
 	 * Sets the minimum number of replications performed for each configuration.
 	 * This has to be &gt;=3.
+	 * 
+	 * @param minReps
+	 *            The minimum number of replications per configuration.
 	 */
-	public void setMinReplicationsPerConfiguration(int v) {
-		if (v < 3)
+	public void setMinReplicationsPerConfiguration(int minReps) {
+		if (minReps < 3)
 			throw new IllegalArgumentException(
 					"Minimum number of replications has to be >=3.");
-		this.minReplicationsPerConfiguration = v;
+		this.minReplicationsPerConfiguration = minReps;
 	}
 
 	public int getMinReplicationsPerConfiguration() {
@@ -544,8 +547,10 @@ public class OCBAExperiment extends FullFactorialExperiment {
 
 	/**
 	 * Sets the name of the objective which defines "best". This has to be the
-	 * name of a result produced by the base experiment (
-	 * {@link #getBaseExperiment()}).
+	 * name of a result produced by the base experiment.
+	 * 
+	 * @param objective
+	 *            Result name to use as the objective function.
 	 */
 	public void setObjective(String objective) {
 		this.objective = objective;
@@ -610,6 +615,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 * Sets whether a minimization or maximization experiment should be solved.
 	 * 
 	 * @param problemType
+	 *            Whether minimization or maximization are required.
 	 */
 	public void setProblemType(ProblemType problemType) {
 		this.problemType = problemType;

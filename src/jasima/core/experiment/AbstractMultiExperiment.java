@@ -248,6 +248,11 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	/**
 	 * Handles arbitrary values "val" by storing them in an object array.
+	 * 
+	 * @param key
+	 *            Name of the value to store.
+	 * @param val
+	 *            The value to store. Can be null.
 	 */
 	protected void handleOtherValue(String key, Object val) {
 		if (key.endsWith(EXCEPTION) || key.endsWith(EXCEPTION_MESSAGE)) {
@@ -267,6 +272,12 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * Handles a numeric value "val" by averaging it over all runs performed. If
 	 * "val" is of type SummaryStat, averaging is performed with its
 	 * mean()-value.
+	 * 
+	 * @param key
+	 *            The name if the value.
+	 * @param val
+	 *            The numeric value to store. Either a {@link Number}, or a
+	 *            {@link SummaryStat}
 	 */
 	protected void handleNumericValue(String key, Object val) {
 		Double v;
@@ -392,6 +403,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	/**
 	 * Sets the names of all results where detailed results of all
 	 * sub-experiment executions should be preserved.
+	 * 
+	 * @param keepResults
+	 *            The names of all results for which detailed run results from
+	 *            sub-experiments should be stored.
 	 */
 	public void setKeepResults(String[] keepResults) {
 		this.keepResults = keepResults;
@@ -403,6 +418,9 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * (therefore using only a single CPU core) is sometimes useful for
 	 * debugging purposes or when fine-grained control over parallelization of
 	 * nested (multi-)experiments is required.
+	 * 
+	 * @param allowParallelExecution
+	 *            Whether or not to allow parallel execution of sub-experiments.
 	 */
 	public void setAllowParallelExecution(boolean allowParallelExecution) {
 		this.allowParallelExecution = allowParallelExecution;
@@ -419,6 +437,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * set to {@code false}, all sub-experiments will be assigned a different
 	 * {@code initialSeed}, depending only on this experiment's
 	 * {@code initialSeed}.
+	 * 
+	 * @param commonRandomNumbers
+	 *            Whether or not all sub-experiments are assigned the same
+	 *            {@code initialSeed}.
 	 */
 	protected void setCommonRandomNumbers(boolean commonRandomNumbers) {
 		this.commonRandomNumbers = commonRandomNumbers;
@@ -431,6 +453,9 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	/**
 	 * Before starting, throw away this many seed values. This setting can be
 	 * useful to resume interrupted sub-experiments.
+	 * 
+	 * @param skipSeedCount
+	 *            The number of seeds to skip.
 	 */
 	public void setSkipSeedCount(int skipSeedCount) {
 		this.skipSeedCount = skipSeedCount;
@@ -445,6 +470,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 * abort in its results) after the first sub-experiment aborting. If this is
 	 * set to {@code false}, execution of sub-experiments continues, ignoring
 	 * aborting experiments.
+	 * 
+	 * @param abortUponBaseExperimentAbort
+	 *            Whether or not to abort execution of sub-experiments upon the
+	 *            first execution error.
 	 */
 	public void setAbortUponBaseExperimentAbort(
 			boolean abortUponBaseExperimentAbort) {
@@ -462,6 +491,9 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	/**
 	 * Whether or not to produce averaged results across all sub-experiments as
 	 * a result of this experiment.
+	 * 
+	 * @param produceAveragedResults
+	 *            Whether or not to produce averaged results.
 	 */
 	public void setProduceAveragedResults(boolean produceAveragedResults) {
 		this.produceAveragedResults = produceAveragedResults;
