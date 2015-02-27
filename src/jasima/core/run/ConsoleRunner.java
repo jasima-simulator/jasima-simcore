@@ -1,14 +1,15 @@
 package jasima.core.run;
 
 import static java.lang.System.lineSeparator;
-import static java.util.Arrays.asList;
 import jasima.core.experiment.Experiment;
 import jasima.core.util.Pair;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import joptsimple.OptionParser;
@@ -37,45 +38,11 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	private static final String MSG_NO_EXP_FILE = "No valid experiment file name/class name given.";
 
 	private PropertyDescriptor[] beanProps;
-	private boolean isIndirectUse;
 	private Experiment experiment;
 
 	public ConsoleRunner(Experiment indirectExperiment) {
 		super();
 		this.experiment = indirectExperiment;
-		this.isIndirectUse = indirectExperiment != null;
-	}
-
-	@Override
-	protected void doParseArgs(String[] args) {
-		if (!isIndirectUse) {
-			if (args.length == 0)
-				printErrorAndExit(1, MSG_NO_EXP_FILE);
-
-			// try to read/instantiate the main experiment
-			String main = args[0];
-
-			// is it an option?
-			if (!main.startsWith("-")) {
-				// no, could be class or file name
-				experimentFileName = main;
-				experiment = (Experiment) TypeUtil.loadClassOrXmlFile(main,
-						getClass().getClassLoader(), packageSearchPath);
-				if (experiment == null)
-					printErrorAndExit(1, MSG_NO_EXP_FILE);
-
-				// reduce param array by one entry
-				args = asList(args).subList(1, args.length).toArray(
-						new String[args.length - 1]);
-			}
-		}
-
-		super.doParseArgs(args);
-
-		// is experiment still null? This can happen for a command line like
-		// "-? -nores"
-		if (experiment == null)
-			printErrorAndExit(1, MSG_NO_EXP_FILE);
 	}
 
 	@Override
@@ -122,8 +89,26 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	}
 
 	@Override
+	protected void handleRemainingArgs(List<?> argList) {
+		super.handleRemainingArgs(argList);
+
+		if (experiment != null)
+			return;
+
+		if (argList.size() == 0) {
+			throw new RuntimeException(MSG_NO_EXP_FILE);
+		}
+
+		if (((String) argList.get(0)).startsWith("-"))
+			return;
+
+		// we have to have at least one argument
+		experimentFileName = (String) argList.remove(0);
+	}
+
+	@Override
 	protected String getHelpCmdLineText() {
-		if (isIndirectUse) {
+		if (experiment != null) {
 			return "usage: " + experiment.getClass().getName() + " [options]";
 		} else {
 			return "usage: " + getClass().getName() + " <expSpec> [options]";
@@ -132,10 +117,12 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 
 	@Override
 	protected String getHelpFooterText() {
-		if (!isIndirectUse) {
+		if (experiment != null) {
 			return "<expSpec>            Class name of an Experiment or file name "
 					+ lineSeparator()
-					+ "                     of an XML-serialized Experiment."
+					+ "                     of an XML-serialized Experiment or"
+					+ lineSeparator()
+					+ "                     name of an xls file."
 					+ lineSeparator() + super.getHelpFooterText();
 		} else {
 			return super.getHelpFooterText();
@@ -144,7 +131,20 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 
 	@Override
 	protected Experiment createExperiment() {
-		return Objects.requireNonNull(experiment);
+		Experiment e;
+
+		if (experimentFileName.toLowerCase(Util.DEF_LOCALE).endsWith(".xls")) {
+			e = new ExcelExperimentReader(new File(experimentFileName))
+					.createExperiment();
+		} else {
+			e = (Experiment) TypeUtil.loadClassOrXmlFile(experimentFileName,
+					getClass().getClassLoader(), packageSearchPath);
+		}
+
+		if (e == null)
+			printErrorAndExit(1, MSG_NO_EXP_FILE);
+
+		return Objects.requireNonNull(e);
 	}
 
 	public static void main(String[] args) {

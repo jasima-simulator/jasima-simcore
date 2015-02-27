@@ -18,11 +18,6 @@
  *******************************************************************************/
 package jasima.core.run;
 
-import jasima.core.experiment.Experiment;
-
-import java.io.File;
-import java.util.List;
-
 /**
  * Loads an experiment from an XLS file and executes it on the command line.
  * 
@@ -31,46 +26,10 @@ import java.util.List;
  * @version 
  *          "$Id$"
  */
-public class ExcelExperimentRunner extends AbstractExperimentRunner {
+public class ExcelExperimentRunner extends ConsoleRunner {
 
-	private static final String MSG_NO_EXP_FILE = "No experiment file name given.";
-
-	@Override
-	protected void handleRemainingArgs(List<?> argList) {
-		super.handleRemainingArgs(argList);
-
-		if (argList.size() == 0) {
-			throw new RuntimeException(MSG_NO_EXP_FILE);
-		}
-
-		// we have to have at least one argument
-		experimentFileName = (String) argList.remove(0);
-	}
-
-	@Override
-	protected String getHelpCmdLineText() {
-		return "usage: " + getClass().getName() + " <xlsFileName> [options]";
-	}
-
-	@Override
-	protected String getHelpFooterText() {
-		return "<xlsFileName>        The file name of an Excel Experiment."
-				+ System.lineSeparator() + super.getHelpFooterText();
-	}
-
-	@Override
-	protected String getResultFileNameHint() {
-		return experimentFileName;
-	}
-
-	@Override
-	protected Experiment createExperiment() {
-		return new ExcelExperimentReader(new File(experimentFileName))
-				.createExperiment();
-	}
-
-	public static void main(String[] args) {
-		new ExcelExperimentRunner().parseArgs(args).run();
+	public ExcelExperimentRunner() {
+		super(null);
 	}
 
 }
