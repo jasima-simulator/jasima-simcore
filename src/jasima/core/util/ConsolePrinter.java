@@ -241,10 +241,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	public static void printResults(PrintWriter out, Experiment e,
 			Map<String, Object> res) {
 		out.println();
-		out.println(getDescription(e, "; "));
+		out.println(getDescription(e));
 
 		ArrayList<String> valStatNames = new ArrayList<String>();
-
 		ArrayList<String> otherNames = new ArrayList<String>();
 
 		for (String k : res.keySet()) {
@@ -280,7 +279,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 			for (String k : valStatNames) {
 				SummaryStat vs = (SummaryStat) res.get(k);
 				out.printf(Util.DEF_LOCALE,
-						"%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f\n", k, vs.mean(),
+						"%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f%n", k, vs.mean(),
 						vs.min(), vs.max(), vs.stdDev(), vs.numObs(), vs.sum());
 			}
 		}
@@ -296,15 +295,15 @@ public class ConsolePrinter extends ExperimentListenerBase {
 					if (v.getClass().isArray())
 						v = Util.arrayToString(v);
 					else if (v instanceof Experiment)
-						v = getDescription(((Experiment) v), "; ");
+						v = getDescription(((Experiment) v));
 				}
 				out.println(k + "\t" + v);
 			}
 		}
 
 		out.println();
-		out.println("  time needed:        " + res.get(Experiment.RUNTIME)
-				+ "s");
+		out.printf(Util.DEF_LOCALE, "time needed:\t%fs%n",
+				res.get(Experiment.RUNTIME));
 
 		out.flush();
 	}
@@ -313,28 +312,14 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	 * Returns a textual representation of an experiment's properties and their
 	 * current values.
 	 */
-	public static String getDescription(Experiment e, String delim) {
-		StringBuffer res = new StringBuffer(e.getClass().getSimpleName() + ": ");
-		Map<String, Object> props = e.getPropsWithValues();
-		for (String s : props.keySet()) {
-			Object v = props.get(s);
-
-			String valString;
-			if (v != null && (v.getClass().isArray()))
-				valString = Util.arrayToString(v);
-			else if (v != null && (v instanceof Experiment))
-				valString = "{{" + getDescription(((Experiment) v), delim)
-						+ "}}";
-			else
-				valString = String.valueOf(v);
-
-			res.append(s).append('=').append(valString).append(delim);
-		}
-
-		if (res.length() > 0)
-			return res.substring(0, res.length() - delim.length());
+	public static String getDescription(Experiment e) {
+		String s;
+		if (e.getName() != null)
+			s = String.format(Util.DEF_LOCALE, "Results of %s '%s'", e
+					.getClass().getSimpleName(), e.getName());
 		else
-			return "";
+			s = String.format(Util.DEF_LOCALE, "Results of %s", e.getClass()
+					.getSimpleName());
+		return s;
 	}
-
 }

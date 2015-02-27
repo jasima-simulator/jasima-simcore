@@ -158,8 +158,8 @@ public class ExcelSaver extends ResultSaver {
 
 	private boolean keepDataFile = false;
 	private boolean transpose = false;
-	private int maxParamValues = 20;
-	private int maxStringLength = 500;
+	private int maxParamValues = 100;
+	private int maxStringLength = 16000;
 
 	private WritableWorkbook workbook;
 
