@@ -152,20 +152,27 @@ public class Util {
 	}
 
 	/**
-	 * Generic method to add an element to an array. A new array containing the
-	 * given element is returned.
+	 * Generic method to add an element to an array. A new array additionally containing the
+	 * given elements is returned.
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] addToArray(T[] a, T newElement, Class<T> compType) {
-		if (a == null || a.length == 0) {
-			T[] res = (T[]) Array.newInstance(compType, 1);
-			res[0] = newElement;
-			return res;
-		} else {
-			ArrayList<T> l = new ArrayList<T>(Arrays.asList(a));
-			l.add(newElement);
-			return l.toArray((T[]) Array.newInstance(compType, l.size()));
+	@SafeVarargs
+	public static <T> T[] addToArray(T[] a, Class<T> compType, T... newElement) {
+		if (newElement==null||newElement.length==0)
+			throw new IllegalArgumentException();
+		
+		int newLength = newElement.length + (a==null?0:a.length);
+		ArrayList<T> l = new ArrayList<T>(newLength);
+		if (a!=null) {
+			l.addAll(Arrays.asList(a));
 		}
+		for (T t : newElement) {
+			l.add(t);
+		}
+		
+		@SuppressWarnings("unchecked")
+		T[] resArray = (T[]) Array.newInstance(compType, l.size());
+		
+		return l.toArray(resArray);
 	}
 
 	/**

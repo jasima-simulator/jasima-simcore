@@ -242,8 +242,8 @@ public class TextFileReader {
 
 		StaticSourceDef sd = new StaticSourceDef();
 		sd.setJobSpecs(jobs);
-		SourceDef[] as = Util.addToArray(data.getJobSources(), sd,
-				SourceDef.class);
+		SourceDef[] as = Util.addToArray(data.getJobSources(), SourceDef.class,
+				sd);
 		data.setJobSources(as);
 
 		return Util.nextNonEmptyLine(r);
@@ -318,8 +318,8 @@ public class TextFileReader {
 		if (numJobs >= 0)
 			sd.setNumJobs(numJobs);
 
-		SourceDef[] as = Util.addToArray(data.getJobSources(), sd,
-				SourceDef.class);
+		SourceDef[] as = Util.addToArray(data.getJobSources(), SourceDef.class,
+				sd);
 		data.setJobSources(as);
 
 		return s;
