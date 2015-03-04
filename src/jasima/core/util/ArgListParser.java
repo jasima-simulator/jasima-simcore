@@ -6,6 +6,7 @@ import jasima.core.util.ArgListTokenizer.TokenType;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ArgListParser {
 
@@ -35,6 +36,32 @@ public class ArgListParser {
 			this.params = params;
 		}
 
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			toString(this, sb);
+			return sb.toString();
+		}
+
+		public static StringBuilder toString(ParseTree t, StringBuilder sb) {
+			sb.append(t.getClassOrXmlName());
+
+			if (t.getParams() != null) {
+				sb.append('(');
+				for (Entry<String, ParseTree> e : t.getParams().entrySet()) {
+					sb.append(e.getKey()).append('=');
+					toString(e.getValue(), sb);
+					sb.append(';');
+				}
+				if (t.getParams().entrySet().size() != 0) {
+					sb.setCharAt(sb.length() - 1, ')');
+				} else {
+					sb.append(')');
+				}
+			}
+			return sb;
+		}
+
 	}
 
 	private final ArgListTokenizer tk;
@@ -42,24 +69,6 @@ public class ArgListParser {
 	public ArgListParser(ArgListTokenizer tk) {
 		super();
 		this.tk = tk;
-	}
-
-	/**
-	 * Constructs a new ListTokenizer around {@code input} and then calls
-	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse
-	 * the whole string, otherwise it throws a {@link ParseException}.
-	 */
-	public static ParseTree parseClassAndPropDef(String input) {
-		ArgListTokenizer tk = new ArgListTokenizer(input);
-		ParseTree res = new ArgListParser(tk).parseClassAndPropDef();
-
-		// full input read?
-		if (tk.nextToken() != null) {
-			throw new ParseException(tk.currTokenStart(),
-					"There is data after the last token.");
-		}
-
-		return res;
 	}
 
 	/**
@@ -127,6 +136,28 @@ public class ArgListParser {
 			msg = "expected %s, but found: %s, '%s'";
 		throw new ParseException(tk.currTokenStart(), msg,
 				Arrays.deepToString(expected), actual, tk.currTokenText());
+	}
+
+	// ************* static methods below ******************************
+
+	/**
+	 * Constructs a new ListTokenizer around {@code input} and then calls
+	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse
+	 * the whole string, otherwise it throws a {@link ParseException}.
+	 */
+	public static ParseTree parseClassAndPropDef(String input) {
+		ArgListTokenizer tk = new ArgListTokenizer(input);
+		ParseTree res = new ArgListParser(tk).parseClassAndPropDef();
+
+		// full input read?
+		if (tk.nextToken() != null) {
+			throw new ParseException(tk.currTokenStart(), String.format(
+					Util.DEF_LOCALE,
+					"There is data after the last token: '%s'.",
+					input.substring(tk.currTokenStart())));
+		}
+
+		return res;
 	}
 
 }

@@ -25,7 +25,9 @@ package jasima.core.run;
  * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
+ * @deprecated Use ConsoleRunner instead.
  */
+@Deprecated
 public class ExcelExperimentRunner extends ConsoleRunner {
 
 	public ExcelExperimentRunner() {

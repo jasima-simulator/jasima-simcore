@@ -186,8 +186,8 @@ public abstract class AbstractExperimentRunner {
 		}
 
 		for (Object o : opts.valuesOf("p")) {
-			packageSearchPath = Util.addToArray(packageSearchPath, (String) o,
-					String.class);
+			packageSearchPath = Util.addToArray(packageSearchPath,
+					String.class, (String) o);
 		}
 	}
 
@@ -339,8 +339,8 @@ public abstract class AbstractExperimentRunner {
 			String name = p.a;
 			Object value = p.b;
 
-			TypeUtil.setPropertyEx(exp, name, value, getClass()
-					.getClassLoader(), packageSearchPath);
+			TypeUtil.setPropertyValue(exp, name, value, getClass().getClassLoader(),
+					packageSearchPath);
 		}
 
 		return exp;

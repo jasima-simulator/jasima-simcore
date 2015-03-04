@@ -8,14 +8,20 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.WeakHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+
+import com.thoughtworks.xstream.XStreamException;
 
 /**
  * This class contains a collection of methods concernde with
@@ -33,348 +39,49 @@ public class TypeUtil {
 
 	/**
 	 * A {@code TypeConversionException} is thrown, when the conversion between
-	 * types in {@link #convert(Object, Class)} fails.
+	 * types fails.
 	 */
-	public static class TypeConversionException extends
-			IllegalArgumentException {
-		private static final long serialVersionUID = -6958941745746368647L;
+	public static class TypeConversionException extends RuntimeException {
+		private static final long serialVersionUID = -7073321632899508315L;
 
 		public TypeConversionException(String s) {
-			super(s);
+			this(s, null);
 		}
 
-	}
-
-	/**
-	 * Attempts trivial type conversion. This methods supports all casting
-	 * conversions (JLS 5.5) and always returns null when the input object is
-	 * null. If the target type is {@link String}, the result is the return
-	 * value of the input object's {@link Object#toString()} method. Any object
-	 * can be converted to {@link Integer}, {@link Double} and {@link Boolean},
-	 * but those conversions can throw exceptions.
-	 * 
-	 * @param o
-	 *            the object to be converted
-	 * @param klass
-	 *            the target type
-	 * @return the converted object
-	 * @throws TypeConversionException
-	 *             if the conversion is not supported
-	 * @throws NumberFormatException
-	 *             if the input object is not assignable to {@link Number} and
-	 *             the return value of its {@link Object#toString()} method
-	 *             can't be converted to the numeric target type
-	 */
-	@SuppressWarnings("unchecked")
-	public static <E> E convert(Object o, Class<E> klass)
-			throws IllegalArgumentException {
-
-		// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6456930
-		// klass.cast will not unbox and can't accept primitive values
-
-		if (o == null)
-			return null;
-
-		if (klass.isAssignableFrom(o.getClass())) {
-			return (E) o;
-		}
-
-		if (klass == String.class) {
-			return (E) o.toString();
-		}
-
-		if (klass == int.class || klass == Integer.class) {
-			if (o instanceof Number)
-				return (E) (Integer) ((Number) o).intValue();
-			return (E) Integer.valueOf(o.toString());
-		}
-
-		if (klass == long.class || klass == Long.class) {
-			if (o instanceof Number)
-				return (E) (Long) ((Number) o).longValue();
-			return (E) Long.valueOf(o.toString());
-		}
-
-		if (klass == double.class || klass == Double.class) {
-			if (o instanceof Number)
-				return (E) (Double) ((Number) o).doubleValue();
-			return (E) Double.valueOf(o.toString());
-		}
-
-		if (klass == boolean.class || klass == Boolean.class) {
-			String str = o.toString();
-			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")
-					|| str.equalsIgnoreCase("1"))
-				return (E) Boolean.TRUE;
-			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
-					|| str.equalsIgnoreCase("0"))
-				return (E) Boolean.FALSE;
-			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
-					"Can't convert %s to bool.", o));
-		}
-
-		if (klass.isEnum()) {
-			return (E) Enum.valueOf(klass.asSubclass(Enum.class), o.toString());
-		}
-
-		if (klass == byte.class || klass == Byte.class) {
-			if (o instanceof Number)
-				return (E) (Byte) ((Number) o).byteValue();
-			return (E) Byte.valueOf(o.toString());
-		}
-
-		if (klass == short.class || klass == Short.class) {
-			if (o instanceof Number)
-				return (E) (Short) ((Number) o).shortValue();
-			return (E) Short.valueOf(o.toString());
-		}
-
-		if (klass == float.class || klass == Float.class) {
-			if (o instanceof Number)
-				return (E) (Float) ((Number) o).floatValue();
-			return (E) Float.valueOf(o.toString());
-		}
-
-		if (klass == char.class || klass == Character.class) {
-			if (o instanceof Character)
-				return (E) (Character) o;
-			String s = o.toString();
-			if (s.length() == 1)
-				return (E) new Character(s.charAt(0));
-		}
-
-		throw new TypeConversionException(String.format(Util.DEF_LOCALE,
-				"Can't convert from '%s' to '%s'.", o.getClass().getName(),
-				klass.getName()));
-	}
-
-	/**
-	 * <p>
-	 * Sets a property named with propPath to a certain value using reflection.
-	 * </p>
-	 * <p>
-	 * Example: setProperty( obj, "a.b.c", 5 ); is equivalent to a direct call
-	 * obj.getA().getB().setC(5)
-	 */
-	public static void setProperty(Object o, String propPath, Object value) {
-		try {
-			String[] segments = propPath.split("\\.");
-			// call getters until we finally arrive where we can call the
-			// setter-method
-			for (int i = 0; i < segments.length; i++) {
-				BeanInfo bi = Introspector.getBeanInfo(o.getClass());
-				PropertyDescriptor[] pds = bi.getPropertyDescriptors();
-
-				PropertyDescriptor match = null;
-				for (PropertyDescriptor pd : pds) {
-					if (pd.getName().equals(segments[i])) {
-						match = pd;
-						break; // for
-					}
-				}
-				if (match == null)
-					throw new IllegalArgumentException("segment '"
-							+ segments[i] + "' not found of property path '"
-							+ propPath + "'.");
-				Method m;
-				if (i == segments.length - 1) {
-					// call setter
-					m = match.getWriteMethod();
-					if (m == null)
-						throw new RuntimeException("Property '" + segments[i]
-								+ "' is not writable.");
-					o = m.invoke(o, convert(value, match.getPropertyType()));
-				} else {
-					// call getter and continue
-					m = match.getReadMethod();
-					o = m.invoke(o);
-				}
-			}
-		} catch (Exception e1) {
-			throw new RuntimeException("Can't set property '" + propPath
-					+ "' to value '" + value + "'. " + e1.getMessage(), e1);
+		public TypeConversionException(String s, Throwable cause) {
+			super(s, cause);
 		}
 	}
 
 	/**
-	 * Attempts to set an object's property to a certain value. In addition to
-	 * the method {@link #setProperty(Object, String, Object)}, this method
-	 * tries to instantiate classes given by classname or load xml-serialized
-	 * objects, if a simple {@link #setProperty(Object, String, Object)} is not
-	 * successful.
-	 * 
-	 * @param o
-	 *            The object whose property has to be set.
-	 * @param propName
-	 *            Name of the property to be set.
-	 * @param value
-	 *            The value to set this property to. If this is a String and
-	 *            setting the value by ffff fails, this is interpreted as a
-	 *            class name of file name.
-	 * @param loader
-	 *            The classloader to use when new classes have to be
-	 *            initialized.
-	 * @param packageSearchPath
-	 *            The package search path to use for looking up abbreviated
-	 *            class names.
-	 * 
-	 * @see #loadClassOrXmlFile(String, ClassLoader, String[])
-	 * @see #searchAndInstanciateClass(String, ClassLoader, String[])
-	 * @see #loadXmlFile(String)
+	 * Internal class used to indicate problems reading a file.
 	 */
-	public static void setPropertyEx(Object o, String propName, Object value,
-			ClassLoader loader, String[] packageSearchPath) {
-		if (NULL.equals(value)) {
-			setProperty(o, propName, null);
-		} else if (value instanceof String) {
-			String s = (String) value;
-			try {
-				// try to use s as is
-				setProperty(o, propName, s);
-			} catch (RuntimeException e) {
-				if (e.getCause() instanceof TypeConversionException) {
-					ParseTree parsed = ArgListParser.parseClassAndPropDef(s);
-					try {
-						value = createObjectTree(parsed, loader,
-								packageSearchPath, false);
-					} catch (RuntimeException ex) {
-						ex.printStackTrace();
-						value = null;
-					}
-					//
-					// // try to interpret 's' as class or file name
-					// value = loadClassOrXmlFile(s, loader, packageSearchPath);
-					if (value != null) {
-						setProperty(o, propName, value);
-						return;
-					}
-				}
-				// still no luck? give up
-				throw e;
-			}
-		} else {
-			// try to use value as is
-			setProperty(o, propName, value);
-		}
-	}
+	private static class FileReadException extends Exception {
+		private static final long serialVersionUID = -1763832991537196846L;
 
-	private static Object createObjectTree(ParseTree parsed,
-			ClassLoader loader, String[] packageSearchPath, boolean sub) {
-		Object root = loadClassOrXmlFile(parsed.getClassOrXmlName(), loader,
-				packageSearchPath);
-		if (root != null && parsed.getParams() != null) {
-			Map<String, ParseTree> props = parsed.getParams();
-			for (Entry<String, ParseTree> e : props.entrySet()) {
-				String propName = e.getKey();
-				Object value = createObjectTree(e.getValue(), loader,
-						packageSearchPath, true);
+		private final String fileName;
 
-				// plain value
-				setPropertyEx(root, propName, value, loader, packageSearchPath);
-			}
-		}
-		return root;
-	}
-
-	/**
-	 * Attempts to load an object from a xml-file {@code fileName}. If such a
-	 * file does not exist or is not readable, {@code null} will be returned.
-	 * 
-	 * @see XmlUtil#loadXML(File)
-	 */
-	public static Object loadXmlFile(String fileName) {
-		File f = new File(fileName);
-		if (!f.canRead())
-			return null;
-
-		Object o = XmlUtil.loadXML(f);
-		return o;
-	}
-
-	/**
-	 * Tries to instantiate a class given by {@code classOrFilename}. If this
-	 * does not succeed, {@code classOrFilename} is interpreted as a file name
-	 * of an xml-serialized object and attempted to be loaded. If this is also
-	 * not successful, {@code null} will be returned.
-	 * 
-	 * @see #searchAndInstanciateClass(String, ClassLoader, String[])
-	 * @see #loadXmlFile(String)
-	 */
-	public static Object loadClassOrXmlFile(String classOrFilename,
-			ClassLoader l, String[] packageSearchPath) {
-		// try to find a class of the given name first
-		Object o = searchAndInstanciateClass(classOrFilename, l,
-				packageSearchPath);
-
-		if (o == null) {
-			// try to load from file
-			o = loadXmlFile(classOrFilename);
+		public FileReadException(String fileName, Throwable cause) {
+			super(null, cause);
+			this.fileName = fileName;
 		}
 
-		return o;
-	}
-
-	/**
-	 * <p>
-	 * Load an instantiate a class using classloader {@code l}. If a class
-	 * {@code className} is not found, it is searched for in the package search
-	 * path.
-	 * </p>
-	 * <p>
-	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"}
-	 * and the package search path {@code searchPath} contains an entry
-	 * {@code "jasima.core.experiment"}, then the class
-	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be
-	 * looked up and instantiated.
-	 * </p>
-	 * <p>
-	 * If no matching class could be found, {@code null} will be returned.
-	 */
-	public static Object searchAndInstanciateClass(String className,
-			ClassLoader l, String[] searchPath) {
-		// // does it look like containing a list of parameters we have to
-		// parse?
-		// if (className.contains("(")) {
-		// ListTokenizer t = new ListTokenizer(className);
-		//
-		// if (t.nextTokenNoWhitespace()!=STRING)
-		// throw new RuntimeException("Input looks strange: '%s'"+className);
-		// className = t.n
-		// }
-
-		// try direct match first
-		Class<?> klazz = load(className, l);
-
-		// try matches from the class search path
-		if (klazz == null)
-			for (String packageName : searchPath) {
-				klazz = load(packageName + "." + className, l);
-				if (klazz != null)
-					break; // for loop
-			}
-
-		if (klazz != null) {
-			try {
-				return klazz.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			return null;
+		public String getFileName() {
+			return fileName;
 		}
 	}
 
 	/**
-	 * Loads a class named {@code classname} using the classloader {@code l}.
-	 * Instead of raising a {@code ClassNotFoundException}, {@code null} will be
-	 * returned.
+	 * Internal class to indicate problems.
 	 */
-	private static Class<?> load(String classname, ClassLoader l) {
-		try {
-			return l.loadClass(classname);
-		} catch (ClassNotFoundException e) {
-			return null;
+	private static class NoTypeFoundException extends Exception {
+
+		private static final long serialVersionUID = -7271169253051939902L;
+
+		public NoTypeFoundException(String msg) {
+			super(msg);
 		}
+
 	}
 
 	/**
@@ -389,20 +96,13 @@ public class TypeUtil {
 			// call getters until we finally arrive where we can call the
 			// setter-method
 			for (int i = 0; i < segments.length; i++) {
-				BeanInfo bi = Introspector.getBeanInfo(o.getClass());
-				PropertyDescriptor[] pds = bi.getPropertyDescriptors();
-
-				PropertyDescriptor match = null;
-				for (PropertyDescriptor pd : pds) {
-					if (pd.getName().equals(segments[i])) {
-						match = pd;
-						break; // for
-					}
-				}
+				PropertyDescriptor match = getPropertyDescriptor(o, segments[i]);
 				if (match == null)
-					throw new IllegalArgumentException("segment '"
-							+ segments[i] + "' not found of property path '"
-							+ propPath + "'.");
+					throw new IllegalArgumentException(String.format(
+							Util.DEF_LOCALE,
+							"segment '%s' not found of property path '%s'.",
+							segments[i], propPath));
+
 				if (i == segments.length - 1) {
 					// return property type
 					return match.getPropertyType();
@@ -411,10 +111,11 @@ public class TypeUtil {
 					o = match.getReadMethod().invoke(o);
 				}
 			}
-			throw new AssertionError();
-		} catch (Exception e1) {
-			throw new RuntimeException("Can't determine type of property "
-					+ propPath, e1);
+
+			throw new AssertionError(); // should never be reached
+		} catch (ReflectiveOperationException e1) {
+			throw new RuntimeException(String.format(Util.DEF_LOCALE,
+					"Can't determine type of property '%s'.", propPath), e1);
 		}
 	}
 
@@ -433,20 +134,12 @@ public class TypeUtil {
 			// call getters until we finally arrive where we can call the
 			// final get-method
 			for (int i = 0; i < segments.length; i++) {
-				BeanInfo bi = Introspector.getBeanInfo(o.getClass());
-				PropertyDescriptor[] pds = bi.getPropertyDescriptors();
-
-				PropertyDescriptor match = null;
-				for (PropertyDescriptor pd : pds) {
-					if (pd.getName().equals(segments[i])) {
-						match = pd;
-						break; // for
-					}
-				}
+				PropertyDescriptor match = getPropertyDescriptor(o, segments[i]);
 				if (match == null)
-					throw new IllegalArgumentException("segment '"
-							+ segments[i] + "' not found of property path '"
-							+ propPath + "'.");
+					throw new IllegalArgumentException(String.format(
+							Util.DEF_LOCALE,
+							"segment '%s' not found of property path '%s'.",
+							segments[i], propPath));
 
 				// call getter and continue
 				Method m = match.getReadMethod();
@@ -454,24 +147,165 @@ public class TypeUtil {
 			}
 
 			return o;
-		} catch (Exception e1) {
-			throw new RuntimeException(
-					"Can't get property '" + propPath + "'.", e1);
+		} catch (ReflectiveOperationException e1) {
+			throw new RuntimeException(String.format(Util.DEF_LOCALE,
+					"Can't get property '%s'.", propPath), e1);
 		}
+	}
+
+	/**
+	 * Calls
+	 * {@link #setPropertyValue(Object, String, Object, ClassLoader, String[])}
+	 * using the ClassLoader that was used to load {@code TypeUtil} and the
+	 * default package search path {@link Util#DEF_CLASS_SEARCH_PATH}.
+	 * 
+	 * @param o
+	 *            The object with a property to set.
+	 * @param propPath
+	 *            The property path and name of the property to set.
+	 * @param value
+	 *            The value to set the property to.
+	 * @see #setPropertyValue(Object, String, Object, ClassLoader, String[])
+	 */
+	public static void setPropertyValue(Object o, String propPath, Object value) {
+		setPropertyValue(o, propPath, value, TypeUtil.class.getClassLoader(),
+				Util.DEF_CLASS_SEARCH_PATH);
+	}
+
+	/**
+	 * Sets a property named with propPath to a certain value using reflection.
+	 * <p>
+	 * Example: setProperty( obj, "a.b.c", 5 ); is equivalent to a direct call
+	 * obj.getA().getB().setC(5)
+	 * 
+	 * @param o
+	 *            The object with a property to set.
+	 * @param propPath
+	 *            The property path and name of the property to set.
+	 * @param value
+	 *            The value to set the property to.
+	 * @param loader
+	 *            The {@link ClassLoader} to use when new classes have to be
+	 *            loaded.
+	 * @param packageSearchPath
+	 *            A list of package names that are used to complete abbreviated
+	 *            class names.
+	 */
+	public static void setPropertyValue(Object o, String propPath,
+			Object value, ClassLoader loader, String[] packageSearchPath) {
+		String getPart;
+		String setPart;
+		int i = propPath.lastIndexOf('.');
+		if (i >= 0) {
+			getPart = propPath.substring(0, i);
+			setPart = propPath.substring(i + 1);
+		} else {
+			getPart = "";
+			setPart = propPath;
+		}
+
+		if (getPart.length() > 0)
+			o = getPropertyValue(o, getPart);
+
+		// 'o' now contains the object for which to call the setter
+		//
+		// find property descriptor
+		PropertyDescriptor desc = getPropertyDescriptor(o, setPart);
+		if (desc == null)
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+					"Segment '%s' not found of property path '%s'.", setPart,
+					propPath));
+
+		value = convert(value, desc.getPropertyType(), getPart,
+				TypeUtil.class.getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+
+		try {
+			desc.getWriteMethod().invoke(o, value);
+		} catch (ReflectiveOperationException e1) {
+			throw new RuntimeException(String.format(
+					"Can't set property '%s' to value '%s'. %s", propPath,
+					value, exceptionMessage(e1)), e1);
+		}
+	}
+
+	/**
+	 * Converts an object {@code o} (which usually is a {@code String}) to
+	 * another type {@code requiredType}.
+	 * 
+	 * @param o
+	 *            The object to convert.
+	 * @param requiredType
+	 *            The desired type {@code o} should be converted to.
+	 * @param context
+	 *            A String describing the context of {@code o}. This is used to
+	 *            produce more meaningful error messages.
+	 * @param l
+	 *            The {@link ClassLoader} to use.
+	 * @param packageSearchPath
+	 *            Search path when looking up classes.
+	 * @param <T>
+	 *            Type of returned object.
+	 * @return {@code o} converted to {@code requiredType}.
+	 */
+	public static <T> T convert(Object o, Class<T> requiredType,
+			String context, ClassLoader l, String[] packageSearchPath)
+			throws TypeConversionException {
+		T value;
+		if (o instanceof String) {
+			ParseTree tree = ArgListParser.parseClassAndPropDef((String) o);
+			// convert tree to the proper object
+			try {
+				value = createObjectTree(tree, requiredType, context, l,
+						packageSearchPath);
+			} catch (ReflectiveOperationException | FileReadException
+					| NoTypeFoundException e) {
+				// this can only happen for the top level object, otherwise it
+				// is already caught and wrapped in a TypeConversionException
+				throw new TypeConversionException(
+						String.format(
+								Util.DEF_LOCALE,
+								"Can't create object for value '%s' (property path: '%s'): %s",
+								tree.getClassOrXmlName(), context,
+								exceptionMessage(e)), e);
+			}
+		} else {
+			value = basicConversions(o, requiredType);
+		}
+		return value;
 	}
 
 	/**
 	 * Finds (bean) properties of {@code o} which have both getter and setter
 	 * methods.
+	 * 
+	 * @param o
+	 *            An arbitrary object.
+	 * @return An array containing a {@link PropertyDescriptor} for each
+	 *         property of {@code o}.
+	 * @see #findWritableProperties(Class)
 	 */
 	public static PropertyDescriptor[] findWritableProperties(Object o) {
+		return findWritableProperties(o.getClass());
+	}
+
+	/**
+	 * Finds (bean) properties of {@code c} which have both getter and setter
+	 * methods. If an {@link IntrospectionException} is raised during when
+	 * executing the method, then this exception is raised again as an unchecked
+	 * exception (wrapped in a {@link RuntimeException}).
+	 * 
+	 * @param c
+	 *            An arbitrary class.
+	 * @return An array containing a {@link PropertyDescriptor} for each
+	 *         property of {@code c}.
+	 */
+	public static PropertyDescriptor[] findWritableProperties(Class<?> c) {
 		try {
-			BeanInfo bi = Introspector.getBeanInfo(o.getClass());
+			BeanInfo bi = Introspector.getBeanInfo(c);
 
 			PropertyDescriptor[] pds = bi.getPropertyDescriptors();
-
-			ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
-
+			ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(
+					pds.length);
 			for (PropertyDescriptor pd : pds) {
 				if (pd.getWriteMethod() != null && pd.getReadMethod() != null)
 					list.add(pd);
@@ -484,6 +318,366 @@ public class TypeUtil {
 	}
 
 	/**
+	 * Utility method to return a {@code PropertyDescriptor}. Name matching is
+	 * case in-sensitive.
+	 * 
+	 * @param o
+	 *            The object for which to get the property.
+	 * @param propName
+	 *            Name of the bean property.
+	 * @return A {@code PropertyDescriptor} matching {@code propName}, otherwise
+	 *         {@code null}.
+	 */
+	private static PropertyDescriptor getPropertyDescriptor(Object o,
+			String propName) {
+		Map<String, PropertyDescriptor> props = writableProperties(o.getClass());
+		PropertyDescriptor desc = props.get(propName
+				.toLowerCase(Util.DEF_LOCALE));
+		return desc;
+	}
+
+	/**
+	 * Attempts to load an object from a xml-file {@code fileName}. If such a
+	 * file does not exist or is not readable, {@code null} will be returned.
+	 * 
+	 * @see XmlUtil#loadXML(File)
+	 */
+	private static Object loadXmlFile(String fileName) throws FileReadException {
+		File f = new File(fileName);
+		if (!f.canRead() || f.isDirectory())
+			return null;
+
+		try {
+			return XmlUtil.loadXML(f);
+		} catch (XStreamException x) {
+			throw new FileReadException(fileName, x);
+		}
+	}
+
+	/**
+	 * Load an instantiate a class using classloader {@code l}. If a class
+	 * {@code className} is not found, it is searched for in the package search
+	 * path.
+	 * <p>
+	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"}
+	 * and the package search path {@code searchPath} contains an entry
+	 * {@code "jasima.core.experiment"}, then the class
+	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be
+	 * looked up and instantiated.
+	 * </p>
+	 * <p>
+	 * If no matching class could be found, {@code null} will be returned.
+	 */
+	private static Object searchAndInstanciateClass(String className,
+			ClassLoader l, String[] searchPath)
+			throws ReflectiveOperationException, IllegalAccessException {
+		Class<?> klazz = null;
+
+		// try direct match
+		try {
+			klazz = l.loadClass(className);
+		} catch (ClassNotFoundException ignore) {
+		}
+
+		// try matches from the class search path
+		if (klazz == null) {
+			for (String packageName : searchPath) {
+				try {
+					klazz = l.loadClass(packageName + "." + className);
+					break; // for; we found a matching class
+				} catch (ClassNotFoundException ignore) {
+				}
+			}
+		}
+
+		if (klazz != null) {
+			if (Modifier.isAbstract(klazz.getModifiers()))
+				throw new InstantiationException(
+						"Can't instantiate an abstract class.");
+			return klazz.getConstructor().newInstance();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * This method is used internally to create an object as specified by the
+	 * given parse tree.
+	 * 
+	 * @param tree
+	 *            The parse tree.
+	 * @param requiredType
+	 *            Type the converted parse tree should be compatible with.
+	 * @param contextString
+	 *            Optional property context path.
+	 * @param loader
+	 *            The classloader to use.
+	 * @param packageSearchPath
+	 *            The package search path.
+	 * @param <T>
+	 *            Type of returned object.
+	 * @return The object as specified in the parse tree.
+	 */
+	private static <T> T createObjectTree(ParseTree tree,
+			Class<T> requiredType, String contextString, ClassLoader loader,
+			String[] packageSearchPath) throws ReflectiveOperationException,
+			FileReadException, NoTypeFoundException {
+		// try to create main type
+		T root = convertFromString(tree.getClassOrXmlName(), requiredType,
+				loader, packageSearchPath);
+
+		// set parameters of complex objects
+		if (tree.getParams() != null) {
+			Map<String, ParseTree> params = tree.getParams();
+			Map<String, PropertyDescriptor> beanProps = writableProperties(root
+					.getClass());
+
+			for (Entry<String, ParseTree> e : params.entrySet()) {
+				String propName = e.getKey();
+				PropertyDescriptor prop = beanProps.get(propName
+						.toLowerCase(Util.DEF_LOCALE));
+				if (prop == null)
+					throw new RuntimeException(
+							String.format(
+									Util.DEF_LOCALE,
+									"Can't find property '%s' in type %s, property path: '%s'",
+									propName, root.getClass().getName(),
+									contextString));
+
+				try {
+					String propPath;
+					if (contextString != null && contextString.length() > 0)
+						propPath = contextString + "." + propName;
+					else
+						propPath = propName;
+
+					Object value = createObjectTree(e.getValue(),
+							prop.getPropertyType(), propPath, loader,
+							packageSearchPath);
+
+					// call setter to finally check compatibility
+					prop.getWriteMethod().invoke(root, value);
+				} catch (ReflectiveOperationException | FileReadException
+						| NoTypeFoundException e1) {
+					throw new TypeConversionException(
+							String.format(
+									Util.DEF_LOCALE,
+									"Can't set property '%s' in type %s to value '%s' (property path: '%s'): %s",
+									propName, root.getClass().getName(), e
+											.getValue().toString(),
+									contextString, exceptionMessage(e1)), e1);
+				}
+			}
+		}
+
+		return root;
+	}
+
+	private static String exceptionMessage(Throwable t) {
+		String msg = t.getMessage();
+		if (t instanceof InvocationTargetException) {
+			msg = String.format(Util.DEF_LOCALE,
+					"Error invoking method or constructor: %s", t.getCause()
+							.toString());
+		} else if (t instanceof NoSuchMethodException) {
+			msg = String.format(Util.DEF_LOCALE,
+					"Method or constructor not found: %s", t.getMessage());
+		} else if (t instanceof FileReadException) {
+			FileReadException e = (FileReadException) t;
+			msg = String.format(Util.DEF_LOCALE, "Error reading file '%s': %s",
+					e.getFileName(), e.getCause().getMessage());
+		}
+		return msg;
+	}
+
+	/**
+	 * Converts an object given as a String to the original type. This tries to
+	 * convert primitive types (like numbers) first. If this is not successful,
+	 * {@code asString} is interpreted as a class name and loading the
+	 * appropriate class is attempted (potentially prefixed with entries in
+	 * {@code packageSearchPath}). If conversion is still not successful, then
+	 * loading an xml file with the name {@code asString} is attempted.
+	 * 
+	 * @param asString
+	 *            String representation of an object.
+	 * @param requiredType
+	 *            The desired target type.
+	 * @param l
+	 *            The class loader to use.
+	 * @param packageSearchPath
+	 *            A package search path.
+	 * @param <T>
+	 *            Type of returned object.
+	 * @return The object converted/compatible with {@code requiredType}.
+	 */
+	// TODO: make this mechanism extendible
+	private static <T> T convertFromString(String asString,
+			Class<T> requiredType, ClassLoader l, String[] packageSearchPath)
+			throws ReflectiveOperationException, FileReadException,
+			NoTypeFoundException {
+		if (NULL.equalsIgnoreCase(asString))
+			return null;
+
+		// just primitive type or no conversion required?
+		try {
+			return basicConversions(asString, requiredType);
+		} catch (TypeConversionException | NumberFormatException ignore) {
+			// continue
+		}
+
+		try {
+			// try to load from class (interpret 'asString' as class name)
+			T o = requiredType.cast(searchAndInstanciateClass(asString, l,
+					packageSearchPath));
+			if (o != null) {
+				return o;
+			}
+
+			// try to load from file
+			o = requiredType.cast(loadXmlFile(asString));
+			if (o != null) {
+				return o;
+			}
+		} catch (ClassCastException ignore) {
+
+		}
+
+		// give up
+		throw new NoTypeFoundException(String.format(Util.DEF_LOCALE,
+				"Can't load/convert '%s', required type: %s", asString,
+				requiredType));
+	}
+
+	/**
+	 * Attempts trivial type conversion. This methods supports all casting
+	 * conversions (JLS 5.5) and always returns null when the input object is
+	 * null. If the target type is {@link String}, the result is the return
+	 * value of the input object's {@link Object#toString()} method. Any object
+	 * can be converted to {@link Integer}, {@link Double} and {@link Boolean},
+	 * but those conversions can throw exceptions.
+	 * 
+	 * @param o
+	 *            the object to be converted
+	 * @param klass
+	 *            the target type
+	 * @param <T>
+	 *            Type of returned object.
+	 * @return the converted object
+	 * @throws TypeConversionException
+	 *             if the conversion is not supported
+	 * @throws NumberFormatException
+	 *             if the input object is not assignable to {@link Number} and
+	 *             the return value of its {@link Object#toString()} method
+	 *             can't be converted to the numeric target type
+	 */
+	@SuppressWarnings("unchecked")
+	private static <T> T basicConversions(Object o, Class<T> klass)
+			throws TypeConversionException, NumberFormatException {
+		if (o == null)
+			return null;
+
+		if (klass.isAssignableFrom(o.getClass())) {
+			return (T) o;
+		}
+
+		if (klass == String.class) {
+			return (T) o.toString();
+		}
+
+		if (klass == int.class || klass == Integer.class) {
+			if (o instanceof Number)
+				return (T) (Integer) ((Number) o).intValue();
+			return (T) Integer.valueOf(o.toString());
+		}
+
+		if (klass == long.class || klass == Long.class) {
+			if (o instanceof Number)
+				return (T) (Long) ((Number) o).longValue();
+			return (T) Long.valueOf(o.toString());
+		}
+
+		if (klass == double.class || klass == Double.class) {
+			if (o instanceof Number)
+				return (T) (Double) ((Number) o).doubleValue();
+			return (T) Double.valueOf(o.toString());
+		}
+
+		if (klass == boolean.class || klass == Boolean.class) {
+			String str = o.toString();
+			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")
+					|| str.equalsIgnoreCase("1"))
+				return (T) Boolean.TRUE;
+			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
+					|| str.equalsIgnoreCase("0"))
+				return (T) Boolean.FALSE;
+			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
+					"Can't convert '%s' to bool.", o));
+		}
+
+		if (klass.isEnum()) {
+			return (T) Enum.valueOf(klass.asSubclass(Enum.class), o.toString());
+		}
+
+		if (klass == byte.class || klass == Byte.class) {
+			if (o instanceof Number)
+				return (T) (Byte) ((Number) o).byteValue();
+			return (T) Byte.valueOf(o.toString());
+		}
+
+		if (klass == short.class || klass == Short.class) {
+			if (o instanceof Number)
+				return (T) (Short) ((Number) o).shortValue();
+			return (T) Short.valueOf(o.toString());
+		}
+
+		if (klass == float.class || klass == Float.class) {
+			if (o instanceof Number)
+				return (T) (Float) ((Number) o).floatValue();
+			return (T) Float.valueOf(o.toString());
+		}
+
+		if (klass == char.class || klass == Character.class) {
+			if (o instanceof Character)
+				return (T) (Character) o;
+			String s = o.toString();
+			if (s.length() == 1)
+				return (T) new Character(s.charAt(0));
+		}
+
+		throw new TypeConversionException(String.format(Util.DEF_LOCALE,
+				"Can't convert from '%s' to '%s'.", o.getClass().getName(),
+				klass.getName()));
+	}
+
+	private static WeakHashMap<Class<?>, Map<String, PropertyDescriptor>> propCache = null;
+
+	/**
+	 * Returns a map of property descriptors. Keys in this map are the property
+	 * names converted to lower case.
+	 * 
+	 * @param c
+	 *            The class for which to find the properties.
+	 * @return A map associating a property name (converted to lower case) with
+	 *         a {@link PropertyDescriptor}.
+	 */
+	private static Map<String, PropertyDescriptor> writableProperties(Class<?> c) {
+		if (propCache == null)
+			propCache = new WeakHashMap<>();
+
+		Map<String, PropertyDescriptor> beanProps = propCache.get(c);
+
+		if (beanProps == null) {
+			PropertyDescriptor[] props = findWritableProperties(c);
+			beanProps = new HashMap<>();
+			for (PropertyDescriptor p : props) {
+				beanProps.put(p.getName().toLowerCase(Util.DEF_LOCALE), p);
+			}
+			propCache.put(c, beanProps);
+		}
+		return beanProps;
+	}
+
+	/**
 	 * This method returns a clone of an object, if this object is cloneable.
 	 * The clone is created by calling <code>clone()</code> using Java
 	 * reflection, therefore <code>clone()</code> not necessarily has to be
@@ -491,8 +685,10 @@ public class TypeUtil {
 	 * 
 	 * @param o
 	 *            The object to be cloned.
-	 * @return A clone of {@code o} if it was cloneable, or otherwise the
-	 *         original object.
+	 * @param <T>
+	 *            Type of returned object.
+	 * @return A clone of {@code o} if it was {@link Cloneable}, or otherwise
+	 *         the original object.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T cloneIfPossible(T o) {
@@ -512,8 +708,8 @@ public class TypeUtil {
 						new Class[] {});
 				return (T) cloneMethod.invoke(o);
 			} catch (NoSuchMethodException ignore) {
-				// clonable, but no public clone-method, return o as is
-			} catch (Exception e) {
+				// clonable, but no public clone-method, return "o" as is
+			} catch (ReflectiveOperationException e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -528,6 +724,8 @@ public class TypeUtil {
 	 * 
 	 * @param array
 	 *            The array to be cloned.
+	 * @param <T>
+	 *            Component type of the array.
 	 * @return A clone of {@code array} with each element also cloned.
 	 */
 	public static <T> T[] deepCloneArrayIfPossible(T[] array) {
@@ -630,5 +828,4 @@ public class TypeUtil {
 		}
 		return null;
 	}
-
 }

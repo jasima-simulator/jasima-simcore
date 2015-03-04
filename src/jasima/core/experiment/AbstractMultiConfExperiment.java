@@ -180,7 +180,7 @@ public abstract class AbstractMultiConfExperiment extends
 					&& p.getValue() instanceof ComplexFactorSetter) {
 				((ComplexFactorSetter) p.getValue()).configureExperiment(e);
 			} else {
-				TypeUtil.setProperty(e, p.getKey(),
+				TypeUtil.setPropertyValue(e, p.getKey(),
 						TypeUtil.cloneIfPossible(p.getValue()));
 			}
 		}

@@ -152,26 +152,26 @@ public class Util {
 	}
 
 	/**
-	 * Generic method to add an element to an array. A new array additionally containing the
-	 * given elements is returned.
+	 * Generic method to add an element to an array. A new array additionally
+	 * containing the given elements is returned.
 	 */
 	@SafeVarargs
 	public static <T> T[] addToArray(T[] a, Class<T> compType, T... newElement) {
-		if (newElement==null||newElement.length==0)
+		if (newElement == null || newElement.length == 0)
 			throw new IllegalArgumentException();
-		
-		int newLength = newElement.length + (a==null?0:a.length);
+
+		int newLength = newElement.length + (a == null ? 0 : a.length);
 		ArrayList<T> l = new ArrayList<T>(newLength);
-		if (a!=null) {
+		if (a != null) {
 			l.addAll(Arrays.asList(a));
 		}
 		for (T t : newElement) {
 			l.add(t);
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		T[] resArray = (T[]) Array.newInstance(compType, l.size());
-		
+
 		return l.toArray(resArray);
 	}
 
@@ -602,6 +602,10 @@ public class Util {
 
 		return String.format(DEF_LOCALE, "Java v%s, %s (%s); OS: %s (%s, v%s)",
 				javaVersion, javaVmName, javaVendor, osName, osArch, osVersion);
+	}
+
+	// prevent instantiation
+	private Util() {
 	}
 
 }
