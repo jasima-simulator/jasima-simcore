@@ -116,7 +116,8 @@ public abstract class AbstractMultiConfExperiment extends
 			Experiment exp = createExperimentForConf(conf);
 			experiments.add(exp);
 		} catch (final Exception e) {
-			print(ExpMsgCategory.ERROR, e.getMessage());
+			String msg = e.getMessage();
+			print(ExpMsgCategory.ERROR, msg == null ? e.toString() : msg);
 			print(ExpMsgCategory.DEBUG, "%s", new Object() {
 				@Override
 				public String toString() {
