@@ -254,8 +254,8 @@ public abstract class AbstractExperimentRunner {
 				.println("**********************************************************************");
 		System.out.println(Util.ID_STRING);
 		System.out.println();
-		System.out.println(String.format(Util.DEF_LOCALE, "running on: %s",
-				Util.getEnvString()));
+		System.out.println(Util.getJavaEnvString());
+		System.out.println(	Util.getOSEnvString());
 		System.out
 				.println("**********************************************************************");
 		System.out.println();

@@ -585,23 +585,34 @@ public class Util {
 	}
 
 	/**
-	 * Returns a string that characterizes the current execution environment
-	 * (Java and OS) by using various system properties.
+	 * Returns a string that characterizes the current Java environment by using
+	 * various system properties.
 	 * 
 	 * @return The execution environment.
 	 */
-	public static String getEnvString() {
+	public static String getJavaEnvString() {
 		String javaVersion = System.getProperty("java.version");
 		String javaVendor = System.getProperty("java.vendor");
 		String javaVmName = System.getProperty("java.vm.name");
 		// String javaRuntimeName = System.getProperty("java.runtime.name");
 
+		return String.format(DEF_LOCALE, "java: v%s, %s (%s)", javaVersion,
+				javaVmName, javaVendor);
+	}
+
+	/**
+	 * Returns a string that characterizes the host operating system by using
+	 * various system properties.
+	 * 
+	 * @return The OS environment.
+	 */
+	public static String getOSEnvString() {
 		String osName = System.getProperty("os.name");
 		String osArch = System.getProperty("os.arch");
 		String osVersion = System.getProperty("os.version");
 
-		return String.format(DEF_LOCALE, "Java v%s, %s (%s); OS: %s (%s, v%s)",
-				javaVersion, javaVmName, javaVendor, osName, osArch, osVersion);
+		return String.format(DEF_LOCALE, "OS: %s (%s, v%s)", osName, osArch,
+				osVersion);
 	}
 
 	// prevent instantiation
