@@ -20,7 +20,6 @@ package jasima.shopSim.prioRules.gp;
 
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
-import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
 /**

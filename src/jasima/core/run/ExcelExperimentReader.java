@@ -133,7 +133,9 @@ public class ExcelExperimentReader {
 		Object val = getCellValue(cell);
 		try {
 			// TODO: set proper class loader and search path
-			return (T) TypeUtil.convert(val, type, "", ExcelExperimentReader.class.getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+			return (T) TypeUtil.convert(val, type, "",
+					ExcelExperimentReader.class.getClassLoader(),
+					Util.DEF_CLASS_SEARCH_PATH);
 		} catch (IllegalArgumentException ex) {
 			// ignore
 		}

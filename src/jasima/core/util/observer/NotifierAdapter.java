@@ -19,7 +19,6 @@
 package jasima.core.util.observer;
 
 import jasima.core.util.TypeUtil;
-import jasima.core.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;

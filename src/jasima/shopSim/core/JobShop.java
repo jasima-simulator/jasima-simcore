@@ -20,7 +20,6 @@ package jasima.shopSim.core;
 
 import jasima.core.simulation.Simulation;
 import jasima.core.util.TypeUtil;
-import jasima.core.util.Util;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.WorkStation.WorkStationEvent;
 

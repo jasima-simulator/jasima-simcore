@@ -255,7 +255,7 @@ public abstract class AbstractExperimentRunner {
 		System.out.println(Util.ID_STRING);
 		System.out.println();
 		System.out.println(Util.getJavaEnvString());
-		System.out.println(	Util.getOSEnvString());
+		System.out.println(Util.getOSEnvString());
 		System.out
 				.println("**********************************************************************");
 		System.out.println();
@@ -339,8 +339,8 @@ public abstract class AbstractExperimentRunner {
 			String name = p.a;
 			Object value = p.b;
 
-			TypeUtil.setPropertyValue(exp, name, value, getClass().getClassLoader(),
-					packageSearchPath);
+			TypeUtil.setPropertyValue(exp, name, value, getClass()
+					.getClassLoader(), packageSearchPath);
 		}
 
 		return exp;
