@@ -26,51 +26,68 @@ import jasima.shopSim.core.WorkStation;
 /**
  * Negates the value of the base rule. This way FCFS becomes LCFS, Shortest
  * Processing Time first becomes Longest Processing Time first etc.
- * <p>
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class Inverse extends PR {
 
+	private static final long serialVersionUID = -162829434910106115L;
+
 	private PR base;
+
+	public Inverse() {
+		this(null);
+	}
 
 	public Inverse(PR baseRule) {
 		super();
-		base = baseRule;
-		if (baseRule.getTieBreaker() != null)
-			throw new IllegalArgumentException(
-					"baseRule can't have a tie breaker. This has to be set as a tie breaker of InverseRule.");
+		setBaseRule(baseRule);
 	}
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		return -base.calcPrio(j);
+		return -getBaseRule().calcPrio(j);
 	}
 
 	@Override
 	public void beforeCalc(PriorityQueue<?> q) {
-		base.beforeCalc(q);
+		getBaseRule().beforeCalc(q);
 	}
 
 	@Override
 	public String getName() {
-		return "INV_" + String.valueOf(base);
+		return "INV_" + String.valueOf(getBaseRule());
 	}
 
 	@Override
 	public PR clone() throws CloneNotSupportedException {
 		Inverse c = (Inverse) super.clone();
-		if (base != null)
-			c.base = base.silentClone();
+		if (getBaseRule() != null)
+			c.setBaseRule(getBaseRule().silentClone());
 		return c;
 	}
 
 	@Override
 	public void setOwner(WorkStation o) {
 		super.setOwner(o);
-		if (base != null)
-			base.setOwner(o);
+		if (getBaseRule() != null)
+			getBaseRule().setOwner(o);
+	}
+
+	public PR getBaseRule() {
+		return base;
+	}
+
+	public void setBaseRule(PR base) {
+		if (base != null) {
+			if (base.getTieBreaker() != null)
+				throw new IllegalArgumentException(
+						"baseRule can't have a tie breaker. This has to be set as a tie breaker of InverseRule.");
+			base.setOwner(getOwner());
+		}
+		this.base = base;
 	}
 
 }
