@@ -39,6 +39,7 @@ import jxl.Cell;
 import jxl.NumberCell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 
 /**
@@ -109,7 +110,7 @@ public class ExcelExperimentReader {
 				} catch (TypeConversionException t) {
 					throw new RuntimeException(String.format(Util.DEF_LOCALE,
 							"Problem with value in cell %s: %s",
-							position(sheetName, row, col + i), t.toString()), t);
+							position(sheetName, row, col + i), t.getMessage()), t);
 				}
 			}
 		}
@@ -123,7 +124,9 @@ public class ExcelExperimentReader {
 		jasimaSheet = cfgSheet = factSheet = null;
 		numConfigSections = 0;
 		try {
-			Workbook wbk = Workbook.getWorkbook(file);
+			WorkbookSettings settings = new WorkbookSettings();
+			settings.setSuppressWarnings(true);
+			Workbook wbk = Workbook.getWorkbook(file, settings);
 
 			for (String s : wbk.getSheetNames()) {
 				if (SHEET_MAIN.equalsIgnoreCase(s)) {
@@ -173,6 +176,7 @@ public class ExcelExperimentReader {
 		// create experiments
 		if (factors != null) {
 			FullFactorialExperiment ffe = new FullFactorialExperiment();
+			ffe.setBaseExperiment(mainExp);
 			for (Entry<String, List<Object>> e : factors.entrySet()) {
 				ffe.addFactors(e.getKey(), e.getValue());
 			}
@@ -203,9 +207,9 @@ public class ExcelExperimentReader {
 					row = readMain(row);
 					assert mainExp != null;
 				} else if (s.startsWith(SECT_FACTORS)) {
-					parseFactSection(jasimaSheet, row);
+					row = parseFactSection(jasimaSheet, row);
 				} else if (s.startsWith(SECT_CONFIGS)) {
-					parseCfgSection(jasimaSheet, row);
+					row = parseCfgSection(jasimaSheet, row);
 				} else {
 					// ignore everything before main section
 					if (mainExp == null)
@@ -417,12 +421,16 @@ public class ExcelExperimentReader {
 		while (++row < sheet.getRows()) {
 			Cell cell = sheet.getCell(0, row);
 			Object v = getCellValue(cell);
-			if (v != null && v instanceof String) {
-				String s = (String) v;
-				s = s.trim();
-				// not empty or comment?
-				if (s.length() > 0 && !s.startsWith(COMMENT_PREFIX))
+			if (v != null) {
+				if (v instanceof String) {
+					String s = (String) v;
+					s = s.trim();
+					// not empty or comment?
+					if (s.length() > 0 && !s.startsWith(COMMENT_PREFIX))
+						return row;
+				} else {
 					return row;
+				}
 			}
 		}
 		return row;
