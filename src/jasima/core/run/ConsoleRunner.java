@@ -136,7 +136,8 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 		// is it an Excel experiment?
 		if (expSpec.toLowerCase(Util.DEF_LOCALE).endsWith(".xls")) {
 			experimentFileName = expSpec;
-			e = new ExcelExperimentReader(new File(experimentFileName))
+			e = new ExcelExperimentReader(new File(experimentFileName),
+					getClass().getClassLoader(), packageSearchPath)
 					.createExperiment();
 		} else {
 			// normal Experiment (class name) or loaded from xml file

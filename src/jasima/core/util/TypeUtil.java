@@ -115,7 +115,8 @@ public class TypeUtil {
 			throw new AssertionError(); // should never be reached
 		} catch (ReflectiveOperationException e1) {
 			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"Can't determine type of property '%s'.", propPath), e1);
+					"Can't determine type of property '%s': %s", propPath,
+					e1.toString()), e1);
 		}
 	}
 
@@ -216,14 +217,14 @@ public class TypeUtil {
 					"Segment '%s' not found of property path '%s'.", setPart,
 					propPath));
 
-		value = convert(value, desc.getPropertyType(), getPart,
-				TypeUtil.class.getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+		value = convert(value, desc.getPropertyType(), getPart, loader,
+				packageSearchPath);
 
 		try {
 			desc.getWriteMethod().invoke(o, value);
 		} catch (ReflectiveOperationException e1) {
 			throw new RuntimeException(String.format(
-					"Can't set property '%s' to value '%s'. %s", propPath,
+					"Can't set property '%s' to value '%s': %s", propPath,
 					value, exceptionMessage(e1)), e1);
 		}
 	}
@@ -581,7 +582,7 @@ public class TypeUtil {
 		}
 
 		if (klass == String.class) {
-			return (T) o.toString();
+			return (T) String.valueOf(o);
 		}
 
 		if (klass == int.class || klass == Integer.class) {

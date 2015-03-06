@@ -18,30 +18,28 @@
  *******************************************************************************/
 package jasima.core.run;
 
-import static jasima.core.experiment.AbstractMultiConfExperiment.KEY_EXPERIMENT;
-import jasima.core.experiment.AbstractMultiConfExperiment;
+import jasima.core.experiment.AbstractMultiConfExperiment.ComplexFactorSetter;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleConfigurationExperiment;
 import jasima.core.util.TypeUtil;
+import jasima.core.util.TypeUtil.TypeConversionException;
 import jasima.core.util.Util;
-import jasima.core.util.XmlUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import jxl.BooleanCell;
 import jxl.Cell;
-import jxl.DateCell;
-import jxl.ErrorCell;
-import jxl.LabelCell;
 import jxl.NumberCell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
-
-import com.thoughtworks.xstream.io.StreamException;
 
 /**
  * Reads and configures an experiment from an Excel-file. This class can also be
@@ -55,310 +53,411 @@ import com.thoughtworks.xstream.io.StreamException;
  */
 public class ExcelExperimentReader {
 
-	protected Sheet paramSheet, cfgSheet, facSheet;
+	private static final String COMMENT_PREFIX = "#";
+	private static final String SHEET_CONFIGURATIONS = "configurations";
+	private static final String SHEET_FACTORS = "factors";
+	private static final String SHEET_MAIN = "jasima";
 
-	public ExcelExperimentReader(File file) {
+	private static final String SECT_MAIN = "jasima";
+	private static final String SECT_CONFIGS = "configurations";
+	private static final String SECT_FACTORS = "factors";
+
+	private Sheet jasimaSheet, cfgSheet, factSheet;
+	private int numConfigSections;
+
+	private final ClassLoader classLoader;
+	private final String[] packageSearchPath;
+	private Experiment mainExp;
+	private Map<String, List<Object>> factors;
+
+	public class MultValueSetter implements ComplexFactorSetter {
+
+		private static final long serialVersionUID = 5653125435835596532L;
+
+		private final String[] propNames;
+		private final Object[] propValues;
+		private final String sheetName;
+		private final int row;
+		private final int col;
+
+		public MultValueSetter(String[] propNames, Object[] propValues,
+				String sheetName, int row, int col) {
+			super();
+			if (propNames.length != propValues.length)
+				throw new IllegalArgumentException(
+						String.format(
+								Util.DEF_LOCALE,
+								"Number of property names (%d) and values (%d) do not match.",
+								propNames.length, propValues.length));
+
+			this.propNames = propNames;
+			this.propValues = propValues;
+			this.sheetName = sheetName;
+			this.row = row;
+			this.col = col;
+		}
+
+		@Override
+		public void configureExperiment(Experiment e) {
+			for (int i = 0; i < propNames.length; i++) {
+				String name = propNames[i];
+				Object value = propValues[i];
+
+				try {
+					TypeUtil.setPropertyValue(e, name, value, classLoader,
+							packageSearchPath);
+				} catch (TypeConversionException t) {
+					throw new RuntimeException(String.format(Util.DEF_LOCALE,
+							"Problem with value in cell %s: %s",
+							position(sheetName, row, col + i), t.toString()), t);
+				}
+			}
+		}
+
+	}
+
+	public ExcelExperimentReader(File file, ClassLoader loader,
+			String[] packageSearchPath) {
+		this.classLoader = loader;
+		this.packageSearchPath = packageSearchPath;
+		jasimaSheet = cfgSheet = factSheet = null;
+		numConfigSections = 0;
 		try {
 			Workbook wbk = Workbook.getWorkbook(file);
-			paramSheet = wbk.getSheet("parameters");
-			cfgSheet = wbk.getSheet("configurations");
-			facSheet = wbk.getSheet("factors");
+
+			for (String s : wbk.getSheetNames()) {
+				if (SHEET_MAIN.equalsIgnoreCase(s)) {
+					jasimaSheet = wbk.getSheet(s);
+				} else if (SHEET_FACTORS.equalsIgnoreCase(s)) {
+					factSheet = wbk.getSheet(s);
+				} else if (SHEET_CONFIGURATIONS.equalsIgnoreCase(s)) {
+					cfgSheet = wbk.getSheet(s);
+				}
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (BiffException e) {
 			throw new RuntimeException(e);
 		}
-	}
 
-	/**
-	 * Sets a parameter of a MultiConfExperiment to the value of a cell. This is
-	 * needed because the desired type can not be inferred from the sheet and is
-	 * only known when the parameter is set. <strong>Serializing this class only
-	 * preserves the functionality of the {@link #toString()} method.</strong>
-	 */
-	protected static class CellFactorSetter implements
-			AbstractMultiConfExperiment.ComplexFactorSetter {
-
-		private static final long serialVersionUID = 133671480591406206L;
-		protected transient final Cell cell;
-		protected transient final String propPath;
-		protected boolean hideErrors = false;
-		protected String stringVal;
-
-		protected CellFactorSetter(Cell cell, String propPath) {
-			this.cell = cell;
-			this.propPath = propPath;
-			stringVal = cell.getContents();
-		}
-
-		@Override
-		public void configureExperiment(Experiment e) {
-			Class<?> type = TypeUtil.getPropertyType(e, propPath);
-			TypeUtil.setPropertyValue(e, propPath, evoke(cell, type));
-		}
-
-		@Override
-		public String toString() {
-			return stringVal;
+		if (jasimaSheet == null) {
+			throw new IllegalArgumentException("Can't find a sheet named '"
+					+ SHEET_MAIN + "'");
 		}
 	}
 
-	// TODO: use same code as CommandLineRunner
-	protected static Class<?> findClass(String name) {
-		// fully qualified class name?
-		try {
-			return Class.forName(name);
-		} catch (ClassNotFoundException e) {
-			// ignore
+	public Experiment createExperiment() {
+		parseMainSheet();
+		jasimaSheet = null;
+
+		// parse configurations sheet (if any)
+		if (cfgSheet != null) {
+			int row = parseCfgSection(cfgSheet, -1);
+			if (row < cfgSheet.getRows())
+				throw new RuntimeException(
+						"Unknown data on sheet 'configurations' after row "
+								+ (row + 1));
+			cfgSheet = null;
 		}
 
-		// has a dot, is no class -> probably file name
-		if (name.indexOf('.') != -1) {
-			return null;
+		// parse factors sheet (if any)
+		if (factSheet != null) {
+			int row = parseFactSection(factSheet, -1);
+			if (row < factSheet.getRows())
+				throw new RuntimeException(
+						"Unknown data on sheet 'factors' after row "
+								+ (row + 1));
+			factSheet = null;
 		}
 
-		// simple class name
-		for (String s : new String[] { "jasima.core.experiment" }) {
-			try {
-				return Class.forName(s + "." + name);
-			} catch (ClassNotFoundException e) {
-				// ignore
+		// create experiments
+		if (factors != null) {
+			FullFactorialExperiment ffe = new FullFactorialExperiment();
+			for (Entry<String, List<Object>> e : factors.entrySet()) {
+				ffe.addFactors(e.getKey(), e.getValue());
 			}
+			return ffe;
+		} else {
+			return mainExp;
 		}
-
-		return null; // give up
 	}
 
-	protected static <T> T evoke(Cell cell, Class<T> type) {
-		Object val = getCellValue(cell);
-		try {
-			// TODO: set proper class loader and search path
-			return (T) TypeUtil.convert(val, type, "",
-					ExcelExperimentReader.class.getClassLoader(),
-					Util.DEF_CLASS_SEARCH_PATH);
-		} catch (IllegalArgumentException ex) {
-			// ignore
-		}
+	private void parseMainSheet() {
+		int row = -1;
+		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet
+				.getRows()) {
+			Cell c = jasimaSheet.getCell(0, row);
+			String s = String.valueOf(getCellValue(c)).trim()
+					.toLowerCase(Util.DEF_LOCALE);
 
-		String str = val.toString();
+			if (isSectPrefix(s)) {
+				if (s.startsWith(SECT_MAIN)) {
+					if (mainExp != null) {
+						throw new RuntimeException(String.format(
+								Util.DEF_LOCALE,
+								"There can only be one section '" + SECT_MAIN
+										+ "' (cell %s).",
+								position(jasimaSheet, c)));
+					}
 
-		if (str.equals("null"))
-			return null;
+					row = readMain(row);
+					assert mainExp != null;
+				} else if (s.startsWith(SECT_FACTORS)) {
+					parseFactSection(jasimaSheet, row);
+				} else if (s.startsWith(SECT_CONFIGS)) {
+					parseCfgSection(jasimaSheet, row);
+				} else {
+					// ignore everything before main section
+					if (mainExp == null)
+						continue; // while
 
-		try {
-			// first, try loading a class
-			try {
-				Class<?> klass = findClass(str);
-				if (klass != null) {
-					return type.cast(klass.newInstance());
+					throw new RuntimeException(String.format(
+							"Don't know how to handle '%s'.", s));
 				}
-			} catch (InstantiationException e) {
-				throw new RuntimeException("Can't instantiate '" + str + "' ("
-						+ position(cell) + ").");
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException("Can't access '" + str + "' ("
-						+ position(cell) + ").");
-			}
 
-			// then, try loading a file
-			File f = new File(str);
-			try {
-				return type.cast(XmlUtil.loadXML(f));
-			} catch (StreamException e) {
-				throw new RuntimeException("Can't parse '" + position(cell)
-						+ "' as " + type.getSimpleName() + ".");
+				// set row before start of new section
+				if (row < jasimaSheet.getRows())
+					row--;
 			}
-		} catch (ClassCastException e) {
-			throw new RuntimeException("Can't convert '" + position(cell)
-					+ "' to " + type.getSimpleName() + ".");
 		}
+
+		if (mainExp == null) {
+			throw new RuntimeException("Could not find section starting with '"
+					+ SECT_MAIN + "'.");
+		}
+		assert row >= jasimaSheet.getRows();
 	}
 
-	protected static Object getCellValue(Cell c) {
+	private int readMain(int row) {
+		row = nextRowNonEmpty(jasimaSheet, row);
+
+		Cell c = jasimaSheet.getCell(0, row);
+		String s = String.valueOf(getCellValue(c)).trim();
+		if (!"experiment".equalsIgnoreCase(s)) {
+			throw new RuntimeException(
+					String.format(
+							Util.DEF_LOCALE,
+							"First value in "
+									+ SECT_MAIN
+									+ " section has to be 'experiment' (found '%s', cell %s).",
+							s, position(jasimaSheet, c)));
+		}
+
+		c = jasimaSheet.getCell(1, row);
+		Object o = getCellValue(c);
+		try {
+			mainExp = TypeUtil.convert(o, Experiment.class, "", classLoader,
+					packageSearchPath);
+		} catch (TypeConversionException t) {
+			throw new RuntimeException(String.format(Util.DEF_LOCALE,
+					"There is a problem with cell %s: %s",
+					position(jasimaSheet, c), t.getMessage()));
+		}
+
+		// are there further properties to be set?
+		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet
+				.getRows()) {
+			// read name
+			c = jasimaSheet.getCell(0, row);
+			String propName = String.valueOf(getCellValue(c)).trim();
+
+			// end of main section?
+			if (isSectPrefix(propName))
+				return row;
+
+			// read value
+			c = jasimaSheet.getCell(1, row);
+			Object propValue = getCellValue(c);
+
+			// try to set property
+			try {
+				TypeUtil.setPropertyValue(mainExp, propName, propValue,
+						classLoader, packageSearchPath);
+			} catch (TypeConversionException t) {
+				throw new RuntimeException(String.format(Util.DEF_LOCALE,
+						"There is a problem with cell %s: %s",
+						position(jasimaSheet, c), t.getMessage()));
+			}
+		}
+
+		// end of sheet
+		return row;
+	}
+
+	private boolean isSectPrefix(String propName) {
+		propName = propName.toLowerCase(Util.DEF_LOCALE);
+		return propName.equals(SECT_MAIN) || propName.equals(SECT_CONFIGS)
+				|| propName.equals(SECT_FACTORS);
+	}
+
+	private int parseFactSection(Sheet sheet, int row) {
+		if (mainExp == null) {
+			throw new RuntimeException(
+					"Can't read factors without an experiment. "
+							+ "Define it first in the '" + SECT_MAIN
+							+ "'-section on sheet '" + SHEET_MAIN + "'.");
+		}
+
+		// find header row
+		row = nextRowNonEmpty(sheet, row);
+		if (row >= sheet.getRows()) {
+			return row;
+		}
+
+		if (factors == null)
+			factors = new LinkedHashMap<>();
+
+		// read factor names, create value lists
+		ArrayList<String> propNames = new ArrayList<>();
+		ArrayList<List<Object>> propValues = new ArrayList<>();
+		for (int col = 0; col < sheet.getColumns(); col++) {
+			Cell c = sheet.getCell(col, row);
+			String propName = String.valueOf(getCellValue(c)).trim();
+			if (propName.length() == 0)
+				break; // for
+			ArrayList<Object> valueList = new ArrayList<Object>();
+			propValues.add(valueList);
+
+			propNames.add(propName);
+
+			factors.put(propName, valueList);
+		}
+
+		// read values until end of sheet or new section
+		while ((row = nextRowNonEmpty(sheet, row)) < sheet.getRows()) {
+			// check for new section
+			Cell c1 = sheet.getCell(0, row);
+			Object v = getCellValue(c1);
+			if (v instanceof String && isSectPrefix((String) v)) {
+				return row;
+			}
+
+			// read values
+			for (int col = 0; col < propValues.size(); col++) {
+				Cell c = sheet.getCell(col, row);
+				Object value = getCellValue(c);
+				if (value instanceof String) {
+					String s = (String) value;
+					if (s.length() == 0)
+						continue;
+				}
+
+				propValues.get(col).add(
+						new MultValueSetter(
+								new String[] { propNames.get(col) },
+								new Object[] { value }, sheet.getName(), row,
+								col));
+			}
+		}
+
+		// reached end of sheet
+		return row;
+	}
+
+	private int parseCfgSection(Sheet sheet, int row) {
+		if (mainExp == null) {
+			throw new RuntimeException(
+					"Can't read configurations without an experiment. "
+							+ "Define it first in the '" + SECT_MAIN
+							+ "'-section on sheet '" + SHEET_MAIN + "'.");
+		}
+
+		if (factors == null)
+			factors = new LinkedHashMap<>();
+
+		// find header row
+		row = nextRowNonEmpty(sheet, row);
+		if (row >= sheet.getRows()) {
+			return row;
+		}
+
+		// read property names
+		ArrayList<String> propNameList = new ArrayList<>();
+		for (int col = 0; col < sheet.getColumns(); col++) {
+			Cell c = sheet.getCell(col, row);
+			String s = String.valueOf(getCellValue(c)).trim();
+			if (s.length() == 0)
+				break; // for
+
+			propNameList.add(s);
+		}
+		String[] propNames = propNameList.toArray(new String[propNameList
+				.size()]);
+
+		ArrayList<Object> configurations = new ArrayList<>();
+		factors.put("@Conf" + (++numConfigSections), configurations);
+		// read values until end of sheet or new section
+		while ((row = nextRowNonEmpty(sheet, row)) < sheet.getRows()) {
+			// check for new section
+			Cell c1 = sheet.getCell(0, row);
+			Object v = getCellValue(c1);
+			if (v instanceof String && isSectPrefix((String) v)) {
+				return row;
+			}
+
+			ArrayList<Object> values = new ArrayList<>(propNames.length);
+			// read values
+			for (int col = 0; col < propNames.length; col++) {
+				Cell c = sheet.getCell(col, row);
+				Object value = getCellValue(c);
+
+				values.add(value);
+			}
+
+			configurations.add(new MultValueSetter(propNames, values.toArray(),
+					sheet.getName(), row, 0));
+		}
+
+		return row;
+	}
+
+	// ********************* static utility methods below *********************
+
+	private static int nextRowNonEmpty(Sheet sheet, int row) {
+		while (++row < sheet.getRows()) {
+			Cell cell = sheet.getCell(0, row);
+			Object v = getCellValue(cell);
+			if (v != null && v instanceof String) {
+				String s = (String) v;
+				s = s.trim();
+				// not empty or comment?
+				if (s.length() > 0 && !s.startsWith(COMMENT_PREFIX))
+					return row;
+			}
+		}
+		return row;
+	}
+
+	private static Object getCellValue(Cell c) {
 		if (c instanceof BooleanCell) {
 			return ((BooleanCell) c).getValue();
 		}
-		if (c instanceof DateCell) {
-			return ((DateCell) c).getDate().getTime() / 1000.0; // -> seconds
-		}
-		if (c instanceof ErrorCell) {
-			return null;
-		}
-		if (c instanceof LabelCell) {
-			String str = c.getContents().trim();
-			if (str.isEmpty())
-				return null;
-			return str;
-		}
+		// if (c instanceof DateCell) {
+		// return ((DateCell) c).getDate().getTime() / 1000.0; // -> seconds
+		// }
+		// if (c instanceof LabelCell) {
+		// String str = c.getContents().trim();
+		// return str;
+		// }
 		if (c instanceof NumberCell) {
 			return ((NumberCell) c).getValue();
 		}
-		return null; // blank or unknown
+
+		return c.getContents().trim();
 	}
 
-	protected static String position(Cell c) {
+	private static String position(Sheet sheet, Cell c) {
+		return position(sheet.getName(), c.getRow(), c.getColumn());
+	}
+
+	private static String position(String sheetName, int row, int col) {
 		String retVal = "";
-		int col = c.getColumn();
 		do {
 			retVal = (char) ('A' + (col % 26)) + retVal;
 			col /= 26;
 		} while (col > 0);
-		retVal += c.getRow() + 1;
-		return retVal;
-	}
+		retVal += row + 1;
 
-	public Experiment createExperiment() {
-		return doCreateExperiment(null);
-	}
-
-	public <T extends MultipleConfigurationExperiment> T createExperiment(
-			T template) {
-		doCreateExperiment(template.silentClone());
-		return template;
-	}
-
-	public <T extends FullFactorialExperiment> T createExperiment(T template) {
-		doCreateExperiment(template.silentClone());
-		return template;
-	}
-
-	/**
-	 * Must return template if it is not null.
-	 */
-	protected Experiment doCreateExperiment(Experiment template) {
-		Experiment experiment = template;
-
-		if (template == null) {
-			if (cfgSheet != null && facSheet == null) {
-				experiment = new MultipleConfigurationExperiment();
-			} else if (cfgSheet == null && facSheet != null) {
-				experiment = new FullFactorialExperiment();
-			} else if (cfgSheet == null && facSheet == null) {
-				// there will be an error later
-			} else {
-				// both factors and configurations exist
-				// -> experiment type must be given
-			}
-		}
-
-		boolean propertiesSet = false;
-		if (paramSheet != null) {
-			for (int i = 0; i < paramSheet.getRows(); ++i) {
-				String key = paramSheet.getCell(0, i).getContents();
-				key = key.replace(" ", "");
-				if (key.isEmpty())
-					continue;
-				if (key.equals("experiment")) {
-					if (propertiesSet) {
-						throw new RuntimeException(
-								"The experiment type can not be "
-										+ "set after any properties have been set.");
-					}
-					if (template != null)
-						continue;
-					experiment = evoke(paramSheet.getCell(1, i),
-							Experiment.class);
-				} else {
-					propertiesSet = true;
-					if (experiment == null) {
-						throw new RuntimeException(
-								"The experiment type must be "
-										+ "known before properties are set.");
-					}
-					Class<?> type;
-					try {
-						type = TypeUtil.getPropertyType(experiment, key);
-					} catch (RuntimeException e) {
-						throw new RuntimeException("Can't find property '"
-								+ experiment.getClass().getSimpleName()
-								+ "'. (" + key + ")");
-					}
-					Object val = evoke(paramSheet.getCell(1, i), type);
-					try {
-						TypeUtil.setPropertyValue(experiment, key, val);
-					} catch (RuntimeException e) {
-						throw new RuntimeException("Can't write to property '"
-								+ experiment.getClass().getSimpleName()
-								+ "'. (" + key + ")");
-					}
-				}
-			}
-		}
-
-		if (experiment == null) {
-			throw new RuntimeException("The experiment type was not set.");
-		}
-
-		if (experiment instanceof FullFactorialExperiment) {
-			addFactors((FullFactorialExperiment) experiment);
-		} else if (experiment instanceof MultipleConfigurationExperiment) {
-			addConfigurations((MultipleConfigurationExperiment) experiment);
-		} else {
-			throw new RuntimeException("Bad experiment type: "
-					+ experiment.getClass().getSimpleName());
-		}
-		return experiment;
-	}
-
-	protected void addFactors(FullFactorialExperiment ffe) {
-		if (facSheet == null) {
-			throw new RuntimeException("Missing sheet 'factors'.");
-		}
-
-		for (int col = 0; col < facSheet.getColumns(); ++col) {
-			String varName = facSheet.getCell(col, 0).getContents();
-			if (varName.isEmpty()) {
-				continue;
-			}
-
-			if (varName.equals("experiment")) {
-				for (int row = 1; row < facSheet.getRows(); ++row) {
-					final Cell valCell = facSheet.getCell(col, row);
-					if (valCell.getContents().isEmpty())
-						continue;
-					ffe.addFactor(KEY_EXPERIMENT,
-							evoke(valCell, Experiment.class));
-				}
-				continue;
-			}
-
-			for (int row = 1; row < facSheet.getRows(); ++row) {
-				final Cell valCell = facSheet.getCell(col, row);
-				if (valCell.getContents().isEmpty())
-					continue;
-				ffe.addFactor(varName, new CellFactorSetter(valCell, varName));
-			}
-		}
-
-	}
-
-	protected void addConfigurations(MultipleConfigurationExperiment ce) {
-		if (cfgSheet == null) {
-			throw new RuntimeException("Missing sheet 'configurations'.");
-		}
-		int row = 0;
-		while (++row < cfgSheet.getRows()) {
-			HashMap<String, Object> cb = new HashMap<String, Object>();
-
-			for (int col = 0; col < cfgSheet.getColumns(); ++col) {
-				String varName = cfgSheet.getCell(col, 0).getContents();
-				if (varName.isEmpty()) {
-					continue;
-				}
-
-				final Cell valCell = cfgSheet.getCell(col, row);
-				if (valCell.getContents().isEmpty())
-					continue;
-
-				if (varName.equals("experiment")) {
-					cb.put(KEY_EXPERIMENT, evoke(valCell, Experiment.class));
-					continue;
-				}
-
-				cb.put(varName, new CellFactorSetter(valCell, varName));
-			}
-
-			ce.addConfiguration(cb);
-		}
+		return sheetName + "!" + retVal;
 	}
 }
