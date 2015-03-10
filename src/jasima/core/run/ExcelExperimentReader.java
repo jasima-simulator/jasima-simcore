@@ -107,9 +107,9 @@ public class ExcelExperimentReader {
 				try {
 					TypeUtil.setPropertyValue(e, name, value, classLoader,
 							packageSearchPath);
-				} catch (TypeConversionException t) {
+				} catch (RuntimeException t) {
 					throw new RuntimeException(String.format(Util.DEF_LOCALE,
-							"Problem with value in cell %s: %s",
+							"Problem with value in cell '%s': %s",
 							position(sheetName, row, col + i), t.getMessage()),
 							t);
 				}
@@ -239,7 +239,7 @@ public class ExcelExperimentReader {
 			throw new RuntimeException(
 					String.format(
 							Util.DEF_LOCALE,
-							"First value in section '%s' has to be 'experiment' (found '%s', cell %s).",
+							"First value in section '%s' has to be 'experiment' (found '%s' in cell '%s').",
 							SECT_MAIN, s, position(jasimaSheet, c)));
 		}
 
@@ -250,7 +250,7 @@ public class ExcelExperimentReader {
 					packageSearchPath);
 		} catch (TypeConversionException t) {
 			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"There is a problem with cell %s: %s",
+					"There is a problem with cell '%s': %s",
 					position(jasimaSheet, c), t.getMessage()));
 		}
 
@@ -273,9 +273,9 @@ public class ExcelExperimentReader {
 			try {
 				TypeUtil.setPropertyValue(mainExp, propName, propValue,
 						classLoader, packageSearchPath);
-			} catch (TypeConversionException t) {
+			} catch (RuntimeException t) {
 				throw new RuntimeException(String.format(Util.DEF_LOCALE,
-						"There is a problem with cell %s: %s",
+						"There is a problem with cell '%s': %s",
 						position(jasimaSheet, c), t.getMessage()));
 			}
 		}
