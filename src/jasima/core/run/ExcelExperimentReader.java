@@ -110,7 +110,8 @@ public class ExcelExperimentReader {
 				} catch (TypeConversionException t) {
 					throw new RuntimeException(String.format(Util.DEF_LOCALE,
 							"Problem with value in cell %s: %s",
-							position(sheetName, row, col + i), t.getMessage()), t);
+							position(sheetName, row, col + i), t.getMessage()),
+							t);
 				}
 			}
 		}
@@ -188,6 +189,10 @@ public class ExcelExperimentReader {
 
 	private void parseMainSheet() {
 		int row = -1;
+		// there has to be a main section in the beginning
+		row = readMain(row);
+		assert mainExp != null;
+
 		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet
 				.getRows()) {
 			Cell c = jasimaSheet.getCell(0, row);
@@ -203,20 +208,13 @@ public class ExcelExperimentReader {
 										+ "' (cell %s).",
 								position(jasimaSheet, c)));
 					}
-
-					row = readMain(row);
-					assert mainExp != null;
 				} else if (s.startsWith(SECT_FACTORS)) {
 					row = parseFactSection(jasimaSheet, row);
 				} else if (s.startsWith(SECT_CONFIGS)) {
 					row = parseCfgSection(jasimaSheet, row);
 				} else {
-					// ignore everything before main section
-					if (mainExp == null)
-						continue; // while
-
 					throw new RuntimeException(String.format(
-							"Don't know how to handle '%s'.", s));
+							"Don't know how to handle section '%s'.", s));
 				}
 
 				// set row before start of new section
@@ -241,10 +239,8 @@ public class ExcelExperimentReader {
 			throw new RuntimeException(
 					String.format(
 							Util.DEF_LOCALE,
-							"First value in "
-									+ SECT_MAIN
-									+ " section has to be 'experiment' (found '%s', cell %s).",
-							s, position(jasimaSheet, c)));
+							"First value in section '%s' has to be 'experiment' (found '%s', cell %s).",
+							SECT_MAIN, s, position(jasimaSheet, c)));
 		}
 
 		c = jasimaSheet.getCell(1, row);
