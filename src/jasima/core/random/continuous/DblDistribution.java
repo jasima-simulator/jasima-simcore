@@ -68,7 +68,7 @@ public class DblDistribution extends DblStream {
 	/**
 	 * Sets the continuous distribution to use.
 	 */
-	public void setDistribution(RealDistribution distribution) {
+	protected void setDistribution(RealDistribution distribution) {
 		this.distribution = distribution;
 	}
 

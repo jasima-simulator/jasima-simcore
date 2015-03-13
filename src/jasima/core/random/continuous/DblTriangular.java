@@ -19,8 +19,9 @@
 package jasima.core.random.continuous;
 
 /**
- * Returns a random real number following a triangular distribution as defined
- * by the three parameters min, mode, and max.
+ * Returns a random real number following a <a
+ * href="http://en.wikipedia.org/wiki/Triangular_distribution">triangular
+ * distribution</a> as defined by the three parameters min, mode, and max.
  * 
  * @author Torsten Hildebrandt
  * @version 
