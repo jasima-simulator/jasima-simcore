@@ -25,7 +25,9 @@ import org.apache.commons.math3.distribution.RealDistribution;
 /**
  * Returns an arbitrarily distributed random number stream. Its distribution is
  * determined by an arbitrary {@link RealDistribution} object from the Apache
- * Commons Math library.
+ * Commons Math library. This class is usually not used directly but through its
+ * various sub-classes implementing particular distributions and exposing their
+ * parameters as Java Bean properties.
  * 
  * @author Torsten Hildebrandt
  * @version 

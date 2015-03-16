@@ -7,9 +7,12 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 /**
  * Implements a number stream with values following a <a
  * href="http://en.wikipedia.org/wiki/Beta_distribution">Beta distribution</a>.
+ * A beta distribution is characterized by the two positive shape parameters
+ * {@code alpha} and {@code beta}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class DblBeta extends DblDistribution {
 
