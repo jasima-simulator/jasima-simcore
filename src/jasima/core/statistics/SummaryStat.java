@@ -284,6 +284,14 @@ public class SummaryStat implements Serializable, Cloneable {
 		return new SummaryStat().values(values);
 	}
 
+	public static SummaryStat summarize(int... values) {
+		SummaryStat res = new SummaryStat();
+		for (int v : values) {
+			res.value(v);
+		}
+		return res;
+	}
+
 	public static SummaryStat combine(SummaryStat stats1, SummaryStat stats2) {
 		return new SummaryStat(stats1).combine(stats2);
 	}
