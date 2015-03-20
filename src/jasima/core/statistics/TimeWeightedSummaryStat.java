@@ -59,7 +59,7 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 * invocation of this method.
 	 */
 	@Override
-	public void value(double value, double time) {
+	public TimeWeightedSummaryStat value(double value, double time) {
 		if (time < lastTime())
 			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
 					"negative time span (lastTime=%f,time=%f).", lastTime(),
@@ -67,6 +67,8 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 		super.value(lastValue, time - lastTime());
 		lastTime = time;
 		lastValue = value;
+
+		return this;
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 * {@link UnsupportedOperationException} when called.
 	 */
 	@Override
-	public void value(double v) {
+	public TimeWeightedSummaryStat value(double v) {
 		throw new UnsupportedOperationException(
 				"Use method TimeWeightedSummaryStat.value(double,double) instead.");
 	}

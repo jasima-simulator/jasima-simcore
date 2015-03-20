@@ -87,12 +87,12 @@ public class SamplingSummaryStat extends SummaryStat {
 	}
 
 	@Override
-	public void value(double v, double weight) {
+	public SummaryStat value(double v, double weight) {
 		throw new UnsupportedOperationException("Can't handle weights.");
 	}
 
 	@Override
-	public void value(double v) {
+	public SamplingSummaryStat value(double v) {
 		super.value(v, 1.0d);
 
 		if (data == null)
@@ -107,6 +107,8 @@ public class SamplingSummaryStat extends SummaryStat {
 
 			threshold = data.peek().rand;
 		}
+
+		return this;
 	}
 
 	public double[] getData() {

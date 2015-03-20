@@ -1,27 +1,25 @@
 package jasima.core.util;
 
-import jasima.core.util.ArgListParser.ParseTree;
+import static jasima.core.util.converter.TypeConverterJavaBean.exceptionMessage;
+import static jasima.core.util.converter.TypeToStringConverter.convertToString;
+import jasima.core.util.converter.TypeToStringConverter;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.WeakHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
-
-import com.thoughtworks.xstream.XStreamException;
 
 /**
  * This class contains a collection of methods concernde with
@@ -30,12 +28,6 @@ import com.thoughtworks.xstream.XStreamException;
  * @author Torsten Hildebrandt
  */
 public class TypeUtil {
-
-	/**
-	 * Special String value that is recognized as {@code null} in
-	 * {@link #setPropertyEx(Object, String, Object, ClassLoader, String[])}.
-	 */
-	public static final String NULL = "@null";
 
 	/**
 	 * A {@code TypeConversionException} is thrown, when the conversion between
@@ -51,37 +43,6 @@ public class TypeUtil {
 		public TypeConversionException(String s, Throwable cause) {
 			super(s, cause);
 		}
-	}
-
-	/**
-	 * Internal class used to indicate problems reading a file.
-	 */
-	private static class FileReadException extends Exception {
-		private static final long serialVersionUID = -1763832991537196846L;
-
-		private final String fileName;
-
-		public FileReadException(String fileName, Throwable cause) {
-			super(null, cause);
-			this.fileName = fileName;
-		}
-
-		public String getFileName() {
-			return fileName;
-		}
-	}
-
-	/**
-	 * Internal class to indicate problems.
-	 */
-	private static class NoTypeFoundException extends Exception {
-
-		private static final long serialVersionUID = -7271169253051939902L;
-
-		public NoTypeFoundException(String msg) {
-			super(msg);
-		}
-
 	}
 
 	/**
@@ -253,26 +214,68 @@ public class TypeUtil {
 			throws TypeConversionException {
 		T value;
 		if (o instanceof String) {
-			ParseTree tree = ArgListParser.parseClassAndPropDef((String) o);
-			// convert tree to the proper object
-			try {
-				value = createObjectTree(tree, requiredType, context, l,
-						packageSearchPath);
-			} catch (ReflectiveOperationException | FileReadException
-					| NoTypeFoundException e) {
-				// this can only happen for the top level object, otherwise it
-				// is already caught and wrapped in a TypeConversionException
-				throw new TypeConversionException(
-						String.format(
-								Util.DEF_LOCALE,
-								"Can't create object for value '%s' (property path: '%s'): %s",
-								tree.getClassOrXmlName(), context,
-								exceptionMessage(e)), e);
-			}
+			value = TypeToStringConverter.convertFromString((String) o,
+					requiredType, context, l, packageSearchPath);
 		} else {
 			value = basicConversions(o, requiredType);
 		}
 		return value;
+	}
+
+	/**
+	 * Computes an array of all super-classes and interfaces of
+	 * {@code requiredType}. This method performs a breadth first traversal of
+	 * the class/interface hierarchy. Consider the following example:
+	 * 
+	 * <pre>
+	 *     interface A extends M, N
+	 *     interface B extends O
+	 *     class Y implements C, D
+	 *     class X extends Y implements A, B
+	 * </pre>
+	 * 
+	 * This will produce the following result for {@code x} as
+	 * {@code requiredType}:
+	 * 
+	 * <pre>
+	 * { X, Y, A, B, C, D, M, N, O, Object }
+	 * </pre>
+	 * 
+	 * @param requiredType
+	 *            The class for which to compute the type hierarchy.
+	 * @return A list of super classes/interfaces from most to least specific.
+	 */
+	public static Class<?>[] computeClasses(Class<?> requiredType) {
+		ArrayList<Class<?>> resList = new ArrayList<>();
+		ArrayDeque<Class<?>> currStage = new ArrayDeque<>();
+		HashSet<Class<?>> seen = new HashSet<Class<?>>();
+		currStage.addLast(requiredType);
+		seen.add(requiredType);
+		seen.add(Object.class);
+
+		while (!currStage.isEmpty()) {
+			Class<?> c = currStage.removeFirst();
+			resList.add(c);
+
+			Class<?> s = c.getSuperclass();
+			if (s != null && !seen.contains(s)) {
+				currStage.addLast(s);
+				seen.add(s);
+			}
+
+			for (Class<?> i : c.getInterfaces()) {
+				if (!seen.contains(i)) {
+					currStage.addLast(i);
+					seen.add(i);
+				}
+			}
+		}
+
+		if (resList.size() > 1) {
+			resList.add(Object.class);
+		}
+
+		return resList.toArray(new Class<?>[resList.size()]);
 	}
 
 	/**
@@ -338,218 +341,6 @@ public class TypeUtil {
 	}
 
 	/**
-	 * Attempts to load an object from a xml-file {@code fileName}. If such a
-	 * file does not exist or is not readable, {@code null} will be returned.
-	 * 
-	 * @see XmlUtil#loadXML(File)
-	 */
-	private static Object loadXmlFile(String fileName) throws FileReadException {
-		File f = new File(fileName);
-		if (!f.canRead() || f.isDirectory())
-			return null;
-
-		try {
-			return XmlUtil.loadXML(f);
-		} catch (XStreamException x) {
-			throw new FileReadException(fileName, x);
-		}
-	}
-
-	/**
-	 * Load an instantiate a class using classloader {@code l}. If a class
-	 * {@code className} is not found, it is searched for in the package search
-	 * path.
-	 * <p>
-	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"}
-	 * and the package search path {@code searchPath} contains an entry
-	 * {@code "jasima.core.experiment"}, then the class
-	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be
-	 * looked up and instantiated.
-	 * </p>
-	 * <p>
-	 * If no matching class could be found, {@code null} will be returned.
-	 */
-	private static Object searchAndInstanciateClass(String className,
-			ClassLoader l, String[] searchPath)
-			throws ReflectiveOperationException, IllegalAccessException {
-		Class<?> klazz = null;
-
-		// try direct match
-		try {
-			klazz = l.loadClass(className);
-		} catch (ClassNotFoundException ignore) {
-		}
-
-		// try matches from the class search path
-		if (klazz == null) {
-			for (String packageName : searchPath) {
-				try {
-					klazz = l.loadClass(packageName + "." + className);
-					break; // for; we found a matching class
-				} catch (ClassNotFoundException ignore) {
-				}
-			}
-		}
-
-		if (klazz != null) {
-			if (Modifier.isAbstract(klazz.getModifiers()))
-				throw new InstantiationException(
-						"Can't instantiate an abstract class.");
-			return klazz.getConstructor().newInstance();
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * This method is used internally to create an object as specified by the
-	 * given parse tree.
-	 * 
-	 * @param tree
-	 *            The parse tree.
-	 * @param requiredType
-	 *            Type the converted parse tree should be compatible with.
-	 * @param contextString
-	 *            Optional property context path.
-	 * @param loader
-	 *            The classloader to use.
-	 * @param packageSearchPath
-	 *            The package search path.
-	 * @param <T>
-	 *            Type of returned object.
-	 * @return The object as specified in the parse tree.
-	 */
-	private static <T> T createObjectTree(ParseTree tree,
-			Class<T> requiredType, String contextString, ClassLoader loader,
-			String[] packageSearchPath) throws ReflectiveOperationException,
-			FileReadException, NoTypeFoundException {
-		// try to create main type
-		T root = convertFromString(tree.getClassOrXmlName(), requiredType,
-				loader, packageSearchPath);
-
-		// set parameters of complex objects
-		if (tree.getParams() != null) {
-			Map<String, ParseTree> params = tree.getParams();
-			Map<String, PropertyDescriptor> beanProps = writableProperties(root
-					.getClass());
-
-			for (Entry<String, ParseTree> e : params.entrySet()) {
-				String propName = e.getKey();
-				PropertyDescriptor prop = beanProps.get(propName
-						.toLowerCase(Util.DEF_LOCALE));
-				if (prop == null)
-					throw new RuntimeException(
-							String.format(
-									Util.DEF_LOCALE,
-									"Can't find property '%s' in type %s, property path: '%s'",
-									propName, root.getClass().getName(),
-									contextString));
-
-				try {
-					String propPath;
-					if (contextString != null && contextString.length() > 0)
-						propPath = contextString + "." + propName;
-					else
-						propPath = propName;
-
-					Object value = createObjectTree(e.getValue(),
-							prop.getPropertyType(), propPath, loader,
-							packageSearchPath);
-
-					// call setter to finally check compatibility
-					prop.getWriteMethod().invoke(root, value);
-				} catch (ReflectiveOperationException | FileReadException
-						| NoTypeFoundException e1) {
-					throw new TypeConversionException(
-							String.format(
-									Util.DEF_LOCALE,
-									"Can't set property '%s' in type %s to value '%s' (property path: '%s'): %s",
-									propName, root.getClass().getName(), e
-											.getValue().toString(),
-									contextString, exceptionMessage(e1)), e1);
-				}
-			}
-		}
-
-		return root;
-	}
-
-	private static String exceptionMessage(Throwable t) {
-		String msg = t.getMessage();
-		if (t instanceof InvocationTargetException) {
-			msg = String.format(Util.DEF_LOCALE,
-					"Error invoking method or constructor: %s", t.getCause()
-							.toString());
-		} else if (t instanceof NoSuchMethodException) {
-			msg = String.format(Util.DEF_LOCALE,
-					"Method or constructor not found: %s", t.getMessage());
-		} else if (t instanceof FileReadException) {
-			FileReadException e = (FileReadException) t;
-			msg = String.format(Util.DEF_LOCALE, "Error reading file '%s': %s",
-					e.getFileName(), e.getCause().getMessage());
-		}
-		return msg;
-	}
-
-	/**
-	 * Converts an object given as a String to the original type. This tries to
-	 * convert primitive types (like numbers) first. If this is not successful,
-	 * {@code asString} is interpreted as a class name and loading the
-	 * appropriate class is attempted (potentially prefixed with entries in
-	 * {@code packageSearchPath}). If conversion is still not successful, then
-	 * loading an xml file with the name {@code asString} is attempted.
-	 * 
-	 * @param asString
-	 *            String representation of an object.
-	 * @param requiredType
-	 *            The desired target type.
-	 * @param l
-	 *            The class loader to use.
-	 * @param packageSearchPath
-	 *            A package search path.
-	 * @param <T>
-	 *            Type of returned object.
-	 * @return The object converted/compatible with {@code requiredType}.
-	 */
-	// TODO: make this mechanism extendible
-	private static <T> T convertFromString(String asString,
-			Class<T> requiredType, ClassLoader l, String[] packageSearchPath)
-			throws ReflectiveOperationException, FileReadException,
-			NoTypeFoundException {
-		if (NULL.equalsIgnoreCase(asString))
-			return null;
-
-		// just primitive type or no conversion required?
-		try {
-			return basicConversions(asString, requiredType);
-		} catch (TypeConversionException | NumberFormatException ignore) {
-			// continue
-		}
-
-		try {
-			// try to load from class (interpret 'asString' as class name)
-			T o = requiredType.cast(searchAndInstanciateClass(asString, l,
-					packageSearchPath));
-			if (o != null) {
-				return o;
-			}
-
-			// try to load from file
-			o = requiredType.cast(loadXmlFile(asString));
-			if (o != null) {
-				return o;
-			}
-		} catch (ClassCastException ignore) {
-
-		}
-
-		// give up
-		throw new NoTypeFoundException(String.format(Util.DEF_LOCALE,
-				"Can't load/convert '%s', required type: %s", asString,
-				requiredType));
-	}
-
-	/**
 	 * Attempts trivial type conversion. This methods supports all casting
 	 * conversions (JLS 5.5) and always returns null when the input object is
 	 * null. If the target type is {@link String}, the result is the return
@@ -577,34 +368,36 @@ public class TypeUtil {
 		if (o == null)
 			return null;
 
+		assert !(o instanceof String);
+
 		if (klass.isAssignableFrom(o.getClass())) {
 			return (T) o;
 		}
 
 		if (klass == String.class) {
-			return (T) String.valueOf(o);
+			return (T) convertToString(o);
 		}
 
 		if (klass == int.class || klass == Integer.class) {
 			if (o instanceof Number)
 				return (T) (Integer) ((Number) o).intValue();
-			return (T) Integer.valueOf(o.toString());
+			return (T) Integer.valueOf(convertToString(o));
 		}
 
 		if (klass == long.class || klass == Long.class) {
 			if (o instanceof Number)
 				return (T) (Long) ((Number) o).longValue();
-			return (T) Long.valueOf(o.toString());
+			return (T) Long.valueOf(convertToString(o));
 		}
 
 		if (klass == double.class || klass == Double.class) {
 			if (o instanceof Number)
 				return (T) (Double) ((Number) o).doubleValue();
-			return (T) Double.valueOf(o.toString());
+			return (T) Double.valueOf(convertToString(o));
 		}
 
 		if (klass == boolean.class || klass == Boolean.class) {
-			String str = o.toString();
+			String str = convertToString(o);
 			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")
 					|| str.equalsIgnoreCase("1"))
 				return (T) Boolean.TRUE;
@@ -616,31 +409,32 @@ public class TypeUtil {
 		}
 
 		if (klass.isEnum()) {
-			return (T) Enum.valueOf(klass.asSubclass(Enum.class), o.toString());
+			return (T) Enum.valueOf(klass.asSubclass(Enum.class),
+					convertToString(o));
 		}
 
 		if (klass == byte.class || klass == Byte.class) {
 			if (o instanceof Number)
 				return (T) (Byte) ((Number) o).byteValue();
-			return (T) Byte.valueOf(o.toString());
+			return (T) Byte.valueOf(convertToString(o));
 		}
 
 		if (klass == short.class || klass == Short.class) {
 			if (o instanceof Number)
 				return (T) (Short) ((Number) o).shortValue();
-			return (T) Short.valueOf(o.toString());
+			return (T) Short.valueOf(convertToString(o));
 		}
 
 		if (klass == float.class || klass == Float.class) {
 			if (o instanceof Number)
 				return (T) (Float) ((Number) o).floatValue();
-			return (T) Float.valueOf(o.toString());
+			return (T) Float.valueOf(convertToString(o));
 		}
 
 		if (klass == char.class || klass == Character.class) {
 			if (o instanceof Character)
 				return (T) (Character) o;
-			String s = o.toString();
+			String s = convertToString(o);
 			if (s.length() == 1)
 				return (T) new Character(s.charAt(0));
 		}
@@ -661,7 +455,7 @@ public class TypeUtil {
 	 * @return A map associating a property name (converted to lower case) with
 	 *         a {@link PropertyDescriptor}.
 	 */
-	private static Map<String, PropertyDescriptor> writableProperties(Class<?> c) {
+	public static Map<String, PropertyDescriptor> writableProperties(Class<?> c) {
 		if (propCache == null)
 			propCache = new WeakHashMap<>();
 
@@ -829,4 +623,5 @@ public class TypeUtil {
 		}
 		return null;
 	}
+
 }

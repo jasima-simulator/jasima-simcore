@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
@@ -467,6 +468,44 @@ public class Util {
 			}
 		}
 		return maxIdx;
+	}
+
+	/**
+	 * Randomly permute the given double array.
+	 * 
+	 * @param arr
+	 *            The array to shuffle.
+	 * @param rnd
+	 *            The randomness source to use.
+	 */
+	public static void shuffle(double[] arr, Random rnd) {
+		// Shuffle array
+		for (int i = arr.length - 1; i > 0; i--) {
+			int j = rnd.nextInt(i + 1);
+
+			double tmp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = tmp;
+		}
+	}
+
+	/**
+	 * Randomly permute the given int array.
+	 * 
+	 * @param arr
+	 *            The array to shuffle.
+	 * @param rnd
+	 *            The randomness source to use.
+	 */
+	public static void shuffle(int[] arr, Random rnd) {
+		// Shuffle array
+		for (int i = arr.length - 1; i > 0; i--) {
+			int j = rnd.nextInt(i + 1);
+
+			int tmp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = tmp;
+		}
 	}
 
 	/**

@@ -31,7 +31,8 @@ import util.FileChecker;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class TestHistogramValueStat {
 

@@ -153,9 +153,8 @@ public class QuantileEstimator extends SummaryStat implements
 	}
 
 	@Override
-	public void combine(SummaryStat other) {
-		throw new RuntimeException(
-				"QuantileEstimator.combine not implemented yet");
+	public SummaryStat combine(SummaryStat other) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -189,7 +188,7 @@ public class QuantileEstimator extends SummaryStat implements
 	}
 
 	@Override
-	public void value(double v, double weight) {
+	public QuantileEstimator value(double v, double weight) {
 		super.value(v, weight);
 		int obsIdx = numObs() - 1; // first observation: 0
 
@@ -235,6 +234,8 @@ public class QuantileEstimator extends SummaryStat implements
 				}
 			}
 		}
+
+		return this;
 	}
 
 	protected double quadPred(int d, int i) {

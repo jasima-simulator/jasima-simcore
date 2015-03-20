@@ -23,13 +23,13 @@ import org.junit.runners.Suite;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  * @version 
  *          "$Id$"
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ jasima.core.util.ArgListTokenizerTest.class,
-		jasima.core.util.ArgListParserTest.class })
+		jasima.core.util.ArgListParserTest.class,
+		jasima.core.util.TypeUtilTest.class })
 public class AllTests {
 
 }

@@ -16,23 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with jasima.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+package jasima.core.statistics;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class,
-		TestStaticInsts.class, TestOrderIndependence.class, TestSetups.class,
-		TestBatching.class, TestBestOfFamilyBatching.class,
-		TestGECCOContinuity.class, TestWinterSim2010Continuity.class,
-		TestMIMAC.class, TestForAllResults.class, TestMimacFab4Trace.class,
-		jasima.core.experiment.AllTests.class, TestDetailedTraces.class,
-		TestDowntimes.class, jasima.core.util.AllTests.class,
-		jasima.core.statistics.AllTests.class })
+@Suite.SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class,
+		jasima.core.statistics.TestSummaryStat.class })
 public class AllTests {
 
 }
