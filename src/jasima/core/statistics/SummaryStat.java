@@ -199,12 +199,11 @@ public class SummaryStat implements Serializable, Cloneable {
 	 */
 	public SummaryStat combine(SummaryStat other) {
 		double ws = weightSum + other.weightSum;
-		double newMean = (meanEst * weightSum + other.meanEst * other.weightSum)
-				/ (weightSum + other.weightSum);
-		varEst = varEst + other.varEst + weightSum * meanEst * meanEst
-				+ other.weightSum * other.meanEst * other.meanEst - ws
-				* newMean * newMean;
-		meanEst = newMean;
+		double delta = other.meanEst - meanEst;
+		
+		meanEst = (meanEst * weightSum + other.meanEst * other.weightSum) / ws;
+		varEst = varEst + other.varEst + delta * delta * weightSum
+				* other.weightSum / ws;
 
 		weightSum = ws;
 		numObs += other.numObs;
