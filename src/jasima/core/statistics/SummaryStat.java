@@ -122,8 +122,8 @@ public class SummaryStat implements Serializable, Cloneable {
 		double q = v - meanEst;
 		double r = q * weight / weightSum;
 
-		meanEst = meanEst + r;
-		varEst = varEst + r * oldSum * q;
+		meanEst += r;
+		varEst += r * oldSum * q;
 
 		return this;
 	}
@@ -200,7 +200,7 @@ public class SummaryStat implements Serializable, Cloneable {
 	public SummaryStat combine(SummaryStat other) {
 		double ws = weightSum + other.weightSum;
 		double delta = other.meanEst - meanEst;
-		
+
 		meanEst = (meanEst * weightSum + other.meanEst * other.weightSum) / ws;
 		varEst = varEst + other.varEst + delta * delta * weightSum
 				* other.weightSum / ws;
@@ -276,6 +276,16 @@ public class SummaryStat implements Serializable, Cloneable {
 
 	public String getName() {
 		return name;
+	}
+
+	// ************* static utility methods *************
+
+	public static SummaryStat summarize(double... values) {
+		return new SummaryStat().values(values);
+	}
+
+	public static SummaryStat combine(SummaryStat stats1, SummaryStat stats2) {
+		return new SummaryStat(stats1).combine(stats2);
 	}
 
 }
