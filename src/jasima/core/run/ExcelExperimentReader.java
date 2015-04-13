@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.thoughtworks.xstream.converters.javabean.JavaBeanConverter;
+
 import jxl.BooleanCell;
 import jxl.Cell;
 import jxl.NumberCell;
@@ -198,7 +200,6 @@ public class ExcelExperimentReader {
 			Cell c = jasimaSheet.getCell(0, row);
 			String s = String.valueOf(getCellValue(c)).trim()
 					.toLowerCase(Util.DEF_LOCALE);
-
 			if (isSectPrefix(s)) {
 				if (s.startsWith(SECT_MAIN)) {
 					if (mainExp != null) {

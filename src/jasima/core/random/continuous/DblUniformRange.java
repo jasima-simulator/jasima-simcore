@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
+
 import java.util.Random;
 
 /**
@@ -52,20 +54,18 @@ public class DblUniformRange extends DblStream {
 		setName(name);
 	}
 
-	public double min() {
-		return min;
-	}
-
-	public double max() {
-		return max;
-	}
-
 	public void setRange(double min, double max) {
-		if (min >= max)
-			throw new IllegalArgumentException("min>=max " + min + " " + max);
+		checkValues(min, max);
 
 		this.min = min;
 		this.max = max;
+	}
+
+	@Override
+	public void init() {
+		checkValues(min, max);
+
+		super.init();
 		range = max - min;
 	}
 
@@ -76,12 +76,50 @@ public class DblUniformRange extends DblStream {
 
 	@Override
 	public double getNumericalMean() {
-		return (min() + max()) / 2.0;
+		return (getMin() + getMax()) / 2.0;
 	}
 
 	@Override
 	public String toString() {
 		return "DblUniformRange(min=" + min + ";max=" + max + ")";
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(getMin(), getMax());
+	}
+
+	private void checkValues(double min, double max) {
+		if (min > max)
+			throw new IllegalArgumentException("min>max " + min + " " + max);
+	}
+
+	public double getMin() {
+		return min;
+	}
+
+	/**
+	 * Sets the minimum value returned by this number stream.
+	 * 
+	 * @param min
+	 *            The minimum to use.
+	 */
+	public void setMin(double min) {
+		this.min = min;
+	}
+
+	public double getMax() {
+		return max;
+	}
+
+	/**
+	 * Sets the maximum value returned by this number stream.
+	 * 
+	 * @param max
+	 *            The maximum to use.
+	 */
+	public void setMax(double max) {
+		this.max = max;
 	}
 
 }

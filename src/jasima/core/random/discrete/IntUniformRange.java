@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import jasima.core.util.Pair;
+
 import java.util.Random;
 
 /**
@@ -53,40 +55,70 @@ public class IntUniformRange extends IntStream {
 		setName(name);
 	}
 
-	public int getMin() {
-		return min;
+	@Override
+	public void init() {
+		super.init();
+		setRange(min, max); // force value checks
 	}
 
-	public int getMax() {
-		return max;
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>((double) getMin(), (double) getMax());
 	}
 
 	public void setRange(int min, int max) {
 		if (min > max)
 			throw new IllegalArgumentException("min<max " + min + " " + max);
 		long r = max - min;
-		if (r > Integer.MAX_VALUE - 1)
+		if (r > Integer.MAX_VALUE - 1 || r < 0)
 			throw new IllegalArgumentException(
 					"range has to fit in an integer. " + min + " " + max);
 
-		this.min = min;
-		this.max = max;
+		this.setMin(min);
+		this.setMax(max);
 		range = (int) r;
 	}
 
 	@Override
 	public int nextInt() {
-		return min + rndGen.nextInt(range + 1);
+		return getMin() + rndGen.nextInt(range + 1);
 	}
 
 	@Override
 	public double getNumericalMean() {
-		return (((long) min) + max) / 2.0;
+		return (((long) getMin()) + getMax()) / 2.0;
 	}
 
 	@Override
 	public String toString() {
-		return "IntUniformRange(min=" + min + ";max=" + max + ")";
+		return "IntUniformRange(min=" + getMin() + ";max=" + getMax() + ")";
 	}
 
+	public int getMin() {
+		return min;
+	}
+
+	/**
+	 * Sets the minimum value returned by this number stream.
+	 * 
+	 * @param min
+	 *            The minimum to use.
+	 */
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+	public int getMax() {
+		return max;
+	}
+
+	/**
+	 * Sets the maximum value returned by this number stream.
+	 * 
+	 * @param max
+	 *            The maximum to use.
+	 */
+	public void setMax(int max) {
+		this.max = max;
+	}
 }

@@ -35,6 +35,9 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 
 	private double lastTime = 0.0d;
 
+	private final double initialTime;
+	private final double initialValue;
+
 	/**
 	 * Constructs a new instance with {@code lastTime} and {@code lastValue}
 	 * initialized with 0.
@@ -46,9 +49,25 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	/**
 	 * Constructs a new instance initializing {@code lastTime} with the given
 	 * parameter {@code initialTime}.
+	 * 
+	 * @param initialValue
+	 *            Initial value of the underlying state variable at time
+	 *            {@code initialTime}.
+	 * @param initialTime
+	 *            The first point in time to consider.
 	 */
-	public TimeWeightedSummaryStat(double initialTime, double initialValue) {
+	public TimeWeightedSummaryStat(double initialValue, double initialTime) {
 		super();
+		this.initialTime = initialTime;
+		this.initialValue = initialValue;
+
+		clear();
+	}
+
+	@Override
+	public void clear() {
+		super.clear();
+
 		lastTime = initialTime;
 		lastValue = initialValue;
 	}
@@ -57,12 +76,20 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 * Adds a new {@code value}, weighted by the difference between {@code time}
 	 * and {@link #lastTime()}. {@code time} is then saved for the next
 	 * invocation of this method.
+	 * 
+	 * @param value
+	 *            Value of some state variable from the point in time given as
+	 *            the second parameter.
+	 * @param time
+	 *            The point in time from which the current value is
+	 *            {@code value}
+	 * @return {@code this} to allow easy chaining of calls.
 	 */
 	@Override
 	public TimeWeightedSummaryStat value(double value, double time) {
 		if (time < lastTime())
 			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"negative time span (lastTime=%f,time=%f).", lastTime(),
+					"negative time span (lastTime=%f, time=%f).", lastTime(),
 					time));
 		super.value(lastValue, time - lastTime());
 		lastTime = time;
@@ -75,6 +102,10 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 * Don't use this method as it doesn't make sense for a
 	 * {@code TimeWeightedSummaryStat}. Raises an
 	 * {@link UnsupportedOperationException} when called.
+	 * 
+	 * @param v
+	 *            ignored
+	 * @return TimeWeightedSummaryStat ignored
 	 */
 	@Override
 	public TimeWeightedSummaryStat value(double v) {
@@ -84,6 +115,10 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 
 	/**
 	 * Returns the current value of the attribute {@code lastTime}.
+	 * 
+	 * @return The last point in time for which {@link #value(double, double)}
+	 *         was called.
+	 * @see #lastValue()
 	 */
 	public double lastTime() {
 		return lastTime;

@@ -78,6 +78,9 @@ public class SummaryStat implements Serializable, Cloneable {
 		lastWeight = vs.lastWeight;
 	}
 
+	/**
+	 * Resets this object.
+	 */
 	public void clear() {
 		meanEst = 0.0;
 		varEst = 0.0d;
@@ -89,6 +92,14 @@ public class SummaryStat implements Serializable, Cloneable {
 		lastWeight = Double.NaN;
 	}
 
+	/**
+	 * Convenience method to add all values given as arguments with a weight of
+	 * 1.
+	 * 
+	 * @param vs
+	 *            The values to add.
+	 * @return {@code this}, to allow easy chaining of calls.
+	 */
 	public SummaryStat values(double... vs) {
 		for (double v : vs) {
 			value(v);
@@ -97,12 +108,31 @@ public class SummaryStat implements Serializable, Cloneable {
 		return this;
 	}
 
+	/**
+	 * Adds the given value with a weight of 1.
+	 * 
+	 * @param v
+	 *            The value to add.
+	 * @return {@code this}, to allow easy chaining of calls.
+	 */
 	public SummaryStat value(double v) {
 		return value(v, 1.0d);
 	}
 
-	public SummaryStat value(double v, double weight) {
-		if (weight < 0.0d)
+	/**
+	 * Adds a value with a given weight.
+	 * 
+	 * @param v
+	 *            The value to add.
+	 * @param weight
+	 *            The weight to give to this value. Has to be positive.
+	 * @return {@code this}, to allow easy chaining of calls.
+	 * @throws IllegalArgumentException
+	 *             If weight was negative.
+	 */
+	public SummaryStat value(double v, double weight)
+			throws IllegalArgumentException {
+		if (!(weight >= 0.0d))
 			throw new IllegalArgumentException("Weight can't be negative. "
 					+ weight);
 
@@ -120,7 +150,7 @@ public class SummaryStat implements Serializable, Cloneable {
 		weightSum += weight;
 
 		double q = v - meanEst;
-		double r = q * weight / weightSum;
+		double r = weightSum == 0.0 ? 0.0 : q * weight / weightSum;
 
 		meanEst += r;
 		varEst += r * oldSum * q;
@@ -128,16 +158,33 @@ public class SummaryStat implements Serializable, Cloneable {
 		return this;
 	}
 
+	/**
+	 * Returns the mean of all values given to {@link #value(double)}.
+	 * 
+	 * @return The arithmetic mean of all values seen so far.
+	 */
 	public double mean() {
 		if (numObs < 1)
 			return Double.NaN;
 		return meanEst;
 	}
 
+	/**
+	 * The standard deviation of all values.
+	 * 
+	 * @return The standard deviation of all values given to
+	 *         {@link #value(double)}.
+	 */
 	public double stdDev() {
 		return Math.sqrt(variance());
 	}
 
+	/**
+	 * Returns the sample variance of the values.
+	 * 
+	 * @return The (sample) variance of all values given to
+	 *         {@link #value(double)}. Returns NaN, if no values were added yet.
+	 */
 	public double variance() {
 		if (numObs < 1)
 			return Double.NaN;
@@ -149,6 +196,12 @@ public class SummaryStat implements Serializable, Cloneable {
 		return varEst / (weightSum - 1.0);
 	}
 
+	/**
+	 * Returns the population variance of the values.
+	 * 
+	 * @return The (sample) variance of all values given to
+	 *         {@link #value(double)}. Returns NaN, if no values were added yet.
+	 */
 	public double variancePopulation() {
 		if (numObs < 1)
 			return Double.NaN;
@@ -158,33 +211,70 @@ public class SummaryStat implements Serializable, Cloneable {
 		return varEst / weightSum;
 	}
 
-	/** Returns the coefficient of variation. */
+	/**
+	 * Returns the coefficient of variation ({@link #stdDev()} divided by
+	 * {@link #mean()}).
+	 * 
+	 * @return The coefficient of variation.
+	 * */
 	public double varCoeff() {
 		return stdDev() / mean();
 	}
 
+	/**
+	 * Returns the sum of all {@link #value(double)}s (taking into account
+	 * potential weights if {@link #value(double, double)} is used).
+	 * 
+	 * @return The sum of all values.
+	 */
 	public double sum() {
 		if (numObs < 1)
 			return Double.NaN;
 		return meanEst * weightSum;
 	}
 
+	/**
+	 * Returns the sum of all weights. If only {@link #value(double)} is used,
+	 * then the value returned is identical to the value returned by
+	 * {@link #numObs}.
+	 * 
+	 * @return The weight sum.
+	 */
 	public double weightSum() {
 		if (numObs == 0)
 			return Double.NaN;
 		return weightSum;
 	}
 
+	/**
+	 * Returns the number of times, {@link #value(double)} or
+	 * {@link #value(double, double)} were called.
+	 * 
+	 * @return The number of calls to {@link #value(double)} or
+	 *         {@link #value(double, double)}.
+	 */
 	public int numObs() {
 		return numObs;
 	}
 
+	/**
+	 * Returns the minimum value seen so far.
+	 * 
+	 * @return The minimum value seen so far, or NaN, if no values were given so
+	 *         far.
+	 */
 	public double min() {
 		if (numObs < 1)
 			return Double.NaN;
 		return min;
 	}
 
+	/**
+	 * Returns the maximum value seen so far.
+	 * 
+	 * @return The maximum value seen so far, or NaN, if no values were given so
+	 *         far.
+	 */
 	public double max() {
 		if (numObs < 1)
 			return Double.NaN;
@@ -195,6 +285,8 @@ public class SummaryStat implements Serializable, Cloneable {
 	 * Combines the data in {@code other} with this SummaryStat-Object. The
 	 * combined object behaves as if it had also seen the data of "other".
 	 * 
+	 * @param other
+	 *            The {@link SummaryStat} to combine with this object.
 	 * @return Returns {@code this} to allow easy chaining of calls.
 	 */
 	public SummaryStat combine(SummaryStat other) {
@@ -248,6 +340,7 @@ public class SummaryStat implements Serializable, Cloneable {
 		return mean() + confIntRangeSingle(errorProb);
 	}
 
+	// TODO: confidence interval calculation should be factored out
 	public double confIntRangeSingle(double errorProb) {
 		if (numObs <= 2)
 			return Double.NaN;
@@ -258,32 +351,71 @@ public class SummaryStat implements Serializable, Cloneable {
 				* Math.sqrt(variance() / weightSum());
 	}
 
+	/**
+	 * Returns the last value passed to {@link #value(double)} or
+	 * {@link #value(double, double)}.
+	 * 
+	 * @return The last value, or NaN if no {@code numObs==0}.
+	 */
 	public double lastValue() {
 		if (numObs == 0)
 			return Double.NaN;
 		return lastValue;
 	}
 
+	/**
+	 * Returns the weight of the last value passed to {@link #value(double)} or
+	 * {@link #value(double, double)}.
+	 * 
+	 * @return The last value's weight, or NaN if no {@code numObs==0}.
+	 */
 	public double lastWeight() {
 		if (numObs == 0)
 			return Double.NaN;
 		return lastWeight;
 	}
 
+	/**
+	 * Sets a descriptive name for this object.
+	 * 
+	 * @param name
+	 *            A name for this {@code SummaryStat}.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Returns the name of this object.
+	 * 
+	 * @return The name for this {@code SummaryStat}.
+	 */
 	public String getName() {
 		return name;
 	}
 
 	// ************* static utility methods *************
 
+	/**
+	 * This method creates a new {@code SummaryStat} object and passes all
+	 * values to it.
+	 * 
+	 * @param values
+	 *            The values to use.
+	 * @return A {@code SummaryStat} summarizing the values.
+	 */
 	public static SummaryStat summarize(double... values) {
 		return new SummaryStat().values(values);
 	}
 
+	/**
+	 * This method creates a new {@code SummaryStat} object and passes all
+	 * values to it.
+	 * 
+	 * @param values
+	 *            The values to use.
+	 * @return A {@code SummaryStat} summarizing the values.
+	 */
 	public static SummaryStat summarize(int... values) {
 		SummaryStat res = new SummaryStat();
 		for (int v : values) {
@@ -292,6 +424,17 @@ public class SummaryStat implements Serializable, Cloneable {
 		return res;
 	}
 
+	/**
+	 * Creates a new {@code SummaryStat} object that behaves if all values seen
+	 * by {@code stats1} and {@code stats2} would have been passed to it.
+	 * 
+	 * @param stats1
+	 *            {@code SummaryStat} summarizing first set of values.
+	 * @param stats2
+	 *            {@code SummaryStat} summarizing second set of values.
+	 * @return New {@code SummaryStat} object summarizing the union of first and
+	 *         second value set.
+	 */
 	public static SummaryStat combine(SummaryStat stats1, SummaryStat stats2) {
 		return new SummaryStat(stats1).combine(stats2);
 	}

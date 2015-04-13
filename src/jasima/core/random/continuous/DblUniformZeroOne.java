@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
+
 import java.util.Random;
 
 /**
@@ -58,6 +60,11 @@ public class DblUniformZeroOne extends DblStream {
 	@Override
 	public double getNumericalMean() {
 		return 0.5;
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(0.0, 1.0);
 	}
 
 	@Override

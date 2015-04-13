@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import jasima.core.util.Pair;
+
 import java.util.Random;
 
 /**
@@ -64,6 +66,12 @@ public class IntUniformAllInts extends IntStream {
 	@Override
 	public String toString() {
 		return "IntUniformAllInts";
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>((double) Integer.MIN_VALUE,
+				(double) Integer.MAX_VALUE);
 	}
 
 }

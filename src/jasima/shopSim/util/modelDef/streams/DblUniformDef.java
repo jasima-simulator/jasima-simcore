@@ -69,8 +69,8 @@ public class DblUniformDef extends DblStreamDef {
 				DblUniformRange s = (DblUniformRange) stream;
 				DblUniformDef def = new DblUniformDef();
 
-				def.setMinValue(s.min());
-				def.setMaxValue(s.max());
+				def.setMinValue(s.getMin());
+				def.setMaxValue(s.getMax());
 
 				return def;
 			} else

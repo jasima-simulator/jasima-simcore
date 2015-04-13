@@ -44,7 +44,8 @@ import util.ExtendedJobStatCollector;
  */
 public class OCBATest {
 
-	@Test @Ignore
+	@Test
+	@Ignore
 	public void prioRuleSelectionShouldGiveExpectedResults() {
 		// create and configure base experiment
 		DynamicShopExperiment he = new DynamicShopExperiment();
@@ -140,7 +141,7 @@ public class OCBATest {
 		ProblemType type = ProblemType.MAXIMIZE;
 
 		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type,
-				new int[] { 0, 0, 0, 78, 649, 273 }, 552.96, 0.6045642572645857);
+				new int[] { 0, 0, 0, 80, 652, 268 }, 553.53, 0.602976739490846);
 	}
 
 	@Test
@@ -165,7 +166,7 @@ public class OCBATest {
 		ProblemType type = ProblemType.MAXIMIZE;
 
 		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type,
-				new int[] { 0, 0, 0, 9, 74, 17 }, 55957.1, 0.9518400899460198);
+				new int[] { 0, 0, 0, 9, 75, 16 }, 36839.95, 0.9518640709807842);
 	}
 
 	private void performManyOCBARunsAndCheck(int numIters, int maxReps,

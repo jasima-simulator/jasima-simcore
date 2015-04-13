@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import jasima.core.util.Pair;
 import jasima.core.util.Util;
 
 import java.util.Arrays;
@@ -40,6 +41,10 @@ public class IntConst extends IntStream {
 	private Double mean;
 
 	private int next;
+
+	public IntConst() {
+		this(null);
+	}
 
 	public IntConst(int... vs) {
 		super();
@@ -86,9 +91,27 @@ public class IntConst extends IntStream {
 		IntConst c = (IntConst) super.clone();
 
 		if (values != null)
-			c.values = Arrays.copyOf(values, values.length);
+			c.values = values.clone();
 
 		return c;
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		if (values == null || values.length == 0)
+			return new Pair<>(Double.NaN, Double.NaN);
+
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+
+		for (int d : values) {
+			if (d < min)
+				min = d;
+			if (d > max)
+				max = d;
+		}
+
+		return new Pair<>((double) min, (double) max);
 	}
 
 }

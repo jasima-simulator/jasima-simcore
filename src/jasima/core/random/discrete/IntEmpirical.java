@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import jasima.core.util.Pair;
 import jasima.core.util.Util;
 
 import java.util.Arrays;
@@ -168,6 +169,20 @@ public class IntEmpirical extends IntStream {
 
 		return String.format(Util.DEF_LOCALE, "%s(%s)", this.getClass()
 				.getSimpleName(), params);
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		int min;
+		int max;
+		if (vals != null) {
+			min = Util.min(vals);
+			max = Util.max(vals);
+		} else {
+			min = 0;
+			max = probs.length;
+		}
+		return new Pair<>((double) min, (double) max);
 	}
 
 }

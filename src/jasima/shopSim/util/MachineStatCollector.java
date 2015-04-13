@@ -58,19 +58,14 @@ public class MachineStatCollector extends WorkStationListenerBase {
 
 	@Override
 	protected void init(WorkStation m) {
-		aveMachinesBusy = new TimeWeightedSummaryStat();
-		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
+		aveMachinesBusy = new TimeWeightedSummaryStat(m.numBusy(), m.shop()
+				.simTime());
 		aniq = new TimeWeightedSummaryStat();
 		stationDelay = new SummaryStat();
 		capacityUtilized = new SummaryStat();
 		aveBatchSize = new SummaryStat();
 		setupTime = new SummaryStat();
 		procTime = new SummaryStat();
-		aniq.clear();
-		stationDelay.clear();
-		capacityUtilized.clear();
-		aveBatchSize.clear();
-		setupTime.clear();
 	}
 
 	@Override

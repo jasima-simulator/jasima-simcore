@@ -50,6 +50,14 @@ public class ArrivalsStationary extends ArrivalProcess {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+
+		if (interArrivalTimes != null)
+			interArrivalTimes.init();
+	}
+
+	@Override
 	public double nextDbl() {
 		if (isFirst && isArrivalAtTimeZero()) {
 			// state = state; // do nothing

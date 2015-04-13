@@ -1,5 +1,8 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
+
+import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
 /**
@@ -8,7 +11,8 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class DblNormal extends DblStream {
 
@@ -56,15 +60,20 @@ public class DblNormal extends DblStream {
 	 * 
 	 * @param stdev
 	 *            The standard deviation.
-	 * @throws NotStrictlyPositiveException
-	 *             Raised if stdev was not strictly positive.
+	 * @throws NotPositiveException
+	 *             Raised if stdev was negative.
 	 */
-	public void setStdev(double stdev) throws NotStrictlyPositiveException {
-		if (stdev > 0.0) {
+	public void setStdev(double stdev) throws NotPositiveException {
+		if (stdev >= 0.0) {
 			this.stdev = stdev;
 		} else {
 			throw new NotStrictlyPositiveException(stdev);
 		}
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
 
 }

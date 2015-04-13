@@ -1,5 +1,6 @@
 package jasima.core.util;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -298,6 +299,32 @@ public class ArgListTokenizer {
 	 */
 	public void setInput(String input) {
 		this.input = Objects.requireNonNull(input);
+	}
+
+	/**
+	 * Checks whether the actual token's type matches a certain set of expected
+	 * types. If the types do not match, then a {@link ParseException} is
+	 * raised.
+	 * 
+	 * @param actual
+	 *            The current token's type.
+	 * @param expected
+	 *            All token types that are currently valid.
+	 * @throws ParseException
+	 *             If {@code actual} if not contained in {@code expected}.
+	 */
+	public void assureTokenTypes(TokenType actual, TokenType... expected)
+			throws ParseException {
+		for (TokenType e : expected) {
+			if (actual == e)
+				return;
+		}
+
+		String msg = "expected one of: %s, but found: %s, '%s'";
+		if (expected.length == 1)
+			msg = "expected %s, but found: %s, '%s'";
+		throw new ParseException(currTokenStart(), msg,
+				Arrays.deepToString(expected), actual, currTokenText());
 	}
 
 }

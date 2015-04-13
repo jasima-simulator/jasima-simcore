@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import jasima.core.util.Pair;
+
 import org.apache.commons.math3.distribution.IntegerDistribution;
 
 /**
@@ -69,6 +71,16 @@ public class IntDistribution extends IntStream {
 		} else {
 			return distribution.getNumericalMean();
 		}
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		if (distribution == null)
+			return null;
+		double min = distribution.getSupportLowerBound();
+		double max = distribution.getSupportUpperBound();
+		return new Pair<Double, Double>(min,
+				max);
 	}
 
 	@Override

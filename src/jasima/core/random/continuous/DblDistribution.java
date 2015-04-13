@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
+
 import java.util.Random;
 
 import org.apache.commons.math3.distribution.RealDistribution;
@@ -86,6 +88,14 @@ public class DblDistribution extends DblStream {
 		} else {
 			return distribution.getNumericalMean();
 		}
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		if (distribution == null)
+			return null;
+		return new Pair<Double, Double>(distribution.getSupportLowerBound(),
+				distribution.getSupportUpperBound());
 	}
 
 	@Override

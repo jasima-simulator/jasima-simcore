@@ -19,6 +19,7 @@
 package jasima.core.simulation.arrivalprocess;
 
 import jasima.core.random.continuous.DblStream;
+import jasima.core.util.Pair;
 
 /**
  * Base class for arrival processes, i.e., calculating absolute arrival times.
@@ -52,6 +53,11 @@ public abstract class ArrivalProcess extends DblStream {
 	@Override
 	public double getNumericalMean() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(getInitialState(), Double.POSITIVE_INFINITY);
 	}
 
 	public double getInitialState() {

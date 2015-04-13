@@ -18,6 +18,7 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
 import jasima.core.util.Util;
 
 import java.util.Arrays;
@@ -25,7 +26,8 @@ import java.util.Arrays;
 /**
  * A DblConst stream infinitely returns the numbers of {@link #getValues()} in
  * exactly this order. After the last value being returned the sequence starts
- * again with the first number.
+ * again with the first number. Optionally the order of items is permuted is
+ * {@code randomizeOrder} was set to true.
  * 
  * @author Torsten Hildebrandt
  * @version 
@@ -36,9 +38,11 @@ public class DblConst extends DblStream {
 	private static final long serialVersionUID = -2122011743105354569L;
 
 	private double[] values;
-	private Double mean;
+	private boolean randomizeOrder;
 
+	private Double mean;
 	private int next;
+	private double[] valuesRnd;
 
 	public DblConst() {
 		this(null);
@@ -49,40 +53,26 @@ public class DblConst extends DblStream {
 		setValues(vs);
 	}
 
-	public double[] getValues() {
-		return values;
-	}
-
-	public void setValues(double... vs) {
-		this.mean = null;
-		this.values = vs;
-	}
-
-	@Override
-	public double getNumericalMean() {
-		// lazy initialization of "mean" upon first call
-		if (mean == null) {
-			if (values == null || values.length == 0)
-				mean = Double.NaN;
-			else
-				mean = Util.sum(values) / values.length;
-		}
-
-		return mean;
-	}
-
 	@Override
 	public void init() {
 		super.init();
+		valuesRnd = isRandomizeOrder() ? values.clone() : values;
+		nextIteration();
+	}
+
+	private void nextIteration() {
 		next = 0;
+		if (isRandomizeOrder()) {
+			Util.shuffle(valuesRnd, rndGen);
+		}
 	}
 
 	@Override
 	public double nextDbl() {
-		double v = values[next];
+		double v = valuesRnd[next];
 		// wrap around
-		if (++next == values.length)
-			next = 0;
+		if (++next == valuesRnd.length)
+			nextIteration();
 		return v;
 	}
 
@@ -99,6 +89,71 @@ public class DblConst extends DblStream {
 			c.values = values.clone();
 
 		return c;
+	}
+
+	@Override
+	public double getNumericalMean() {
+		// lazy initialization of "mean" upon first call
+		if (mean == null) {
+			if (values == null || values.length == 0)
+				mean = Double.NaN;
+			else
+				mean = Util.sum(values) / values.length;
+		}
+
+		return mean;
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		if (values == null || values.length == 0)
+			return new Pair<>(Double.NaN, Double.NaN);
+
+		double min = Double.POSITIVE_INFINITY;
+		double max = Double.NEGATIVE_INFINITY;
+
+		for (double d : values) {
+			if (!(min <= d))
+				min = d;
+			if (!(max >= d))
+				max = d;
+		}
+
+		return new Pair<>(min, max);
+	}
+
+	public double[] getValues() {
+		return (values == null) ? null : values.clone();
+	}
+
+	/**
+	 * Sets the values to return as members of this number stream.
+	 * 
+	 * @param vs
+	 *            The values to use.
+	 */
+	public void setValues(double... vs) {
+		this.mean = null;
+		if (vs == null)
+			values = null;
+		else
+			values = vs.clone();
+	}
+
+	public boolean isRandomizeOrder() {
+		return randomizeOrder;
+	}
+
+	/**
+	 * If set to {@code true}, this elements of {@value values} will be returned
+	 * in a randomly permuted order. Otherwise the values will be returned in
+	 * exactly the same order as given in {@code values}.
+	 * 
+	 * @param randomizeOrder
+	 *            Whether or not to randomize the order.
+	 */
+	public void setRandomizeOrder(boolean randomizeOrder) {
+		this.randomizeOrder = randomizeOrder;
 	}
 
 }

@@ -18,6 +18,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
+
 /**
  * Returns a random real number following a <a
  * href="http://en.wikipedia.org/wiki/Triangular_distribution">triangular
@@ -77,6 +79,11 @@ public class DblTriangular extends DblStream {
 	public String toString() {
 		return "DblTriangular(min=" + min + ";mode=" + mode + ";max=" + max
 				+ ")";
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(getMin(), getMax());
 	}
 
 	public double getMin() {

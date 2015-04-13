@@ -19,6 +19,7 @@
 package jasima.core.random.continuous;
 
 import jasima.core.random.RandomFactory;
+import jasima.core.util.Pair;
 import jasima.shopSim.util.modelDef.streams.DblStreamDef;
 
 import java.io.Serializable;
@@ -43,6 +44,10 @@ public abstract class DblStream implements Serializable, Cloneable {
 		super();
 	}
 
+	/**
+	 * Initializes this stream. This method is supposed to be called once before
+	 * repeated calls to {@link #nextDbl()} can be made.
+	 */
 	public void init() {
 	}
 
@@ -55,6 +60,15 @@ public abstract class DblStream implements Serializable, Cloneable {
 	 * Returns the arithmetic mean of the values returned by {@link #nextDbl()}.
 	 */
 	public abstract double getNumericalMean();
+
+	/**
+	 * This method computes the minimum and maximum support values (range of
+	 * possible values) of this stream.
+	 * 
+	 * @return A {@link Pair} containing the minimum and maximum support values.
+	 * @see #isValueRangeInclusive()
+	 */
+	public abstract Pair<Double, Double> getValueRange();
 
 	/**
 	 * Creates a {@link DblStreamDef} object from this stream. This method only

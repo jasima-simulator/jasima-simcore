@@ -251,7 +251,6 @@ public class TypeUtil {
 		HashSet<Class<?>> seen = new HashSet<Class<?>>();
 		currStage.addLast(requiredType);
 		seen.add(requiredType);
-		seen.add(Object.class);
 
 		while (!currStage.isEmpty()) {
 			Class<?> c = currStage.removeFirst();
@@ -271,7 +270,9 @@ public class TypeUtil {
 			}
 		}
 
-		if (resList.size() > 1) {
+		// ensure Object is last in list (if present)
+		boolean hasObject = resList.remove(Object.class);
+		if (hasObject) {
 			resList.add(Object.class);
 		}
 
