@@ -1,10 +1,13 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Pair;
+
 /**
  * Creates a number stream that is the sum of a given set of base streams.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  */
 public class DblSumStream extends DblStream {
 
@@ -48,6 +51,25 @@ public class DblSumStream extends DblStream {
 			sum += subStreams[i].getNumericalMean();
 		}
 		return sum;
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		if (subStreams == null || subStreams.length == 0)
+			return new Pair<>(Double.NaN, Double.NaN);
+
+		Pair<Double, Double> r0 = subStreams[0].getValueRange();
+		double min = r0.a;
+		double max = r0.b;
+
+		for (int i = 1, n = subStreams.length; i < n; i++) {
+			Pair<Double, Double> range = subStreams[i].getValueRange();
+
+			min += range.a;
+			max += range.b;
+		}
+
+		return new Pair<>(min, max);
 	}
 
 	// ************* getter / setter below ****************
