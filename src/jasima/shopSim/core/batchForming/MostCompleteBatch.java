@@ -25,7 +25,6 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.core.WorkStation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +40,9 @@ import java.util.Map;
  */
 public class MostCompleteBatch extends BatchForming {
 
-	private double maxWaitRelative;
+	private static final long serialVersionUID = -8735429872125881522L;
 
+	private double maxWaitRelative;
 	private double maxWait;
 
 	public MostCompleteBatch(double maxWaitRelative) {
@@ -214,28 +214,28 @@ public class MostCompleteBatch extends BatchForming {
 		}
 	}
 
-	private void handleTiesByFamilySize(Map<String, List<Job>> map) {
-		ArrayList<Batch> bs = possibleBatches
-				.getAllElements(new ArrayList<Batch>(possibleBatches.size()));
-		possibleBatches.clear();
-
-		int bestFamSize = 0;
-
-		for (int i = 0, n = bs.size(); i < n; i++) {
-			Batch b = bs.get(i);
-			String bf = b.job(0).getCurrentOperation().batchFamily;
-
-			int famSize = map.get(bf).size();
-
-			if (famSize > bestFamSize) {
-				bestFamSize = famSize;
-				possibleBatches.clear();
-				possibleBatches.add(b);
-			} else if (famSize == bestFamSize) {
-				possibleBatches.add(b);
-			}
-		}
-	}
+	// private void handleTiesByFamilySize(Map<String, List<Job>> map) {
+	// ArrayList<Batch> bs = possibleBatches
+	// .getAllElements(new ArrayList<Batch>(possibleBatches.size()));
+	// possibleBatches.clear();
+	//
+	// int bestFamSize = 0;
+	//
+	// for (int i = 0, n = bs.size(); i < n; i++) {
+	// Batch b = bs.get(i);
+	// String bf = b.job(0).getCurrentOperation().batchFamily;
+	//
+	// int famSize = map.get(bf).size();
+	//
+	// if (famSize > bestFamSize) {
+	// bestFamSize = famSize;
+	// possibleBatches.clear();
+	// possibleBatches.add(b);
+	// } else if (famSize == bestFamSize) {
+	// possibleBatches.add(b);
+	// }
+	// }
+	// }
 
 	private void handleTiesByBasePrio(int numJobs) {
 		Batch best = possibleBatches.get(0);

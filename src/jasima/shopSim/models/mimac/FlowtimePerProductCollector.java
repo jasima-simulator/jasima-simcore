@@ -36,6 +36,8 @@ import java.util.Map;
  */
 public class FlowtimePerProductCollector extends ShopListenerBase {
 
+	private static final long serialVersionUID = -855108312093612967L;
+
 	private HashMap<Integer, SummaryStat> flowtimesPerProduct;
 
 	@Override

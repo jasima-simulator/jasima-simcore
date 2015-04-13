@@ -44,12 +44,12 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 	public static final double MAX_PRIO = Double.MAX_VALUE;
 	public static final double MIN_PRIO = -MAX_PRIO;
 
-	private final class ComparatorImpl<T extends PrioRuleTarget> implements
-			Comparator<ListEntry<T>>, Serializable {
+	private final class ComparatorImpl<O extends PrioRuleTarget> implements
+			Comparator<ListEntry<O>>, Serializable {
 		private static final long serialVersionUID = -6907667564606558578L;
 
 		@Override
-		public int compare(ListEntry<T> i1, ListEntry<T> i2) {
+		public int compare(ListEntry<O> i1, ListEntry<O> i2) {
 			// i1 and i2 are the same
 			if (i1 == i2)
 				return 0;
@@ -111,7 +111,9 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 		super();
 		this.workStation = workStation;
 
-		nodes_ = new ListEntry[11];
+		@SuppressWarnings("unchecked")
+		final ListEntry<T>[] array = new ListEntry[11];
+		nodes_ = array;
 
 		comparator = new ComparatorImpl<T>();
 	}
@@ -317,6 +319,7 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 	}
 
 	protected void setCapacity(int newCap) {
+		@SuppressWarnings("unchecked")
 		ListEntry<T>[] newnodes = new ListEntry[newCap];
 		System.arraycopy(nodes_, 0, newnodes, 0, count_);
 		nodes_ = newnodes;

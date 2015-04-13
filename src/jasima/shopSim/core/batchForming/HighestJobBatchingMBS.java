@@ -37,6 +37,8 @@ import java.util.List;
  */
 public class HighestJobBatchingMBS extends BatchForming {
 
+	private static final long serialVersionUID = -1651682966642185315L;
+
 	private double mbsRel;
 
 	public HighestJobBatchingMBS() {

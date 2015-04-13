@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.thoughtworks.xstream.converters.javabean.JavaBeanConverter;
-
 import jxl.BooleanCell;
 import jxl.Cell;
 import jxl.NumberCell;

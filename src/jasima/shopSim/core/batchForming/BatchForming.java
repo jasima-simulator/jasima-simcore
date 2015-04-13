@@ -46,6 +46,8 @@ import java.util.Map;
  */
 public abstract class BatchForming implements Cloneable, Serializable {
 
+	private static final long serialVersionUID = 6670837045346111285L;
+
 	public static int indexOf(Job j, Job[] js, int numElems) {
 		for (int i = 0, n = numElems; i < n; i++) {
 			if (j == js[i])

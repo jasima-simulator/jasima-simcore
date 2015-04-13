@@ -44,6 +44,8 @@ public class IndividualMachine {
 	public double relDate;
 	public int initialSetup;
 	public String name = null;
+
+	@SuppressWarnings("unchecked")
 	public List<? extends DowntimeSource> downsources = Collections.EMPTY_LIST;
 
 	public MachineState state;

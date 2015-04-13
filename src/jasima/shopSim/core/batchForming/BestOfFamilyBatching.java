@@ -44,6 +44,8 @@ import java.util.Map;
  */
 public class BestOfFamilyBatching extends BatchForming {
 
+	private static final long serialVersionUID = 4249713710542519941L;
+
 	@Override
 	public void formBatches() {
 		final PriorityQueue<Job> q = getOwner().queue;
