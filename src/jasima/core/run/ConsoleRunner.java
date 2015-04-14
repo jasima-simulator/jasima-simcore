@@ -16,12 +16,10 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 /**
- * <p>
  * Main class to load and run an experiment from the command line. The
  * experiment can be specified by either the class name (in this case a new
  * experiment of this type will be created) or by specifying the name of an xml
  * file or Excel file containing an experiment (e.g., created with the gui).
- * </p>
  * <p>
  * Furthermore this class is used indirectly by Experiments to configure and run
  * them.
@@ -44,6 +42,9 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	public ConsoleRunner(Experiment indirectExperiment) {
 		super();
 		this.experiment = indirectExperiment;
+		if (indirectExperiment != null)
+			this.experimentFileName = indirectExperiment.getClass()
+					.getSimpleName();
 	}
 
 	@Override
@@ -133,21 +134,16 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	@Override
 	protected Experiment createExperiment() {
 		Experiment e;
-		// is it an Excel experiment?
-		if (expSpec.toLowerCase(Util.DEF_LOCALE).endsWith(".xls")) {
+		if (experiment != null) {
+			e = experiment;
+		} else if (expSpec.toLowerCase(Util.DEF_LOCALE).endsWith(".xls")) {
+			// is it an Excel experiment?
 			experimentFileName = expSpec;
 			e = new ExcelExperimentReader(new File(experimentFileName),
 					getClass().getClassLoader(), packageSearchPath)
 					.createExperiment();
 		} else {
 			// normal Experiment (class name) or loaded from xml file
-			experimentFileName = expSpec;
-			if (experimentFileName.indexOf('(') > 0) {
-				experimentFileName = experimentFileName.substring(0,
-						experimentFileName.indexOf('(')).trim();
-			}
-
-			// load/create experiment
 			e = TypeUtil.convert(expSpec, Experiment.class, "", getClass()
 					.getClassLoader(), packageSearchPath);
 		}

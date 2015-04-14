@@ -263,8 +263,8 @@ public abstract class AbstractExperimentRunner {
 			Experiment exp = configureExperiment();
 			doRun(exp);
 		} catch (Throwable t) {
-			printErrorAndExit(10, "%s: %s", getResultFileNameHint(),
-					t.getLocalizedMessage());
+			printErrorAndExit(10, "%s: %s (%s)", getResultFileNameHint(),
+					t.getLocalizedMessage(), Util.exceptionToString(t));
 		}
 	}
 
