@@ -124,6 +124,7 @@ public class XmlUtil {
 
 	private static XStream getXStream() {
 		XStream xstream = new XStream(new DomDriver());
+		xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);
 		xstream.registerConverter(new MapConverter(xstream.getMapper()) {
 			@SuppressWarnings("rawtypes")
 			@Override
