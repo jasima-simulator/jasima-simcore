@@ -113,17 +113,14 @@ public abstract class JobShopExperiment extends Experiment {
 
 		// install shop listener
 		if (shopListener != null)
-			for (NotifierListener<?, ?> l : shopListener) {
-				l = shop.installSimulationListener(
-						(NotifierListener<Simulation, SimEvent>) l, true);
+			for (NotifierListener<Simulation, SimEvent> l : shopListener) {
+				l = shop.installSimulationListener(l, true);
 			}
 
 		// install generic machine listener
 		if (machineListener != null)
-			for (NotifierListener<?, ?> l : machineListener) {
-				shop.installMachineListener(
-						(NotifierListener<WorkStation, WorkStationEvent>) l,
-						true);
+			for (NotifierListener<WorkStation, WorkStationEvent> l : machineListener) {
+				shop.installMachineListener(l, true);
 			}
 
 		// install specific machine listener
@@ -145,7 +142,8 @@ public abstract class JobShopExperiment extends Experiment {
 		}
 
 		// forward simulation print events to experiment print events
-		shop.addNotifierListener(new ShopListenerBase() {
+		@SuppressWarnings("serial")
+		final ShopListenerBase eventForwarder = new ShopListenerBase() {
 
 			@Override
 			protected void print(Simulation sim, SimPrintEvent event) {
@@ -157,7 +155,8 @@ public abstract class JobShopExperiment extends Experiment {
 				JobShopExperiment.this.print(cat, "sim_message\t%f\t%s",
 						sim.simTime(), event);
 			}
-		});
+		};
+		shop.addNotifierListener(eventForwarder);
 	}
 
 	@Override
@@ -429,14 +428,18 @@ public abstract class JobShopExperiment extends Experiment {
 	 *            The listener to install during experiment execution.
 	 */
 	public void addShopListener(NotifierListener<Simulation, SimEvent> l) {
-		if (this.shopListener == null) {
-			this.shopListener = new NotifierListener[] { l };
+		if (shopListener == null) {
+			@SuppressWarnings("unchecked")
+			final NotifierListener<Simulation, SimEvent>[] resArray = new NotifierListener[] { l };
+			shopListener = resArray;
 		} else {
 			ArrayList<NotifierListener<Simulation, SimEvent>> list = new ArrayList<NotifierListener<Simulation, SimEvent>>(
-					Arrays.asList(this.shopListener));
+					Arrays.asList(shopListener));
 			list.add(l);
-
-			shopListener = list.toArray(new NotifierListener[list.size()]);
+			@SuppressWarnings("unchecked")
+			final NotifierListener<Simulation, SimEvent>[] resArray = new NotifierListener[list
+					.size()];
+			shopListener = list.toArray(resArray);
 		}
 	}
 
@@ -471,13 +474,17 @@ public abstract class JobShopExperiment extends Experiment {
 	public void addMachineListener(
 			NotifierListener<WorkStation, WorkStationEvent> l) {
 		if (this.machineListener == null) {
-			this.machineListener = new NotifierListener[] { l };
+			@SuppressWarnings("unchecked")
+			final NotifierListener<WorkStation, WorkStationEvent>[] resArray = new NotifierListener[] { l };
+			this.machineListener = resArray;
 		} else {
 			ArrayList<NotifierListener<WorkStation, WorkStationEvent>> list = new ArrayList<NotifierListener<WorkStation, WorkStationEvent>>(
 					Arrays.asList(this.machineListener));
 			list.add(l);
-
-			machineListener = list.toArray(new NotifierListener[list.size()]);
+			@SuppressWarnings("unchecked")
+			final NotifierListener<WorkStation, WorkStationEvent>[] resArray = new NotifierListener[list
+					.size()];
+			machineListener = list.toArray(resArray);
 		}
 	}
 
@@ -498,14 +505,16 @@ public abstract class JobShopExperiment extends Experiment {
 		// create new array using an intermediary list
 		NotifierListener<WorkStation, WorkStationEvent>[] listeners = machListenerSpecific
 				.get(name);
-		if (listeners == null)
-			listeners = new NotifierListener[0];
-		ArrayList<NotifierListener<WorkStation, WorkStationEvent>> list = new ArrayList<NotifierListener<WorkStation, WorkStationEvent>>(
-				Arrays.asList(listeners));
+		ArrayList<NotifierListener<WorkStation, WorkStationEvent>> list = new ArrayList<NotifierListener<WorkStation, WorkStationEvent>>();
+		if (listeners != null) {
+			list.addAll(Arrays.asList(listeners));
+		}
 		list.add(l);
 
-		machListenerSpecific.put(name,
-				list.toArray(new NotifierListener[list.size()]));
+		@SuppressWarnings("unchecked")
+		final NotifierListener<WorkStation, WorkStationEvent>[] resArray = new NotifierListener[list
+				.size()];
+		machListenerSpecific.put(name, list.toArray(resArray));
 	}
 
 	/**
@@ -520,7 +529,9 @@ public abstract class JobShopExperiment extends Experiment {
 	public NotifierListener<WorkStation, WorkStationEvent>[] getMachineListenerSpecific(
 			String name) {
 		if (machListenerSpecific == null) {
-			return new NotifierListener[0];
+			@SuppressWarnings("unchecked")
+			final NotifierListener<WorkStation, WorkStationEvent>[] resArray = new NotifierListener[0];
+			return resArray;
 		} else {
 			return machListenerSpecific.get(name);
 		}
