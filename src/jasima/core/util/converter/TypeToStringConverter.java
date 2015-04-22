@@ -41,15 +41,23 @@ public abstract class TypeToStringConverter {
 
 	/**
 	 * * Constructs a new ListTokenizer around {@code input} and then calls
-	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse
-	 * the whole string, otherwise it throws a {@link ParseException}.
+	 * {@link #convertFromString(ArgListTokenizer, Class, String, ClassLoader, String[])}
+	 * . This class assumes it can read and parse the whole string, otherwise it
+	 * throws a {@link ParseException}.
 	 * 
 	 * @param s
+	 *            The String value to convert.
 	 * @param requiredType
+	 *            The type it should be converted to.
 	 * @param context
+	 *            An optional property path.
 	 * @param loader
+	 *            The class loader to use.
 	 * @param packageSearchPath
-	 * @return
+	 *            Search path to resolve abbreviated class names.
+	 * @return {@code s} converted to the required type.
+	 * @param <T>
+	 *            The required type.
 	 */
 	public static <T> T convertFromString(String s, Class<T> requiredType,
 			String context, ClassLoader loader, String[] packageSearchPath) {
@@ -73,13 +81,13 @@ public abstract class TypeToStringConverter {
 	/**
 	 * This method is used internally to create an object as specified by the
 	 * given parse tree.
-	 * <p>
 	 * 
-	 * @param tree
-	 *            The parse tree.
+	 * @param tk
+	 *            The {@link ArgListTokenizer} used to split the input String in
+	 *            its parts.
 	 * @param requiredType
 	 *            Type the converted parse tree should be compatible with.
-	 * @param contextString
+	 * @param context
 	 *            Optional property context path.
 	 * @param loader
 	 *            The classloader to use.

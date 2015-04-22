@@ -144,8 +144,13 @@ public class ArgListParser {
 	 * Constructs a new ListTokenizer around {@code input} and then calls
 	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse
 	 * the whole string, otherwise it throws a {@link ParseException}.
+	 * 
+	 * @param input
+	 *            The input string to parse.
+	 * @return The
 	 */
-	public static ParseTree parseClassAndPropDef(String input) {
+	public static ParseTree parseClassAndPropDef(String input)
+			throws ParseException {
 		ArgListTokenizer tk = new ArgListTokenizer(input);
 		ParseTree res = new ArgListParser(tk).parseClassAndPropDef();
 

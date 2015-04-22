@@ -94,6 +94,9 @@ public class ExcelSaver extends ResultSaver {
 	/**
 	 * This main method can be used to manually convert a {@code .jasResBin}
 	 * file to Excel format.
+	 * 
+	 * @param args
+	 *            The list of command line arguments.
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
@@ -642,6 +645,10 @@ public class ExcelSaver extends ResultSaver {
 	 * If set, the (binary) result file produced by the parent class
 	 * {@link ResultSaver} is not deleted after successfully creating an Excel
 	 * file from it (default: false, i.e., the file is deleted).
+	 * 
+	 * @param keepDataFile
+	 *            Whether or not to keep the raw binary file created before
+	 *            conversion to Excel format.
 	 */
 	public void setKeepDataFile(boolean keepDataFile) {
 		this.keepDataFile = keepDataFile;
@@ -654,6 +661,10 @@ public class ExcelSaver extends ResultSaver {
 	/**
 	 * Sets the maximum number of parameters values shown on sheet
 	 * "sub-exp. overview". Set this to 0 for no limit (default is: 20).
+	 * 
+	 * @param maxParamValues
+	 *            Sets the maximum number of parameters values shown on overview
+	 *            sheet.
 	 */
 	public void setMaxParamValues(int maxParamValues) {
 		if (maxParamValues < 0)
@@ -669,6 +680,9 @@ public class ExcelSaver extends ResultSaver {
 	/**
 	 * Sets the maximum length of a String (to save space and increase
 	 * readability). Set this to 0 for no limit (default is: 500).
+	 * 
+	 * @param maxStringLength
+	 *            The maximum length of a cell value.
 	 */
 	public void setMaxStringLength(int maxStringLength) {
 		if (maxStringLength < 0)

@@ -47,11 +47,22 @@ public class TypeUtil {
 
 	/**
 	 * Determines the type of a property named with propPath using reflection.
-	 * 
+	 * <p>
 	 * This method interprets propPath the same way as
 	 * {@link #getPropertyValue(Object, String)} does.
+	 * 
+	 * @param o
+	 *            The Object from which to get a property value.
+	 * @param propPath
+	 *            A String containing the path to the required property.
+	 * @return The property's type.
+	 * 
+	 * @throws RuntimeException
+	 *             If there was a problem getting the value. The cause of this
+	 *             exception (of type {@link ReflectiveOperationException})
+	 *             gives a more detailed indication why the operation failed.
 	 */
-	public static Class<?> getPropertyType(Object o, String propPath) {
+	public static Class<?> getPropertyType(Object o, String propPath) throws RuntimeException {
 		try {
 			String[] segments = propPath.split("\\.");
 			// call getters until we finally arrive where we can call the
@@ -82,15 +93,25 @@ public class TypeUtil {
 	}
 
 	/**
-	 * <p>
 	 * Gets the current value of a property named with propPath using
 	 * reflection.
-	 * </p>
 	 * <p>
 	 * Example: getProperty( obj, "a.b.c" ); is equivalent to a direct call
 	 * obj.getA().getB().getC()
+	 * 
+	 * @param o
+	 *            The Object from which to get a property value.
+	 * @param propPath
+	 *            A String containing the path to the required property.
+	 * @return The property value.
+	 * 
+	 * @throws RuntimeException
+	 *             If there was a problem getting the value. The cause of this
+	 *             exception (of type {@link ReflectiveOperationException})
+	 *             gives a more detailed indication why the operation failed.
 	 */
-	public static Object getPropertyValue(Object o, String propPath) {
+	public static Object getPropertyValue(Object o, String propPath)
+			throws RuntimeException {
 		try {
 			String[] segments = propPath.split("\\.");
 			// call getters until we finally arrive where we can call the
@@ -540,18 +561,20 @@ public class TypeUtil {
 	private static final String PROP_SUN_JAVA_COMMAND = "sun.java.command";
 
 	/**
-	 * <p>
 	 * Tries to find the main class of a java run. This is attempted by looking
 	 * up the system properties {@code jasima.experiment} and
 	 * {@code sun.java.command} first. If this does not lead to a valid
 	 * classname (e.g., if started with "-jar" option) an attempt is made to
 	 * interpret the property as the name of a jar file. The manifest of this
 	 * jar is then searched for its entry {@code Main-Class}.
-	 * </p>
 	 * <p>
 	 * This code is necessary because Java has no virtual static methods and
 	 * therefore there is no equivalent to the keyword {@code this} in a static
 	 * method.
+	 * 
+	 * @throws ClassNotFoundException
+	 *             If there were problems locating the main class. Should not
+	 *             occur.
 	 */
 	public static Class<?> getMainClass() throws ClassNotFoundException {
 		Properties props = System.getProperties();
@@ -576,7 +599,8 @@ public class TypeUtil {
 
 		try {
 			// try to find as class directly
-			Class<?> klazz = Util.class.getClassLoader().loadClass(classOrJar);
+			Class<?> klazz = TypeUtil.class.getClassLoader().loadClass(
+					classOrJar);
 			return klazz;
 		} catch (ClassNotFoundException e) {
 			// try to interpret as jar and load main class name from manifest.mf

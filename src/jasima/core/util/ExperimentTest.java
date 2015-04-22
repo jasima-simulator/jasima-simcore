@@ -52,7 +52,9 @@ public class ExperimentTest {
 	 * Checks whether key sets of actual and expected results are the same.
 	 * 
 	 * @param resActual
+	 *            The map of results actually obtained.
 	 * @param resExpected
+	 *            The map of expected results.
 	 */
 	public void checkKeySets(Map<String, Object> resActual,
 			Map<String, Object> resExpected) {
@@ -81,7 +83,9 @@ public class ExperimentTest {
 	 * ignored.
 	 * 
 	 * @param resActual
+	 *            The map of results actually obtained.
 	 * @param resExpected
+	 *            The map of expected results.
 	 */
 	public void checkResults(Map<String, Object> resActual,
 			Map<String, Object> resExpected) {

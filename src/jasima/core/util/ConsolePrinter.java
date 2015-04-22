@@ -200,6 +200,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	/**
 	 * PrintStdEvents determines, if print events for standard events (like
 	 * experiment starting) should be produced. Defaults to {@code true}.
+	 * 
+	 * @param printStdEvents
+	 *            Whether or not to print standard events.
 	 */
 	public void setPrintStdEvents(boolean printStdEvents) {
 		this.printStdEvents = printStdEvents;
@@ -213,6 +216,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	 * Sets the {@link Locale} that is used when formatting messages. The
 	 * default is {@code Locale.US}.
 	 * 
+	 * @param locale
+	 *            The locale to use.
+	 * 
 	 * @see Util#DEF_LOCALE
 	 */
 	public void setLocale(Locale locale) {
@@ -224,6 +230,11 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	/**
 	 * Static method to prints the results <code>res</code> of an experiment
 	 * <code>e</code> to {@link System#out}.
+	 * 
+	 * @param e
+	 *            The experiment that was executed.
+	 * @param res
+	 *            The list of results.
 	 */
 	public static void printResults(Experiment e, Map<String, Object> res) {
 		PrintWriter pw = new PrintWriter(System.out, true);
@@ -237,6 +248,13 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	/**
 	 * Static method to print the results <code>res</code> of an experiment
 	 * <code>e</code> to a {@link PrintWriter}.
+	 * 
+	 * @param out
+	 *            The {@link PrintWriter} to use for printing.
+	 * @param e
+	 *            The experiment that was executed.
+	 * @param res
+	 *            The list of results.
 	 */
 	public static void printResults(PrintWriter out, Experiment e,
 			Map<String, Object> res) {
@@ -311,6 +329,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	/**
 	 * Returns a textual representation of an experiment's properties and their
 	 * current values.
+	 * 
+	 * @param e
+	 *            The experiment to describe.
 	 */
 	public static String getDescription(Experiment e) {
 		String s;

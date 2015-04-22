@@ -189,7 +189,10 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Returns the maximum number of jobs in the system.
+	 * Returns the maximum number of jobs in the system, before the simulation
+	 * is terminated.
+	 * 
+	 * @return The maximum number of jobs in the system.
 	 */
 	public int getMaxJobsInSystem() {
 		return maxJobsInSystem;
@@ -216,7 +219,10 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Gets the list of job sources in this shop.
+	 * Gets the list of job sources in this shop. Do not modify the returned
+	 * array, before manually creating a clone of it.
+	 * 
+	 * @return The array of job sources.
 	 */
 	public JobSource[] getSources() {
 		return sources;
@@ -224,9 +230,12 @@ public class JobShop extends Simulation {
 
 	/**
 	 * Sets all job sources in this shop.
+	 * 
+	 * @param sources
+	 *            An array with all job sources.
 	 */
 	public void setSources(JobSource[] sources) {
-		this.sources = sources;
+		this.sources = sources.clone();
 
 		int i = 0;
 		for (JobSource js : sources) {
@@ -261,7 +270,10 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Gets the list of workstations in this shop.
+	 * Gets the list of workstations in this shop. This returns method returns
+	 * the internal array, so do not modify it externally.
+	 * 
+	 * @return An array of all workstations of this shop.
 	 */
 	public WorkStation[] getMachines() {
 		return machines;
@@ -269,9 +281,12 @@ public class JobShop extends Simulation {
 
 	/**
 	 * Sets the workstations of this shop.
+	 * 
+	 * @param machines
+	 *            An array containing all workstations for this shop.
 	 */
 	public void setMachines(WorkStation[] machines) {
-		this.machines = machines;
+		this.machines = machines.clone();
 		int i = 0;
 		for (WorkStation w : machines) {
 			w.shop = this;
@@ -283,6 +298,8 @@ public class JobShop extends Simulation {
 	 * Adds a single machine to this shop.
 	 * 
 	 * @see #getMachines()
+	 * @param machine
+	 *            The workstation to add.
 	 */
 	public void addMachine(WorkStation machine) {
 		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
@@ -296,7 +313,10 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Remove a machine from this shop.
+	 * Removes a machine from this shop.
+	 * 
+	 * @param machine
+	 *            The workstation to remove.
 	 */
 	public void removeMachine(WorkStation machine) {
 		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
@@ -313,8 +333,13 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Returns a workstation with the given name, or <code>null</code> if no
-	 * such workstation exists.
+	 * Returns a workstation with the given name, or {@code null} if no such
+	 * workstation exists.
+	 * 
+	 * @param name
+	 *            The workstation's name.
+	 * @return The workstation with the given name, if it exists. {@code null}
+	 *         otherwise.
 	 */
 	public WorkStation getWorkstationByName(String name) {
 		WorkStation res = null;
@@ -331,7 +356,9 @@ public class JobShop extends Simulation {
 	}
 
 	/**
-	 * Returns the routes added to this job shop.
+	 * Returns the routes added to this job shop. Do not modify externally.
+	 * 
+	 * @return An array of all routes in this shop.
 	 */
 	public Route[] getRoutes() {
 		return routes;
@@ -339,9 +366,12 @@ public class JobShop extends Simulation {
 
 	/**
 	 * Sets the routes available for this job shop.
+	 * 
+	 * @param routes
+	 *            The route list.
 	 */
 	public void setRoutes(Route[] routes) {
-		this.routes = routes;
+		this.routes = routes.clone();
 	}
 
 	public void addRoute(Route r) {

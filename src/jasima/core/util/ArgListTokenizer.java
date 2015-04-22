@@ -78,6 +78,8 @@ public class ArgListTokenizer {
 
 	/**
 	 * Returns the next token that is <em>not</em> whitespace.
+	 * 
+	 * @return The type of the next token that is not {@code WHITE_SPACE}.
 	 */
 	public TokenType nextTokenNoWhitespace() {
 		TokenType t;
@@ -92,6 +94,8 @@ public class ArgListTokenizer {
 	 * {@link TokenType}, or {@code null}, if the end of the input was reached.
 	 * This method can throw the unchecked {@link ParseException}, if there was
 	 * a problem splitting the input string in tokens.
+	 * 
+	 * @return The current token's type.
 	 */
 	public TokenType nextToken() {
 		tokenStart = currPos;
@@ -218,6 +222,8 @@ public class ArgListTokenizer {
 	 * Returns the portion of the input text that is associated with the current
 	 * token. This method does not return surrounding quotes of a quoted
 	 * {@code STRING} and unescapes any escaped characters.
+	 * 
+	 * @return The current token's text.
 	 */
 	public String currTokenText() {
 		// was pushBackToken() called before
@@ -296,6 +302,9 @@ public class ArgListTokenizer {
 
 	/**
 	 * Sets the input string to work on.
+	 * 
+	 * @param input
+	 *            The input string.
 	 */
 	public void setInput(String input) {
 		this.input = Objects.requireNonNull(input);

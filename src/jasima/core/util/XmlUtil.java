@@ -46,6 +46,8 @@ public class XmlUtil {
 	 * @param xmlString
 	 *            A String containing xml data.
 	 * @see #saveXML(Object)
+	 * 
+	 * @return The object contained in {@code xmlString}.
 	 */
 	public static Object loadXML(String xmlString) {
 		XStream xstream = getXStream();
@@ -58,6 +60,7 @@ public class XmlUtil {
 	 * 
 	 * @param f
 	 *            The file to load.
+	 * @return The object contained in {@code f}.
 	 */
 	public static Object loadXML(File f) {
 		XStream xstream = getXStream();
@@ -70,6 +73,7 @@ public class XmlUtil {
 	 * 
 	 * @param r
 	 *            Source of the xml.
+	 * @return The object contained in {@code r}.
 	 */
 	public static Object loadXML(Reader r) {
 		XStream xstream = getXStream();
@@ -124,7 +128,8 @@ public class XmlUtil {
 
 	private static XStream getXStream() {
 		XStream xstream = new XStream(new DomDriver());
-		xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);
+		xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(),
+				false), -10);
 		xstream.registerConverter(new MapConverter(xstream.getMapper()) {
 			@SuppressWarnings("rawtypes")
 			@Override

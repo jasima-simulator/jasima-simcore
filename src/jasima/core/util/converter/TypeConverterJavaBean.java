@@ -18,8 +18,7 @@ import com.thoughtworks.xstream.XStreamException;
 public class TypeConverterJavaBean extends TypeToStringConverter {
 
 	/**
-	 * Special String value that is recognized as {@code null} in
-	 * {@link #setPropertyEx(Object, String, Object, ClassLoader, String[])}.
+	 * Special String value that is recognized as {@code null}.
 	 */
 	public static final String NULL = "@null";
 

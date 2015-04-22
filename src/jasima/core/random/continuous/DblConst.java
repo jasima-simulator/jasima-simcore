@@ -145,7 +145,7 @@ public class DblConst extends DblStream {
 	}
 
 	/**
-	 * If set to {@code true}, this elements of {@value values} will be returned
+	 * If set to {@code true}, the elements of {@code values} will be returned
 	 * in a randomly permuted order. Otherwise the values will be returned in
 	 * exactly the same order as given in {@code values}.
 	 * 

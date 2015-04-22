@@ -102,6 +102,10 @@ public class Util {
 
 	/**
 	 * Converts an exception's stack trace to a single line string.
+	 * 
+	 * @param t
+	 *            The {@link Throwable} to convert to a String.
+	 * @return A String representation of {@code t}.
 	 */
 	public static String exceptionToString(Throwable t) {
 		// convert exception to string
@@ -121,6 +125,8 @@ public class Util {
 	 * @param componentType
 	 *            Class of the array elements.
 	 * @return The new array with all elements initialized with new objects.
+	 * @param <T>
+	 *            The component type.
 	 */
 	public static <T> T[] initializedArray(int numElements,
 			Class<T> componentType) {
@@ -140,6 +146,16 @@ public class Util {
 	 * Generic method to remove the first occurrence of an element from an
 	 * array. A new array without the given element is returned (or the old
 	 * array if element was not found).
+	 * 
+	 * @param a
+	 *            The array to work with.
+	 * @param elementToRemove
+	 *            The element to remove from {@code a}.
+	 * @return The array {@code a} with the first occurrence of
+	 *         {@code elementToRemove} removed. If no such element cound be
+	 *         found, {@code a} is returned unchanged.
+	 * @param <T>
+	 *            Type of the array components.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] removeFromArray(T[] a, T elementToRemove) {
@@ -177,14 +193,8 @@ public class Util {
 	}
 
 	/**
-	 * Two double values are considered equal if the absolute value of their
-	 * differences is smaller than this constant.
-	 */
-	public static final double EPSILON = 1e-10;
-
-	/*
 	 * @return the next non-empty line (everything after '#' is a comment and
-	 * ignored unless it is escaped with a preceding back slash)
+	 *         ignored unless it is escaped with a preceding back slash)
 	 */
 	public static String nextNonEmptyLine(BufferedReader r) throws IOException {
 		String s = r.readLine();
@@ -513,6 +523,11 @@ public class Util {
 	 * {@code decimals} can be positive or negative.
 	 * 
 	 * @see #round(double[], int)
+	 * @param val
+	 *            The value to round.
+	 * @param decimals
+	 *            The number of decimals to round to.
+	 * @return The rounded values.
 	 */
 	public static double round(final double val, final int decimals) {
 		if (decimals >= 0) {
@@ -542,6 +557,11 @@ public class Util {
 	 * @return the parameter {@code vs} to allow easy chaining of method calls.
 	 * 
 	 * @see #round(double, int)
+	 * @param vs
+	 *            An array of doubles to round.
+	 * @param decimals
+	 *            The number of decimals to round the values.
+	 * @return An array with rounded values.
 	 */
 	public static double[] round(final double[] vs, final int decimals) {
 		for (int i = 0; i < vs.length; i++) {
@@ -551,19 +571,17 @@ public class Util {
 	}
 
 	/**
-	 * @return True, if the absolute value of their differences of two double
-	 *         values is smaller than the constant {@link #EPSILON} (default:
-	 *         {@value #EPSILON}).
-	 */
-	public static boolean equals(final double v1, final double v2) {
-		return Math.abs(v1 - v2) < EPSILON;
-	}
-
-	/**
 	 * Converts an array (either Object[] or of a primitive type) to a String
 	 * containing it's elements in square brackets.
+	 * 
+	 * @param arbitraryArray
+	 *            The array to convert to a String.
+	 * @return A String representation of the array {@code arbitraryArray}.
+	 * @throws IllegalArgumentException
+	 *             If {@code arbitraryArray} if not an array.
 	 */
-	public static String arrayToString(Object arbitraryArray) {
+	public static String arrayToString(Object arbitraryArray)
+			throws IllegalArgumentException {
 		Class<?> compType = arbitraryArray.getClass().getComponentType();
 		if (compType == null)
 			throw new IllegalArgumentException();

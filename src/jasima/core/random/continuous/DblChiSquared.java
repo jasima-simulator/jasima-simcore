@@ -6,7 +6,7 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
 /**
  * Implements a stream of numbers following a <a
- * href=http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared
+ * href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared
  * distribution</a>. The distribution has a single shape (integer) parameter:
  * {@code degreesOfFreedom}. This distribution is a special case of a
  * {@link DblGamma Gamma distribution}.

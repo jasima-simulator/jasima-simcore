@@ -96,7 +96,12 @@ public strictfp class MersenneTwister extends java.util.Random implements
 		return true;
 	}
 
-	/** Reads the entire state of the MersenneTwister RNG from the stream */
+	/**
+	 * Reads the entire state of the MersenneTwister RNG from the stream.
+	 * 
+	 * @param stream
+	 *            The input stream to use.
+	 */
 	public void readState(DataInputStream stream) throws IOException {
 		int len = mt.length;
 		for (int x = 0; x < len; x++)
@@ -111,7 +116,12 @@ public strictfp class MersenneTwister extends java.util.Random implements
 		__haveNextNextGaussian = stream.readBoolean();
 	}
 
-	/** Writes the entire state of the MersenneTwister RNG to the stream */
+	/**
+	 * Writes the entire state of the MersenneTwister RNG to the stream.
+	 * 
+	 * @param stream
+	 *            The output stream to use.
+	 */
 	public void writeState(DataOutputStream stream) throws IOException {
 		int len = mt.length;
 		for (int x = 0; x < len; x++)
@@ -193,8 +203,10 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 * array must have a non-zero length. Only the first 624 integers in the
 	 * array are used; if the array is shorter than this then integers are
 	 * repeatedly used in a wrap-around fashion.
+	 * 
+	 * @param array
+	 *            The array of seed values.
 	 */
-
 	synchronized public void setSeed(final int[] array) {
 		if (array.length == 0)
 			throw new IllegalArgumentException(
@@ -296,8 +308,11 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 * between 0.0 and 1.0, inclusive. Not as precise a random real event as
 	 * nextBoolean(double), but twice as fast. To explicitly use this, remember
 	 * you may need to cast to float first.
+	 * 
+	 * @param probability
+	 *            The probability of returning {@code true}.
+	 * @return A random bool value.
 	 */
-
 	public boolean nextBoolean(final float probability) {
 		if (probability < 0.0f || probability > 1.0f)
 			throw new IllegalArgumentException(
@@ -313,8 +328,11 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 * This generates a coin flip with a probability <tt>probability</tt> of
 	 * returning true, else returning false. <tt>probability</tt> must be
 	 * between 0.0 and 1.0, inclusive.
+	 * 
+	 * @param probability
+	 *            The probability of returning {@code true}.
+	 * @return A random bool value.
 	 */
-
 	public boolean nextBoolean(final double probability) {
 		if (probability < 0.0 || probability > 1.0)
 			throw new IllegalArgumentException(
@@ -350,8 +368,11 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 * This method is for completness' sake. Returns a long drawn uniformly from
 	 * 0 to n-1. Suffice it to say, n must be %gt; 0, or an
 	 * IllegalArgumentException is raised.
+	 * 
+	 * @param n
+	 *            The maximum value to return plus one.
+	 * @return A random long in the range [0,n-1].
 	 */
-
 	public long nextLong(final long n) {
 		if (n <= 0)
 			throw new IllegalArgumentException("n must be positive, got: " + n);

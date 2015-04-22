@@ -94,6 +94,8 @@ public abstract class JobSource implements ValueStore {
 	/**
 	 * Factory method used in {@link #createNextJob()} to create a new job
 	 * instance.
+	 * 
+	 * @return The new {@link Job} instance.
 	 */
 	protected Job newJobInstance() {
 		return new Job(getShop());

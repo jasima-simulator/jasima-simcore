@@ -206,7 +206,11 @@ public class Job extends PrioRuleTarget implements Cloneable,
 		}
 	}
 
-	/** returns a clone of this Job switched to the next operation. */
+	/**
+	 * Returns a clone of this Job switched to the next operation.
+	 * 
+	 * @return The future clone of this job.
+	 */
 	public Job getMyFuture() {
 		if (future == null) {
 			future = silentClone();
@@ -307,6 +311,9 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	/**
 	 * Sets the completion time of the current operation. This is called by a
 	 * machine whenever processing starts.
+	 * 
+	 * @param finishTime
+	 *            The finish time of the current {@link Operation}.
 	 */
 	public void setFinishTime(double finishTime) {
 		this.finishTime = finishTime;
@@ -321,8 +328,11 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	}
 
 	/**
-	 * Sets the start time of the current operation. This is called by a machine
-	 * whenever processing starts.
+	 * Sets the start time of the current operation. This is used internally and
+	 * called by a machine whenever processing starts.
+	 * 
+	 * @param startTime
+	 *            The start time of the current operation.
 	 */
 	public void setStartTime(double startTime) {
 		this.startTime = startTime;
@@ -370,6 +380,13 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	/**
 	 * Computes operational due dates based on the total work content method, /*
 	 * i.e., proportional to an operation's processing time.
+	 * 
+	 * @param j
+	 *            The job for which to compute operation due dates.
+	 * @param ff
+	 *            The due date factor to use.
+	 * @return An array containing operation due dates for each operation of
+	 *         {@code j}.
 	 */
 	public static double[] computeDueDatesTWC(Job j, double ff) {
 		Operation[] ops = j.ops;

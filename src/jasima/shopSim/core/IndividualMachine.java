@@ -95,6 +95,9 @@ public class IndividualMachine {
 	 * Machine going down for a certain amount of time. If this machine is
 	 * already down or currently processing, this operation is finished before
 	 * the new downtime can become active.
+	 * 
+	 * @param downReason
+	 *            The {@link DowntimeSource} causing the shutdown.
 	 */
 	public void takeDown(final DowntimeSource downReason) {
 		final JobShop shop = workStation.shop();

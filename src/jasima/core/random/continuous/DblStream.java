@@ -66,7 +66,6 @@ public abstract class DblStream implements Serializable, Cloneable {
 	 * possible values) of this stream.
 	 * 
 	 * @return A {@link Pair} containing the minimum and maximum support values.
-	 * @see #isValueRangeInclusive()
 	 */
 	public abstract Pair<Double, Double> getValueRange();
 

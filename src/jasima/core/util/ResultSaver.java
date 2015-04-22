@@ -252,6 +252,8 @@ public class ResultSaver extends AbstractResultSaver {
 	 * Whether to save parameters and results of sub-experiments.
 	 * 
 	 * @param saveSubExperiments
+	 *            Whether or not to store results of sub-experiments.
+	 * 
 	 * @see MultipleReplicationExperiment
 	 * @see FullFactorialExperiment
 	 */

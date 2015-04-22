@@ -193,7 +193,11 @@ public abstract class JobShopExperiment extends Experiment {
 		shop.setRndStreamFactory(randomFactory);
 	}
 
-	/** Factory method to create/initialize a shop object. */
+	/**
+	 * Factory method to create/initialize a shop object.
+	 * 
+	 * @return The new {@link JobShop} instance.
+	 */
 	protected JobShop doCreateShop() {
 		return new JobShop();
 	}
@@ -269,7 +273,12 @@ public abstract class JobShopExperiment extends Experiment {
 	//
 	//
 
-	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
+	/**
+	 * Sets the maximum simulation time. A value of 0.0 means no such limit.
+	 * 
+	 * @param simulationLength
+	 *            Stop simulation at this point in time.
+	 * */
 	public void setSimulationLength(double simulationLength) {
 		this.simulationLength = simulationLength;
 	}
@@ -281,6 +290,9 @@ public abstract class JobShopExperiment extends Experiment {
 	/**
 	 * End simulation if WIP (work in process) reaches this value (&lt;=0: no
 	 * limit; default is -1).
+	 * 
+	 * @param maxJobsInSystem
+	 *            The maximum number of concurrent jobs allowed in the system.
 	 */
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
 		this.maxJobsInSystem = maxJobsInSystem;
@@ -294,6 +306,9 @@ public abstract class JobShopExperiment extends Experiment {
 	 * Enable/disable the lookahead mechanism of this shop. If enabled,
 	 * dispatching rules can select jobs arriving in the near future (i.e., jobs
 	 * already processed on an immediate predecessor machine).
+	 * 
+	 * @param enableLookAhead
+	 *            Whether or not to enable one-stop look ahead.
 	 */
 	public void setEnableLookAhead(boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
@@ -306,6 +321,10 @@ public abstract class JobShopExperiment extends Experiment {
 	/**
 	 * End simulation if a certain number of jobs was completed (&lt;=0
 	 * (default): no limit).
+	 * 
+	 * @param stopAfterNumJobs
+	 *            Set the number of jobs to complete before terminating the
+	 *            simulation.
 	 */
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
 		this.stopAfterNumJobs = stopAfterNumJobs;
@@ -324,6 +343,8 @@ public abstract class JobShopExperiment extends Experiment {
 	 * machines.
 	 * 
 	 * @see #setSequencingRules(PR[])
+	 * @param sequencingRule
+	 *            The sequencing rule to use on all work stations.
 	 */
 	public void setSequencingRule(PR sequencingRule) {
 		this.sequencingRule = sequencingRule;
@@ -338,6 +359,8 @@ public abstract class JobShopExperiment extends Experiment {
 	 * batch machines.
 	 * 
 	 * @see #setBatchSequencingRules(PR[])
+	 * @param batchSequencingRule
+	 *            The batch sequencing rule to use on all work stations.
 	 */
 	public void setBatchSequencingRule(PR batchSequencingRule) {
 		this.batchSequencingRule = batchSequencingRule;
@@ -351,6 +374,8 @@ public abstract class JobShopExperiment extends Experiment {
 	 * Sets a batch forming mechanism to be used on all machines.
 	 * 
 	 * @see #setBatchFormingRules(BatchForming[])
+	 * @param batchForming
+	 *            The batch forming rule to use on all machines
 	 */
 	public void setBatchForming(BatchForming batchForming) {
 		this.batchForming = batchForming;
@@ -362,6 +387,9 @@ public abstract class JobShopExperiment extends Experiment {
 	 * (workstation) in the model.
 	 * 
 	 * @see #setSequencingRule(PR)
+	 * @param sequencingRules
+	 *            An array of sequencing rule, containing one {@link PR} per
+	 *            work station.
 	 */
 	public void setSequencingRules(PR[] sequencingRules) {
 		this.sequencingRules = sequencingRules;
@@ -377,6 +405,8 @@ public abstract class JobShopExperiment extends Experiment {
 	 * (workstation) in the model.
 	 * 
 	 * @see #setBatchSequencingRule(PR)
+	 * @param batchSequencingRules
+	 *            An array of batch sequencing rules, one for each workstation.
 	 */
 	public void setBatchSequencingRules(PR[] batchSequencingRules) {
 		this.batchSequencingRules = batchSequencingRules;
@@ -392,6 +422,8 @@ public abstract class JobShopExperiment extends Experiment {
 	 * (workstation) in the model.
 	 * 
 	 * @see #setBatchForming(BatchForming)
+	 * @param batchFormingRules
+	 *            An array of batch forming rules, one for each workstation.
 	 */
 	public void setBatchFormingRules(BatchForming[] batchFormingRules) {
 		this.batchFormingRules = batchFormingRules;
