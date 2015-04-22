@@ -32,6 +32,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public class PTPlusWINQPlusSlack extends PR {
 
+	private static final long serialVersionUID = -7220017849004140341L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
 		return -(j.getCurrentOperation().procTime + WINQ.winq(j) + Math.min(

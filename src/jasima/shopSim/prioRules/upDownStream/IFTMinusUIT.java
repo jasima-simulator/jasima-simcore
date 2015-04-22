@@ -28,11 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
  * This class implements a rule developed by Branke and Pickardt (2011) for job
  * shop problems, which attempts to measure the usable idle time on other work
- * centres in the prioritization of jobs.
- * </p>
+ * centers in the prioritization of jobs.
  * <p>
  * The lookahead needs to be enabled in the simulation for this rule to work
  * properly.
@@ -42,6 +40,8 @@ import java.util.List;
  *          "$Id: IFTMinusUIT.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public class IFTMinusUIT extends PR {
+
+	private static final long serialVersionUID = -8999022613610310632L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

@@ -23,12 +23,14 @@ import jasima.shopSim.core.PrioRuleTarget;
 
 /**
  * This class implements the Shortest Remaining Processing Time rule, which
- * equals SPT for problems with only one work centre.
+ * equals SPT for problems with only one work center.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class SRPT extends PR {
+
+	private static final long serialVersionUID = 482753326957772970L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

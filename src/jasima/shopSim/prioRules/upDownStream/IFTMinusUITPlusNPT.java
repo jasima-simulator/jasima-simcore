@@ -21,10 +21,8 @@ package jasima.shopSim.prioRules.upDownStream;
 import jasima.shopSim.core.PrioRuleTarget;
 
 /**
- * <p>
  * This class implements an extension of the IFTMinusUIT rule, developed by
  * Branke and Pickardt (2011).
- * </p>
  * <p>
  * The lookahead needs to be enabled in the simulation for this rule to work
  * properly.
@@ -34,6 +32,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  *          "$Id$"
  */
 public class IFTMinusUITPlusNPT extends IFTMinusUIT {
+
+	private static final long serialVersionUID = -1423420723665183647L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

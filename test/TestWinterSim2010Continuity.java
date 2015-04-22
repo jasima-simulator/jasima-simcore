@@ -69,8 +69,10 @@ import util.Wintersim2010GPRules.GPRuleSize99;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: TestWinterSim2010Continuity.java 550 2015-01-23 15:07:23Z
+ *          thildebrandt@gmail.com $
  */
+@SuppressWarnings("deprecation")
 public class TestWinterSim2010Continuity {
 
 	public static void main(String[] args) throws Exception {
@@ -89,10 +91,10 @@ public class TestWinterSim2010Continuity {
 		MimacExperiment e = new MimacExperiment();
 		e.setScenario(DataSet.FAB4r);
 
-		DblStream arrivals1 = new DblDistribution(
-				new ExponentialDistribution(1440d / 4.5));
-		DblStream arrivals2 = new DblDistribution(
-				new ExponentialDistribution(1440d / 10.5));
+		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(
+				1440d / 4.5));
+		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(
+				1440d / 10.5));
 		e.setInterArrivalTimes(new DblStream[] { arrivals1, arrivals2 });
 
 		e.setDueDateFactors(new DblUniformRange(2.0, 5.0));

@@ -27,9 +27,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * account.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class WMDD extends PR {
+
+	private static final long serialVersionUID = -8657413859143779803L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

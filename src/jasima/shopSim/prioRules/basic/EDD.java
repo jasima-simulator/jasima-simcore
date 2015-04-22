@@ -22,12 +22,14 @@ import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 
 /**
- * This class implements the Earliest Due Date rule.
+ * This class implements the Earliest Due Date first rule.
  * 
  * @author Christoph Pickardt, 2011-11-16
- * @version $Id$
+ * @version "$Id$"
  */
 public class EDD extends PR {
+
+	private static final long serialVersionUID = 2077531591099222905L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

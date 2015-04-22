@@ -44,6 +44,8 @@ import java.util.Date;
  */
 public class TraceFileProducer extends ShopListenerBase {
 
+	private static final long serialVersionUID = -4595308395912967961L;
+
 	// parameters
 
 	private String fileName;

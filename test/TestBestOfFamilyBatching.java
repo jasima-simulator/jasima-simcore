@@ -47,8 +47,10 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
+@SuppressWarnings("deprecation")
 public class TestBestOfFamilyBatching {
 
 	@Before
@@ -129,6 +131,7 @@ public class TestBestOfFamilyBatching {
 		PR setupAvoid = new SST();
 		pr1.setTieBreaker(setupAvoid);
 
+		@SuppressWarnings("serial")
 		PR firstJobWeight = new PR() {
 			@Override
 			public double calcPrio(PrioRuleTarget j) {
@@ -140,8 +143,8 @@ public class TestBestOfFamilyBatching {
 
 		firstJobWeight.setTieBreaker(r0);
 
+		@SuppressWarnings("serial")
 		PR firstJobFSFO = new PR() {
-
 			@Override
 			public double calcPrio(PrioRuleTarget j) {
 				Job job = j.job(0);
@@ -161,6 +164,7 @@ public class TestBestOfFamilyBatching {
 
 	@Test
 	public void PR_FIFO() throws Exception {
+		@SuppressWarnings("serial")
 		PR firstJobFBFO = new PR() {
 
 			@Override
@@ -190,6 +194,7 @@ public class TestBestOfFamilyBatching {
 
 	@Test
 	public void PR_SPT() throws Exception {
+		@SuppressWarnings("serial")
 		PR firstJobSPT = new PR() {
 
 			@Override
@@ -219,6 +224,7 @@ public class TestBestOfFamilyBatching {
 
 	@Test
 	public void PR_EDD() throws Exception {
+		@SuppressWarnings("serial")
 		PR firstJobEDD = new PR() {
 
 			@Override
@@ -248,6 +254,7 @@ public class TestBestOfFamilyBatching {
 
 	@Test
 	public void PR_ODD() throws Exception {
+		@SuppressWarnings("serial")
 		PR firstJobODD = new PR() {
 
 			@Override
@@ -277,6 +284,7 @@ public class TestBestOfFamilyBatching {
 
 	@Test
 	public void PR_CR() throws Exception {
+		@SuppressWarnings("serial")
 		PR firstJobCR = new PR() {
 
 			@Override

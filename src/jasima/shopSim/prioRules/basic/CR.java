@@ -27,9 +27,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * 
  * @author Torsten Hildebrandt
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class CR extends PR {
+
+	private static final long serialVersionUID = 1690734931010618195L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
@@ -38,6 +40,8 @@ public class CR extends PR {
 	}
 
 	public static class Variant1 extends PR {
+
+		private static final long serialVersionUID = -7545346726088550611L;
 
 		@Override
 		public double calcPrio(PrioRuleTarget job) {
@@ -58,6 +62,8 @@ public class CR extends PR {
 	}
 
 	public static class Variant2 extends PR {
+
+		private static final long serialVersionUID = 6097877363880443570L;
 
 		@Override
 		public double calcPrio(PrioRuleTarget job) {

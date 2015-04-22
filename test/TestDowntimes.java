@@ -47,6 +47,7 @@ import util.ExtendedJobStatCollector;
  * @version 
  *          "$Id$"
  */
+@SuppressWarnings("deprecation")
 public class TestDowntimes extends ExperimentTest {
 
 	@Test
@@ -60,6 +61,7 @@ public class TestDowntimes extends ExperimentTest {
 		res.remove("numTardy");
 		res.remove("weightedNumTardy");
 
+		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil
 				.loadXML(new File("testInstances/js02x05.txt.results"));
 
@@ -79,6 +81,7 @@ public class TestDowntimes extends ExperimentTest {
 		res.remove("numTardy");
 		res.remove("weightedNumTardy");
 
+		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil
 				.loadXML(new File("testInstances/js01x03.txt.results"));
 
@@ -88,6 +91,7 @@ public class TestDowntimes extends ExperimentTest {
 	}
 
 	public static Map<String, Object> test(String fn, int n) throws Exception {
+		@SuppressWarnings("serial")
 		StaticShopExperiment e = new StaticShopExperiment() {
 			@Override
 			protected void postConfigShop() {

@@ -28,9 +28,11 @@ import jasima.shopSim.core.WorkStation;
  * for which most other jobs of the same batch family are waiting in the queue.
  * 
  * @author Christoph Pickardt, 2011-11-14
- * @version $Id$
+ * @version "$Id$"
  */
 public class LBF extends PR {
+
+	private static final long serialVersionUID = 2198657617441057488L;
 
 	public LBF() {
 		super();

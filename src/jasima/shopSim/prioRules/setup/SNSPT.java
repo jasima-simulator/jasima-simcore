@@ -27,9 +27,11 @@ import jasima.shopSim.core.PriorityQueue;
  * see Pickardt and Branke (2012).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class SNSPT extends PR {
+
+	private static final long serialVersionUID = 3765192665858565459L;
 
 	protected double[][] setupMatrix;
 

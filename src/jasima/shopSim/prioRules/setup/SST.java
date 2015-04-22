@@ -24,9 +24,11 @@ import jasima.shopSim.core.PrioRuleTarget;
 /**
  * This class implements the Shortest Setup Time rule.
  * 
- * @version $Id$
+ * @version "$Id$"
  */
 public class SST extends PR {
+
+	private static final long serialVersionUID = -3853750639073369032L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

@@ -26,20 +26,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>
  * This class implements the Minimum Marginal Setup time rule, developed by Arzi
  * and Raviv (1998), which assigns highest priority to all jobs that belong to
  * the family with the shortest setup time per job, see also Pickardt and Branke
  * (2012).
- * </p>
  * <p>
  * This rule should be used with another rule to distinguish jobs of the
  * selected family.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class MMS extends PR {
+
+	private static final long serialVersionUID = -4646210941243911341L;
 
 	protected Map<String, Integer> jobsPerFamily = new HashMap<String, Integer>();
 

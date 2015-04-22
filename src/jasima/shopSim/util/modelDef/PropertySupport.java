@@ -26,6 +26,8 @@ import java.io.Serializable;
 
 public class PropertySupport implements Serializable {
 
+	private static final long serialVersionUID = 4437433295143161294L;
+
 	private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
 			this);
 

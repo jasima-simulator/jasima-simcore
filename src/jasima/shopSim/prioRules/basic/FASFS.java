@@ -25,13 +25,14 @@ import jasima.shopSim.core.PrioRuleTarget;
  * This class implements the First Arrival at Shop First Served rule.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class FASFS extends PR {
 
+	private static final long serialVersionUID = -8286704183726287577L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		// return -job.getJobNum();
 		return -job.getRelDate();
 	}
 

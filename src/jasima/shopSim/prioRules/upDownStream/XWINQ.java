@@ -23,21 +23,21 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
 
 /**
- * <p>
  * The class implements the Extended Least Work content In Next Queue rule, see
  * Haupt (1989). The work content of all jobs waiting or arriving soon at the
  * work centre which a job visits for its next operation defines the priority of
  * a job. For its last operation, the work content in the next queue of a job is
  * zero.
- * </p>
  * <p>
  * The lookahead needs to be enabled in the simulation for this rule to work
  * properly.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class XWINQ extends PR {
+
+	private static final long serialVersionUID = -83039692160872143L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

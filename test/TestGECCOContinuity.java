@@ -44,8 +44,10 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: TestGECCOContinuity.java 550 2015-01-23 15:07:23Z
+ *          thildebrandt@gmail.com $
  */
+@SuppressWarnings("deprecation")
 public class TestGECCOContinuity {
 
 	@Before
@@ -111,6 +113,8 @@ public class TestGECCOContinuity {
 	}
 
 	public static class TestRule extends GPRuleBase {
+
+		private static final long serialVersionUID = 6302568915981723615L;
 
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
@@ -192,9 +196,9 @@ public class TestGECCOContinuity {
 
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
-		
+
 		e.addShopListener(new ExtendedJobStatCollector());
 
 		GECCO2010_lookahead pr = new GECCO2010_lookahead();
@@ -214,10 +218,10 @@ public class TestGECCOContinuity {
 
 	private Map<String, Object> genSeed_2reps(boolean lookahead) {
 		DynamicShopExperiment e = new DynamicShopExperiment();
-		
+
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
 		e.addShopListener(new ExtendedJobStatCollector());

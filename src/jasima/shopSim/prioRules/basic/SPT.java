@@ -25,9 +25,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * This class implements the Shortest Processing Time rule.
  * 
  * @author Christoph Pickardt, 2011-11-16
- * @version $Id$
+ * @version "$Id$"
  */
 public class SPT extends PR {
+
+	private static final long serialVersionUID = 6813608362744992141L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

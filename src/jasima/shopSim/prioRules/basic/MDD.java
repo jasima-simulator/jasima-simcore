@@ -27,9 +27,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * between the EDD and SRPT rules.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class MDD extends PR {
+
+	private static final long serialVersionUID = -6452128180481440356L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

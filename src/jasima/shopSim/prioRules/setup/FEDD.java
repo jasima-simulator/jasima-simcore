@@ -24,20 +24,20 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 
 /**
- * <p>
  * This class implements the Family Earliest Due Date rule, developed by
  * Mahmoodi et al. (1990), which assigns highest priority to all jobs that
  * belong to the family which includes the job with the earliest due date, see
  * also Pickardt and Branke (2012).
- * </p>
  * <p>
  * This rule should be used with another rule to distinguish jobs of the
  * selected family.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class FEDD extends PR {
+
+	private static final long serialVersionUID = -1900010822908956309L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

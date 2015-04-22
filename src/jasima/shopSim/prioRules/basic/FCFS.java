@@ -22,12 +22,15 @@ import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 
 /**
- * This class implements the First Come First Served rule.
+ * This class implements the First Come First Served rule, also known as FIFO
+ * (First In (buffer) First Out).
  * 
  * @author Christoph Pickardt, 2011-11-16
- * @version $Id$
+ * @version "$Id$"
  */
 public class FCFS extends PR {
+
+	private static final long serialVersionUID = 6287066679819197220L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

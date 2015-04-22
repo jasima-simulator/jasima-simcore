@@ -42,6 +42,7 @@ import util.ExtendedJobStatCollector;
  * 
  * @version $Id$
  */
+@SuppressWarnings("deprecation")
 public class OCBATest {
 
 	@Test

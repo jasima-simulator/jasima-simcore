@@ -29,9 +29,11 @@ import jasima.shopSim.core.WorkStation;
  * work content in the next queue of a job is zero.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class WINQ extends PR {
+
+	private static final long serialVersionUID = -8927775081368668059L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

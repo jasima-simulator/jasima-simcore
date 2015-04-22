@@ -48,14 +48,17 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: TestMimacFab4Trace.java 550 2015-01-23 15:07:23Z
+ *          thildebrandt@gmail.com $
  */
+@SuppressWarnings("deprecation")
 public class TestMimacFab4Trace {
 
-    @BeforeClass
-    public static void setUp() {
-        System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
-    }
+	@BeforeClass
+	public static void setUp() {
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
+				RandomFactoryOld.class.getName());
+	}
 
 	private static final double PREC = 1e-6;
 
@@ -70,8 +73,8 @@ public class TestMimacFab4Trace {
 		ffe.setBaseExperiment(fab4);
 
 		ffe.setInitialSeed(23); // sollte egal sein, weil deterministisch
-//		ffe.setSaveResultsInExcel(false);
-//		ffe.setTransposeExcelFile(true);
+		// ffe.setSaveResultsInExcel(false);
+		// ffe.setTransposeExcelFile(true);
 
 		// ffe.addFactor("batchForming.mbsRel", 5.0 / 8.0);
 
@@ -101,8 +104,8 @@ public class TestMimacFab4Trace {
 		ffe.setBaseExperiment(fab4);
 
 		ffe.setInitialSeed(23); // sollte egal sein, weil deterministisch
-//		ffe.setSaveResultsInExcel(true);
-//		ffe.setTransposeExcelFile(true);
+		// ffe.setSaveResultsInExcel(true);
+		// ffe.setTransposeExcelFile(true);
 
 		// ffe.addFactor("batchForming.mbsRel", 5.0 / 8.0);
 
@@ -124,6 +127,7 @@ public class TestMimacFab4Trace {
 
 	private static PR createPR_SPT(final PR ties) {
 		// first exception due to different handling of simultaneous events
+		@SuppressWarnings("serial")
 		PR pr = new PR() {
 
 			@Override
@@ -131,37 +135,48 @@ public class TestMimacFab4Trace {
 				double st = j.getShop().simTime();
 				int masch = j.getCurrMachine().currMachine.idx;
 
-				if ((j.getShop().simTime() > 4759.0 - 0.1 && j.getShop().simTime() < 4759.0 + 0.1)
+				if ((j.getShop().simTime() > 4759.0 - 0.1 && j.getShop()
+						.simTime() < 4759.0 + 0.1)
 						&& j.toString().contains(".0.40#4")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 10715.0 - 0.1 && j.getShop().simTime() < 10715.0 + 0.1)
+				} else if ((j.getShop().simTime() > 10715.0 - 0.1 && j
+						.getShop().simTime() < 10715.0 + 0.1)
 						&& j.toString().contains(".0.40#45")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 11098.0 - 0.1 && j.getShop().simTime() < 11098.0 + 0.1)
+				} else if ((j.getShop().simTime() > 11098.0 - 0.1 && j
+						.getShop().simTime() < 11098.0 + 0.1)
 						&& j.toString().contains(".0.40#48")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 11370.0 - 0.1 && j.getShop().simTime() < 11370.0 + 0.1)
+				} else if ((j.getShop().simTime() > 11370.0 - 0.1 && j
+						.getShop().simTime() < 11370.0 + 0.1)
 						&& j.toString().contains(".0.110#3")) {
 					return +2;
-				} else if ((j.getShop().simTime() > 14116.0 - 0.1 && j.getShop().simTime() < 14116.0 + 0.1)
+				} else if ((j.getShop().simTime() > 14116.0 - 0.1 && j
+						.getShop().simTime() < 14116.0 + 0.1)
 						&& j.toString().contains(".0.20#74")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 14323.0 - 0.1 && j.getShop().simTime() < 14323.0 + 0.1)
+				} else if ((j.getShop().simTime() > 14323.0 - 0.1 && j
+						.getShop().simTime() < 14323.0 + 0.1)
 						&& j.toString().contains(".0.104#23")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 18432.0 - 0.1 && j.getShop().simTime() < 18432.0 + 0.1)
+				} else if ((j.getShop().simTime() > 18432.0 - 0.1 && j
+						.getShop().simTime() < 18432.0 + 0.1)
 						&& j.toString().contains(".1.178#7")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 19402.0 - 0.1 && j.getShop().simTime() < 19402.0 + 0.1)
+				} else if ((j.getShop().simTime() > 19402.0 - 0.1 && j
+						.getShop().simTime() < 19402.0 + 0.1)
 						&& j.toString().contains(".1.183#12")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 22093.0 - 0.1 && j.getShop().simTime() < 22093.0 + 0.1)
+				} else if ((j.getShop().simTime() > 22093.0 - 0.1 && j
+						.getShop().simTime() < 22093.0 + 0.1)
 						&& j.toString().contains(".0.220#5")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 24146.0 - 0.1 && j.getShop().simTime() < 24146.0 + 0.1)
+				} else if ((j.getShop().simTime() > 24146.0 - 0.1 && j
+						.getShop().simTime() < 24146.0 + 0.1)
 						&& j.toString().contains(".0.117#73")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 24555.0 - 0.1 && j.getShop().simTime() < 24555.0 + 0.1)
+				} else if ((j.getShop().simTime() > 24555.0 - 0.1 && j
+						.getShop().simTime() < 24555.0 + 0.1)
 						&& j.toString().contains(".0.157#48")) {
 					return -1;
 				} else if ((st > 25283.0 - 0.1 && st < 25283.0 + 0.1)
@@ -173,76 +188,100 @@ public class TestMimacFab4Trace {
 				} else if ((st > 13765.0 - 0.1 && st < 13765.0 + 0.1)
 						&& masch == 1) {
 					return -1;
-				} else if ((j.getShop().simTime() > 26384.0 - 0.1 && j.getShop().simTime() < 26384.0 + 0.1)
+				} else if ((j.getShop().simTime() > 26384.0 - 0.1 && j
+						.getShop().simTime() < 26384.0 + 0.1)
 						&& j.toString().contains(".0.120#86")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 29380.0 - 0.1 && j.getShop().simTime() < 29380.0 + 0.1)
+				} else if ((j.getShop().simTime() > 29380.0 - 0.1 && j
+						.getShop().simTime() < 29380.0 + 0.1)
 						&& j.toString().contains(".0.217#39") && masch == 1) {
 					return +1;
-				} else if ((j.getShop().simTime() > 31343.0 - 0.1 && j.getShop().simTime() < 31343.0 + 0.1)
+				} else if ((j.getShop().simTime() > 31343.0 - 0.1 && j
+						.getShop().simTime() < 31343.0 + 0.1)
 						&& j.toString().contains(".1.316#5")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 33086.0 - 0.1 && j.getShop().simTime() < 33086.0 + 0.1)
+				} else if ((j.getShop().simTime() > 33086.0 - 0.1 && j
+						.getShop().simTime() < 33086.0 + 0.1)
 						&& j.toString().contains(".1.315#12")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 33194.0 - 0.1 && j.getShop().simTime() < 33194.0 + 0.1)
+				} else if ((j.getShop().simTime() > 33194.0 - 0.1 && j
+						.getShop().simTime() < 33194.0 + 0.1)
 						&& j.toString().contains(".0.244#54")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 33194.0 - 0.1 && j.getShop().simTime() < 33194.0 + 0.1)
+				} else if ((j.getShop().simTime() > 33194.0 - 0.1 && j
+						.getShop().simTime() < 33194.0 + 0.1)
 						&& j.toString().contains(".0.240#54") && masch == 0) {
 					return +1;
-				} else if ((j.getShop().simTime() > 34084.0 - 0.1 && j.getShop().simTime() < 34084.0 + 0.1)
+				} else if ((j.getShop().simTime() > 34084.0 - 0.1 && j
+						.getShop().simTime() < 34084.0 + 0.1)
 						&& j.toString().contains(".0.274#40")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 34300.0 - 0.1 && j.getShop().simTime() < 34300.0 + 0.1)
+				} else if ((j.getShop().simTime() > 34300.0 - 0.1 && j
+						.getShop().simTime() < 34300.0 + 0.1)
 						&& j.toString().contains(".0.324#16") && masch == 0) {
 					return +1;
-				} else if ((j.getShop().simTime() > 34364.0 - 0.1 && j.getShop().simTime() < 34364.0 + 0.1)
+				} else if ((j.getShop().simTime() > 34364.0 - 0.1 && j
+						.getShop().simTime() < 34364.0 + 0.1)
 						&& j.toString().contains(".0.324#17")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 34706.0 - 0.1 && j.getShop().simTime() < 34706.0 + 0.1)
+				} else if ((j.getShop().simTime() > 34706.0 - 0.1 && j
+						.getShop().simTime() < 34706.0 + 0.1)
 						&& j.toString().contains(".1.336#14")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 35656.0 - 0.1 && j.getShop().simTime() < 35656.0 + 0.1)
+				} else if ((j.getShop().simTime() > 35656.0 - 0.1 && j
+						.getShop().simTime() < 35656.0 + 0.1)
 						&& j.toString().contains(".1.366#")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 36781.0 - 0.1 && j.getShop().simTime() < 36781.0 + 0.1)
+				} else if ((j.getShop().simTime() > 36781.0 - 0.1 && j
+						.getShop().simTime() < 36781.0 + 0.1)
 						&& j.toString().contains(".0.350#16")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 37073.0 - 0.1 && j.getShop().simTime() < 37073.0 + 0.1)
+				} else if ((j.getShop().simTime() > 37073.0 - 0.1 && j
+						.getShop().simTime() < 37073.0 + 0.1)
 						&& j.toString().contains(".0.247#74")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 37155.0 - 0.1 && j.getShop().simTime() < 37155.0 + 0.1)
+				} else if ((j.getShop().simTime() > 37155.0 - 0.1 && j
+						.getShop().simTime() < 37155.0 + 0.1)
 						&& j.toString().contains(".0.220#86")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 38658.0 - 0.1 && j.getShop().simTime() < 38658.0 + 0.1)
+				} else if ((j.getShop().simTime() > 38658.0 - 0.1 && j
+						.getShop().simTime() < 38658.0 + 0.1)
 						&& j.toString().contains(".1.372#12")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 38600.0 - 0.1 && j.getShop().simTime() < 38600.0 + 0.1)
+				} else if ((j.getShop().simTime() > 38600.0 - 0.1 && j
+						.getShop().simTime() < 38600.0 + 0.1)
 						&& j.toString().contains(".1.365#13") && masch == 2) {
 					return +1;
-				} else if ((j.getShop().simTime() > 38712.0 - 0.1 && j.getShop().simTime() < 38712.0 + 0.1)
+				} else if ((j.getShop().simTime() > 38712.0 - 0.1 && j
+						.getShop().simTime() < 38712.0 + 0.1)
 						&& j.toString().contains(".0.374#15")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 38712.0 - 0.1 && j.getShop().simTime() < 38712.0 + 0.1)
+				} else if ((j.getShop().simTime() > 38712.0 - 0.1 && j
+						.getShop().simTime() < 38712.0 + 0.1)
 						&& j.toString().contains(".0.374#15")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 39462.0 - 0.1 && j.getShop().simTime() < 39462.0 + 0.1)
+				} else if ((j.getShop().simTime() > 39462.0 - 0.1 && j
+						.getShop().simTime() < 39462.0 + 0.1)
 						&& j.toString().contains(".0.404#3")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 40679.0 - 0.1 && j.getShop().simTime() < 40679.0 + 0.1)
+				} else if ((j.getShop().simTime() > 40679.0 - 0.1 && j
+						.getShop().simTime() < 40679.0 + 0.1)
 						&& j.toString().contains(".0.267#72")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 40681.0 - 0.1 && j.getShop().simTime() < 40681.0 + 0.1)
+				} else if ((j.getShop().simTime() > 40681.0 - 0.1 && j
+						.getShop().simTime() < 40681.0 + 0.1)
 						&& j.toString().contains(".0.387#21")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 40769.0 - 0.1 && j.getShop().simTime() < 40769.0 + 0.1)
+				} else if ((j.getShop().simTime() > 40769.0 - 0.1 && j
+						.getShop().simTime() < 40769.0 + 0.1)
 						&& j.toString().contains(".0.270#72")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 40859.0 - 0.1 && j.getShop().simTime() < 40859.0 + 0.1)
+				} else if ((j.getShop().simTime() > 40859.0 - 0.1 && j
+						.getShop().simTime() < 40859.0 + 0.1)
 						&& j.toString().contains(".0.274#72")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 40949.0 - 0.1 && j.getShop().simTime() < 40949.0 + 0.1)
+				} else if ((j.getShop().simTime() > 40949.0 - 0.1 && j
+						.getShop().simTime() < 40949.0 + 0.1)
 						&& j.toString().contains(".0.277#72")) {
 					return +1;
 				} else
@@ -258,6 +297,7 @@ public class TestMimacFab4Trace {
 
 	private static PR createPR_FIFO(final PR ties) {
 		// first exception due to different handling of simultaneous events
+		@SuppressWarnings("serial")
 		PR pr = new PR() {
 
 			@Override
@@ -273,6 +313,7 @@ public class TestMimacFab4Trace {
 		pr.setTieBreaker(ties);
 
 		// first exception due to different handling of unequal events
+		@SuppressWarnings("serial")
 		PR pr2 = new PR() {
 
 			@Override
@@ -343,13 +384,16 @@ public class TestMimacFab4Trace {
 					return +1;
 				} else if (j.toString().contains(".1.292#11")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 30113.0 - 0.1 && j.getShop().simTime() < 30113.0 + 0.1)
+				} else if ((j.getShop().simTime() > 30113.0 - 0.1 && j
+						.getShop().simTime() < 30113.0 + 0.1)
 						&& j.toString().contains(".0.160#74")) {
 					return -1;
-				} else if ((j.getShop().simTime() > 32758.0 - 0.1 && j.getShop().simTime() < 32758.0 + 0.1)
+				} else if ((j.getShop().simTime() > 32758.0 - 0.1 && j
+						.getShop().simTime() < 32758.0 + 0.1)
 						&& j.toString().contains(".0.284#24")) {
 					return +1;
-				} else if ((j.getShop().simTime() > 36843.0 - 0.1 && j.getShop().simTime() < 36843.0 + 0.1)
+				} else if ((j.getShop().simTime() > 36843.0 - 0.1 && j
+						.getShop().simTime() < 36843.0 + 0.1)
 						&& j.toString().contains(".1.383#5")) {
 					return +1;
 				} else if ((j.getShop().simTime() > 38413.0 - 0.1 && j
@@ -379,9 +423,9 @@ public class TestMimacFab4Trace {
 		e.setJobWeights(new IntUniformRange(1, 10));
 
 		e.setSimulationLength(6 * 365 * 24 * 60);
-		
-		e.addShopListener(new ExtendedJobStatCollector());  // no warm-up
-		
+
+		e.addShopListener(new ExtendedJobStatCollector()); // no warm-up
+
 		e.setEnableLookAhead(false);
 		e.setMaxJobsInSystem(3 * 250);
 
@@ -400,6 +444,7 @@ public class TestMimacFab4Trace {
 	}
 
 	private static PR createPRStack(PR baseRule, boolean avoidSetups) {
+		@SuppressWarnings("serial")
 		PR ms = new PR() {
 			@Override
 			public double calcPrio(PrioRuleTarget j) {

@@ -31,6 +31,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public class FixedLAThreshold extends LookaheadThreshold {
 
+	private static final long serialVersionUID = 4971777067231682191L;
+
 	private double maxWait;
 
 	public FixedLAThreshold(PR baseRule, double maxWait) {

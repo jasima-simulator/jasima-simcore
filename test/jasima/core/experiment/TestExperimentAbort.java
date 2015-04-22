@@ -28,13 +28,16 @@ import org.junit.Test;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version "$Id$"
  */
 public class TestExperimentAbort {
 
 	private static final int NUM_RUNS = 10;
 
 	private final static class AbortingExperiment extends Experiment {
+
+		private static final long serialVersionUID = 8759221809243043695L;
+
 		@Override
 		protected void performRun() {
 			// some dummy action

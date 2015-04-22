@@ -22,6 +22,8 @@ import jasima.shopSim.core.WorkStation;
 
 public class WorkstationDef extends PropertySupport {
 
+	private static final long serialVersionUID = -3259382268320160215L;
+
 	public static final String PROP_MACHINES = "machines";
 	public static final String PROP_NAME = "name";
 	public static final String PROP_SETUP_STATES = "setupStates";

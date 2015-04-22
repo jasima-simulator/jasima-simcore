@@ -29,9 +29,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * the WMOD rule by Jensen et al. (1995).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class WMOD extends PR {
+
+	private static final long serialVersionUID = -2745453764235226143L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

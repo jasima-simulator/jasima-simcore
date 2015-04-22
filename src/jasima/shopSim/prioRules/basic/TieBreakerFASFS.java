@@ -37,6 +37,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public class TieBreakerFASFS extends PR {
 
+	private static final long serialVersionUID = 2648534592090568569L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
 		// all future jobs have lower priority than regular ones

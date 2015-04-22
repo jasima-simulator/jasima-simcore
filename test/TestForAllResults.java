@@ -21,7 +21,6 @@ import jasima.core.experiment.MultipleReplicationExperiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.Simulation.SimEvent;
-import jasima.core.util.ExcelSaver;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.XmlUtil;
 import jasima.core.util.observer.NotifierListener;
@@ -59,6 +58,7 @@ import util.ExtendedJobStatCollector;
  * @version $Id: TestForAllResults.java 144 2013-11-25 13:23:16Z
  *          THildebrandt@gmail.com $
  */
+@SuppressWarnings({ "unused", "deprecation" })
 public class TestForAllResults extends ExperimentTest {
 
 	private static final boolean SAVE_ACTUAL = false;
@@ -77,7 +77,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
@@ -105,7 +105,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -134,7 +134,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -164,7 +164,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
@@ -189,7 +189,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
@@ -218,7 +218,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
 		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
-		assert l.length==1 && l[0] instanceof BasicJobStatCollector;
+		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
@@ -240,13 +240,13 @@ public class TestForAllResults extends ExperimentTest {
 				new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		ffe.addFactor("baseExperiment.sequencingRule",
 				new FCFS().setFinalTieBreaker(new TieBreakerFASFS()));
-		ffe.addFactors("baseExperiment.utilLevel", new Double[] { 0.8, 0.9 });
+		ffe.addFactors("baseExperiment.utilLevel", 0.8, 0.9);
 		ffe.addKeepResultName("tardMean");
 		ffe.addKeepResultName("flowMean");
 
 		ffe.runExperiment();
 		ffe.printResults();
-		
+
 		checkResults(ffe.getResults(), new File(
 				"testInstances/holthausResMultFFE.xml"));
 	}
@@ -381,6 +381,7 @@ public class TestForAllResults extends ExperimentTest {
 		if (SAVE_ACTUAL)
 			XmlUtil.saveXML(actual, new File(f.getName()));
 
+		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 		checkKeySets(actual, expected);
 		checkResults(actual, expected);
@@ -404,6 +405,7 @@ public class TestForAllResults extends ExperimentTest {
 		// res.remove("noProcVariance");
 		// res.remove("numTardy");
 		// res.remove("weightedNumTardy");
+		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 
 		checkKeySets(res, expected);
@@ -456,7 +458,7 @@ public class TestForAllResults extends ExperimentTest {
 
 		ffe.runExperiment();
 		ffe.printResults();
-		
+
 		checkResults(ffe.getResults(), new File(
 				"testInstances/mimac4r_MRE_FFE.xml"));
 	}

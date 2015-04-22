@@ -21,6 +21,9 @@ package jasima.shopSim.util.modelDef;
 import jasima.shopSim.util.modelDef.streams.DblStreamDef;
 
 public class DynamicSourceDef extends SourceDef {
+
+	private static final long serialVersionUID = 3137811924039749794L;
+
 	private RouteDef route;
 	private DblStreamDef iats;
 	private DblStreamDef dueDates;

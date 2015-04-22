@@ -19,6 +19,9 @@
 package jasima.shopSim.util.modelDef;
 
 public class JobDef extends PropertySupport {
+
+	private static final long serialVersionUID = 1889942721418427369L;
+
 	private String name;
 	private RouteDef route;
 	private double releaseDate;

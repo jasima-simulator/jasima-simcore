@@ -22,6 +22,8 @@ import jasima.shopSim.core.WorkStation;
 
 public class OperationDef extends PropertySupport {
 
+	private static final long serialVersionUID = 1410027539388338623L;
+
 	public static final String PROP_NAME = "name";
 	public static final String PROP_PROC_TIME = "procTime";
 	public static final String PROP_WORKSTATION = "workstation";

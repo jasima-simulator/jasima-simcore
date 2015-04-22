@@ -36,6 +36,8 @@ import jasima.shopSim.core.PR;
  */
 public class IgnoreFutureJobs extends FixedLAThreshold {
 
+	private static final long serialVersionUID = -2444578540937649208L;
+
 	public IgnoreFutureJobs(PR baseRule) {
 		super(baseRule, 0.0);
 	}

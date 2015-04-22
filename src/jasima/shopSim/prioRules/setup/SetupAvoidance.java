@@ -22,12 +22,16 @@ import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 
 /**
+ * Returns a priority of +1 if setup states of the machine matches the setup
+ * state required by a job, or -1 otherwise.
  * 
  * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
  */
 public class SetupAvoidance extends PR {
+
+	private static final long serialVersionUID = -7225391816297143198L;
 
 	public SetupAvoidance() {
 		super();

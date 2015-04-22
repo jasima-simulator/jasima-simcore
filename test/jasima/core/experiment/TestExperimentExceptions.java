@@ -35,6 +35,8 @@ public class TestExperimentExceptions {
 
 	public static class ExceptionExperiment extends Experiment {
 
+		private static final long serialVersionUID = -6611460335281191272L;
+
 		private boolean fail = true;
 		private int dummy = 23;
 

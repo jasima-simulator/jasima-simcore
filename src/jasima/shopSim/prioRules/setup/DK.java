@@ -27,9 +27,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * penalizes jobs that require a setup.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class DK extends PR {
+
+	private static final long serialVersionUID = -4144397706147527937L;
 
 	public final double k;
 

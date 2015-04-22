@@ -25,9 +25,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * This rule implements the Least (global) Slack rule.
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
+ * @version "$Id$"
  */
 public class SLK extends PR {
+
+	private static final long serialVersionUID = 4022695033610482583L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

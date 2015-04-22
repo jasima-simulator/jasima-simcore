@@ -19,6 +19,9 @@
 package jasima.shopSim.util.modelDef;
 
 public class StaticSourceDef extends SourceDef {
+
+	private static final long serialVersionUID = -8115921805433488275L;
+
 	public static final String PROP_JOB_SPECS = "jobSpecs";
 
 	private JobDef[] jobSpecs;

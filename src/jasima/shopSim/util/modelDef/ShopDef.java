@@ -31,6 +31,8 @@ import jasima.shopSim.util.ShopConfigurator;
  */
 public class ShopDef extends PropertySupport {
 
+	private static final long serialVersionUID = -8471081132120093539L;
+
 	private String name = null;
 	private double simulationLength = 0.0d;
 	private int maxJobsInSystem = 0;

@@ -37,9 +37,10 @@ import java.util.Map;
  */
 public class WSC2010_GPRuleSize98 extends GPRuleBase {
 
+	private static final long serialVersionUID = 4145566030481756455L;
+
 	private Map<String, Integer> famSizes;
 	private double sAvg;
-	private double pAvg;
 
 	@Override
 	public void beforeCalc(PriorityQueue<?> q) {
@@ -47,24 +48,18 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 
 		calcNumCompatible();
 		sAvg = calcSetupAvg();
-		pAvg = calcProcAvg();
 	}
 
-	public int numCompatible(PrioRuleTarget j) {
+	private int numCompatible(PrioRuleTarget j) {
 		String bf = j.getCurrentOperation().batchFamily;
 		return famSizes.get(bf).intValue();
 	}
 
-	public double setupAvg() {
+	private double setupAvg() {
 		return sAvg;
 	}
 
-	public double procAvg(PrioRuleTarget j) {
-		// return pAvg;
-		return j.currProcTime();
-	}
-
-	public void calcNumCompatible() {
+	private void calcNumCompatible() {
 		famSizes = new HashMap<String, Integer>();
 
 		PriorityQueue<Job> q = getOwner().queue;
@@ -79,7 +74,7 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 		}
 	}
 
-	public double calcSetupAvg() {
+	private double calcSetupAvg() {
 		final PriorityQueue<Job> q = getOwner().queue;
 		assert q.size() > 0;
 		final double[][] setupMatrix = getOwner().getSetupMatrix();
@@ -100,23 +95,7 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 		return setupAvg / numNonFutures;
 	}
 
-	public double calcProcAvg() {
-		final PriorityQueue<Job> q = getOwner().queue;
-		assert q.size() > 0;
-
-		int numNonFutures = 0;
-		double procAvg = 0.0d;
-		for (int i = 0, n = q.size(); i < n; i++) {
-			Job job = q.get(i);
-			if (!job.isFuture()) {
-				procAvg += job.currProcTime();
-				numNonFutures++;
-			}
-		}
-		return procAvg / numNonFutures;
-	}
-
-	public double setupTime(PrioRuleTarget j) {
+	private double setupTime(PrioRuleTarget j) {
 		assert j.getCurrMachine() == getOwner();
 		final double[][] setupMatrix = j.getCurrMachine().getSetupMatrix();
 		final int machineSetup = j.getCurrMachine().currMachine.setupState;

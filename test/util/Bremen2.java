@@ -26,9 +26,12 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class Bremen2 extends PR {
+
+	private static final long serialVersionUID = -2132369816967616199L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

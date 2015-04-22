@@ -31,6 +31,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public abstract class LookaheadThreshold extends PR {
 
+	private static final long serialVersionUID = 9004100743968954317L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget t) {
 		return arrivesTooLate(t) ? -1 : +1;

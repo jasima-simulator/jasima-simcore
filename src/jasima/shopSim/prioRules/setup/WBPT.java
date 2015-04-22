@@ -27,9 +27,11 @@ import jasima.shopSim.core.PriorityQueue;
  * also Pickardt and Branke (2012).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class WBPT extends MMS {
+
+	private static final long serialVersionUID = 8461106077678169718L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

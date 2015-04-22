@@ -9,7 +9,6 @@ import jasima.core.util.ArgListTokenizer.TokenType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;

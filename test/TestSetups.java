@@ -27,7 +27,8 @@ import org.junit.Test;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class TestSetups {
 
@@ -36,6 +37,7 @@ public class TestSetups {
 		TestStaticInsts.testFromFile("testInstances/01x04setups.txt", rules);
 	}
 
+	@SuppressWarnings("serial")
 	static PR[] rules = new PR[] { new SPT(), new FCFS(), new PR() {
 
 		@Override

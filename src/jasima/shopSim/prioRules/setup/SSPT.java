@@ -27,9 +27,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * the quickest, see also Pickardt and Branke (2012).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class SSPT extends PR {
+
+	private static final long serialVersionUID = -6352884056364065280L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {

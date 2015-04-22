@@ -33,6 +33,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public class SRPTPerPT extends PR {
 
+	private static final long serialVersionUID = -6242815299110537440L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
 		return job.remainingProcTime() / job.getCurrentOperation().procTime;

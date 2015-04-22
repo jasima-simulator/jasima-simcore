@@ -30,10 +30,12 @@ import java.util.Map;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: Wintersim2010GPRules.java 550 2015-01-23 15:07:23Z
+ *          thildebrandt@gmail.com $
  */
 public class Wintersim2010GPRules {
 
+	@SuppressWarnings("serial")
 	public abstract static class Base extends GPRuleBase {
 
 		public double max(double v1, double v2, double v3) {
@@ -42,7 +44,8 @@ public class Wintersim2010GPRules {
 
 		private Map<String, Integer> famSizes;
 		private double sAvg;
-		private double pAvg;
+
+		// private double pAvg;
 
 		@Override
 		public void beforeCalc(PriorityQueue<?> q) {
@@ -50,7 +53,7 @@ public class Wintersim2010GPRules {
 
 			calcNumCompatible();
 			sAvg = calcSetupAvg();
-			pAvg = calcProcAvg();
+			// pAvg = calcProcAvg();
 		}
 
 		public int numCompatible(PrioRuleTarget j) {
@@ -131,6 +134,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize199 extends Base {
 
+		private static final long serialVersionUID = -1679348310041076504L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -194,6 +199,11 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize122 extends Base {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3582637779309774037L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -238,6 +248,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize120 extends Base {
 
+		private static final long serialVersionUID = 2413698265966721565L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -277,6 +289,8 @@ public class Wintersim2010GPRules {
 	}
 
 	public static class GPRuleSize110 extends Base {
+
+		private static final long serialVersionUID = -632568088038973213L;
 
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
@@ -320,6 +334,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize99 extends Base {
 
+		private static final long serialVersionUID = -1326856180336964441L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -352,6 +368,8 @@ public class Wintersim2010GPRules {
 	}
 
 	public static class GPRuleSize98 extends Base {
+
+		private static final long serialVersionUID = 1022237845187168179L;
 
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
@@ -388,6 +406,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize43 extends Base {
 
+		private static final long serialVersionUID = 7446440495423740022L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -414,6 +434,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize33 extends Base {
 
+		private static final long serialVersionUID = 876197137980072205L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -437,6 +459,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize20 extends Base {
 
+		private static final long serialVersionUID = 8213003540581331069L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -455,6 +479,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize16 extends Base {
 
+		private static final long serialVersionUID = 6863799400796818222L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -472,6 +498,8 @@ public class Wintersim2010GPRules {
 
 	public static class GPRuleSize12 extends Base {
 
+		private static final long serialVersionUID = 1377669824905528525L;
+
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
 			double bf = numCompatible(j);
@@ -485,6 +513,8 @@ public class Wintersim2010GPRules {
 	}
 
 	public static class GPRuleSize09 extends Base {
+
+		private static final long serialVersionUID = 2363205113298193239L;
 
 		@Override
 		public double calcPrio(PrioRuleTarget j) {

@@ -32,6 +32,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public class MaxBatchSize extends PR {
 
+	private static final long serialVersionUID = -689042486920247381L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget b) {
 		Operation o = b.getCurrentOperation();

@@ -44,9 +44,9 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: HolthausSimpleTest.java 207 2014-11-18 19:09:11Z
- *          THildebrandt@gmail.com $
+ * @version "$Id$"
  */
+@SuppressWarnings("deprecation")
 public class HolthausSimpleTest {
 
 	@Before

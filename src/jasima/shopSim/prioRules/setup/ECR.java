@@ -28,9 +28,11 @@ import jasima.shopSim.core.PriorityQueue;
  * and Fu (2009), see also Pickardt and Branke (2012).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class ECR extends PR {
+
+	private static final long serialVersionUID = -122785104940341037L;
 
 	public final double L;
 	public final double U;

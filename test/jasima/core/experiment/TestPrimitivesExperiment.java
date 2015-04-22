@@ -5,6 +5,8 @@ package jasima.core.experiment;
  */
 public class TestPrimitivesExperiment extends Experiment {
 
+	private static final long serialVersionUID = -5887015972864118660L;
+
 	private boolean bool1;
 	private Boolean bool2;
 	private int int1;

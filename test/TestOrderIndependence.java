@@ -30,7 +30,8 @@ import org.junit.Test;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class TestOrderIndependence {
 
@@ -42,6 +43,7 @@ public class TestOrderIndependence {
 		assertEquals("without/with lookahead", res[0], res[1], 0.000001d);
 	}
 
+	@SuppressWarnings("serial")
 	static PR[] rules = new PR[] { new SPT(), new PR() {
 
 		@Override

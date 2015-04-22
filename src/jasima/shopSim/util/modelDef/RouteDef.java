@@ -20,6 +20,8 @@ package jasima.shopSim.util.modelDef;
 
 public class RouteDef extends PropertySupport {
 
+	private static final long serialVersionUID = -6956187506442015147L;
+
 	public static final String PROP_NAME = "name";
 	public static final String PROP_OPERATIONS = "operations";
 

@@ -55,8 +55,10 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
+@SuppressWarnings("deprecation")
 public class TestStaticInsts {
 
 	@Test
@@ -74,7 +76,8 @@ public class TestStaticInsts {
 		testFromFile("testInstances/js20x05.txt", rules);
 	}
 
-	public static void testFromFile(String fileName, PR[] rules) throws Exception {
+	public static void testFromFile(String fileName, PR[] rules)
+			throws Exception {
 		String[] res = test(fileName, rules);
 		System.out.println(Arrays.toString(res));
 		String[] exp = Util.lines(new File(fileName + ".expected"));

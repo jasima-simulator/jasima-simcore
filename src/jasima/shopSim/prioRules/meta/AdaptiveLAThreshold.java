@@ -24,14 +24,12 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 
 /**
- * <p>
  * This class implements a rule with a max waiting time threshold value
  * specified relative to the minimum time it takes to process any job waiting in
  * the queue. maxWaitRelative has to be in the range [0,1]. The maximal useful
  * waiting time actually is even a little smaller than 1: if a job arrives in
  * say 10 time units, but to process the shortest job in queue also takes 10
  * time units, it could be finished exactly when the lookahead job arrives.
- * </p>
  * <p>
  * This class does not take setup times into account.
  * 
@@ -40,6 +38,8 @@ import jasima.shopSim.core.PriorityQueue;
  *          "$Id$"
  */
 public class AdaptiveLAThreshold extends LookaheadThreshold {
+
+	private static final long serialVersionUID = -9044425584894392686L;
 
 	private double maxWaitRelative;
 

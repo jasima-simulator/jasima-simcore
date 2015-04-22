@@ -27,9 +27,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * Hayya (1982).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version $Id$
+ * @version "$Id$"
  */
 public class ODD extends PR {
+
+	private static final long serialVersionUID = -2691388850642748038L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {

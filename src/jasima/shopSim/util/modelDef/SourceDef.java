@@ -20,6 +20,8 @@ package jasima.shopSim.util.modelDef;
 
 public class SourceDef extends PropertySupport {
 
+	private static final long serialVersionUID = 195407206864268714L;
+
 	public static final String PROP_SHOP = "shop";
 	public static final String PROP_NAME = "name";
 

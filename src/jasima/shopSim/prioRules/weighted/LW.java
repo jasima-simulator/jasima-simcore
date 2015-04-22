@@ -26,9 +26,11 @@ import jasima.shopSim.core.PrioRuleTarget;
  * express different levels of importance of jobs.
  * 
  * @author Christoph Pickardt, 2010-03-16
- * @version $Id$
+ * @version "$Id$"
  */
 public class LW extends PR {
+
+	private static final long serialVersionUID = -2474770712843669307L;
 
 	@Override
 	public double calcPrio(PrioRuleTarget t) {

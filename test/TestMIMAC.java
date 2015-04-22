@@ -41,8 +41,10 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @version $Id: TestMIMAC.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com
+ *          $
  */
+@SuppressWarnings("deprecation")
 public class TestMIMAC {
 
 	@BeforeClass

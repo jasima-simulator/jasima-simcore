@@ -32,6 +32,8 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  */
 public class GECCO2010_genSeed_2reps extends GPRuleBase {
 
+	private static final long serialVersionUID = -6972361592426110350L;
+
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
 		double p = j.getCurrentOperation().procTime;

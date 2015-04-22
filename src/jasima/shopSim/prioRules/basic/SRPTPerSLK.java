@@ -32,6 +32,8 @@ import jasima.shopSim.core.PrioRuleTarget;
  */
 public class SRPTPerSLK extends PR {
 
+	private static final long serialVersionUID = 8510560816491893668L;
+
 	public SRPTPerSLK() {
 		super();
 	}
