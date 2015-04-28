@@ -36,7 +36,8 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * (xml-Serialization using the xstream library).
  * 
  * @author Torsten Hildebrandt, 2012-07-13
- * @version $Id$
+ * @version 
+ *          "$Id$"
  */
 public class XmlUtil {
 
@@ -117,10 +118,8 @@ public class XmlUtil {
 	 */
 	public static void saveXML(Object o, File f) {
 		XStream xstream = getXStream();
-		try {
-			BufferedWriter fw = new BufferedWriter(new FileWriter(f));
+		try (BufferedWriter fw = new BufferedWriter(new FileWriter(f))) {
 			xstream.toXML(o, fw);
-			fw.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -128,8 +127,6 @@ public class XmlUtil {
 
 	private static XStream getXStream() {
 		XStream xstream = new XStream(new DomDriver());
-		xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(),
-				false), -10);
 		xstream.registerConverter(new MapConverter(xstream.getMapper()) {
 			@SuppressWarnings("rawtypes")
 			@Override
