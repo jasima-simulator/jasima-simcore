@@ -2,7 +2,7 @@
   <m class="jasima.core.experiment.Experiment$UniqueNamesCheckingHashMap">
     <entry>
       <string>runTime</string>
-      <double>0.093</double>
+      <double>0.274</double>
     </entry>
     <entry>
       <string>expAborted</string>
@@ -11,21 +11,21 @@
     <entry>
       <string>baseExperiment.runTime</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.17300000000000001</valSum>
-        <sumSquare>0.0046749999999999995</sumSquare>
+        <meanEst>0.07185714285714286</meanEst>
+        <varEst>8.248571428571428E-4</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.032</max>
-        <min>0.016</min>
-        <lastValue>0.031</lastValue>
+        <max>0.093</max>
+        <min>0.057</min>
+        <lastValue>0.057</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>baseExperiment.expAborted</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -37,8 +37,8 @@
     <entry>
       <string>simTime</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>525431.5931293017</valSum>
-        <sumSquare>3.948022915969588E10</sumSquare>
+        <meanEst>75061.6561613288</meanEst>
+        <varEst>4.046357992502056E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>78733.56761490242</max>
@@ -48,37 +48,23 @@
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
-      <string>flowMean.rep1</string>
-      <jasima.core.statistics.SummaryStat>
-        <name>flowtimes</name>
-        <valSum>2024919.0538777458</valSum>
-        <sumSquare>2.657674553841668E9</sumSquare>
-        <weightSum>2546.0</weightSum>
-        <numObs>2546</numObs>
-        <max>10126.816175397078</max>
-        <min>227.77043281274018</min>
-        <lastValue>757.5472566197568</lastValue>
-        <lastWeight>1.0</lastWeight>
-      </jasima.core.statistics.SummaryStat>
-    </entry>
-    <entry>
       <string>flowMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5368.984816547533</valSum>
-        <sumSquare>4169438.307218343</sumSquare>
+        <meanEst>766.9978309353615</meanEst>
+        <varEst>51438.59860149333</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>937.0725573903111</max>
+        <max>937.0725573903105</max>
         <min>653.6423207874434</min>
-        <lastValue>937.0725573903111</lastValue>
+        <lastValue>937.0725573903105</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>flowMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>48799.69568577212</valSum>
-        <sumSquare>3.7152386232991827E8</sumSquare>
+        <meanEst>6971.385097967446</meanEst>
+        <varEst>3.1322391040780254E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>10126.816175397078</max>
@@ -90,34 +76,34 @@
     <entry>
       <string>flowVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2475903.2862321464</valSum>
-        <sumSquare>1.1027939141907905E12</sumSquare>
+        <meanEst>353700.4694617358</meanEst>
+        <varEst>2.270657595086269E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>717985.2643927451</max>
-        <min>125741.90581191733</min>
-        <lastValue>717985.2643927451</lastValue>
+        <max>717985.2643927465</max>
+        <min>125741.9058119191</min>
+        <lastValue>717985.2643927465</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>noProcMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>3620.6415777658303</valSum>
-        <sumSquare>1924313.0564566427</sumSquare>
+        <meanEst>517.2345111094043</meanEst>
+        <varEst>51592.28007855106</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>687.4932333346453</max>
-        <min>402.77039374541164</min>
-        <lastValue>687.4932333346453</lastValue>
+        <max>687.493233334644</max>
+        <min>402.7703937454122</min>
+        <lastValue>687.493233334644</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>noProcMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>46646.69568577212</valSum>
-        <sumSquare>3.415723878071388E8</sumSquare>
+        <meanEst>6663.813669396018</meanEst>
+        <varEst>3.0727499464134265E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>9768.816175397078</max>
@@ -129,34 +115,34 @@
     <entry>
       <string>noProcVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2364078.39087531</valSum>
-        <sumSquare>1.0171487047910479E12</sumSquare>
+        <meanEst>337725.4844107591</meanEst>
+        <varEst>2.1873918504767822E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>696094.1853942891</max>
-        <min>115148.55456211494</min>
-        <lastValue>696094.1853942891</lastValue>
+        <max>696094.1853942903</max>
+        <min>115148.55456211441</min>
+        <lastValue>696094.1853942903</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedFlowMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5368.984816547533</valSum>
-        <sumSquare>4169438.307218343</sumSquare>
+        <meanEst>766.9978309353615</meanEst>
+        <varEst>51438.59860149333</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>937.0725573903111</max>
+        <max>937.0725573903105</max>
         <min>653.6423207874434</min>
-        <lastValue>937.0725573903111</lastValue>
+        <lastValue>937.0725573903105</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedFlowMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>48799.69568577212</valSum>
-        <sumSquare>3.7152386232991827E8</sumSquare>
+        <meanEst>6971.385097967446</meanEst>
+        <varEst>3.1322391040780254E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>10126.816175397078</max>
@@ -168,34 +154,34 @@
     <entry>
       <string>weightedFlowVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2475903.2862321464</valSum>
-        <sumSquare>1.1027939141907905E12</sumSquare>
+        <meanEst>353700.4694617358</meanEst>
+        <varEst>2.270657595086269E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>717985.2643927451</max>
-        <min>125741.90581191733</min>
-        <lastValue>717985.2643927451</lastValue>
+        <max>717985.2643927465</max>
+        <min>125741.9058119191</min>
+        <lastValue>717985.2643927465</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>lateMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>-1624.388138579272</valSum>
-        <sumSquare>429048.2290660418</sumSquare>
+        <meanEst>-232.05544836846727</meanEst>
+        <varEst>52100.11124360844</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>-61.244738832353335</max>
-        <min>-349.84538738067874</min>
-        <lastValue>-61.244738832353335</lastValue>
+        <max>-61.24473883235361</max>
+        <min>-349.84538738067846</min>
+        <lastValue>-61.24473883235361</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>lateMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>40261.932401104925</valSum>
-        <sumSquare>2.602503832205627E8</sumSquare>
+        <meanEst>5751.704628729275</meanEst>
+        <varEst>2.8675640267542355E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -207,48 +193,34 @@
     <entry>
       <string>lateVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2195913.7274201345</valSum>
-        <sumSquare>8.830129184496223E11</sumSquare>
+        <meanEst>313701.9610600189</meanEst>
+        <varEst>1.9415047583930817E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>653738.2988755389</max>
-        <min>108117.84932091656</min>
-        <lastValue>653738.2988755389</lastValue>
-        <lastWeight>1.0</lastWeight>
-      </jasima.core.statistics.SummaryStat>
-    </entry>
-    <entry>
-      <string>tardMean.rep1</string>
-      <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
-        <valSum>298799.6543406505</valSum>
-        <sumSquare>6.469908748947937E8</sumSquare>
-        <weightSum>2546.0</weightSum>
-        <numObs>2546</numObs>
-        <max>8694.816175397078</max>
-        <min>0.0</min>
-        <lastValue>0.0</lastValue>
+        <max>653738.2988755371</max>
+        <min>108117.84932091716</min>
+        <lastValue>653738.2988755371</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>tardMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>769.0198120395314</valSum>
-        <sumSquare>106515.68500691383</sumSquare>
+        <meanEst>109.85997314850448</meanEst>
+        <varEst>22031.189105582896</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>228.46468377248203</max>
+        <max>228.46468377248186</max>
         <min>38.181692855081735</min>
-        <lastValue>228.46468377248203</lastValue>
+        <lastValue>228.46468377248186</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>tardMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>40261.932401104925</valSum>
-        <sumSquare>2.602503832205627E8</sumSquare>
+        <meanEst>5751.704628729275</meanEst>
+        <varEst>2.8675640267542355E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -260,34 +232,34 @@
     <entry>
       <string>tardVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>1360561.997714122</valSum>
-        <sumSquare>3.9425188401899225E11</sumSquare>
+        <meanEst>194365.99967344594</meanEst>
+        <varEst>1.2980489121558643E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>470693.36241413193</max>
-        <min>32211.19797417338</min>
-        <lastValue>470693.36241413193</lastValue>
+        <max>470693.36241413245</max>
+        <min>32211.19797417339</min>
+        <lastValue>470693.36241413245</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedTardMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>769.0198120395314</valSum>
-        <sumSquare>106515.68500691383</sumSquare>
+        <meanEst>109.85997314850448</meanEst>
+        <varEst>22031.189105582896</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>228.46468377248203</max>
+        <max>228.46468377248186</max>
         <min>38.181692855081735</min>
-        <lastValue>228.46468377248203</lastValue>
+        <lastValue>228.46468377248186</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedTardMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>40261.932401104925</valSum>
-        <sumSquare>2.602503832205627E8</sumSquare>
+        <meanEst>5751.704628729275</meanEst>
+        <varEst>2.8675640267542355E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -299,34 +271,34 @@
     <entry>
       <string>weightedTardVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>1360561.997714122</valSum>
-        <sumSquare>3.9425188401899225E11</sumSquare>
+        <meanEst>194365.99967344594</meanEst>
+        <varEst>1.2980489121558643E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>470693.36241413193</max>
-        <min>32211.19797417338</min>
-        <lastValue>470693.36241413193</lastValue>
+        <max>470693.36241413245</max>
+        <min>32211.19797417339</min>
+        <lastValue>470693.36241413245</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedTardWIPMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>769.0198120395314</valSum>
-        <sumSquare>106515.68500691383</sumSquare>
+        <meanEst>109.85997314850448</meanEst>
+        <varEst>22031.189105582896</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>228.46468377248203</max>
+        <max>228.46468377248186</max>
         <min>38.181692855081735</min>
-        <lastValue>228.46468377248203</lastValue>
+        <lastValue>228.46468377248186</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedTardWIPMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>40261.932401104925</valSum>
-        <sumSquare>2.602503832205627E8</sumSquare>
+        <meanEst>5751.704628729275</meanEst>
+        <varEst>2.8675640267542355E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -338,34 +310,34 @@
     <entry>
       <string>weightedTardWIPVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>1360561.997714122</valSum>
-        <sumSquare>3.9425188401899225E11</sumSquare>
+        <meanEst>194365.99967344594</meanEst>
+        <varEst>1.2980489121558643E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>470693.36241413193</max>
-        <min>32211.19797417338</min>
-        <lastValue>470693.36241413193</lastValue>
+        <max>470693.36241413245</max>
+        <min>32211.19797417339</min>
+        <lastValue>470693.36241413245</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>condTardMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>4465.574425718804</valSum>
-        <sumSquare>3019870.6794254226</sumSquare>
+        <meanEst>637.9392036741148</meanEst>
+        <varEst>171105.68633487506</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>923.7760123597948</max>
-        <min>370.36242069429284</min>
-        <lastValue>923.7760123597948</lastValue>
+        <max>923.7760123597938</max>
+        <min>370.3624206942929</min>
+        <lastValue>923.7760123597938</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>condTardMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>40261.932401104925</valSum>
-        <sumSquare>2.602503832205627E8</sumSquare>
+        <meanEst>5751.704628729275</meanEst>
+        <varEst>2.8675640267542355E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -377,34 +349,34 @@
     <entry>
       <string>condTardVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5031170.873376992</valSum>
-        <sumSquare>4.544049134425183E12</sumSquare>
+        <meanEst>718738.696196713</meanEst>
+        <varEst>9.279519405513264E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>1262166.014241834</max>
-        <min>190028.35092878496</min>
-        <lastValue>1262166.014241834</lastValue>
+        <max>1262166.0142418353</max>
+        <min>190028.35092878487</min>
+        <lastValue>1262166.0142418353</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedCondTardMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>4465.574425718804</valSum>
-        <sumSquare>3019870.6794254226</sumSquare>
+        <meanEst>637.9392036741148</meanEst>
+        <varEst>171105.68633487506</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>923.7760123597948</max>
-        <min>370.36242069429284</min>
-        <lastValue>923.7760123597948</lastValue>
+        <max>923.7760123597938</max>
+        <min>370.3624206942929</min>
+        <lastValue>923.7760123597938</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>weightedCondTardMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>40261.932401104925</valSum>
-        <sumSquare>2.602503832205627E8</sumSquare>
+        <meanEst>5751.704628729275</meanEst>
+        <varEst>2.8675640267542355E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -416,21 +388,21 @@
     <entry>
       <string>weightedCondTardVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5031170.873376992</valSum>
-        <sumSquare>4.544049134425183E12</sumSquare>
+        <meanEst>718738.696196713</meanEst>
+        <varEst>9.279519405513264E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>1262166.014241834</max>
-        <min>190028.35092878496</min>
-        <lastValue>1262166.014241834</lastValue>
+        <max>1262166.0142418353</max>
+        <min>190028.35092878487</min>
+        <lastValue>1262166.0142418353</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>tardPercentage</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>1.1344650336292141</valSum>
-        <sumSquare>0.19694049254843582</sumSquare>
+        <meanEst>0.16206643337560203</meanEst>
+        <varEst>0.013081790758816676</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.24731610337972168</max>
@@ -442,8 +414,8 @@
     <entry>
       <string>numTardy</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2882.0</valSum>
-        <sumSquare>1269310.0</sumSquare>
+        <meanEst>411.71428571428567</meanEst>
+        <varEst>82749.42857142858</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>622.0</max>
@@ -455,8 +427,8 @@
     <entry>
       <string>weightedNumTardy</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2882.0</valSum>
-        <sumSquare>1269310.0</sumSquare>
+        <meanEst>411.71428571428567</meanEst>
+        <varEst>82749.42857142858</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>622.0</max>
@@ -468,8 +440,8 @@
     <entry>
       <string>cMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>525431.5931293017</valSum>
-        <sumSquare>3.948022915969588E10</sumSquare>
+        <meanEst>75061.6561613288</meanEst>
+        <varEst>4.046357992502056E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>78733.56761490242</max>
@@ -481,21 +453,21 @@
     <entry>
       <string>b0.flowMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5460.048570660367</valSum>
-        <sumSquare>4359612.297243908</sumSquare>
+        <meanEst>780.0069386657666</meanEst>
+        <varEst>100736.52667671966</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>1022.9395234351929</max>
+        <max>1022.9395234351913</max>
         <min>657.3031429166999</min>
-        <lastValue>1022.9395234351929</lastValue>
+        <lastValue>1022.9395234351913</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>b0.flowMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>46063.775632712524</valSum>
-        <sumSquare>3.3934830175023746E8</sumSquare>
+        <meanEst>6580.5393761017895</meanEst>
+        <varEst>3.622381238725461E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>10126.816175397078</max>
@@ -507,34 +479,34 @@
     <entry>
       <string>b0.flowVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>2583643.5088017774</valSum>
-        <sumSquare>1.341894509630397E12</sumSquare>
+        <meanEst>369091.9298288253</meanEst>
+        <varEst>3.8829254097702985E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>842802.1374953497</max>
-        <min>127879.69222555094</min>
-        <lastValue>842802.1374953497</lastValue>
+        <max>842802.1374953511</max>
+        <min>127879.6922255525</min>
+        <lastValue>842802.1374953511</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>b0.tardMean.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>817.7194569307627</valSum>
-        <sumSquare>136945.74653411994</sumSquare>
+        <meanEst>116.81706527582323</meanEst>
+        <varEst>41422.159356528195</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>280.41902182530873</max>
-        <min>39.11105550753383</min>
-        <lastValue>280.41902182530873</lastValue>
+        <max>280.41902182530845</max>
+        <min>39.11105550753384</min>
+        <lastValue>280.41902182530845</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>b0.tardMax</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>37610.012348045326</valSum>
-        <sumSquare>2.3462342513240385E8</sumSquare>
+        <meanEst>5372.858906863618</meanEst>
+        <varEst>3.255013530095788E7</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>8694.816175397078</max>
@@ -546,21 +518,21 @@
     <entry>
       <string>b0.tardVariance</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>1458371.3346600323</valSum>
-        <sumSquare>5.3232791421661743E11</sumSquare>
+        <meanEst>208338.76209429032</meanEst>
+        <varEst>2.2849263567974792E11</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>574206.6842202636</max>
+        <max>574206.6842202633</max>
         <min>34499.593530331236</min>
-        <lastValue>574206.6842202636</lastValue>
+        <lastValue>574206.6842202633</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>b0.numFinished</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>14000.0</valSum>
-        <sumSquare>2.8E7</sumSquare>
+        <meanEst>2000.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>2000.0</max>
@@ -572,8 +544,8 @@
     <entry>
       <string>numJobsFinished</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>17787.0</valSum>
-        <sumSquare>4.5204019E7</sumSquare>
+        <meanEst>2540.9999999999995</meanEst>
+        <varEst>7251.999999999976</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>2607.0</max>
@@ -585,8 +557,8 @@
     <entry>
       <string>numJobsStarted</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>17787.0</valSum>
-        <sumSquare>4.5204019E7</sumSquare>
+        <meanEst>2540.9999999999995</meanEst>
+        <varEst>7251.999999999976</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>2607.0</max>
@@ -598,8 +570,8 @@
     <entry>
       <string>numWIP</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -611,34 +583,34 @@
     <entry>
       <string>m0.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>11.008252089508739</valSum>
-        <sumSquare>17.685866913550782</sumSquare>
+        <meanEst>1.5726074413583913</meanEst>
+        <varEst>0.37420776124027944</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>1.9018844381351898</max>
+        <max>1.90188443813519</max>
         <min>1.30101221039999</min>
-        <lastValue>1.9018844381351898</lastValue>
+        <lastValue>1.90188443813519</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m0.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.894915691806017</valSum>
-        <sumSquare>4.967597935725882</sumSquare>
+        <meanEst>0.8421308131151459</meanEst>
+        <varEst>0.003307790940052145</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8715114173921271</max>
-        <min>0.8168073892451675</min>
-        <lastValue>0.8715114173921271</lastValue>
+        <max>0.8715114173921267</max>
+        <min>0.8168073892451677</min>
+        <lastValue>0.8715114173921267</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m0.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -650,8 +622,8 @@
     <entry>
       <string>m0.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -663,8 +635,8 @@
     <entry>
       <string>m0.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -676,47 +648,47 @@
     <entry>
       <string>m0.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>324.0278757387833</valSum>
-        <sumSquare>15229.174141122541</sumSquare>
+        <meanEst>46.28969653411191</meanEst>
+        <varEst>230.02210458134346</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>55.313820249934956</max>
-        <min>40.16361310967083</min>
-        <lastValue>54.04252158143043</lastValue>
+        <max>55.31382024993479</max>
+        <min>40.16361310967089</min>
+        <lastValue>54.04252158143034</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m1.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>12.035702241915086</valSum>
-        <sumSquare>22.163485393554502</sumSquare>
+        <meanEst>1.7193860345592984</meanEst>
+        <varEst>1.469467042691663</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.626691826260913</max>
-        <min>1.2536392364237872</min>
-        <lastValue>2.626691826260913</lastValue>
+        <max>2.626691826260907</max>
+        <min>1.2536392364237885</min>
+        <lastValue>2.626691826260907</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m1.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.897121779148148</valSum>
-        <sumSquare>4.972061515700292</sumSquare>
+        <meanEst>0.8424459684497355</meanEst>
+        <varEst>0.004055047399803557</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8802850222652022</max>
-        <min>0.8109119495548898</min>
-        <lastValue>0.8802850222652022</lastValue>
+        <max>0.8802850222652016</max>
+        <min>0.8109119495548889</min>
+        <lastValue>0.8802850222652016</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m1.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -728,8 +700,8 @@
     <entry>
       <string>m1.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -741,8 +713,8 @@
     <entry>
       <string>m1.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -754,47 +726,47 @@
     <entry>
       <string>m1.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>353.65409448461185</valSum>
-        <sumSquare>18933.645140779674</sumSquare>
+        <meanEst>50.52201349780159</meanEst>
+        <varEst>1066.328205675233</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>74.63810464092091</max>
-        <min>38.70115965733203</min>
-        <lastValue>74.63810464092091</lastValue>
+        <max>74.63810464092019</max>
+        <min>38.70115965733188</min>
+        <lastValue>74.63810464092019</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m2.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>12.281793204928377</valSum>
-        <sumSquare>22.432023631197506</sumSquare>
+        <meanEst>1.75454188641834</meanEst>
+        <varEst>0.8831030128225468</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.315169221637942</max>
-        <min>1.238738497036187</min>
-        <lastValue>2.315169221637942</lastValue>
+        <max>2.315169221637948</max>
+        <min>1.2387384970361817</min>
+        <lastValue>2.315169221637948</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m2.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.923070347970207</valSum>
-        <sumSquare>5.015315654505722</sumSquare>
+        <meanEst>0.8461529068528867</meanEst>
+        <varEst>0.0034924620765911813</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8845948632554848</max>
-        <min>0.8108991054597039</min>
-        <lastValue>0.8845948632554848</lastValue>
+        <max>0.8845948632554836</max>
+        <min>0.8108991054597052</min>
+        <lastValue>0.8845948632554836</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m2.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -806,8 +778,8 @@
     <entry>
       <string>m2.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -819,8 +791,8 @@
     <entry>
       <string>m2.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -832,47 +804,47 @@
     <entry>
       <string>m2.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>361.60686335343314</valSum>
-        <sumSquare>19329.18903479954</sumSquare>
+        <meanEst>51.65812333620479</meanEst>
+        <varEst>649.2570884697695</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>65.78611198255055</max>
+        <max>65.78611198255093</max>
         <min>36.31421201044397</min>
-        <lastValue>65.78611198255055</lastValue>
+        <lastValue>65.78611198255093</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m3.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>11.282214030788833</valSum>
-        <sumSquare>19.216174260543674</sumSquare>
+        <meanEst>1.6117448615412593</meanEst>
+        <varEst>1.0321237696110392</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.20856873476006</max>
-        <min>1.1598792765974417</min>
-        <lastValue>2.20856873476006</lastValue>
+        <max>2.208568734760056</max>
+        <min>1.159879276597443</min>
+        <lastValue>2.208568734760056</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m3.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.920344583355375</valSum>
-        <sumSquare>5.011696320117586</sumSquare>
+        <meanEst>0.8457635119079105</meanEst>
+        <varEst>0.004484893593968363</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8772345503954568</max>
-        <min>0.8116131432302959</min>
-        <lastValue>0.8772345503954568</lastValue>
+        <max>0.8772345503954566</max>
+        <min>0.811613143230295</min>
+        <lastValue>0.8772345503954566</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m3.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -884,8 +856,8 @@
     <entry>
       <string>m3.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -897,8 +869,8 @@
     <entry>
       <string>m3.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -910,47 +882,47 @@
     <entry>
       <string>m3.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>331.193314665172</valSum>
-        <sumSquare>16373.821359405982</sumSquare>
+        <meanEst>47.31333066645308</meanEst>
+        <varEst>703.9625481340145</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>62.75703250896431</max>
-        <min>35.806691241477516</min>
-        <lastValue>62.75703250896431</lastValue>
+        <max>62.75703250896423</max>
+        <min>35.806691241477424</min>
+        <lastValue>62.75703250896423</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m4.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>14.705813908129159</valSum>
-        <sumSquare>34.77518576022302</sumSquare>
+        <meanEst>2.1008305583041667</meanEst>
+        <varEst>3.8807625172908975</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>3.3608341601611924</max>
-        <min>1.1189202283145903</min>
-        <lastValue>3.3608341601611924</lastValue>
+        <max>3.3608341601612</max>
+        <min>1.1189202283145923</min>
+        <lastValue>3.3608341601612</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m4.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.955112975117296</valSum>
-        <sumSquare>5.073059848171862</sumSquare>
+        <meanEst>0.8507304250167566</meanEst>
+        <varEst>0.006864055827524326</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8921370849884792</max>
-        <min>0.8049779775790544</min>
-        <lastValue>0.8921370849884792</lastValue>
+        <max>0.8921370849884778</max>
+        <min>0.8049779775790543</min>
+        <lastValue>0.8921370849884778</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m4.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -962,8 +934,8 @@
     <entry>
       <string>m4.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -975,8 +947,8 @@
     <entry>
       <string>m4.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -988,47 +960,47 @@
     <entry>
       <string>m4.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>430.6145204366776</valSum>
-        <sumSquare>29388.112045625177</sumSquare>
+        <meanEst>61.516360062382745</meanEst>
+        <varEst>2898.274158352433</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>95.49894251735216</max>
-        <min>34.54224241046537</min>
-        <lastValue>95.49894251735216</lastValue>
+        <max>95.49894251735265</max>
+        <min>34.54224241046539</min>
+        <lastValue>95.49894251735265</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m5.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>11.563476770066403</valSum>
-        <sumSquare>19.361161013318927</sumSquare>
+        <meanEst>1.6519252528666293</meanEst>
+        <varEst>0.2591617259095904</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>1.909694332027753</max>
-        <min>1.3686361298926293</min>
-        <lastValue>1.8728369828326248</lastValue>
+        <max>1.909694332027748</max>
+        <min>1.3686361298926302</min>
+        <lastValue>1.8728369828326241</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m5.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.908696973751088</valSum>
-        <sumSquare>4.9903612464647615</sumSquare>
+        <meanEst>0.8440995676787262</meanEst>
+        <varEst>0.002832685376868075</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8698818499120559</max>
-        <min>0.8106165353656165</min>
-        <lastValue>0.8629197213920186</lastValue>
+        <max>0.8698818499120551</max>
+        <min>0.8106165353656181</min>
+        <lastValue>0.862919721392018</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m5.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1040,8 +1012,8 @@
     <entry>
       <string>m5.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1053,8 +1025,8 @@
     <entry>
       <string>m5.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -1066,12 +1038,12 @@
     <entry>
       <string>m5.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>340.6651227241798</valSum>
-        <sumSquare>16732.274476009618</sumSquare>
+        <meanEst>48.66644610345426</meanEst>
+        <varEst>153.31364162668902</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>55.98360349203977</max>
-        <min>42.25123451533543</min>
+        <max>55.983603492039585</max>
+        <min>42.25123451533536</min>
         <lastValue>53.217130880188044</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
@@ -1079,34 +1051,34 @@
     <entry>
       <string>m6.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>12.66223947369931</valSum>
-        <sumSquare>23.37446403626168</sumSquare>
+        <meanEst>1.8088913533856157</meanEst>
+        <varEst>0.4698485377889769</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.1959518907773403</max>
-        <min>1.397213889642003</min>
-        <lastValue>2.042898862598896</lastValue>
+        <max>2.1959518907773465</max>
+        <min>1.397213889642005</min>
+        <lastValue>2.04289886259889</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m6.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.916413333377196</valSum>
-        <sumSquare>5.003739137346296</sumSquare>
+        <meanEst>0.8452019047681709</meanEst>
+        <varEst>0.003175318580084851</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8726728355810669</max>
-        <min>0.8148550867769274</min>
-        <lastValue>0.8726728355810669</lastValue>
+        <max>0.8726728355810658</max>
+        <min>0.8148550867769265</min>
+        <lastValue>0.8726728355810658</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m6.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1118,8 +1090,8 @@
     <entry>
       <string>m6.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1131,8 +1103,8 @@
     <entry>
       <string>m6.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -1144,47 +1116,47 @@
     <entry>
       <string>m6.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>372.5999302787012</valSum>
-        <sumSquare>20109.54389288388</sumSquare>
+        <meanEst>53.22856146838588</meanEst>
+        <varEst>276.58560092773234</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>63.09630506920649</max>
-        <min>43.133459967902034</min>
-        <lastValue>58.049481691396636</lastValue>
+        <max>63.09630506920646</max>
+        <min>43.13345996790221</min>
+        <lastValue>58.049481691396466</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m7.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>11.714959467750655</valSum>
-        <sumSquare>20.142435790431218</sumSquare>
+        <meanEst>1.6735656382500927</meanEst>
+        <varEst>0.5366821717111189</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.20123624968689</max>
-        <min>1.4020719906509829</min>
-        <lastValue>2.20123624968689</lastValue>
+        <max>2.2012362496868896</max>
+        <min>1.40207199065098</min>
+        <lastValue>2.2012362496868896</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m7.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.9367419030205815</valSum>
-        <sumSquare>5.038645419806773</sumSquare>
+        <meanEst>0.8481059861457976</meanEst>
+        <varEst>0.00365907365242554</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8813344965323165</max>
-        <min>0.8145699724123886</min>
-        <lastValue>0.8813344965323165</lastValue>
+        <max>0.8813344965323178</max>
+        <min>0.8145699724123872</min>
+        <lastValue>0.8813344965323178</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m7.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1196,8 +1168,8 @@
     <entry>
       <string>m7.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1209,8 +1181,8 @@
     <entry>
       <string>m7.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -1222,47 +1194,47 @@
     <entry>
       <string>m7.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>344.75477202243303</valSum>
-        <sumSquare>17323.74672857402</sumSquare>
+        <meanEst>49.25068171749033</meanEst>
+        <varEst>344.33918111119635</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>62.54867811325719</max>
-        <min>42.22526707557577</min>
-        <lastValue>62.54867811325719</lastValue>
+        <max>62.54867811325718</max>
+        <min>42.22526707557572</min>
+        <lastValue>62.54867811325718</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m8.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>12.671791875151651</valSum>
-        <sumSquare>24.870471884905974</sumSquare>
+        <meanEst>1.8102559821645234</meanEst>
+        <varEst>1.9312848381689562</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.949982591562603</max>
-        <min>1.2477818687482334</min>
-        <lastValue>2.949982591562603</lastValue>
+        <max>2.9499825915626134</max>
+        <min>1.247781868748232</min>
+        <lastValue>2.9499825915626134</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m8.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.911083415347235</valSum>
-        <sumSquare>4.996266105270644</sumSquare>
+        <meanEst>0.8444404879067479</meanEst>
+        <varEst>0.004707941957340468</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8824119567798872</max>
-        <min>0.8023192498755958</min>
-        <lastValue>0.8824119567798872</lastValue>
+        <max>0.8824119567798875</max>
+        <min>0.8023192498755967</min>
+        <lastValue>0.8824119567798875</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m8.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1274,8 +1246,8 @@
     <entry>
       <string>m8.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1287,8 +1259,8 @@
     <entry>
       <string>m8.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -1300,47 +1272,47 @@
     <entry>
       <string>m8.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>371.8588584181953</valSum>
-        <sumSquare>21136.635608450724</sumSquare>
+        <meanEst>53.12269405974227</meanEst>
+        <varEst>1382.4912392959734</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>83.82449252578279</max>
-        <min>38.52033656644804</min>
-        <lastValue>83.82449252578279</lastValue>
+        <max>83.82449252578314</max>
+        <min>38.52033656644806</min>
+        <lastValue>83.82449252578314</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m9.qLen.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>13.257150614013174</valSum>
-        <sumSquare>26.28464184389299</sumSquare>
+        <meanEst>1.893878659144738</meanEst>
+        <varEst>1.1772072149458783</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>2.714413463799663</max>
-        <min>1.4461436304030895</min>
-        <lastValue>2.714413463799663</lastValue>
+        <max>2.7144134637996697</max>
+        <min>1.4461436304030846</min>
+        <lastValue>2.7144134637996697</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m9.util.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>5.968287428359706</valSum>
-        <sumSquare>5.091960150412012</sumSquare>
+        <meanEst>0.8526124897656724</meanEst>
+        <varEst>0.0033237464810814076</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>0.8781860737309738</max>
-        <min>0.8161780285810638</min>
-        <lastValue>0.8781860737309738</lastValue>
+        <max>0.8781860737309735</max>
+        <min>0.8161780285810643</min>
+        <lastValue>0.8781860737309735</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
     <entry>
       <string>m9.capUtil.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1352,8 +1324,8 @@
     <entry>
       <string>m9.bSize.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>7.0</valSum>
-        <sumSquare>7.0</sumSquare>
+        <meanEst>1.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>1.0</max>
@@ -1365,8 +1337,8 @@
     <entry>
       <string>m9.setup.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>0.0</valSum>
-        <sumSquare>0.0</sumSquare>
+        <meanEst>0.0</meanEst>
+        <varEst>0.0</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
         <max>0.0</max>
@@ -1378,13 +1350,41 @@
     <entry>
       <string>m9.qWait.mean</string>
       <jasima.core.statistics.SummaryStat>
-        <valSum>389.66622564364303</valSum>
-        <sumSquare>22492.947577105355</sumSquare>
+        <meanEst>55.66660366337762</meanEst>
+        <varEst>801.5522331964212</varEst>
         <weightSum>7.0</weightSum>
         <numObs>7</numObs>
-        <max>77.13073689280186</max>
-        <min>44.64397244562935</min>
-        <lastValue>77.13073689280186</lastValue>
+        <max>77.13073689280179</max>
+        <min>44.64397244562951</min>
+        <lastValue>77.13073689280179</lastValue>
+        <lastWeight>1.0</lastWeight>
+      </jasima.core.statistics.SummaryStat>
+    </entry>
+    <entry>
+      <string>flowMean.rep1</string>
+      <jasima.core.statistics.SummaryStat>
+        <name>flowtimes</name>
+        <meanEst>795.33348541938</meanEst>
+        <varEst>1.0471886250289646E9</varEst>
+        <weightSum>2546.0</weightSum>
+        <numObs>2546</numObs>
+        <max>10126.816175397078</max>
+        <min>227.77043281274018</min>
+        <lastValue>757.5472566197568</lastValue>
+        <lastWeight>1.0</lastWeight>
+      </jasima.core.statistics.SummaryStat>
+    </entry>
+    <entry>
+      <string>tardMean.rep1</string>
+      <jasima.core.statistics.SummaryStat>
+        <name>tardiness</name>
+        <meanEst>117.36042982743568</meanEst>
+        <varEst>6.119236190290854E8</varEst>
+        <weightSum>2546.0</weightSum>
+        <numObs>2546</numObs>
+        <max>8694.816175397078</max>
+        <min>0.0</min>
+        <lastValue>0.0</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
@@ -1392,8 +1392,8 @@
       <string>flowMean.rep2</string>
       <jasima.core.statistics.SummaryStat>
         <name>flowtimes</name>
-        <valSum>1648485.9330259322</valSum>
-        <sumSquare>1.3945155156003678E9</sumSquare>
+        <meanEst>653.6423207874434</meanEst>
+        <varEst>3.1699534455184805E8</varEst>
         <weightSum>2522.0</weightSum>
         <numObs>2522</numObs>
         <max>4244.556850472916</max>
@@ -1406,8 +1406,8 @@
       <string>tardMean.rep2</string>
       <jasima.core.statistics.SummaryStat>
         <name>tardiness</name>
-        <valSum>96294.22938051613</valSum>
-        <sumSquare>8.488110678281474E7</sumSquare>
+        <meanEst>38.181692855081735</meanEst>
+        <varEst>8.120443009289111E7</varEst>
         <weightSum>2522.0</weightSum>
         <numObs>2522</numObs>
         <max>3112.5568504729163</max>
@@ -1420,8 +1420,8 @@
       <string>flowMean.rep3</string>
       <jasima.core.statistics.SummaryStat>
         <name>flowtimes</name>
-        <valSum>1873291.82000271</valSum>
-        <sumSquare>1.9733553397564442E9</sumSquare>
+        <meanEst>718.5622631387448</meanEst>
+        <varEst>6.272785300560007E8</varEst>
         <weightSum>2607.0</weightSum>
         <numObs>2607</numObs>
         <max>5446.220341693963</max>
@@ -1434,8 +1434,8 @@
       <string>tardMean.rep3</string>
       <jasima.core.statistics.SummaryStat>
         <name>tardiness</name>
-        <valSum>216727.73167696843</valSum>
-        <sumSquare>2.696174466929709E8</sumSquare>
+        <meanEst>83.13300025967342</meanEst>
+        <varEst>2.5160022011919025E8</varEst>
         <weightSum>2607.0</weightSum>
         <numObs>2607</numObs>
         <max>4178.220341693963</max>
@@ -1448,8 +1448,8 @@
       <string>flowMean.rep4</string>
       <jasima.core.statistics.SummaryStat>
         <name>flowtimes</name>
-        <valSum>2083634.227155776</valSum>
-        <sumSquare>2.818515396533853E9</sumSquare>
+        <meanEst>812.3330320295414</meanEst>
+        <varEst>1.125910487147867E9</varEst>
         <weightSum>2565.0</weightSum>
         <numObs>2565</numObs>
         <max>7810.127012182136</max>
@@ -1462,8 +1462,8 @@
       <string>tardMean.rep4</string>
       <jasima.core.statistics.SummaryStat>
         <name>tardiness</name>
-        <valSum>339486.04974134103</valSum>
-        <sumSquare>7.076077510291464E8</sumSquare>
+        <meanEst>132.3532357666046</meanEst>
+        <varEst>6.626756738482566E8</varEst>
         <weightSum>2565.0</weightSum>
         <numObs>2565</numObs>
         <max>6546.127012182129</max>
@@ -1476,8 +1476,8 @@
       <string>flowMean.rep5</string>
       <jasima.core.statistics.SummaryStat>
         <name>flowtimes</name>
-        <valSum>1769033.9410840187</valSum>
-        <sumSquare>1.7960591265808363E9</sumSquare>
+        <meanEst>702.5551791437725</meanEst>
+        <varEst>5.532151691911432E8</varEst>
         <weightSum>2518.0</weightSum>
         <numObs>2518</numObs>
         <max>4594.934636028105</max>
@@ -1490,8 +1490,8 @@
       <string>tardMean.rep5</string>
       <jasima.core.statistics.SummaryStat>
         <name>tardiness</name>
-        <valSum>183107.00860074343</valSum>
-        <sumSquare>2.4027273216728115E8</sumSquare>
+        <meanEst>72.71922502015228</meanEst>
+        <varEst>2.2695733240607706E8</varEst>
         <weightSum>2518.0</weightSum>
         <numObs>2518</numObs>
         <max>3533.171351360914</max>
@@ -1504,8 +1504,8 @@
       <string>flowMean.rep6</string>
       <jasima.core.statistics.SummaryStat>
         <name>flowtimes</name>
-        <valSum>1884207.750296778</valSum>
-        <sumSquare>2.219080098830877E9</sumSquare>
+        <meanEst>749.4859786383378</meanEst>
+        <varEst>8.068928091417549E8</varEst>
         <weightSum>2514.0</weightSum>
         <numObs>2514</numObs>
         <max>7344.266484255871</max>
@@ -1518,8 +1518,8 @@
       <string>tardMean.rep6</string>
       <jasima.core.statistics.SummaryStat>
         <name>tardiness</name>
-        <valSum>243374.1669687883</valSum>
-        <sumSquare>4.559115296046358E8</sumSquare>
+        <meanEst>96.80754453810174</meanEst>
+        <varEst>4.323510740963806E8</varEst>
         <weightSum>2514.0</weightSum>
         <numObs>2514</numObs>
         <max>6264.266484255871</max>
@@ -1532,8 +1532,8 @@
       <string>flowMean.rep7</string>
       <jasima.core.statistics.SummaryStat>
         <name>flowtimes</name>
-        <valSum>2356737.4818366324</valSum>
-        <sumSquare>4.0134489738856163E9</sumSquare>
+        <meanEst>937.0725573903105</meanEst>
+        <varEst>1.8050149546833646E9</varEst>
         <weightSum>2515.0</weightSum>
         <numObs>2515</numObs>
         <max>9232.774185742055</max>
@@ -1546,8 +1546,8 @@
       <string>tardMean.rep7</string>
       <jasima.core.statistics.SummaryStat>
         <name>tardiness</name>
-        <valSum>574588.6796877923</valSum>
-        <sumSquare>1.3145963341132472E9</sumSquare>
+        <meanEst>228.46468377248186</meanEst>
+        <varEst>1.183323113109129E9</varEst>
         <weightSum>2515.0</weightSum>
         <numObs>2515</numObs>
         <max>7932.774185742055</max>

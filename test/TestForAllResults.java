@@ -44,7 +44,6 @@ import jasima.shopSim.util.BatchStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -55,13 +54,13 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: TestForAllResults.java 144 2013-11-25 13:23:16Z
- *          THildebrandt@gmail.com $
+ * @version 
+ *          "$Id$"
  */
 @SuppressWarnings({ "unused", "deprecation" })
 public class TestForAllResults extends ExperimentTest {
 
-	private static final boolean SAVE_ACTUAL = false;
+	private static final boolean SAVE_ACTUAL = true;
 
 	@BeforeClass
 	public static void setUp() {
@@ -262,8 +261,8 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleBestOfFamilyBatchingLAThreshold0() {
-		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD())
+				.setFinalTieBreaker(new TieBreakerFASFS());
 		BatchForming batchForming = new BestOfFamilyBatching();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"),
@@ -377,16 +376,20 @@ public class TestForAllResults extends ExperimentTest {
 				true);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void checkResults(Map<String, Object> actual, File f) {
-		if (SAVE_ACTUAL)
-			XmlUtil.saveXML(actual, new File(f.getName()));
+		File fTmp = new File(f.getName());
+		XmlUtil.saveXML(actual, fTmp);
+		Map<String, Object> res = (Map<String, Object>) XmlUtil.loadXML(fTmp);
+		if (!SAVE_ACTUAL)
+			fTmp.delete();
 
-		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 		checkKeySets(actual, expected);
 		checkResults(actual, expected);
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, Object> runMimac4rAndCheck(PR pr,
 			BatchForming batchForming, File f, boolean lookAhead) {
 		MimacExperiment e = createMIMAC4r(pr, batchForming);
@@ -394,18 +397,13 @@ public class TestForAllResults extends ExperimentTest {
 		e.runExperiment();
 		e.printResults();
 
-		Map<String, Object> res = new HashMap<String, Object>(e.getResults());
-		if (SAVE_ACTUAL)
-			XmlUtil.saveXML(res, new File(f.getName()));
-		// res.remove("weightedCondTardMax");
-		// res.remove("weightedCondTardVariance");
-		// res.remove("weightedCondTardMean");
-		// res.remove("noProcMean");
-		// res.remove("noProcMax");
-		// res.remove("noProcVariance");
-		// res.remove("numTardy");
-		// res.remove("weightedNumTardy");
-		@SuppressWarnings("unchecked")
+		// test saving/loading xml in the process
+		File fTmp = new File(f.getName());
+		XmlUtil.saveXML(e.getResults(), fTmp);
+		Map<String, Object> res = (Map<String, Object>) XmlUtil.loadXML(fTmp);
+		if (!SAVE_ACTUAL)
+			fTmp.delete();
+
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
 
 		checkKeySets(res, expected);
