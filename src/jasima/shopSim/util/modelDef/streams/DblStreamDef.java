@@ -99,17 +99,14 @@ public abstract class DblStreamDef extends PropertySupport implements Cloneable 
 	static {
 		streamFactoryReg = new HashMap<String, StreamDefFact>();
 
-		@SuppressWarnings("unused")
-		Class<?> c;
-
 		// trigger class load, so sub-classes can register themselves
-		c = DblConstDef.class;
-		c = DblExponentialDef.class;
-		c = DblUniformDef.class;
-		c = DblTriangularDef.class;
-		c = IntUniformDef.class;
-		c = IntEmpDef.class;
-		c = IntConstDef.class;
+		new DblConstDef();
+		new DblExponentialDef();
+		new DblUniformDef();
+		new DblTriangularDef();
+		new IntUniformDef();
+		new IntEmpDef();
+		new IntConstDef();
 	}
 
 }
