@@ -50,8 +50,13 @@ public class DblTruncatedSimple extends DblStream {
 	public void init() {
 		if (minValue > maxValue)
 			throw new IllegalArgumentException();
+		
 		super.init();
-		getBaseStream().init();
+
+		if (baseStream.getRndGen() == null) {
+			baseStream.setRndGen(getRndGen());
+		}
+		baseStream.init();
 	}
 
 	@Override
