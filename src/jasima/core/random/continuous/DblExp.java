@@ -20,8 +20,12 @@ public final class DblExp extends DblDistribution {
 	private ExponentialDistribution dist;
 
 	public DblExp() {
+		this(DEFAULT_MEAN);
+	}
+
+	public DblExp(double mean) {
 		super();
-		setMean(DEFAULT_MEAN);
+		setMean(mean);
 	}
 
 	public double getMean() {
