@@ -37,7 +37,7 @@ public class XmlSaver extends AbstractResultSaver {
 
 	@Override
 	protected void finished(Experiment e, Map<String, Object> results) {
-		XmlUtil.saveXML(results, new File(getActualResultBaseName() + ".xml"));
+		XmlUtil.saveXML(FileFormat.XSTREAM, results, new File(getActualResultBaseName() + ".xml"));
 	}
 
 	@Override

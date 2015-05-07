@@ -28,7 +28,9 @@ import java.io.Reader;
 import java.io.Writer;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
@@ -50,8 +52,8 @@ public class XmlUtil {
 	 * 
 	 * @return The object contained in {@code xmlString}.
 	 */
-	public static Object loadXML(String xmlString) {
-		XStream xstream = getXStream();
+	public static Object loadXML(FileFormat format, String xmlString) {
+		XStream xstream = getXStream(format);
 		Object o = xstream.fromXML(xmlString);
 		return o;
 	}
@@ -63,8 +65,8 @@ public class XmlUtil {
 	 *            The file to load.
 	 * @return The object contained in {@code f}.
 	 */
-	public static Object loadXML(File f) {
-		XStream xstream = getXStream();
+	public static Object loadXML(FileFormat format, File f) {
+		XStream xstream = getXStream(format);
 		Object o = xstream.fromXML(f);
 		return o;
 	}
@@ -76,8 +78,8 @@ public class XmlUtil {
 	 *            Source of the xml.
 	 * @return The object contained in {@code r}.
 	 */
-	public static Object loadXML(Reader r) {
-		XStream xstream = getXStream();
+	public static Object loadXML(FileFormat format, Reader r) {
+		XStream xstream = getXStream(format);
 		Object o = xstream.fromXML(r);
 		return o;
 	}
@@ -89,8 +91,8 @@ public class XmlUtil {
 	 *            The object to convert.
 	 * @return The object serialized to xml.
 	 */
-	public static String saveXML(Object o) {
-		XStream xstream = getXStream();
+	public static String saveXML(FileFormat format, Object o) {
+		XStream xstream = getXStream(format);
 		return xstream.toXML(o);
 	}
 
@@ -102,8 +104,8 @@ public class XmlUtil {
 	 * @param w
 	 *            The output writer.
 	 */
-	public static void saveXML(Object o, Writer w) {
-		XStream xstream = getXStream();
+	public static void saveXML(FileFormat format, Object o, Writer w) {
+		XStream xstream = getXStream(format);
 		xstream.toXML(o, w);
 	}
 
@@ -116,8 +118,8 @@ public class XmlUtil {
 	 *            The output file. This file is overwritten if it already
 	 *            exists.
 	 */
-	public static void saveXML(Object o, File f) {
-		XStream xstream = getXStream();
+	public static void saveXML(FileFormat format, Object o, File f) {
+		XStream xstream = getXStream(format);
 		try (BufferedWriter fw = new BufferedWriter(new FileWriter(f))) {
 			xstream.toXML(o, fw);
 		} catch (IOException e) {
@@ -125,8 +127,20 @@ public class XmlUtil {
 		}
 	}
 
-	private static XStream getXStream() {
-		XStream xstream = new XStream(new DomDriver());
+	private static XStream getXStream(final FileFormat format) {
+		XStream xstream = new XStream(new DomDriver() {
+			@Override
+			public HierarchicalStreamWriter createWriter(Writer out) {
+				if(format == FileFormat.JASIMA_BEAN) {
+					try {
+						out.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<?jasima bean?>\n");
+					} catch(IOException e) {
+						throw new XStreamException(e);
+					}
+				}
+				return super.createWriter(out);
+			}
+		});
 		xstream.registerConverter(new MapConverter(xstream.getMapper()) {
 			@SuppressWarnings("rawtypes")
 			@Override
@@ -137,6 +151,9 @@ public class XmlUtil {
 					return super.canConvert(type);
 			}
 		});
+		if(format == FileFormat.JASIMA_BEAN) {
+			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), true), -10);
+		}
 		return xstream;
 	}
 }

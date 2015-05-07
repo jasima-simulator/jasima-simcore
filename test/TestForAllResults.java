@@ -22,6 +22,7 @@ import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.util.ExperimentTest;
+import jasima.core.util.FileFormat;
 import jasima.core.util.XmlUtil;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PR;
@@ -379,12 +380,12 @@ public class TestForAllResults extends ExperimentTest {
 	@SuppressWarnings("unchecked")
 	protected void checkResults(Map<String, Object> actual, File f) {
 		File fTmp = new File(f.getName());
-		XmlUtil.saveXML(actual, fTmp);
-		Map<String, Object> res = (Map<String, Object>) XmlUtil.loadXML(fTmp);
+		XmlUtil.saveXML(FileFormat.XSTREAM, actual, fTmp);
+		Map<String, Object> res = (Map<String, Object>) XmlUtil.loadXML(FileFormat.XSTREAM, fTmp);
 		if (!SAVE_ACTUAL)
 			fTmp.delete();
 
-		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
+		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(FileFormat.XSTREAM, f);
 		checkKeySets(actual, expected);
 		checkResults(actual, expected);
 	}
@@ -399,12 +400,12 @@ public class TestForAllResults extends ExperimentTest {
 
 		// test saving/loading xml in the process
 		File fTmp = new File(f.getName());
-		XmlUtil.saveXML(e.getResults(), fTmp);
-		Map<String, Object> res = (Map<String, Object>) XmlUtil.loadXML(fTmp);
+		XmlUtil.saveXML(FileFormat.XSTREAM, e.getResults(), fTmp);
+		Map<String, Object> res = (Map<String, Object>) XmlUtil.loadXML(FileFormat.XSTREAM, fTmp);
 		if (!SAVE_ACTUAL)
 			fTmp.delete();
 
-		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(f);
+		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(FileFormat.XSTREAM, f);
 
 		checkKeySets(res, expected);
 		checkResults(res, expected);

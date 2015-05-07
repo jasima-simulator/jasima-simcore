@@ -19,6 +19,7 @@
 import static org.junit.Assert.assertEquals;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.util.ExperimentTest;
+import jasima.core.util.FileFormat;
 import jasima.core.util.XmlUtil;
 import jasima.shopSim.core.DowntimeSource;
 import jasima.shopSim.core.IndividualMachine;
@@ -63,7 +64,7 @@ public class TestDowntimes extends ExperimentTest {
 
 		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil
-				.loadXML(new File("testInstances/js02x05.txt.results"));
+				.loadXML(FileFormat.XSTREAM, new File("testInstances/js02x05.txt.results"));
 
 		checkKeySets(res, expected);
 		checkResults(res, expected);
@@ -83,7 +84,7 @@ public class TestDowntimes extends ExperimentTest {
 
 		@SuppressWarnings("unchecked")
 		Map<String, Object> expected = (Map<String, Object>) XmlUtil
-				.loadXML(new File("testInstances/js01x03.txt.results"));
+				.loadXML(FileFormat.XSTREAM, new File("testInstances/js01x03.txt.results"));
 
 		checkKeySets(res, expected);
 		checkResults(res, expected);

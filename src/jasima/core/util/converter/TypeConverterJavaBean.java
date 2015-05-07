@@ -4,6 +4,7 @@ import jasima.core.util.ArgListTokenizer;
 import jasima.core.util.ArgListTokenizer.TokenType;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.TypeUtil.TypeConversionException;
+import jasima.core.util.FileFormat;
 import jasima.core.util.Util;
 import jasima.core.util.XmlUtil;
 
@@ -261,7 +262,7 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 			return null;
 
 		try {
-			return XmlUtil.loadXML(f);
+			return XmlUtil.loadXML(FileFormat.JASIMA_BEAN, f);
 		} catch (XStreamException x) {
 			throw new FileReadException(fileName, x);
 		}
