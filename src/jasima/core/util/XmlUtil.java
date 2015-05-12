@@ -48,7 +48,7 @@ public class XmlUtil {
 	 * 
 	 * @param xmlString
 	 *            A String containing xml data.
-	 * @see #saveXML(Object)
+	 * @see #saveXML(FileFormat,Object)
 	 * 
 	 * @return The object contained in {@code xmlString}.
 	 */
