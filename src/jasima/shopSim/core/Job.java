@@ -260,7 +260,10 @@ public class Job extends PrioRuleTarget implements Cloneable,
 
 	@Override
 	public String toString() {
-		return getName() + "#" + taskNumber;
+		String s = getName() + "#" + taskNumber;
+		if (isFuture())
+			s += "(future)";
+		return s;
 	}
 
 	public JobShop getShop() {
