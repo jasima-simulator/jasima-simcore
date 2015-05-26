@@ -2,7 +2,7 @@
   <m class="jasima.core.experiment.Experiment$UniqueNamesCheckingHashMap">
     <entry>
       <string>runTime</string>
-      <double>10.253</double>
+      <double>13.759</double>
     </entry>
     <entry>
       <string>expAborted</string>
@@ -148,8 +148,8 @@
       <string>weightedTardWIPMean</string>
       <jasima.core.statistics.SummaryStat>
         <name>weightedTardiness</name>
-        <meanEst>401034.5532847342</meanEst>
-        <varEst>4.36924025593813E14</varEst>
+        <meanEst>401034.5532847334</meanEst>
+        <varEst>4.3692402559381444E14</varEst>
         <weightSum>8306.0</weightSum>
         <numObs>8306</numObs>
         <max>811067.9487881258</max>
@@ -164,7 +164,7 @@
     </entry>
     <entry>
       <string>weightedTardWIPVariance</string>
-      <double>5.2609756242482E10</double>
+      <double>5.260975624248217E10</double>
     </entry>
     <entry>
       <string>condTardMean</string>
