@@ -193,8 +193,11 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 	 * in this queue. In this case, only the first size() elements are used.
 	 */
 	public T[] getAllElementsInOrder(T[] resArray) {
-		if (resArray == null || resArray.length == 0)
+		if (resArray == null)
 			throw new IllegalArgumentException();
+
+		if (count_ == 0)
+			return resArray;
 
 		int minIdx = updatePrios();
 		ListEntry<T> min = nodes_[minIdx];
