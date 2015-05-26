@@ -61,7 +61,7 @@ import util.ExtendedJobStatCollector;
 @SuppressWarnings({ "unused", "deprecation" })
 public class TestForAllResults extends ExperimentTest {
 
-	private static final boolean SAVE_ACTUAL = true;
+	private static final boolean SAVE_ACTUAL = false;
 
 	@BeforeClass
 	public static void setUp() {

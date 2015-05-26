@@ -23,8 +23,10 @@ import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
+import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.util.ShopListenerBase;
 
 import java.util.Map;
@@ -88,9 +90,14 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 
 		JobShop shop = (JobShop) sim;
 		for (WorkStation m : shop.machines) {
-			for (int i = 0, n = m.queue.size(); i < n; i++) {
-				storeWIPJob(m.queue.get(i));
+			PR pr = m.queue.getSequencingRule();
+
+			m.queue.setSequencingRule(new TieBreakerFASFS());
+			for (Job j : m.queue.getAllElementsInOrder(new Job[m.queue.size()])) {
+				storeWIPJob(j);
 			}
+			m.queue.setSequencingRule(pr);
+
 			for (int i = 0; i < m.numInGroup(); i++) {
 				PrioRuleTarget j = m.getProcessedJob(i);
 				if (j != null)
