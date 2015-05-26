@@ -73,7 +73,7 @@ public class TraceFileProducer extends ShopListenerBase {
 				if (!j.isFuture()) {
 					print(m.shop().simTime() + "\tarrives_at\t" + j + "\t" + m
 							+ "\t" + (m.numBusy() == 0 ? "IDLE" : "PROCESSING")
-							+ "\t" + (m.queue.size() - 1));
+							+ "\t" + (m.numJobsWaiting() - 1));
 				}
 			}
 
@@ -83,7 +83,7 @@ public class TraceFileProducer extends ShopListenerBase {
 						+ "\tbecomes_available\t"
 						+ m.toString()
 						+ "\t"
-						+ ws.queue.size()
+						+ ws.numJobsWaiting()
 						+ (m.downReason == null ? "" : "\t"
 								+ String.valueOf(m.downReason)));
 			}
@@ -94,7 +94,7 @@ public class TraceFileProducer extends ShopListenerBase {
 						+ "\tunavailable\t"
 						+ m.toString()
 						+ "\t"
-						+ ws.queue.size()
+						+ ws.numJobsWaiting()
 						+ (m.downReason == null ? "" : "\t"
 								+ String.valueOf(m.downReason)));
 			}
@@ -111,7 +111,7 @@ public class TraceFileProducer extends ShopListenerBase {
 						print(m.shop().simTime() + "\tstart_processing\t"
 								+ m.currMachine.toString() + "\t"
 								+ jobOrBatch.job(i) + "\t" + "\t"
-								+ m.queue.size());
+								+ m.numJobsWaiting());
 					// shop.log().debug(
 					// shop.simTime + "\tstart_processing\t" + machName + "\t"
 					// + batch + "\t" + "\t" + queue.size());
