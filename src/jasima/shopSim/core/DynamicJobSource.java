@@ -73,7 +73,7 @@ public class DynamicJobSource extends JobSource {
 			RandomFactory fact) {
 		if (dblStream == null)
 			return;
-		fact.initNumberStream(dblStream, streamName);
+		fact.initRndGen(dblStream, streamName);
 		dblStream.init();
 	}
 

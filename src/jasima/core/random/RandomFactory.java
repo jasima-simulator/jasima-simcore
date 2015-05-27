@@ -165,7 +165,7 @@ public class RandomFactory implements Serializable {
 	 *            Default name if {@code stream} provides no useful information.
 	 * @return The same as {@code stream}.
 	 */
-	public DblStream initNumberStream(DblStream stream, String defaultName) {
+	public DblStream initRndGen(DblStream stream, String defaultName) {
 		if (stream == null || stream.getRndGen() != null)
 			return stream;
 
@@ -178,7 +178,6 @@ public class RandomFactory implements Serializable {
 		}
 
 		stream.setRndGen(createInstance(name));
-		stream.init();
 
 		return stream;
 	}
@@ -186,7 +185,7 @@ public class RandomFactory implements Serializable {
 	/**
 	 * Initializes the random number generator of a DblStream if it is not
 	 * already set using the streams name. This method is the same as
-	 * {@link #initNumberStream(DblStream, String)}, just without a default
+	 * {@link #initRndGen(DblStream, String)}, just without a default
 	 * name.
 	 * 
 	 * @param stream
@@ -194,7 +193,7 @@ public class RandomFactory implements Serializable {
 	 * @return The stream with random number generator initialized.
 	 */
 	public DblStream initNumberStream(DblStream stream) {
-		return initNumberStream(stream, null);
+		return initRndGen(stream, null);
 	}
 
 	public Simulation getSim() {

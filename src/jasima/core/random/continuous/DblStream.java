@@ -117,7 +117,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 	/**
 	 * Sets an optional name for this stream. The name can be used to, e.g.,
 	 * initialize the random number generator as in
-	 * {@link RandomFactory#initNumberStream(DblStream, String)}.
+	 * {@link RandomFactory#initRndGen(DblStream, String)}.
 	 * 
 	 * @param name
 	 *            The stream's name.

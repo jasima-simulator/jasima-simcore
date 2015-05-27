@@ -58,12 +58,12 @@ public class DowntimeSource {
 		RandomFactory fact = machine.workStation.shop.getRndStreamFactory();
 		if (timeBetweenFailures != null
 				&& timeBetweenFailures.getRndGen() == null) {
-			fact.initNumberStream(timeBetweenFailures, toString()
+			fact.initRndGen(timeBetweenFailures, toString()
 					+ ".timeBetweenFailures");
 			timeBetweenFailures.init();
 		}
 		if (timeToRepair != null && timeToRepair.getRndGen() == null) {
-			fact.initNumberStream(timeToRepair, toString() + ".timeToRepair");
+			fact.initRndGen(timeToRepair, toString() + ".timeToRepair");
 			timeToRepair.init();
 		}
 
