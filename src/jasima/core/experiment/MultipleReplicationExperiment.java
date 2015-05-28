@@ -113,14 +113,13 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 			@SuppressWarnings("unchecked")
 			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
 					.get(name);
-			SummaryStat vs = data.b;
+			SummaryStat vs = data == null ? null : data.b;
 			if (vs == null)
 				throw new RuntimeException(String.format(Util.DEF_LOCALE,
 						"No results for name '%s'.", name));
 
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
-
-			double interv = 2 * vs.confIntRangeSingle(getErrorProb());
+			double interv = vs.confIntRangeSingle(getErrorProb());
 
 			if (interv > allowance)
 				return true;
