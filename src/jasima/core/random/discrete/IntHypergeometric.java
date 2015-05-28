@@ -1,5 +1,7 @@
 package jasima.core.random.discrete;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.HypergeometricDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -40,6 +42,23 @@ public class IntHypergeometric extends IntDistribution {
 		setDistribution(new HypergeometricDistribution(populationSize,
 				numberOfSuccesses, sampleSize));
 	}
+
+	@Override
+	protected void setDistribution(IntegerDistribution distribution) {
+		dist = (HypergeometricDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String
+				.format(Util.DEF_LOCALE,
+						"IntHypergeometric(populationSize=%d;numberOfSuccesses=%d;sampleSize=%d)",
+						getPopulationSize(), getNumberOfSuccesses(),
+						getSampleSize());
+	}
+
+	// ************* getter / setter below ****************
 
 	public int getPopulationSize() {
 		return dist.getPopulationSize();
@@ -94,12 +113,6 @@ public class IntHypergeometric extends IntDistribution {
 		setDistribution(new HypergeometricDistribution(
 				dist.getPopulationSize(), dist.getNumberOfSuccesses(),
 				sampleSize));
-	}
-
-	@Override
-	protected void setDistribution(IntegerDistribution distribution) {
-		dist = (HypergeometricDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

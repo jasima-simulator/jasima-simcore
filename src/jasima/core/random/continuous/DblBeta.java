@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -13,6 +15,11 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
+ * 
+ * @see <a href="http://en.wikipedia.org/wiki/Beta_distribution">Beta
+ *      distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/BetaDistribution.html">Beta
+ *      distribution (MathWorld)</a>
  */
 public class DblBeta extends DblDistribution {
 
@@ -27,6 +34,18 @@ public class DblBeta extends DblDistribution {
 	public DblBeta(double alpha, double beta) {
 		super();
 		setDistribution(new BetaDistribution(alpha, beta));
+	}
+
+	@Override
+	protected void setDistribution(RealDistribution distribution) {
+		dist = (BetaDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "DblBeta(alpha=%f;beta=%f)",
+				getAlpha(), getBeta());
 	}
 
 	public double getAlpha() {
@@ -60,12 +79,6 @@ public class DblBeta extends DblDistribution {
 	 */
 	public void setBeta(double beta) throws NotStrictlyPositiveException {
 		setDistribution(new BetaDistribution(getAlpha(), beta));
-	}
-
-	@Override
-	protected void setDistribution(RealDistribution distribution) {
-		dist = (BetaDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

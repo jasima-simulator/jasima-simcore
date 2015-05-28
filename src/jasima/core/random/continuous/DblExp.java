@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
@@ -44,6 +46,11 @@ public final class DblExp extends DblDistribution {
 	public void setMean(double mean) throws NotStrictlyPositiveException {
 		dist = new ExponentialDistribution(mean);
 		setDistribution(dist);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "DblExp(mean=%f)", getMean());
 	}
 
 	@Override

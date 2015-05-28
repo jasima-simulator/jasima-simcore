@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -11,7 +13,8 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * {@code degreesOfFreedom}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * 
  * @see <a
  *      href="http://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's
@@ -35,6 +38,18 @@ public class DblTDist extends DblDistribution {
 		setDistribution(new TDistribution(degreesOfFreedom));
 	}
 
+	@Override
+	protected void setDistribution(RealDistribution distribution) {
+		dist = (TDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "DblTDist(degreesOfFreedom=%f)",
+				getDegreesOfFreedom());
+	}
+
 	public double getDegreesOfFreedom() {
 		return dist.getDegreesOfFreedom();
 	}
@@ -50,12 +65,6 @@ public class DblTDist extends DblDistribution {
 	public void setDegreesOfFreedom(double degreesOfFreedom)
 			throws NotStrictlyPositiveException {
 		setDistribution(new TDistribution(degreesOfFreedom));
-	}
-
-	@Override
-	protected void setDistribution(RealDistribution distribution) {
-		dist = (TDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

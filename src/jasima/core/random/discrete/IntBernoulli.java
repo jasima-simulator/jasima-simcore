@@ -1,6 +1,7 @@
 package jasima.core.random.discrete;
 
 import jasima.core.util.Pair;
+import jasima.core.util.Util;
 
 import org.apache.commons.math3.exception.OutOfRangeException;
 
@@ -46,6 +47,18 @@ public class IntBernoulli extends IntStream {
 		return probabilityOfSuccess;
 	}
 
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(0.0, 1.0);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE,
+				"IntBernoulli(probabilityOfSuccess=%f)",
+				getProbabilityOfSuccess());
+	}
+
 	public double getProbabilityOfSuccess() {
 		return probabilityOfSuccess;
 	}
@@ -65,11 +78,6 @@ public class IntBernoulli extends IntStream {
 			throw new OutOfRangeException(probOfSuccess, 0, 1);
 		}
 		probabilityOfSuccess = probOfSuccess;
-	}
-
-	@Override
-	public Pair<Double, Double> getValueRange() {
-		return new Pair<>(0.0, 1.0);
 	}
 
 }

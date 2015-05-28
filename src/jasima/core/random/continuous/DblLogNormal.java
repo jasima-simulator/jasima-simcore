@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -10,7 +12,15 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
+ * 
+ * @see <a
+ *      href="http://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal
+ *      distribution (Wikipedia)</a>
+ * @see <a
+ *      href="http://mathworld.wolfram.com/LogNormalDistribution.html">Log-normal
+ *      distribution (MathWorld)</a>
  */
 public class DblLogNormal extends DblDistribution {
 
@@ -25,6 +35,18 @@ public class DblLogNormal extends DblDistribution {
 	public DblLogNormal(double scale, double shape) {
 		super();
 		setDistribution(new LogNormalDistribution(scale, shape));
+	}
+
+	@Override
+	protected void setDistribution(RealDistribution distribution) {
+		dist = (LogNormalDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE,
+				"DblLogNormal(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getScale() {
@@ -55,12 +77,6 @@ public class DblLogNormal extends DblDistribution {
 	 */
 	public void setShape(double shape) throws NotStrictlyPositiveException {
 		setDistribution(new LogNormalDistribution(getScale(), shape));
-	}
-
-	@Override
-	protected void setDistribution(RealDistribution distribution) {
-		dist = (LogNormalDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

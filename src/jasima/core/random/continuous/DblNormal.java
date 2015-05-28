@@ -1,6 +1,7 @@
 package jasima.core.random.continuous;
 
 import jasima.core.util.Pair;
+import jasima.core.util.Util;
 
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -13,6 +14,11 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * @author Torsten Hildebrandt
  * @version 
  *          "$Id$"
+ * 
+ * @see <a href="http://en.wikipedia.org/wiki/Normal_distribution">Normal
+ *      distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/NormalDistribution.html">Normal
+ *      distribution (MathWorld)</a>
  */
 public class DblNormal extends DblStream {
 
@@ -33,6 +39,17 @@ public class DblNormal extends DblStream {
 	@Override
 	public double getNumericalMean() {
 		return mean;
+	}
+
+	@Override
+	public Pair<Double, Double> getValueRange() {
+		return new Pair<>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "DblNormal(mean=%f;stdev=%f)",
+				getMean(), getStdev());
 	}
 
 	public double getMean() {
@@ -69,11 +86,6 @@ public class DblNormal extends DblStream {
 		} else {
 			throw new NotStrictlyPositiveException(stdev);
 		}
-	}
-
-	@Override
-	public Pair<Double, Double> getValueRange() {
-		return new Pair<>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
 
 }

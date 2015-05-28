@@ -1,5 +1,7 @@
 package jasima.core.random.discrete;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.NotPositiveException;
@@ -37,6 +39,19 @@ public class IntBinomial extends IntDistribution {
 		setDistribution(new BinomialDistribution(n, p));
 	}
 
+	@Override
+	protected void setDistribution(IntegerDistribution distribution) {
+		dist = (BinomialDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE,
+				"IntBinomial(probabilityOfSuccess=%f;numTrials=%d)",
+				getProbabilityOfSuccess(), getNumTrials());
+	}
+
 	public double getProbabilityOfSuccess() {
 		return dist.getProbabilityOfSuccess();
 	}
@@ -71,12 +86,6 @@ public class IntBinomial extends IntDistribution {
 	public void setNumTrials(int numTrials) throws NotPositiveException {
 		setDistribution(new BinomialDistribution(numTrials,
 				dist.getProbabilityOfSuccess()));
-	}
-
-	@Override
-	protected void setDistribution(IntegerDistribution distribution) {
-		dist = (BinomialDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -11,7 +13,8 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * parameter and a scale parameter.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull
  *      distribution (Wikipedia)</a>
@@ -37,6 +40,12 @@ public class DblWeibull extends DblDistribution {
 	protected void setDistribution(RealDistribution distribution) {
 		dist = (WeibullDistribution) distribution;
 		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "DblWeibull(shape=%f;scale=%f)",
+				getShape(), getScale());
 	}
 
 	public double getShape() {

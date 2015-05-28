@@ -1,5 +1,7 @@
 package jasima.core.random.discrete;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.exception.NotPositiveException;
@@ -34,6 +36,19 @@ public class IntPoisson extends IntDistribution {
 		setDistribution(new PoissonDistribution(mean));
 	}
 
+	@Override
+	protected void setDistribution(IntegerDistribution distribution) {
+		dist = (PoissonDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "IntPoisson(mean=%f)", getMean());
+	}
+
+	// ************* getter / setter below ****************
+
 	public double getMean() {
 		return dist.getMean();
 	}
@@ -48,12 +63,6 @@ public class IntPoisson extends IntDistribution {
 	 */
 	public void setMean(double mean) throws NotPositiveException {
 		setDistribution(new PoissonDistribution(mean));
-	}
-
-	@Override
-	protected void setDistribution(IntegerDistribution distribution) {
-		dist = (PoissonDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

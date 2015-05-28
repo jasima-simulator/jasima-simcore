@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -12,7 +14,8 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * distributions.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma
  *      distribution (Wikipedia)</a>
@@ -32,6 +35,18 @@ public class DblGamma extends DblDistribution {
 	public DblGamma(double shape, double scale) {
 		super();
 		setDistribution(new GammaDistribution(shape, scale));
+	}
+
+	@Override
+	protected void setDistribution(RealDistribution distribution) {
+		dist = (GammaDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE, "DblGamma(shape=%f;scale=%f)",
+				getShape(), getScale());
 	}
 
 	public double getShape() {
@@ -64,12 +79,6 @@ public class DblGamma extends DblDistribution {
 	 */
 	public void setScale(double scale) throws NotStrictlyPositiveException {
 		setDistribution(new GammaDistribution(dist.getShape(), scale));
-	}
-
-	@Override
-	protected void setDistribution(RealDistribution distribution) {
-		dist = (GammaDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

@@ -1,5 +1,7 @@
 package jasima.core.random.discrete;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.GeometricDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.OutOfRangeException;
@@ -36,6 +38,19 @@ public class IntGeometric extends IntDistribution {
 		setDistribution(new GeometricDistribution(probOfSuccess));
 	}
 
+	@Override
+	protected void setDistribution(IntegerDistribution distribution) {
+		dist = (GeometricDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE,
+				"IntGeometric(probabilityOfSuccess=%f)",
+				getProbabilityOfSuccess());
+	}
+
 	public double getProbabilityOfSuccess() {
 		return dist.getProbabilityOfSuccess();
 	}
@@ -52,12 +67,6 @@ public class IntGeometric extends IntDistribution {
 	public void setProbabilityOfSuccess(double probOfSuccess)
 			throws OutOfRangeException {
 		setDistribution(new GeometricDistribution(probOfSuccess));
-	}
-
-	@Override
-	protected void setDistribution(IntegerDistribution distribution) {
-		dist = (GeometricDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }

@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import jasima.core.util.Util;
+
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -12,7 +14,8 @@ import org.apache.commons.math3.exception.NotStrictlyPositiveException;
  * {@link DblGamma Gamma distribution}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * @version 
+ *          "$Id$"
  * 
  * @see <a
  *      href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared
@@ -36,6 +39,18 @@ public class DblChiSquared extends DblDistribution {
 		setDistribution(new ChiSquaredDistribution(degreesOfFreedom));
 	}
 
+	@Override
+	public String toString() {
+		return String.format(Util.DEF_LOCALE,
+				"DblChiSquared(degreesOfFreedom=%d)", getDegreesOfFreedom());
+	}
+
+	@Override
+	protected void setDistribution(RealDistribution distribution) {
+		dist = (ChiSquaredDistribution) distribution;
+		super.setDistribution(distribution);
+	}
+
 	public int getDegreesOfFreedom() {
 		return (int) dist.getDegreesOfFreedom();
 	}
@@ -51,12 +66,6 @@ public class DblChiSquared extends DblDistribution {
 	public void setDegreesOfFreedom(int degreesOfFreedom)
 			throws NotStrictlyPositiveException {
 		setDistribution(new ChiSquaredDistribution(degreesOfFreedom));
-	}
-
-	@Override
-	protected void setDistribution(RealDistribution distribution) {
-		dist = (ChiSquaredDistribution) distribution;
-		super.setDistribution(distribution);
 	}
 
 }
