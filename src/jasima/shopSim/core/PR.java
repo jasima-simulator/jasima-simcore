@@ -121,10 +121,13 @@ public abstract class PR implements Cloneable, Serializable {
 		return owner;
 	}
 
-	public void setOwner(WorkStation o) {
+	public PR setOwner(WorkStation o) {
 		owner = o;
 		if (getTieBreaker() != null)
 			getTieBreaker().setOwner(o);
+		// returning "this" prevents "owner" from being recognized as a Bean
+		// Property in the GUI
+		return this;
 	}
 
 	/**

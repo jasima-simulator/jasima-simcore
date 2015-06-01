@@ -70,10 +70,11 @@ public class Inverse extends PR {
 	}
 
 	@Override
-	public void setOwner(WorkStation o) {
+	public PR setOwner(WorkStation o) {
 		super.setOwner(o);
 		if (getBaseRule() != null)
 			getBaseRule().setOwner(o);
+		return this;
 	}
 
 	public PR getBaseRule() {
