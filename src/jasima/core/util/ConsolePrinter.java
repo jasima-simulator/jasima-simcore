@@ -142,7 +142,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 					abortStr += "; " + toString(errorMsg);
 			}
 
-			me.print("finished experiment %d/%d in %fs%s",
+			me.print("finished experiment %d/%d in %.2fs%s",
 					me.getNumTasksExecuted(), me.getNumTasks(), runTime,
 					abortStr);
 		}
