@@ -21,6 +21,7 @@ package jasima.core.util;
 import jasima.core.experiment.ExperimentListenerBase;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,9 +52,26 @@ public abstract class AbstractResultSaver extends ExperimentListenerBase {
 			final String extension) {
 		int index = 0;
 		String retVal = baseName;
-		while (new File(retVal + extension).exists()) {
+
+		while (true) {
+			try {
+				boolean createRes = new File(retVal + extension)
+						.createNewFile();
+				if (createRes)
+					break; // while
+			} catch (IOException e) {
+			}
+
 			retVal = baseName + "_" + ++index;
+
+			if (index > 1000) {
+				// give up
+				throw new RuntimeException(String.format(Util.DEF_LOCALE,
+						"Cant't create new file (baseName=%s,ext=%s).",
+						baseName, extension));
+			}
 		}
+
 		return retVal;
 	}
 
