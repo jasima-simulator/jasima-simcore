@@ -103,7 +103,7 @@ public class IndividualMachine {
 		final JobShop shop = workStation.shop();
 
 		if (state != MachineState.IDLE) {
-			assert procFinished > shop.simTime();
+			assert procFinished >= shop.simTime();
 			assert curJob != null || state == MachineState.DOWN;
 
 			// don't interrupt ongoing operation/downtime, postpone takeDown
