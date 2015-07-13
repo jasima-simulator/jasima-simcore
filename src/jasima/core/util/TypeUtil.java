@@ -62,7 +62,8 @@ public class TypeUtil {
 	 *             exception (of type {@link ReflectiveOperationException})
 	 *             gives a more detailed indication why the operation failed.
 	 */
-	public static Class<?> getPropertyType(Object o, String propPath) throws RuntimeException {
+	public static Class<?> getPropertyType(Object o, String propPath)
+			throws RuntimeException {
 		try {
 			String[] segments = propPath.split("\\.");
 			// call getters until we finally arrive where we can call the
@@ -512,26 +513,30 @@ public class TypeUtil {
 		if (o == null)
 			return null;
 
-		// array?
-		Class<?> o2 = o.getClass().getComponentType();
-		if (o2 == null)
-			o2 = o.getClass();
-
-		if (Cloneable.class.isAssignableFrom(o2)) {
-			// TODO: deep clone arrays?
-			// o or an array's components are clonable
-			try {
-				Method cloneMethod = o.getClass().getMethod("clone",
-						new Class[] {});
-				return (T) cloneMethod.invoke(o);
-			} catch (NoSuchMethodException ignore) {
-				// clonable, but no public clone-method, return "o" as is
-			} catch (ReflectiveOperationException e) {
-				throw new RuntimeException(e);
-			}
+		// array or normal class?
+		if (o.getClass().getComponentType() == null) {
+			// normal class
+			o = callClone(o);
+		} else {
+			o = (T) deepCloneArrayIfPossible((Object[]) o);
 		}
 
 		return o;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> T callClone(T o) {
+		// o or an array's components are clonable
+		try {
+			Method cloneMethod = o.getClass()
+					.getMethod("clone", new Class[] {});
+			return (T) cloneMethod.invoke(o);
+		} catch (NoSuchMethodException ignore) {
+			// not cloneable, or no public clone-method, return "o" as is
+			return o;
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
