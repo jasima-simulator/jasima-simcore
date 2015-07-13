@@ -22,15 +22,20 @@ package jasima.shopSim.core;
  * Operations specify what to process.
  * 
  * @author Torsten Hildebrandt
- * @version $Id: Operation.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com
- *          $
+ * @version 
+ *          "$Id: Operation.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com$"
  */
-public class Operation {
+public class Operation implements Cloneable {
 
 	public WorkStation machine;
-	public double procTime = Double.NaN;;
+	public double procTime = Double.NaN;
 	public int setupState = WorkStation.DEF_SETUP;
 	public String batchFamily = WorkStation.BATCH_INCOMPATIBLE;
 	public int maxBatchSize = 1;
+
+	@Override
+	public Operation clone() throws CloneNotSupportedException {
+		return (Operation) super.clone();
+	}
 
 }
