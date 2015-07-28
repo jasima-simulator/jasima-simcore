@@ -57,7 +57,7 @@ public class Util {
 	 * Default VERSION used when no version information is available from
 	 * package (e.g., during a run from within Eclipse).
 	 */
-	public static final String DEFAULT_VERSION = "1.3.0";
+	public static final String DEFAULT_VERSION = "1.3.1-DEV";
 
 	/**
 	 * Descriptive String showing name, current version and project URL.
