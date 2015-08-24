@@ -101,8 +101,8 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 
 	private HashMap<Object, Object> valueStore;
 
-	JobShop shop;
-	int index; // in shop.machines
+	protected JobShop shop;
+	protected int index; // in shop.machines
 
 	private int numBusy;
 	private int numFutures; // number of future arrivals currently in queue
@@ -384,12 +384,16 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		currMachine.curJob = batch;
 		shop.schedule(currMachine.onDepart);
 
+		notifyJobsOfProcStart(batch);
+
+		currMachine.state = MachineState.WORKING;
+	}
+
+	protected void notifyJobsOfProcStart(final PrioRuleTarget batch) {
 		for (int i = 0; i < batch.numJobsInBatch(); i++) {
 			Job j = batch.job(i);
 			j.startProcessing();
 		}
-
-		currMachine.state = MachineState.WORKING;
 	}
 
 	/** Called when an operation of Job j is finished. */
@@ -412,18 +416,22 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 			justCompleted = null;
 		}
 
-		for (int i = 0, n = b.numJobsInBatch(); i < n; i++) {
-			Job j = b.job(i);
-			j.endProcessing();
-			// send jobs to next machine
-			j.proceed();
-		}
+		notifyJobsOfDepart(b);
 
 		currMachine = null;
 
 		// start next job on this machine
 		if (numJobsWaiting() > 0)
 			selectAndStart();
+	}
+
+	protected void notifyJobsOfDepart(PrioRuleTarget b) {
+		for (int i = 0, n = b.numJobsInBatch(); i < n; i++) {
+			Job j = b.job(i);
+			j.endProcessing();
+			// send jobs to next machine
+			j.proceed();
+		}
 	}
 
 	/**
@@ -528,6 +536,10 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		} else {
 			return maxJob;
 		}
+	}
+
+	public boolean isFree(IndividualMachine im) {
+		return freeMachines.contains(im);
 	}
 
 	/**

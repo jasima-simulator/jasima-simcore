@@ -52,6 +52,8 @@ public abstract class PR implements Cloneable, Serializable {
 	 * initializations required.
 	 */
 	public void init() {
+		if (getTieBreaker()!=null)
+			getTieBreaker().init();
 	}
 
 	/**
