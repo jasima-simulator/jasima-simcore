@@ -146,6 +146,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	private double simTime;
 	private int currPrio;
 	private Event currEvent;
+	private long numEventsProcessed;
 
 	// event queue
 	private EventQueue eventList;
@@ -172,6 +173,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		currPrio = Event.EVENT_PRIO_MAX;
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
+		numEventsProcessed = 0;
 
 		if (numListener() > 0) {
 			fire(SIM_INIT);
@@ -197,23 +199,63 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
 		continueSim = numAppEvents > 0;
 
-		// main event loop
-		while (continueSim) {
-			currEvent = eventList.extract();
+		do {
+			try {
+				// main event loop
+				while (continueSim) {
+					currEvent = eventList.extract();
 
-			// Advance clock to time of next event
-			simTime = currEvent.getTime();
-			currPrio = currEvent.getPrio();
+					// Advance clock to time of next event
+					simTime = currEvent.getTime();
+					currPrio = currEvent.getPrio();
 
-			currEvent.handle();
+					currEvent.handle();
 
-			if (currEvent.isAppEvent()) {
-				if (--numAppEvents == 0)
-					continueSim = false;
+					if (currEvent.isAppEvent()) {
+						if (--numAppEvents == 0)
+							continueSim = false;
+					}
+
+					numEventsProcessed++;
+				}
+			} catch (Throwable t) {
+				boolean rethrow = handleError(t);
+
+				if (rethrow) {
+					if (t instanceof RuntimeException) {
+						throw (RuntimeException) t;
+					} else if (t instanceof Error) {
+						throw (Error) t;
+					} else
+						// can't occur
+						throw new AssertionError();
+				} else {
+					// do nothing
+				}
 			}
-		}
+		} while (continueSim);
 
 		afterRun();
+	}
+
+	/**
+	 * This method is called if an unhandled exception occurs during the main of
+	 * a simulation run. The implementation here just prints an appropriate
+	 * message and then rethrows the Exception, terminating the simulation run.
+	 * 
+	 * @param t
+	 *            The Error or RuntimeException that was triggered somewhere in
+	 *            simulation code.
+	 * @return Whether or not to rethrow the Exception after processing.
+	 */
+	protected boolean handleError(Throwable t) {
+		String errorString = Util.exceptionToString(t);
+
+		print(SimMsgCategory.ERROR,
+				"An uncaught exception occurred. Current event='%s', exception='%s'",
+				currentEvent(), errorString);
+
+		return true;
 	}
 
 	/**
@@ -290,7 +332,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	}
 
 	/**
-	 * Returns the priority of the currently processed event;
+	 * Returns the priority of the currently processed event.
 	 */
 	public int currentPrio() {
 		return currPrio;
@@ -301,6 +343,13 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 */
 	public Event currentEvent() {
 		return currEvent;
+	}
+
+	/**
+	 * Returns the number of events processed by the main simulation loop.
+	 */
+	public long numEventsProcessed() {
+		return numEventsProcessed;
 	}
 
 	public void produceResults(Map<String, Object> res) {
