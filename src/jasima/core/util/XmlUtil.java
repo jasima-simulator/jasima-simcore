@@ -20,20 +20,19 @@
  *******************************************************************************/
 package jasima.core.util;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+import com.thoughtworks.xstream.converters.collections.MapConverter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import jasima.core.experiment.Experiment.UniqueNamesCheckingHashMap;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
-import com.thoughtworks.xstream.converters.collections.MapConverter;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * Provides utility methods to read and write arbitrary Java objects as xml
@@ -130,19 +129,24 @@ public class XmlUtil {
 	}
 
 	private static XStream getXStream(final FileFormat format) {
-		XStream xstream = new XStream(new DomDriver() {
-			@Override
-			public HierarchicalStreamWriter createWriter(Writer out) {
-				if(format == FileFormat.JASIMA_BEAN) {
-					try {
-						out.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<?jasima bean?>\n");
-					} catch(IOException e) {
-						throw new XStreamException(e);
+		XStream xstream;
+		if(format == FileFormat.JSON) {
+			xstream = new XStream(new JettisonMappedXmlDriver());
+		} else {
+			xstream = new XStream(new DomDriver() {
+				@Override
+				public HierarchicalStreamWriter createWriter(Writer out) {
+					if(format == FileFormat.JASIMA_BEAN) {
+						try {
+							out.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<?jasima bean?>\n");
+						} catch(IOException e) {
+							throw new XStreamException(e);
+						}
 					}
+					return super.createWriter(out);
 				}
-				return super.createWriter(out);
-			}
-		});
+			});
+		}
 		xstream.registerConverter(new MapConverter(xstream.getMapper()) {
 			@SuppressWarnings("rawtypes")
 			@Override
@@ -155,6 +159,8 @@ public class XmlUtil {
 		});
 		if(format == FileFormat.JASIMA_BEAN) {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), true), -10);
+		} else if(format == FileFormat.JSON) {
+			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);
 		}
 		return xstream;
 	}

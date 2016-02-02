@@ -30,5 +30,10 @@ public enum FileFormat {
 	 * The jasima XML format, using a converter based on getter and setter
 	 * methods.
 	 */
-	JASIMA_BEAN
+	JASIMA_BEAN,
+
+	/**
+	 * A json format based on getter and setter methods.
+	 */
+	JSON,
 }
