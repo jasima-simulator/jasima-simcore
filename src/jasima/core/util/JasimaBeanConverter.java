@@ -101,7 +101,7 @@ public class JasimaBeanConverter extends JavaBeanConverter {
 				if (NULL_ATTRIBUTE_VALUE.equals(reader.getAttribute(NULL_ATTRIBUTE_NAME))) {
 					value = null;
 				} else {
-					value = context.convertAnother(result, determineType(reader, resultType, propertyName));
+					value = context.convertAnother(result, determineType(reader, result, propertyName));
 				}
 
 				beanProvider.writeProperty(result, propertyName, value);
