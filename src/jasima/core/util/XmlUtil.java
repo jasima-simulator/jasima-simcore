@@ -157,7 +157,12 @@ public class XmlUtil {
 					return super.canConvert(type);
 			}
 		});
-		if(format == FileFormat.JASIMA_BEAN) {
+
+		if(format == FileFormat.RESULTS_MAP) {
+			xstream.setMode(XStream.NO_REFERENCES);
+		}
+
+		if(format == FileFormat.JASIMA_BEAN || format == FileFormat.RESULTS_MAP) {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), true), -10);
 		} else if(format == FileFormat.JSON) {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);

@@ -33,6 +33,11 @@ public enum FileFormat {
 	JASIMA_BEAN,
 
 	/**
+	 * A bean based converter that does not use references.
+	 */
+	RESULTS_MAP,
+
+	/**
 	 * A json format based on getter and setter methods.
 	 */
 	JSON,
