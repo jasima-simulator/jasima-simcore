@@ -82,8 +82,7 @@ public class TypeUtil {
 	 *             exception (of type {@link ReflectiveOperationException})
 	 *             gives a more detailed indication why the operation failed.
 	 */
-	public static Class<?> getPropertyType(Object o, String propPath)
-			throws RuntimeException {
+	public static Class<?> getPropertyType(Object o, String propPath) throws RuntimeException {
 		try {
 			String[] segments = propPath.split("\\.");
 			// call getters until we finally arrive where we can call the
@@ -91,10 +90,8 @@ public class TypeUtil {
 			for (int i = 0; i < segments.length; i++) {
 				PropertyDescriptor match = getPropertyDescriptor(o, segments[i]);
 				if (match == null)
-					throw new IllegalArgumentException(String.format(
-							Util.DEF_LOCALE,
-							"segment '%s' not found of property path '%s'.",
-							segments[i], propPath));
+					throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+							"segment '%s' not found of property path '%s'.", segments[i], propPath));
 
 				if (i == segments.length - 1) {
 					// return property type
@@ -107,9 +104,8 @@ public class TypeUtil {
 
 			throw new AssertionError(); // should never be reached
 		} catch (ReflectiveOperationException e1) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"Can't determine type of property '%s': %s", propPath,
-					e1.toString()), e1);
+			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Can't determine type of property '%s': %s",
+					propPath, e1.toString()), e1);
 		}
 	}
 
@@ -131,8 +127,7 @@ public class TypeUtil {
 	 *             exception (of type {@link ReflectiveOperationException})
 	 *             gives a more detailed indication why the operation failed.
 	 */
-	public static Object getPropertyValue(Object o, String propPath)
-			throws RuntimeException {
+	public static Object getPropertyValue(Object o, String propPath) throws RuntimeException {
 		try {
 			String[] segments = propPath.split("\\.");
 			// call getters until we finally arrive where we can call the
@@ -140,10 +135,8 @@ public class TypeUtil {
 			for (int i = 0; i < segments.length; i++) {
 				PropertyDescriptor match = getPropertyDescriptor(o, segments[i]);
 				if (match == null)
-					throw new IllegalArgumentException(String.format(
-							Util.DEF_LOCALE,
-							"segment '%s' not found of property path '%s'.",
-							segments[i], propPath));
+					throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+							"segment '%s' not found of property path '%s'.", segments[i], propPath));
 
 				// call getter and continue
 				Method m = match.getReadMethod();
@@ -152,8 +145,7 @@ public class TypeUtil {
 
 			return o;
 		} catch (ReflectiveOperationException e1) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"Can't get property '%s'.", propPath), e1);
+			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Can't get property '%s'.", propPath), e1);
 		}
 	}
 
@@ -172,8 +164,7 @@ public class TypeUtil {
 	 * @see #setPropertyValue(Object, String, Object, ClassLoader, String[])
 	 */
 	public static void setPropertyValue(Object o, String propPath, Object value) {
-		setPropertyValue(o, propPath, value, TypeUtil.class.getClassLoader(),
-				Util.DEF_CLASS_SEARCH_PATH);
+		setPropertyValue(o, propPath, value, TypeUtil.class.getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
 	}
 
 	/**
@@ -195,8 +186,8 @@ public class TypeUtil {
 	 *            A list of package names that are used to complete abbreviated
 	 *            class names.
 	 */
-	public static void setPropertyValue(Object o, String propPath,
-			Object value, ClassLoader loader, String[] packageSearchPath) {
+	public static void setPropertyValue(Object o, String propPath, Object value, ClassLoader loader,
+			String[] packageSearchPath) {
 		String getPart;
 		String setPart;
 		int i = propPath.lastIndexOf('.');
@@ -216,19 +207,17 @@ public class TypeUtil {
 		// find property descriptor
 		PropertyDescriptor desc = getPropertyDescriptor(o, setPart);
 		if (desc == null)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"Segment '%s' not found of property path '%s'.", setPart,
-					propPath));
+			throw new IllegalArgumentException(
+					String.format(Util.DEF_LOCALE, "Segment '%s' not found of property path '%s'.", setPart, propPath));
 
-		value = convert(value, desc.getPropertyType(), getPart, loader,
-				packageSearchPath);
+		value = convert(value, desc.getPropertyType(), getPart, loader, packageSearchPath);
 
 		try {
 			desc.getWriteMethod().invoke(o, value);
 		} catch (ReflectiveOperationException e1) {
-			throw new RuntimeException(String.format(
-					"Can't set property '%s' to value '%s': %s", propPath,
-					value, exceptionMessage(e1)), e1);
+			throw new RuntimeException(
+					String.format("Can't set property '%s' to value '%s': %s", propPath, value, exceptionMessage(e1)),
+					e1);
 		}
 	}
 
@@ -251,13 +240,11 @@ public class TypeUtil {
 	 *            Type of returned object.
 	 * @return {@code o} converted to {@code requiredType}.
 	 */
-	public static <T> T convert(Object o, Class<T> requiredType,
-			String context, ClassLoader l, String[] packageSearchPath)
-			throws TypeConversionException {
+	public static <T> T convert(Object o, Class<T> requiredType, String context, ClassLoader l,
+			String[] packageSearchPath) throws TypeConversionException {
 		T value;
-		if (o instanceof String) {
-			value = TypeToStringConverter.convertFromString((String) o,
-					requiredType, context, l, packageSearchPath);
+		if (o instanceof String && requiredType != String.class) {
+			value = TypeToStringConverter.convertFromString((String) o, requiredType, context, l, packageSearchPath);
 		} else {
 			value = basicConversions(o, requiredType);
 		}
@@ -351,8 +338,7 @@ public class TypeUtil {
 			BeanInfo bi = Introspector.getBeanInfo(c);
 
 			PropertyDescriptor[] pds = bi.getPropertyDescriptors();
-			ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(
-					pds.length);
+			ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(pds.length);
 			for (PropertyDescriptor pd : pds) {
 				if (pd.getWriteMethod() != null && pd.getReadMethod() != null)
 					list.add(pd);
@@ -375,11 +361,9 @@ public class TypeUtil {
 	 * @return A {@code PropertyDescriptor} matching {@code propName}, otherwise
 	 *         {@code null}.
 	 */
-	private static PropertyDescriptor getPropertyDescriptor(Object o,
-			String propName) {
+	private static PropertyDescriptor getPropertyDescriptor(Object o, String propName) {
 		Map<String, PropertyDescriptor> props = writableProperties(o.getClass());
-		PropertyDescriptor desc = props.get(propName
-				.toLowerCase(Util.DEF_LOCALE));
+		PropertyDescriptor desc = props.get(propName.toLowerCase(Util.DEF_LOCALE));
 		return desc;
 	}
 
@@ -441,19 +425,15 @@ public class TypeUtil {
 
 		if (klass == boolean.class || klass == Boolean.class) {
 			String str = convertToString(o);
-			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")
-					|| str.equalsIgnoreCase("1"))
+			if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("1"))
 				return (T) Boolean.TRUE;
-			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")
-					|| str.equalsIgnoreCase("0"))
+			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no") || str.equalsIgnoreCase("0"))
 				return (T) Boolean.FALSE;
-			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
-					"Can't convert '%s' to bool.", o));
+			throw new TypeConversionException(String.format(Util.DEF_LOCALE, "Can't convert '%s' to bool.", o));
 		}
 
 		if (klass.isEnum()) {
-			return (T) Enum.valueOf(klass.asSubclass(Enum.class),
-					convertToString(o));
+			return (T) Enum.valueOf(klass.asSubclass(Enum.class), convertToString(o));
 		}
 
 		if (klass == byte.class || klass == Byte.class) {
@@ -482,9 +462,8 @@ public class TypeUtil {
 				return (T) new Character(s.charAt(0));
 		}
 
-		throw new TypeConversionException(String.format(Util.DEF_LOCALE,
-				"Can't convert from '%s' to '%s'.", o.getClass().getName(),
-				klass.getName()));
+		throw new TypeConversionException(String.format(Util.DEF_LOCALE, "Can't convert from '%s' to '%s'.",
+				o.getClass().getName(), klass.getName()));
 	}
 
 	private static WeakHashMap<Class<?>, Map<String, PropertyDescriptor>> propCache = null;
@@ -548,8 +527,7 @@ public class TypeUtil {
 	private static <T> T callClone(T o) {
 		// o or an array's components are clonable
 		try {
-			Method cloneMethod = o.getClass()
-					.getMethod("clone", new Class[] {});
+			Method cloneMethod = o.getClass().getMethod("clone", new Class[] {});
 			return (T) cloneMethod.invoke(o);
 		} catch (NoSuchMethodException ignore) {
 			// not cloneable, or no public clone-method, return "o" as is
@@ -604,15 +582,12 @@ public class TypeUtil {
 	public static Class<?> getMainClass() throws ClassNotFoundException {
 		Properties props = System.getProperties();
 
-		String main = (String) findEntryCaseInsensitive(props,
-				PROP_JASIMA_EXPERIMENT);
+		String main = (String) findEntryCaseInsensitive(props, PROP_JASIMA_EXPERIMENT);
 		if (main == null) {
-			main = (String) findEntryCaseInsensitive(props,
-					PROP_SUN_JAVA_COMMAND);
+			main = (String) findEntryCaseInsensitive(props, PROP_SUN_JAVA_COMMAND);
 		}
 		if (main == null) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"Couldn't find properties '%s' or '%s'.",
+			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Couldn't find properties '%s' or '%s'.",
 					PROP_SUN_JAVA_COMMAND, PROP_JASIMA_EXPERIMENT));
 		}
 
@@ -624,8 +599,7 @@ public class TypeUtil {
 
 		try {
 			// try to find as class directly
-			Class<?> klazz = TypeUtil.class.getClassLoader().loadClass(
-					classOrJar);
+			Class<?> klazz = TypeUtil.class.getClassLoader().loadClass(classOrJar);
 			return klazz;
 		} catch (ClassNotFoundException e) {
 			// try to interpret as jar and load main class name from manifest.mf
@@ -638,18 +612,15 @@ public class TypeUtil {
 		}
 	}
 
-	private static Class<?> loadFromJar(String classOrJar) throws IOException,
-			ClassNotFoundException {
+	private static Class<?> loadFromJar(String classOrJar) throws IOException, ClassNotFoundException {
 		try (JarFile jar = new JarFile(classOrJar)) {
 			Map<String, Attributes> jarEntries = jar.getManifest().getEntries();
 			// is app using "jar in jar" export from eclipse? in this case
 			// main-class is JarRsrcLoader
-			Attributes o = (Attributes) findEntryCaseInsensitive(jarEntries,
-					"Rsrc-Main-Class");
+			Attributes o = (Attributes) findEntryCaseInsensitive(jarEntries, "Rsrc-Main-Class");
 			if (o == null || o.size() == 0) {
 				// regular main class
-				o = (Attributes) findEntryCaseInsensitive(jarEntries,
-						"Main-Class");
+				o = (Attributes) findEntryCaseInsensitive(jarEntries, "Main-Class");
 			}
 			assert o.size() == 1;
 
@@ -662,8 +633,7 @@ public class TypeUtil {
 		}
 	}
 
-	private static Object findEntryCaseInsensitive(Map<?, ?> jarEntries,
-			String entry) {
+	private static Object findEntryCaseInsensitive(Map<?, ?> jarEntries, String entry) {
 		entry = entry.toLowerCase();
 		for (Object o : jarEntries.keySet()) {
 			String s = ((String) o).toLowerCase();
