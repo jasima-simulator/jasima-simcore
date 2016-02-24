@@ -26,12 +26,11 @@ import org.junit.runners.Suite;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestExperimentAbort.class, OCBATest.class,
-		TestExperimentExceptions.class, TestFFEFactorSetting.class })
+@Suite.SuiteClasses({ TestExperimentAbort.class, OCBATest.class, TestExperimentExceptions.class,
+		TestFFEFactorSetting.class, Test_FFE_Array_Setter.class })
 public class AllTests {
 
 }

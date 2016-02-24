@@ -36,8 +36,7 @@ public abstract class TypeToStringConverter {
 
 	public abstract Class<?>[] handledTypes();
 
-	public abstract <T> T fromString(ArgListTokenizer tk,
-			Class<T> requiredType, String context, ClassLoader loader,
+	public abstract <T> T fromString(ArgListTokenizer tk, Class<T> requiredType, String context, ClassLoader loader,
 			String[] packageSearchPath);
 
 	public String toString(Object o) {
@@ -60,7 +59,7 @@ public abstract class TypeToStringConverter {
 	}
 
 	/**
-	 * * Constructs a new ListTokenizer around {@code input} and then calls
+	 * * Constructs a new ListTokenizer around {@code s} and then calls
 	 * {@link #convertFromString(ArgListTokenizer, Class, String, ClassLoader, String[])}
 	 * . This class assumes it can read and parse the whole string, otherwise it
 	 * throws a {@link ParseException}.
@@ -79,20 +78,17 @@ public abstract class TypeToStringConverter {
 	 * @param <T>
 	 *            The required type.
 	 */
-	public static <T> T convertFromString(String s, Class<T> requiredType,
-			String context, ClassLoader loader, String[] packageSearchPath) {
+	public static <T> T convertFromString(String s, Class<T> requiredType, String context, ClassLoader loader,
+			String[] packageSearchPath) {
 
 		ArgListTokenizer tk = new ArgListTokenizer(s);
-		T value = convertFromString(tk, requiredType, context, loader,
-				packageSearchPath);
+		T value = convertFromString(tk, requiredType, context, loader, packageSearchPath);
 
 		// full input read?
 		if (tk.nextToken() != null) {
-			throw new TypeConversionException(
-					String.format(
-							Util.DEF_LOCALE,
-							"Can't create object for value '%s' (property path: '%s'): There is data after the last token: '%s'.",
-							s, context, s.substring(tk.currTokenStart())));
+			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
+					"Can't create object for value '%s' (property path: '%s'): There is data after the last token: '%s'.",
+					s, context, s.substring(tk.currTokenStart())));
 		}
 
 		return value;
@@ -117,12 +113,10 @@ public abstract class TypeToStringConverter {
 	 *            Type of returned object.
 	 * @return The object as specified in the parse tree.
 	 */
-	public static <T> T convertFromString(ArgListTokenizer tk,
-			Class<T> requiredType, String context, ClassLoader loader,
-			String[] packageSearchPath) {
+	public static <T> T convertFromString(ArgListTokenizer tk, Class<T> requiredType, String context,
+			ClassLoader loader, String[] packageSearchPath) {
 		TypeToStringConverter conv = lookupConverter(requiredType);
-		return conv.fromString(tk, requiredType, context, loader,
-				packageSearchPath);
+		return conv.fromString(tk, requiredType, context, loader, packageSearchPath);
 	}
 
 	/**

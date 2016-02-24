@@ -22,24 +22,28 @@ package jasima.core.util;
 
 import static jasima.core.util.converter.TypeConverterJavaBean.exceptionMessage;
 import static jasima.core.util.converter.TypeToStringConverter.convertToString;
-import jasima.core.util.converter.TypeToStringConverter;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.WeakHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+
+import jasima.core.util.converter.TypeToStringConverter;
 
 /**
  * This class contains a collection of methods concernde with
@@ -85,25 +89,47 @@ public class TypeUtil {
 	public static Class<?> getPropertyType(Object o, String propPath) throws RuntimeException {
 		try {
 			String[] segments = propPath.split("\\.");
-			// call getters until we finally arrive where we can call the
-			// setter-method
-			for (int i = 0; i < segments.length; i++) {
-				PropertyDescriptor match = getPropertyDescriptor(o, segments[i]);
-				if (match == null)
-					throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-							"segment '%s' not found of property path '%s'.", segments[i], propPath));
 
-				if (i == segments.length - 1) {
-					// return property type
-					return match.getPropertyType();
-				} else {
-					// call getter and continue
-					o = match.getReadMethod().invoke(o);
+			for (int i = 0; i < segments.length - 1; i++) {
+				o = handleSegmentGet(o, propPath, segments[i]);
+			}
+
+			// last segment handled differently
+			String last = segments[segments.length - 1];
+
+			// do we have an array access?
+			int arrayElement = -1;
+			if (last.contains("[")) {
+				int i1 = propPath.indexOf('[');
+				int i2 = propPath.indexOf(']');
+				arrayElement = Integer.parseInt(propPath.substring(i1 + 1, i2));
+				if (arrayElement < 0)
+					throw new IllegalArgumentException("invalid array/list access");
+
+				if (last.length() == i2 + 1) {
+					last = last.substring(0, i1);
 				}
 			}
 
-			throw new AssertionError(); // should never be reached
-		} catch (ReflectiveOperationException e1) {
+			PropertyDescriptor match = getPropertyDescriptor(o, last);
+			if (match == null)
+				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+						"segment '%s' not found of property path '%s'.", last, propPath));
+
+			if (arrayElement == -1) {
+				// return property type
+				return match.getPropertyType();
+			} else {
+				if (match.getPropertyType().isArray()) {
+					return match.getPropertyType().getComponentType();
+				} else if (List.class.isAssignableFrom(match.getPropertyType())) {
+					// TODO: find more specific component-type (via generics)
+					return Object.class;
+				} else {
+					throw new IllegalArgumentException("not an array/list type");
+				}
+			}
+		} catch (ReflectiveOperationException | IllegalArgumentException e1) {
 			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Can't determine type of property '%s': %s",
 					propPath, e1.toString()), e1);
 		}
@@ -133,20 +159,53 @@ public class TypeUtil {
 			// call getters until we finally arrive where we can call the
 			// final get-method
 			for (int i = 0; i < segments.length; i++) {
-				PropertyDescriptor match = getPropertyDescriptor(o, segments[i]);
-				if (match == null)
-					throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-							"segment '%s' not found of property path '%s'.", segments[i], propPath));
-
-				// call getter and continue
-				Method m = match.getReadMethod();
-				o = m.invoke(o);
+				o = handleSegmentGet(o, propPath, segments[i]);
 			}
 
 			return o;
-		} catch (ReflectiveOperationException e1) {
+		} catch (ReflectiveOperationException | IllegalArgumentException e1) {
 			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Can't get property '%s'.", propPath), e1);
 		}
+	}
+
+	private static Object handleSegmentGet(Object o, String propPath, String currSegment)
+			throws IllegalAccessException, InvocationTargetException {
+		// do we have an array access?
+		int arrayElement = -1;
+		if (currSegment.contains("[")) {
+			int i1 = propPath.indexOf('[');
+			int i2 = propPath.indexOf(']');
+			arrayElement = Integer.parseInt(propPath.substring(i1 + 1, i2));
+			if (arrayElement < 0)
+				throw new IllegalArgumentException("invalid array/list access");
+
+			if (currSegment.length() == i2 + 1) {
+				currSegment = currSegment.substring(0, i1);
+			}
+		}
+
+		PropertyDescriptor match = getPropertyDescriptor(o, currSegment);
+		if (match == null)
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+					"segment '%s' not found of property path '%s'.", currSegment, propPath));
+
+		// call getter and continue
+		Method m = match.getReadMethod();
+		o = m.invoke(o);
+
+		// optionally access array/list element
+		if (arrayElement >= 0) {
+			if (o instanceof List) {
+				o = ((List<?>) o).get(arrayElement);
+			} else if (o.getClass().isArray()) {
+				o = Array.get(o, arrayElement);
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Can't get property '%s': '%s' is not an array or list.", propPath, o));
+			}
+		}
+
+		return o;
 	}
 
 	/**
@@ -187,7 +246,7 @@ public class TypeUtil {
 	 *            class names.
 	 */
 	public static void setPropertyValue(Object o, String propPath, Object value, ClassLoader loader,
-			String[] packageSearchPath) {
+			String[] packageSearchPath) throws IllegalArgumentException {
 		String getPart;
 		String setPart;
 		int i = propPath.lastIndexOf('.');
@@ -199,25 +258,66 @@ public class TypeUtil {
 			setPart = propPath;
 		}
 
+		// do we have an array access?
+		int arrayElement = -1;
+		if (setPart.contains("[")) {
+			int i1 = propPath.indexOf('[');
+			int i2 = propPath.indexOf(']');
+			arrayElement = Integer.parseInt(propPath.substring(i1 + 1, i2));
+			if (arrayElement < 0)
+				throw new IllegalArgumentException("invalid array/list access");
+
+			if (setPart.length() > i2 + 1)
+				throw new IllegalArgumentException(
+						String.format("Can't set property '%s' to value '%s': invalid array access.", propPath, value));
+
+			if (getPart.length() > 0)
+				getPart += '.';
+			getPart = getPart + setPart.substring(0, i1);
+			setPart = null;
+		}
+
+		Object target = o;
+
 		if (getPart.length() > 0)
-			o = getPropertyValue(o, getPart);
+			target = getPropertyValue(o, getPart);
 
-		// 'o' now contains the object for which to call the setter
+		// 'target' now contains the object for which to call the setter
 		//
-		// find property descriptor
-		PropertyDescriptor desc = getPropertyDescriptor(o, setPart);
-		if (desc == null)
-			throw new IllegalArgumentException(
-					String.format(Util.DEF_LOCALE, "Segment '%s' not found of property path '%s'.", setPart, propPath));
+		if (arrayElement == -1) {
+			// handle normal property set
+			PropertyDescriptor desc = getPropertyDescriptor(target, setPart);
+			if (desc == null)
+				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+						"Segment '%s' not found of property path '%s'.", setPart, propPath));
 
-		value = convert(value, desc.getPropertyType(), getPart, loader, packageSearchPath);
+			value = convert(value, desc.getPropertyType(), getPart, loader, packageSearchPath);
+			try {
+				desc.getWriteMethod().invoke(target, value);
+			} catch (ReflectiveOperationException e1) {
+				throw new IllegalArgumentException(String.format("Can't set property '%s' to value '%s': %s", propPath,
+						value, exceptionMessage(e1)), e1);
+			}
+		} else {
+			// handle array/list set
+			Class<?> arrayType = target.getClass();
+			assert getPropertyType(o, getPart) == target.getClass();
 
-		try {
-			desc.getWriteMethod().invoke(o, value);
-		} catch (ReflectiveOperationException e1) {
-			throw new RuntimeException(
-					String.format("Can't set property '%s' to value '%s': %s", propPath, value, exceptionMessage(e1)),
-					e1);
+			if (arrayType.isArray()) {
+				value = convert(value, arrayType.getComponentType(), getPart, loader, packageSearchPath);
+				Array.set(target, arrayElement, value);
+			} else if (List.class.isAssignableFrom(arrayType)) {
+				// TODO: find generic component type via reflection
+				value = convert(value, Object.class, getPart, loader, packageSearchPath);
+
+				@SuppressWarnings("unchecked")
+				List<Object> l = (List<Object>) target;
+				l.set(arrayElement, value);
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Can't set property '%s' to value '%s': '%s' is not an array or list.", propPath,
+								value, getPart));
+			}
 		}
 	}
 
@@ -395,11 +495,11 @@ public class TypeUtil {
 		if (o == null)
 			return null;
 
-		assert !(o instanceof String);
-
 		if (klass.isAssignableFrom(o.getClass())) {
 			return (T) o;
 		}
+
+		assert !(o instanceof String);
 
 		if (klass == String.class) {
 			return (T) convertToString(o);
