@@ -48,11 +48,9 @@ import java.util.Set;
  * {@link IndividualMachine}s sharing a common queue.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
-public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
-		ValueStore {
+public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, ValueStore {
 
 	/** Base class for workstation events. */
 	public static class WorkStationEvent {
@@ -256,7 +254,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	 * Job 'j' arrives at a machine.
 	 */
 	public void enqueueOrProcess(Job j) {
-		assert this == j.getCurrentOperation().machine;
+		assert this == j.getCurrentOperation().getMachine();
 		assert !j.isFuture();
 
 		// remove the job's future from the queue if present
@@ -293,14 +291,14 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		queue.add(j);
 		Operation o = j.getCurrentOperation();
 		if (!batchingUsed) {
-			batchingUsed = !BATCH_INCOMPATIBLE.equals(o.batchFamily);
+			batchingUsed = !BATCH_INCOMPATIBLE.equals(o.getBatchFamily());
 		}
 
 		if (!j.isFuture()) {
-			workContentReal += o.procTime;
+			workContentReal += o.getProcTime();
 		} else {
 			numFutures++;
-			workContentFuture += o.procTime;
+			workContentFuture += o.getProcTime();
 		}
 
 		if (jobsPerBatchFamily != null)
@@ -326,19 +324,19 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 
 		if (!j.isFuture()) {
 			Operation o = j.getCurrentOperation();
-			workContentReal -= o.procTime;
+			workContentReal -= o.getProcTime();
 			assert workContentReal >= -1e-6 : "" + workContentReal;
 			assert removeRes;
 			if (jobsPerBatchFamily != null)
-				removeJobOfBatchFamily(j, o.batchFamily);
+				removeJobOfBatchFamily(j, o.getBatchFamily());
 		} else {
 			if (removeRes) {
 				Operation o = j.getOps()[j.getTaskNumber() - 1];
-				workContentFuture -= o.procTime;
+				workContentFuture -= o.getProcTime();
 				assert workContentFuture >= -1e-6 : "" + workContentFuture;
 				numFutures--;
 				if (jobsPerBatchFamily != null)
-					removeJobOfBatchFamily(j, o.batchFamily);
+					removeJobOfBatchFamily(j, o.getBatchFamily());
 			}
 		}
 	}
@@ -352,7 +350,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 			assert !queue.contains(batch.job(i).getMyFuture());
 		}
 		assert numBusy < numInGroup;
-		assert batch.getCurrentOperation().machine == this;
+		assert batch.getCurrentOperation().getMachine() == this;
 		assert currMachine.state == MachineState.IDLE;
 
 		double simTime = shop.simTime();
@@ -370,14 +368,14 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		Operation op = batch.getCurrentOperation();
 
 		oldSetupState = currMachine.setupState;
-		newSetupState = op.setupState;
+		newSetupState = op.getSetupState();
 		setupTime = 0.0;
 		if (oldSetupState != newSetupState) {
 			setupTime = setupMatrix[oldSetupState][newSetupState];
 			currMachine.setupState = newSetupState;
 		}
 
-		double tCompl = simTime + op.procTime + setupTime;
+		double tCompl = simTime + op.getProcTime() + setupTime;
 		currMachine.onDepart.setTime(tCompl);
 		currMachine.procFinished = tCompl;
 		currMachine.procStarted = simTime;
@@ -498,8 +496,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 				if (maxPrio != null)
 					maxPrio = maxPrio.clone();
 
-				Iterator<IndividualMachine> it = freeMachines
-						.descendingIterator();
+				Iterator<IndividualMachine> it = freeMachines.descendingIterator();
 				// skip first entry, which was already considered
 				it.next();
 				while (it.hasNext()) {
@@ -508,8 +505,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 					Job job = queue.peekLargest();
 					double[] prios = queue.getBestPrios();
 
-					if (maxPrio == null
-							|| PriorityQueue.comparePrioArrays(maxPrio, prios) >= 0) {
+					if (maxPrio == null || PriorityQueue.comparePrioArrays(maxPrio, prios) >= 0) {
 						// copy priorities
 						maxPrio = prios;
 						if (maxPrio != null)
@@ -655,8 +651,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 		if (id == DEF_SETUP)
 			return DEF_SETUP_STR;
 		else {
-			if (setupStateTranslate != null & id >= 0
-					&& id < setupStateTranslate.size())
+			if (setupStateTranslate != null & id >= 0 && id < setupStateTranslate.size())
 				return setupStateTranslate.get(id);
 			else
 				return "sId" + id;
@@ -703,7 +698,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	}
 
 	private void addJobToBatchFamily(Job j) {
-		String bf = j.getCurrentOperation().batchFamily;
+		String bf = j.getCurrentOperation().getBatchFamily();
 
 		List<Job> jobsInFamily = jobsPerBatchFamily.get(bf);
 		if (jobsInFamily == null) {
@@ -762,22 +757,19 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>,
 	private NotifierAdapter<WorkStation, WorkStationEvent> adapter = null;
 
 	@Override
-	public void addNotifierListener(
-			NotifierListener<WorkStation, WorkStationEvent> listener) {
+	public void addNotifierListener(NotifierListener<WorkStation, WorkStationEvent> listener) {
 		if (adapter == null)
 			adapter = new NotifierAdapter<WorkStation, WorkStationEvent>(this);
 		adapter.addNotifierListener(listener);
 	}
 
 	@Override
-	public NotifierListener<WorkStation, WorkStationEvent> getNotifierListener(
-			int index) {
+	public NotifierListener<WorkStation, WorkStationEvent> getNotifierListener(int index) {
 		return adapter.getNotifierListener(index);
 	}
 
 	@Override
-	public void removeNotifierListener(
-			NotifierListener<WorkStation, WorkStationEvent> listener) {
+	public void removeNotifierListener(NotifierListener<WorkStation, WorkStationEvent> listener) {
 		adapter.removeNotifierListener(listener);
 	}
 

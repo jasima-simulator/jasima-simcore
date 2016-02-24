@@ -39,8 +39,7 @@ public class WMOD extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		return -Math.max(job.currProcTime(), job.getCurrentOperationDueDate()
-				- job.getShop().simTime())
+		return -Math.max(job.currProcTime(), job.getCurrentOperationDueDate() - job.getShop().simTime())
 				/ job.getWeight();
 	}
 

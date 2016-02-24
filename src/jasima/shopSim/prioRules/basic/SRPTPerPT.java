@@ -30,8 +30,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * seems to perform well especially for the makespan objective.
  * 
  * @author Torsten Hildebrandt, 2011-12-01
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class SRPTPerPT extends PR {
 
@@ -39,7 +38,7 @@ public class SRPTPerPT extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		return job.remainingProcTime() / job.getCurrentOperation().procTime;
+		return job.remainingProcTime() / job.currProcTime();
 	}
 
 }

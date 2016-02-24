@@ -37,8 +37,7 @@ import java.util.Map;
  * 
  * @author Christoph Pickardt, 2010-09-07
  * @author Torsten Hildebrandt, 2010-09-29
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class MostCompleteBatch extends BatchForming {
 
@@ -68,9 +67,8 @@ public class MostCompleteBatch extends BatchForming {
 			PrioRuleTarget j = q.get(i);
 			if (!j.isFuture()) {
 				Operation o = j.getCurrentOperation();
-				double timeToComplete = setupMatrix[currSetupState][o.setupState]
-						+ o.procTime
-						+ setupMatrix[o.setupState][currSetupState];
+				double timeToComplete = setupMatrix[currSetupState][o.getSetupState()] + o.getProcTime()
+						+ setupMatrix[o.getSetupState()][currSetupState];
 				if (timeToComplete > res) {
 					res = timeToComplete;
 				}
@@ -104,7 +102,7 @@ public class MostCompleteBatch extends BatchForming {
 				continue;
 
 			Operation o = js.get(0).getCurrentOperation();
-			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.batchFamily)) {
+			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily())) {
 				hasIncompatible = true;
 				continue;
 			}
@@ -114,7 +112,7 @@ public class MostCompleteBatch extends BatchForming {
 				if (js.get(i).getArriveTime() - js.get(i).getShop().simTime() <= maxWait)
 					arriveInTimeJobs++;
 			}
-			double rbs = Math.min(1.0, (arriveInTimeJobs / o.maxBatchSize));
+			double rbs = Math.min(1.0, (arriveInTimeJobs / o.getMaxBatchSize()));
 			if (rbs == maxRbs) {
 				tie = true;
 			} else if (rbs > maxRbs) {
@@ -125,11 +123,10 @@ public class MostCompleteBatch extends BatchForming {
 		}
 		if (!tie && !hasIncompatible) {
 			Job j = maxFam.get(0);
-			int mbs = j.getCurrentOperation().maxBatchSize;
+			int mbs = j.getCurrentOperation().getMaxBatchSize();
 			int arriveInTimeJobs = 0;
 			for (int i = 0; i < maxFam.size(); i++) {
-				if (maxFam.get(i).getArriveTime()
-						- maxFam.get(i).getShop().simTime() <= maxWait)
+				if (maxFam.get(i).getArriveTime() - maxFam.get(i).getShop().simTime() <= maxWait)
 					arriveInTimeJobs++;
 			}
 			if (arriveInTimeJobs > mbs)
@@ -139,8 +136,7 @@ public class MostCompleteBatch extends BatchForming {
 			if (j.getArriveTime() - j.getShop().simTime() <= maxWait)
 				b.addToBatch(j);
 			for (int n = 1; n < maxFam.size(); n++) {
-				if (maxFam.get(n).getArriveTime()
-						- maxFam.get(n).getShop().simTime() <= maxWait)
+				if (maxFam.get(n).getArriveTime() - maxFam.get(n).getShop().simTime() <= maxWait)
 					b.addToBatch(maxFam.get(n));
 			}
 
@@ -159,8 +155,7 @@ public class MostCompleteBatch extends BatchForming {
 		int numJobs = q.size();
 
 		// split jobs of each family
-		Map<String, List<Job>> jobsByFamily = splitFamilies(orderedJobs,
-				numJobs);
+		Map<String, List<Job>> jobsByFamily = splitFamilies(orderedJobs, numJobs);
 
 		// form batches as large as possible
 		formBatches(jobsByFamily);
@@ -180,10 +175,10 @@ public class MostCompleteBatch extends BatchForming {
 		for (List<Job> famJobs : jobsByFamily.values()) {
 			Operation o = famJobs.get(0).getCurrentOperation();
 
-			if (famJobs.size() < maxRBS * o.maxBatchSize)
+			if (famJobs.size() < maxRBS * o.getMaxBatchSize())
 				continue;
 
-			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.batchFamily)) {
+			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily())) {
 				for (Job j : famJobs) {
 					if (j.getArriveTime() - j.getShop().simTime() <= maxWait) {
 						Batch b = new Batch(getOwner().shop());
@@ -196,19 +191,16 @@ public class MostCompleteBatch extends BatchForming {
 				Batch b = new Batch(getOwner().shop());
 				// make batch as full as possible
 				int i = 0;
-				while (i < famJobs.size()
-						&& b.numJobsInBatch() < o.maxBatchSize) {
-					if (famJobs.get(i).getArriveTime()
-							- famJobs.get(i).getShop().simTime() <= maxWait)
+				while (i < famJobs.size() && b.numJobsInBatch() < o.getMaxBatchSize()) {
+					if (famJobs.get(i).getArriveTime() - famJobs.get(i).getShop().simTime() <= maxWait)
 						b.addToBatch(famJobs.get(i));
 					i++;
 				}
 
-				if ((maxRBS * o.maxBatchSize) <= b.numJobsInBatch()
-						&& 0 < b.numJobsInBatch()) {
-					if (maxRBS * o.maxBatchSize < b.numJobsInBatch()) {
+				if ((maxRBS * o.getMaxBatchSize()) <= b.numJobsInBatch() && 0 < b.numJobsInBatch()) {
+					if (maxRBS * o.getMaxBatchSize() < b.numJobsInBatch()) {
 						possibleBatches.clear();
-						maxRBS = ((double) b.numJobsInBatch() / o.maxBatchSize);
+						maxRBS = ((double) b.numJobsInBatch() / o.getMaxBatchSize());
 					}
 					possibleBatches.add(b);
 				}
@@ -262,8 +254,7 @@ public class MostCompleteBatch extends BatchForming {
 
 	public void setMaxWaitRelative(double maxWaitRelative) {
 		if (maxWaitRelative < 0.0 || maxWaitRelative > 1.0)
-			throw new IllegalArgumentException("maxWaitRelative "
-					+ maxWaitRelative + " has to be within [0,1]!");
+			throw new IllegalArgumentException("maxWaitRelative " + maxWaitRelative + " has to be within [0,1]!");
 
 		this.maxWaitRelative = maxWaitRelative;
 	}

@@ -40,11 +40,10 @@ public class WBPT extends MMS {
 		if (arrivesTooLate(job))
 			return PriorityQueue.MIN_PRIO;
 
-		double marginalSetup = getOwner().getSetupMatrix()[getOwner().currMachine.setupState][job
-				.getCurrentOperation().setupState]
-				/ jobsPerFamily.get("" + job.getCurrentOperation().setupState);
+		double marginalSetup = getOwner().getSetupMatrix()[getOwner().currMachine.setupState][job.getCurrentOperation()
+				.getSetupState()] / jobsPerFamily.get("" + job.getCurrentOperation().getSetupState());
 
-		return -(marginalSetup + job.getCurrentOperation().procTime);
+		return -(marginalSetup + job.currProcTime());
 	}
 
 }

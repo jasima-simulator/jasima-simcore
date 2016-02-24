@@ -49,7 +49,7 @@ public class FCR extends PR {
 	}
 
 	public double earliestFamilyCR(PrioRuleTarget j) {
-		final int family = j.getCurrentOperation().setupState;
+		final int family = j.getCurrentOperation().getSetupState();
 		final PriorityQueue<Job> q = j.getCurrMachine().queue;
 		assert q.size() > 0;
 
@@ -58,7 +58,7 @@ public class FCR extends PR {
 			Job job = q.get(i);
 			if (arrivesTooLate(job))
 				continue;
-			if (job.getCurrentOperation().setupState == family) {
+			if (job.getCurrentOperation().getSetupState() == family) {
 				double procRem = job.remainingProcTime();
 				double jobcr;
 

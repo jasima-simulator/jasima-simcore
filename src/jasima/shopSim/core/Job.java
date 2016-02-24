@@ -37,8 +37,7 @@ import java.util.Set;
  * @version "$Id$"
  */
 // TODO: PrioRuleTarget should be an interface
-public class Job extends PrioRuleTarget implements Cloneable,
-		Notifier<Job, JobEvent>, ValueStore {
+public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobEvent>, ValueStore {
 
 	/** Base class for workstation events. */
 	public static class JobEvent {
@@ -119,13 +118,13 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	}
 
 	public double currProcTime() {
-		return ops[taskNumber].procTime;
+		return ops[taskNumber].getProcTime();
 	}
 
 	public double procSum() {
 		double res = 0d;
 		for (Operation o : ops) {
-			res += o.procTime;
+			res += o.getProcTime();
 		}
 		return res;
 	}
@@ -135,7 +134,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 			remProcTime = 0f;
 			Operation[] ops = this.ops;
 			for (int i = taskNumber; i < ops.length; i++) {
-				remProcTime += ops[i].procTime;
+				remProcTime += ops[i].getProcTime();
 			}
 		}
 		return remProcTime;
@@ -157,7 +156,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 		if (!isLastOperation()) {
 			setTaskNumber(getTaskNumber() + 1);
 
-			WorkStation mNext = ops[taskNumber].machine;
+			WorkStation mNext = ops[taskNumber].getMachine();
 			mNext.enqueueOrProcess(this);
 		} else {
 			shop.jobFinished(this);
@@ -203,7 +202,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	public void notifyNextMachine() {
 		if (!isLastOperation() && shop.isEnableLookAhead()) {
 			final Job f = getMyFuture();
-			final WorkStation next = f.ops[f.taskNumber].machine;
+			final WorkStation next = f.ops[f.taskNumber].getMachine();
 			next.futureArrival(f, getFinishTime());
 		}
 	}
@@ -354,8 +353,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	@Override
 	public double getCurrentOperationDueDate() {
 		if (opDueDates == null) {
-			setOpDueDates(computeDueDatesTWC(this, (dueDate - relDate)
-					/ procSum()));
+			setOpDueDates(computeDueDatesTWC(this, (dueDate - relDate) / procSum()));
 		}
 
 		return opDueDates[taskNumber];
@@ -401,7 +399,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 		double due = j.getRelDate();
 
 		for (int i = 0; i < res.length; i++) {
-			due += ff * ops[i].procTime;
+			due += ff * ops[i].getProcTime();
 			res[i] = due;
 		}
 
@@ -416,8 +414,7 @@ public class Job extends PrioRuleTarget implements Cloneable,
 	@Override
 	public String getName() {
 		if (name == null)
-			return getClass().getSimpleName() + "." + jobType + "."
-					+ getJobNum();
+			return getClass().getSimpleName() + "." + jobType + "." + getJobNum();
 		else
 			return name;
 	}

@@ -36,8 +36,7 @@ import jasima.shopSim.core.PriorityQueue;
  * This class does not take setup times into account.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class AdaptiveLAThreshold extends LookaheadThreshold {
 
@@ -83,9 +82,8 @@ public class AdaptiveLAThreshold extends LookaheadThreshold {
 			PrioRuleTarget j = q.get(i);
 			if (!j.isFuture()) {
 				Operation o = j.getCurrentOperation();
-				double timeToComplete = setupMatrix[currSetupState][o.setupState]
-						+ o.procTime
-						+ setupMatrix[o.setupState][currSetupState];
+				double timeToComplete = setupMatrix[currSetupState][o.getSetupState()] + o.getProcTime()
+						+ setupMatrix[o.getSetupState()][currSetupState];
 				if (timeToComplete > res) {
 					res = timeToComplete;
 				}
@@ -105,8 +103,7 @@ public class AdaptiveLAThreshold extends LookaheadThreshold {
 
 	public void setMaxWaitRelative(double maxWaitRelative) {
 		if (maxWaitRelative < 0.0 || maxWaitRelative > 1.0)
-			throw new IllegalArgumentException("maxWaitRelative "
-					+ maxWaitRelative + " has to be within [0,1]!");
+			throw new IllegalArgumentException("maxWaitRelative " + maxWaitRelative + " has to be within [0,1]!");
 
 		this.maxWaitRelative = maxWaitRelative;
 	}

@@ -34,8 +34,7 @@ import java.util.List;
  * rule.
  * 
  * @author Christoph Pickardt, 2011-01-14
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class HighestJobBatchingMBS extends BatchForming {
 
@@ -51,8 +50,7 @@ public class HighestJobBatchingMBS extends BatchForming {
 		super();
 
 		if (mbsRel < 0.0 || mbsRel > 1.0)
-			throw new IllegalArgumentException(
-					"min batch size has to be in [0.0,1.0] " + mbsRel);
+			throw new IllegalArgumentException("min batch size has to be in [0.0,1.0] " + mbsRel);
 		this.mbsRel = mbsRel;
 	}
 
@@ -73,19 +71,19 @@ public class HighestJobBatchingMBS extends BatchForming {
 
 		Job largest = q.peekLargest();
 		Operation o = largest.getCurrentOperation();
-		String bf = o.batchFamily;
+		String bf = o.getBatchFamily();
 
 		Batch b = new Batch(largest.getShop());
 
-		if (WorkStation.BATCH_INCOMPATIBLE.equals(o.batchFamily)
-				|| o.maxBatchSize == 1 || largest.isFuture()) {
+		if (WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily()) || o.getMaxBatchSize() == 1
+				|| largest.isFuture()) {
 			b.addToBatch(largest);
 			return b;
 		}
 
 		List<Job> js = getOwner().getJobsByFamily().get(bf);
 
-		int minSize = (int) Math.ceil(getMbsRel() * o.maxBatchSize);
+		int minSize = (int) Math.ceil(getMbsRel() * o.getMaxBatchSize());
 
 		for (int i = 0, n = js.size(); i < n; i++) {
 			Job j = js.get(i);
@@ -94,8 +92,7 @@ public class HighestJobBatchingMBS extends BatchForming {
 		}
 		assert b.numJobsInBatch() >= 1;
 
-		if (b.numJobsInBatch() >= minSize
-				&& b.numJobsInBatch() <= o.maxBatchSize)
+		if (b.numJobsInBatch() >= minSize && b.numJobsInBatch() <= o.getMaxBatchSize())
 			return b;
 		else
 			return null;
@@ -116,10 +113,9 @@ public class HighestJobBatchingMBS extends BatchForming {
 			orderedJobs[i] = null;
 
 			Operation o = j.getCurrentOperation();
-			String bf = o.batchFamily;
+			String bf = o.getBatchFamily();
 
-			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.batchFamily)
-					|| o.maxBatchSize == 1 || j.isFuture()) {
+			if (WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily()) || o.getMaxBatchSize() == 1 || j.isFuture()) {
 				Batch batch = new Batch(j.getShop());
 				batch.addToBatch(j);
 				possibleBatches.add(batch);
@@ -127,7 +123,7 @@ public class HighestJobBatchingMBS extends BatchForming {
 			}
 
 			List<Job> js = getOwner().getJobsByFamily().get(bf);
-			int minSize = (int) Math.ceil(getMbsRel() * o.maxBatchSize);
+			int minSize = (int) Math.ceil(getMbsRel() * o.getMaxBatchSize());
 			if (js.size() < minSize)
 				continue;
 
@@ -141,21 +137,21 @@ public class HighestJobBatchingMBS extends BatchForming {
 					continue;
 
 				Operation o2 = j2.getCurrentOperation();
-				if (!bf.equals(o2.batchFamily))
+				if (!bf.equals(o2.getBatchFamily()))
 					continue;
 
-				assert o2.maxBatchSize == o.maxBatchSize;
+				assert o2.getMaxBatchSize() == o.getMaxBatchSize();
 				orderedJobs[n] = null;
 
 				if (!j2.isFuture())
 					batch.addToBatch(j2);
 
-				if (batch.numJobsInBatch() == o2.maxBatchSize)
+				if (batch.numJobsInBatch() == o2.getMaxBatchSize())
 					break; // for n
 
 			}
 
-			if ((((double) batch.numJobsInBatch()) / o.maxBatchSize) >= getMbsRel()) {
+			if ((((double) batch.numJobsInBatch()) / o.getMaxBatchSize()) >= getMbsRel()) {
 				possibleBatches.add(batch);
 				return;
 			}

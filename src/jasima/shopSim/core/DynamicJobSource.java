@@ -43,8 +43,7 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
  * machine being revisited.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DynamicJobSource extends JobSource {
 
@@ -71,8 +70,7 @@ public class DynamicJobSource extends JobSource {
 		init(getNumOps(), prefix + "numOpsStream", fact);
 	}
 
-	static protected void init(DblStream dblStream, String streamName,
-			RandomFactory fact) {
+	static protected void init(DblStream dblStream, String streamName, RandomFactory fact) {
 		if (dblStream == null)
 			return;
 		fact.initRndGen(dblStream, streamName);
@@ -88,8 +86,7 @@ public class DynamicJobSource extends JobSource {
 
 		j.setRelDate(getArrivalProcess().nextDbl());
 
-		j.setDueDate(j.getRelDate() + getDueDateFactors().nextDbl()
-				* j.procSum());
+		j.setDueDate(j.getRelDate() + getDueDateFactors().nextDbl() * j.procSum());
 		j.setWeight(getJobWeights().nextDbl());
 
 		return j;
@@ -101,8 +98,7 @@ public class DynamicJobSource extends JobSource {
 
 	protected Operation[] createRoute() {
 		// machine order
-		final int n = getNumOps() != null ? getNumOps().nextInt()
-				: getShop().machines.length;
+		final int n = getNumOps() != null ? getNumOps().nextInt() : getShop().machines.length;
 		assert n > 0;
 
 		Operation[] ops = new Operation[n];
@@ -121,8 +117,8 @@ public class DynamicJobSource extends JobSource {
 			machineChosen[mi] = true;
 
 			Operation o = ops[i] = new Operation();
-			o.machine = m;
-			o.procTime = getProcTimes().nextDbl();
+			o.setMachine(m);
+			o.setProcTime(getProcTimes().nextDbl());
 		}
 
 		return ops;

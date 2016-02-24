@@ -29,8 +29,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * batch that uses most of the available capacity of the machine.
  * 
  * @author Christoph Pickardt, 2011-11-14
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class MaxBatchSize extends PR {
 
@@ -39,7 +38,7 @@ public class MaxBatchSize extends PR {
 	@Override
 	public double calcPrio(PrioRuleTarget b) {
 		Operation o = b.getCurrentOperation();
-		return ((double) b.numJobsInBatch() / o.maxBatchSize);
+		return ((double) b.numJobsInBatch() / o.getMaxBatchSize());
 	}
 
 }

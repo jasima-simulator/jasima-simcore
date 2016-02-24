@@ -89,8 +89,7 @@ public class ShopConfigurator {
 
 			for (int i = 0; i < groupSize; i++) {
 				IndividualMachine im = m.machDat()[i];
-				IndividualMachineDef imd = wd.getMachines() != null ? wd
-						.getMachines()[i] : new IndividualMachineDef();
+				IndividualMachineDef imd = wd.getMachines() != null ? wd.getMachines()[i] : new IndividualMachineDef();
 
 				im.relDate = imd.getMachRelDate();
 				im.initialSetup = m.translateSetupState(imd.getInitialSetup());
@@ -175,10 +174,8 @@ public class ShopConfigurator {
 		JobSpec[] jss = new JobSpec[jobDefs.length];
 		for (int i = 0; i < jobDefs.length; i++) {
 			JobDef jd = jobDefs[i];
-			JobSpec js = new JobSpec(
-					indexOf(jd.getRoute(), shopDef.getRoutes()),
-					jd.getReleaseDate(), jd.getDueDate(), jd.getWeight(),
-					jd.getName());
+			JobSpec js = new JobSpec(indexOf(jd.getRoute(), shopDef.getRoutes()), jd.getReleaseDate(), jd.getDueDate(),
+					jd.getWeight(), jd.getName());
 			jss[i] = js;
 		}
 		s.jobs = jss;
@@ -197,14 +194,14 @@ public class ShopConfigurator {
 			Operation o = new Operation();
 
 			// TODO: od.getName()
-			o.machine = shop.machines[indexOf(od.getWorkstation(),
-					shopDef.getWorkstations())];
-			o.procTime = od.getProcTime();
+			o.setMachine(shop.machines[indexOf(od.getWorkstation(), shopDef.getWorkstations())]);
+			o.setProcTime(od.getProcTime());
+			// TODO: od.procTimeReal
 
-			o.setupState = o.machine.translateSetupState(od.getSetup());
+			o.setSetupState(o.getMachine().translateSetupState(od.getSetup()));
 
-			o.batchFamily = od.getBatchFamily();
-			o.maxBatchSize = od.getMaxBatchSize();
+			o.setBatchFamily(od.getBatchFamily());
+			o.setMaxBatchSize(od.getMaxBatchSize());
 
 			r.addSequentialOperation(o);
 		}

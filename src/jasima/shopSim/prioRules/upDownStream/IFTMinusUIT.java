@@ -38,8 +38,7 @@ import java.util.List;
  * properly.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version 
- *          "$Id: IFTMinusUIT.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
+ * @version "$Id: IFTMinusUIT.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
 public class IFTMinusUIT extends PR {
 
@@ -53,13 +52,13 @@ public class IFTMinusUIT extends PR {
 
 	public static double ift(PrioRuleTarget j) {
 		WorkStation machine = j.getCurrMachine();
-		double PT = j.getCurrentOperation().procTime;
+		double PT = j.currProcTime();
 
 		double additionalFT = 0.0;
 		for (int i = 0; i < machine.queue.size(); i++) {
 			PrioRuleTarget j2 = machine.queue.get(i);
 			if (!j2.isFuture()) {
-				double PTDifferenz = PT - j2.getCurrentOperation().procTime;
+				double PTDifferenz = PT - j2.currProcTime();
 				if (PTDifferenz > 0)
 					additionalFT += PTDifferenz;
 			}
@@ -68,12 +67,12 @@ public class IFTMinusUIT extends PR {
 	}
 
 	public static double utilisedIdleTime(PrioRuleTarget job) {
-		double currPT = job.getCurrentOperation().procTime;
+		double currPT = job.currProcTime();
 
 		int nextTask = job.getTaskNumber() + 1;
 		if (nextTask >= job.numOps())
 			return 0;
-		double nextPT = job.getOps()[nextTask].procTime;
+		double nextPT = job.getOps()[nextTask].getProcTime();
 
 		double winq = getExtendedWINQ(job);
 
@@ -97,26 +96,24 @@ public class IFTMinusUIT extends PR {
 	public static double getExtendedWINQ(PrioRuleTarget job) {
 		int nextTask = job.getTaskNumber() + 1;
 		assert (nextTask < job.numOps());
-		WorkStation mNext = job.getOps()[nextTask].machine;
+		WorkStation mNext = job.getOps()[nextTask].getMachine();
 
 		double winq = mNext.workContent(false);
 
-		List<PrioRuleTarget> additionalJobs = findLookAheadJobs(mNext,
-				job.getCurrentOperation().procTime + 1);
+		List<PrioRuleTarget> additionalJobs = findLookAheadJobs(mNext, job.currProcTime() + 1);
 		while (additionalJobs.size() > 0) {
 			int index = getIndexOfNextJob(additionalJobs);
 			PrioRuleTarget nextJob = additionalJobs.remove(index);
 			double jobArrivingIn = nextJob.getCurrMachine().againIdleIn();
 			if (jobArrivingIn <= winq)
-				winq += nextJob.getCurrentOperation().procTime;
+				winq += nextJob.currProcTime();
 			else
-				winq = jobArrivingIn + nextJob.getCurrentOperation().procTime;
+				winq = jobArrivingIn + nextJob.currProcTime();
 		}
 		return winq;
 	}
 
-	private static List<PrioRuleTarget> findLookAheadJobs(WorkStation m,
-			double threshold) {
+	private static List<PrioRuleTarget> findLookAheadJobs(WorkStation m, double threshold) {
 		threshold += m.shop().simTime();
 
 		ArrayList<PrioRuleTarget> res = new ArrayList<PrioRuleTarget>();
@@ -132,16 +129,14 @@ public class IFTMinusUIT extends PR {
 	public static double getEarliestArrivalAfter(PrioRuleTarget job) {
 		int nextTask = job.getTaskNumber() + 1;
 		assert (nextTask < job.numOps());
-		WorkStation mNext = job.getOps()[nextTask].machine;
+		WorkStation mNext = job.getOps()[nextTask].getMachine();
 
-		List<PrioRuleTarget> additionalJobs = findLookAheadJobs(mNext,
-				Double.MAX_VALUE - job.getShop().simTime());
+		List<PrioRuleTarget> additionalJobs = findLookAheadJobs(mNext, Double.MAX_VALUE - job.getShop().simTime());
 		double earliestArrival = Double.MAX_VALUE;
 		for (int i = 0; i < additionalJobs.size(); i++) {
 			PrioRuleTarget lookaheadJob = additionalJobs.get(i);
 			double arrivingIn = lookaheadJob.getCurrMachine().againIdleIn();
-			if (arrivingIn > job.getCurrentOperation().procTime
-					&& arrivingIn < earliestArrival)
+			if (arrivingIn > job.currProcTime() && arrivingIn < earliestArrival)
 				earliestArrival = arrivingIn;
 		}
 		return earliestArrival;
@@ -153,8 +148,7 @@ public class IFTMinusUIT extends PR {
 		int nextJobIndex = 0;
 		for (int i = 1; i < additionalJobs.size(); i++) {
 			PrioRuleTarget job = additionalJobs.get(i);
-			if (job.getCurrMachine().againIdle() < nextJob.getCurrMachine()
-					.againIdle()) {
+			if (job.getCurrMachine().againIdle() < nextJob.getCurrMachine().againIdle()) {
 				nextJobIndex = i;
 				nextJob = job;
 			}

@@ -86,7 +86,7 @@ public class Batch extends PrioRuleTarget {
 		for (Job j : jobsInBatch) {
 			sb.append(j.toString()).append(SEPARATOR);
 		}
-		return (getName() != null ? getName() : op.batchFamily) + "_{"
+		return (getName() != null ? getName() : op.getBatchFamily()) + "_{"
 				+ sb.substring(0, sb.length() - SEPARATOR.length()) + "}";
 	}
 
@@ -109,7 +109,7 @@ public class Batch extends PrioRuleTarget {
 
 	@Override
 	public double currProcTime() {
-		return op.procTime;
+		return op.getProcTime();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class Batch extends PrioRuleTarget {
 
 	@Override
 	public WorkStation getCurrMachine() {
-		return op.machine;
+		return op.getMachine();
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class Batch extends PrioRuleTarget {
 
 	@Override
 	public JobShop getShop() {
-		return op.machine.shop();
+		return op.getMachine().shop();
 	}
 
 	@Override

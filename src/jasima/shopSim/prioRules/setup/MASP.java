@@ -55,12 +55,11 @@ public class MASP extends MMS {
 			if (arrivesTooLate(j))
 				continue;
 
-			String sf = "" + j.getCurrentOperation().setupState;
+			String sf = "" + j.getCurrentOperation().getSetupState();
 			if (sumProcTimePerFamily.get(sf) == null) {
-				sumProcTimePerFamily.put(sf, j.getCurrentOperation().procTime);
+				sumProcTimePerFamily.put(sf, j.currProcTime());
 			} else {
-				double familyValue = sumProcTimePerFamily.get(sf)
-						+ j.getCurrentOperation().procTime;
+				double familyValue = sumProcTimePerFamily.get(sf) + j.currProcTime();
 				sumProcTimePerFamily.put(sf, familyValue);
 			}
 		}
@@ -73,16 +72,15 @@ public class MASP extends MMS {
 		if (arrivesTooLate(j))
 			return PriorityQueue.MIN_PRIO;
 
-		double setup = getOwner().getSetupMatrix()[getOwner().currMachine.setupState][j
-				.getCurrentOperation().setupState];
-		String family = "" + j.getCurrentOperation().setupState;
+		double setup = getOwner().getSetupMatrix()[getOwner().currMachine.setupState][j.getCurrentOperation()
+				.getSetupState()];
+		String family = "" + j.getCurrentOperation().getSetupState();
 
-		return -((setup + sumProcTimePerFamily.get(family)))
-				/ jobsPerFamily.get(family);
+		return -((setup + sumProcTimePerFamily.get(family))) / jobsPerFamily.get(family);
 	}
 
 	public double sumFamilyProcessingTime(PrioRuleTarget j) {
-		final int family = j.getCurrentOperation().setupState;
+		final int family = j.getCurrentOperation().getSetupState();
 		final PriorityQueue<Job> q = j.getCurrMachine().queue;
 		assert q.size() > 0;
 
@@ -91,8 +89,8 @@ public class MASP extends MMS {
 			PrioRuleTarget job = q.get(i);
 			if (arrivesTooLate(job))
 				continue;
-			if (job.getCurrentOperation().setupState == family) {
-				procTime = procTime + job.getCurrentOperation().procTime;
+			if (job.getCurrentOperation().getSetupState() == family) {
+				procTime = procTime + job.currProcTime();
 			}
 		}
 		return procTime;

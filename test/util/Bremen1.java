@@ -28,8 +28,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class Bremen1 extends GPRuleBase {
 
@@ -40,7 +39,7 @@ public class Bremen1 extends GPRuleBase {
 		if (j.isFuture())
 			return PriorityQueue.MIN_PRIO;
 
-		double p = j.getCurrentOperation().procTime;
+		double p = j.currProcTime();
 		double winq = jasima.shopSim.prioRules.upDownStream.WINQ.winq(j);
 		double tiq = j.getShop().simTime() - j.getArriveTime();
 		double npt = PTPlusWINQPlusNPT.npt(j);
@@ -48,7 +47,7 @@ public class Bremen1 extends GPRuleBase {
 		double ol = j.numOpsLeft();
 
 		return -(p * (npt - npt / p) * winq //
-		+ p * (max(p, ol - tiq) * (max(p - npt, p / (tis + p)) + 1) + 1) //
+				+ p * (max(p, ol - tiq) * (max(p - npt, p / (tis + p)) + 1) + 1) //
 		);
 		// p vor die Klammer zu ziehen, gibt leider wieder minimal schlechtere
 		// Ergebnisse

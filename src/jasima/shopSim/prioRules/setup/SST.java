@@ -34,8 +34,7 @@ public class SST extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		return -getOwner().getSetupMatrix()[getOwner().currMachine.setupState][j
-				.getCurrentOperation().setupState];
+		return -getOwner().getSetupMatrix()[getOwner().currMachine.setupState][j.getCurrentOperation().getSetupState()];
 	}
 
 }

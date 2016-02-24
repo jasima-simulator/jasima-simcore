@@ -28,8 +28,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * state required by a job, or -1 otherwise.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class SetupAvoidance extends PR {
 
@@ -41,7 +40,7 @@ public class SetupAvoidance extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		if (getOwner().currMachine.setupState == j.getCurrentOperation().setupState)
+		if (getOwner().currMachine.setupState == j.getCurrentOperation().getSetupState())
 			return +1;
 		else
 			return -1;

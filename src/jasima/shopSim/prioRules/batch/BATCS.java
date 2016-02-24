@@ -51,18 +51,14 @@ public class BATCS extends ATCS {
 		if (arrivesTooLate(prt))
 			return PriorityQueue.MIN_PRIO;
 
-		double slack = getEarliestODD(prt) - prt.getShop().simTime()
-				- prt.currProcTime();
+		double slack = getEarliestODD(prt) - prt.getShop().simTime() - prt.currProcTime();
 		double prod1 = -Math.max(slack, 0.0d) / slackNorm;
-		double prod2 = setupNorm != 0.0 ? -setupMatrix[getOwner().currMachine.setupState][prt
-				.getCurrentOperation().setupState] / setupNorm
+		double prod2 = setupNorm != 0.0
+				? -setupMatrix[getOwner().currMachine.setupState][prt.getCurrentOperation().getSetupState()] / setupNorm
 				: 0.0;
 
-		return Math.log(prt.getWeight() / prt.currProcTime())
-				+ prod1
-				+ prod2
-				+ Math.log((double) prt.numJobsInBatch()
-						/ prt.getCurrentOperation().maxBatchSize);
+		return Math.log(prt.getWeight() / prt.currProcTime()) + prod1 + prod2
+				+ Math.log((double) prt.numJobsInBatch() / prt.getCurrentOperation().getMaxBatchSize());
 	}
 
 	public double getEarliestODD(PrioRuleTarget j) {
@@ -94,22 +90,19 @@ public class BATCS extends ATCS {
 				return PriorityQueue.MIN_PRIO;
 
 			double prod1 = -getTotalOSlack(prt) / slackNorm;
-			double prod2 = setupNorm != 0.0 ? -setupMatrix[getOwner().currMachine.setupState][prt
-					.getCurrentOperation().setupState] / setupNorm
+			double prod2 = setupNorm != 0.0
+					? -setupMatrix[getOwner().currMachine.setupState][prt.getCurrentOperation().getSetupState()]
+							/ setupNorm
 					: 0.0;
 
-			return Math.log(prt.getWeight() / prt.currProcTime())
-					+ prod1
-					+ prod2
-					+ Math.log((double) prt.numJobsInBatch()
-							/ prt.getCurrentOperation().maxBatchSize);
+			return Math.log(prt.getWeight() / prt.currProcTime()) + prod1 + prod2
+					+ Math.log((double) prt.numJobsInBatch() / prt.getCurrentOperation().getMaxBatchSize());
 		}
 
 		public double getTotalOSlack(PrioRuleTarget b) {
 			double oSlack = 0;
 			for (int i = 0; i < b.numJobsInBatch(); i++) {
-				oSlack += Math.max(b.job(i).getCurrentOperationDueDate()
-						- b.getShop().simTime() - b.currProcTime(), 0);
+				oSlack += Math.max(b.job(i).getCurrentOperationDueDate() - b.getShop().simTime() - b.currProcTime(), 0);
 			}
 			return oSlack;
 		}

@@ -28,8 +28,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class Bremen2 extends PR {
 
@@ -40,7 +39,7 @@ public class Bremen2 extends PR {
 		if (j.isFuture())
 			return PriorityQueue.MIN_PRIO;
 
-		double p = j.getCurrentOperation().procTime;
+		double p = j.currProcTime();
 		double winq = jasima.shopSim.prioRules.upDownStream.WINQ.winq(j);
 		double npt = PTPlusWINQPlusNPT.npt(j);
 

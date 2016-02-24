@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -55,8 +56,7 @@ public class TestGECCOContinuity {
 	@Before
 	public void setUp() {
 		System.out.println("setting up");
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactoryOld.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
 	}
 
 	private static final double GEN_SEED_FLOW_MEAN = 703.0405961677559d;
@@ -66,28 +66,22 @@ public class TestGECCOContinuity {
 	public void Bremen_GECCO2010_genSeed_2reps() throws Exception {
 		Map<String, Object> res = genSeed_2reps(false);
 
-		assertEquals("numJobsFinished", GEN_SEED_NUM_JOBS,
-				res.get("numJobsFinished"));
-		assertEquals("numJobsStarted", GEN_SEED_NUM_JOBS,
-				res.get("numJobsStarted"));
+		assertEquals("numJobsFinished", GEN_SEED_NUM_JOBS, res.get("numJobsFinished"));
+		assertEquals("numJobsStarted", GEN_SEED_NUM_JOBS, res.get("numJobsStarted"));
 
 		SummaryStat flowMean = (SummaryStat) res.get("flowMean");
-		assertEquals("numJobsStarted", GEN_SEED_FLOW_MEAN, flowMean.mean(),
-				0.00001d);
+		assertEquals("numJobsStarted", GEN_SEED_FLOW_MEAN, flowMean.mean(), 0.00001d);
 	}
 
 	@Test
 	public void Bremen_GECCO2010_genSeed_2reps_lookahead() throws Exception {
 		Map<String, Object> res = genSeed_2reps(true);
 
-		assertEquals("numJobsFinished", GEN_SEED_NUM_JOBS,
-				res.get("numJobsFinished"));
-		assertEquals("numJobsStarted", GEN_SEED_NUM_JOBS,
-				res.get("numJobsStarted"));
+		assertEquals("numJobsFinished", GEN_SEED_NUM_JOBS, res.get("numJobsFinished"));
+		assertEquals("numJobsStarted", GEN_SEED_NUM_JOBS, res.get("numJobsStarted"));
 
 		SummaryStat flowMean = (SummaryStat) res.get("flowMean");
-		assertEquals("numJobsStarted", GEN_SEED_FLOW_MEAN, flowMean.mean(),
-				0.00001d);
+		assertEquals("numJobsStarted", GEN_SEED_FLOW_MEAN, flowMean.mean(), 0.00001d);
 	}
 
 	@Test
@@ -98,8 +92,7 @@ public class TestGECCOContinuity {
 		assertEquals("numJobsStarted", 10529, res.get("numJobsStarted"));
 
 		SummaryStat flowMean = (SummaryStat) res.get("flowMean");
-		assertEquals("numJobsStarted", 709.3618944257337d, flowMean.mean(),
-				0.00001d);
+		assertEquals("numJobsStarted", 709.3618944257337d, flowMean.mean(), 0.00001d);
 	}
 
 	@Test
@@ -110,8 +103,7 @@ public class TestGECCOContinuity {
 		assertEquals("numJobsStarted", 10528, res.get("numJobsStarted"));
 
 		SummaryStat flowMean = (SummaryStat) res.get("flowMean");
-		assertEquals("numJobsStarted", 698.7863489439536d, flowMean.mean(),
-				0.00001d);
+		assertEquals("numJobsStarted", 698.7863489439536d, flowMean.mean(), 0.00001d);
 	}
 
 	public static class TestRule extends GPRuleBase {
@@ -120,7 +112,7 @@ public class TestGECCOContinuity {
 
 		@Override
 		public double calcPrio(PrioRuleTarget j) {
-			double p = j.getCurrentOperation().procTime;
+			double p = j.currProcTime();
 			double winq2 = jasima.shopSim.prioRules.upDownStream.XWINQ.xwinq(j);
 			double tiq = j.getShop().simTime() - j.getArriveTime();
 			double npt = PTPlusWINQPlusNPT.npt(j);
@@ -128,68 +120,38 @@ public class TestGECCOContinuity {
 			double rpt = j.remainingProcTime();
 			double tis = j.getShop().simTime() - j.getRelDate();
 			return mul(
-					max(npt, p),
-					sub(mul(p,
-							sub(ifte(
-									div(add(div(mul(add(winq2, tis), winq2), 0),
-											mul(mul(npt, rpt), rpt)),
+					max(npt, p), sub(
+							mul(p, sub(
+									ifte(div(
+											add(div(mul(
+													add(winq2,
+															tis),
+													winq2), 0), mul(mul(npt, rpt),
+															rpt)),
 											div(ifte(
-													div(add(winq2, tis),
-															ifte(div(
-																	add(winq2,
-																			tis),
-																	ifte(max(
-																			sub(p,
-																					npt),
-																			sub(sub(0,
-																					p),
-																					winq2)),
-																			ol,
-																			tis)),
-																	sub(winq2,
-																			ol),
-																	mul(tis,
-																			ifte(add(
-																					tiq,
-																					ol),
-																					mul(tis,
-																							winq2),
-																					tis)))),
-													sub(mul(npt, rpt), ol),
-													mul(tis,
-															div(mul(add(winq2,
-																	tis), winq2),
-																	0))),
-													mul(mul(npt, rpt), winq2))),
-									sub(div(mul(add(winq2, tis), winq2),
-											add(ifte(add(tiq, sub(p, npt)),
-													tis, npt), mul(npt, rpt))),
-											p),
-									ifte(ifte(
-											ifte(sub(
-													div(tis,
-															add(sub(p, npt),
-																	mul(npt,
-																			rpt))),
+													div(add(winq2,
+															tis), ifte(
+																	div(add(winq2, tis),
+																			ifte(max(sub(p, npt),
+																					sub(sub(0, p), winq2)), ol, tis)),
+															sub(winq2, ol),
+															mul(tis, ifte(add(tiq, ol), mul(tis, winq2), tis)))),
+											sub(mul(npt, rpt), ol), mul(tis, div(mul(add(winq2, tis), winq2), 0))),
+									mul(mul(npt, rpt),
+											winq2))), sub(
+													div(mul(add(winq2, tis), winq2),
+															add(ifte(add(tiq, sub(p, npt)), tis, npt), mul(npt, rpt))),
 													p),
-													sub(div(mul(
-															add(winq2, tis),
-															winq2),
-															add(ifte(
-																	add(tiq, ol),
-																	tis, npt),
-																	mul(npt,
-																			rpt))),
+											ifte(ifte(
+													ifte(sub(div(tis, add(sub(p, npt), mul(npt, rpt))), p),
+															sub(div(mul(add(winq2, tis), winq2),
+																	add(ifte(add(tiq, ol), tis, npt), mul(npt, rpt))),
 															p), add(winq2, tis)),
-											div(mul(tis, winq2),
-													add(add(winq2, tis),
-															mul(npt, rpt))),
-											add(tiq, ol)),
-											sub(div(sub(p, npt), sub(winq2, ol)),
-													p),
-											div(mul(tis, winq2),
-													add(tis, mul(npt, rpt))))),
-									sub(winq2, ol))), add(tiq, ol)));
+													div(mul(tis, winq2), add(add(winq2, tis), mul(npt, rpt))),
+													add(tiq, ol)), sub(div(sub(p, npt), sub(winq2, ol)), p),
+													div(mul(tis, winq2), add(tis, mul(npt, rpt))))),
+									sub(winq2, ol))),
+							add(tiq, ol)));
 		}
 	}
 

@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -49,8 +50,7 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 @SuppressWarnings("deprecation")
 public class TestBestOfFamilyBatching {
@@ -58,18 +58,15 @@ public class TestBestOfFamilyBatching {
 	@Before
 	public void setUp() {
 		System.out.println("setting up");
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactory.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	public static MimacExperiment createBaseExperiment() {
 		MimacExperiment e = new MimacExperiment();
 		e.setScenario(DataSet.FAB4r);
 
-		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(
-				1440d / 4.5));
-		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(
-				1440d / 10.5));
+		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(1440d / 4.5));
+		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(1440d / 10.5));
 		e.setInterArrivalTimes(new DblStream[] { arrivals1, arrivals2 });
 
 		e.setDueDateFactors(new DblUniformRange(2.0, 5.0));
@@ -93,8 +90,7 @@ public class TestBestOfFamilyBatching {
 		return e;
 	}
 
-	private Map<String, Object> runExp(BatchForming bf, PR seqRule,
-			PR batchSeqRule) {
+	private Map<String, Object> runExp(BatchForming bf, PR seqRule, PR batchSeqRule) {
 		MimacExperiment e = createBaseExperiment();
 
 		e.setSequencingRule(seqRule);
@@ -158,8 +154,7 @@ public class TestBestOfFamilyBatching {
 		return pr0;
 	}
 
-	private void check(String name, double expected, double precision,
-			Map<String, Object> res) {
+	private void check(String name, double expected, double precision, Map<String, Object> res) {
 		SummaryStat vs = (SummaryStat) res.get(name);
 		assertEquals(name, expected, vs.mean(), precision);
 	}

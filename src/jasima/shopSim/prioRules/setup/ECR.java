@@ -64,8 +64,7 @@ public class ECR extends PR {
 		if (arrivesTooLate(j))
 			return PriorityQueue.MIN_PRIO;
 
-		double CR = (j.getDueDate() - j.getShop().simTime())
-				/ j.remainingProcTime();
+		double CR = (j.getDueDate() - j.getShop().simTime()) / j.remainingProcTime();
 		if (CR < L || CR > U)
 			return PriorityQueue.MIN_PRIO;
 
@@ -80,21 +79,16 @@ public class ECR extends PR {
 				continue;
 			if (job.equals(j)) {
 				r = j.remainingProcTime() - j.currProcTime();
-				a = j.getDueDate()
-						- j.getShop().simTime()
-						- setupMatrix[getOwner().currMachine.setupState][j
-								.getCurrentOperation().setupState]
+				a = j.getDueDate() - j.getShop().simTime()
+						- setupMatrix[getOwner().currMachine.setupState][j.getCurrentOperation().getSetupState()]
 						- j.currProcTime();
 
 			} else {
 				r = job.remainingProcTime();
-				a = job.getDueDate()
-						- j.getShop().simTime()
-						- setupMatrix[getOwner().currMachine.setupState][j
-								.getCurrentOperation().setupState]
-						- j.currProcTime()
-						- setupMatrix[j.getCurrentOperation().setupState][job
-								.getCurrentOperation().setupState];
+				a = job.getDueDate() - j.getShop().simTime()
+						- setupMatrix[getOwner().currMachine.setupState][j.getCurrentOperation().getSetupState()]
+						- j.currProcTime() - setupMatrix[j.getCurrentOperation().getSetupState()][job
+								.getCurrentOperation().getSetupState()];
 			}
 			totalUrgency += calculateUrgency(r, a);
 		}

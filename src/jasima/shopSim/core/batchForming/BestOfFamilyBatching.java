@@ -71,7 +71,7 @@ public class BestOfFamilyBatching extends BatchForming {
 
 		Job j = famJobs.get(0);
 		Operation o = j.getCurrentOperation();
-		assert WorkStation.BATCH_INCOMPATIBLE.equals(o.batchFamily) ? o.maxBatchSize == 1
+		assert WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily()) ? o.getMaxBatchSize() == 1
 				: true;
 
 		// make batches as full as possible
@@ -79,11 +79,11 @@ public class BestOfFamilyBatching extends BatchForming {
 		Batch b2 = new Batch(getOwner().shop());
 		for (int i = 0, n = famJobs.size(); i < n; i++) {
 			Job job = famJobs.get(i);
-			if (b.numJobsInBatch() < o.maxBatchSize)
+			if (b.numJobsInBatch() < o.getMaxBatchSize())
 				b.addToBatch(job);
 			if (!job.isFuture())
 				b2.addToBatch(job);
-			if (b2.numJobsInBatch() == o.maxBatchSize)
+			if (b2.numJobsInBatch() == o.getMaxBatchSize())
 				break;
 		}
 		possibleBatches.add(b);

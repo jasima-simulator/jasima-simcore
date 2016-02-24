@@ -26,8 +26,7 @@ import java.util.HashMap;
  * Common abstract base class for {@link Job}s and {@link Batch}es.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public abstract class PrioRuleTarget {
 

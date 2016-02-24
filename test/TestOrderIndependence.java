@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -32,8 +33,7 @@ import org.junit.Test;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class TestOrderIndependence {
 
@@ -60,8 +60,7 @@ public class TestOrderIndependence {
 
 		double[] res = new double[rules.length];
 		for (int i = 0; i < rules.length; i++) {
-			StaticShopExperiment m = TestStaticInsts
-					.createTstModel(f, rules[i]);
+			StaticShopExperiment m = TestStaticInsts.createTstModel(f, rules[i]);
 			m.runExperiment();
 
 			res[i] = (Double) m.getResults().get("simTime");

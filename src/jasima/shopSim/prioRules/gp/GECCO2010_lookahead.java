@@ -29,8 +29,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  * GECCO 2010, doi:10.1145/1830483.1830530
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class GECCO2010_lookahead extends GPRuleBase {
 
@@ -38,21 +37,18 @@ public class GECCO2010_lookahead extends GPRuleBase {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		double p = j.getCurrentOperation().procTime;
+		double p = j.currProcTime();
 		double winq2 = jasima.shopSim.prioRules.upDownStream.XWINQ.xwinq(j);
 		double tiq = j.getShop().simTime() - j.getArriveTime();
 		double npt = PTPlusWINQPlusNPT.npt(j);
 		double ol = j.numOpsLeft();
 
-		return p
-				* (ifte(tiq
-						* (p / ((tiq + npt - 1) * (winq2 + npt)) + winq2)
-						/ ifte(ifte(ol * p / (tiq * winq2), 1 / p, 2 * npt - ol
-								/ ((p + npt) * tiq)), 1 / p, 1), 1 / p, tiq - 1)
-						/ (winq2 + (p * p)
-								/ ((1 - 2 * npt) / (2 * p + npt) + 2 * npt)) + 1 / (p * (p + npt))
+		return p * (ifte(
+				tiq * (p / ((tiq + npt - 1) * (winq2 + npt)) + winq2)
+						/ ifte(ifte(ol * p / (tiq * winq2), 1 / p, 2 * npt - ol / ((p + npt) * tiq)), 1 / p, 1),
+				1 / p, tiq - 1) / (winq2 + (p * p) / ((1 - 2 * npt) / (2 * p + npt) + 2 * npt)) + 1 / (p * (p + npt))
 
-				);
+		);
 	}
 
 }

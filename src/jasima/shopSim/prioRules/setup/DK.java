@@ -44,7 +44,7 @@ public class DK extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		if (getOwner().currMachine.setupState == job.getCurrentOperation().setupState)
+		if (getOwner().currMachine.setupState == job.getCurrentOperation().getSetupState())
 			return -job.getDueDate();
 		else
 			return -(job.getDueDate() + k);

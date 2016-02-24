@@ -59,7 +59,7 @@ public class Wintersim2010GPRules {
 		}
 
 		public int numCompatible(PrioRuleTarget j) {
-			String bf = j.getCurrentOperation().batchFamily;
+			String bf = j.getCurrentOperation().getBatchFamily();
 			return famSizes.get(bf).intValue();
 		}
 
@@ -79,7 +79,7 @@ public class Wintersim2010GPRules {
 			for (int i = 0, n = q.size(); i < n; i++) {
 				Job j = q.get(i);
 
-				final String family = j.getCurrentOperation().batchFamily;
+				final String family = j.getCurrentOperation().getBatchFamily();
 				Integer k = famSizes.get(family);
 				if (k == null || "BATCH_INCOMPATIBLE".equals(family))
 					k = 0;
@@ -101,8 +101,7 @@ public class Wintersim2010GPRules {
 				Job j2 = q.get(i);
 				assert !j2.isFuture();
 				if (!j2.isFuture()) {
-					setupAvg += setupMatrix[machineSetup][j2
-							.getCurrentOperation().setupState];
+					setupAvg += setupMatrix[machineSetup][j2.getCurrentOperation().getSetupState()];
 					numNonFutures++;
 				}
 			}
@@ -130,7 +129,7 @@ public class Wintersim2010GPRules {
 			final double[][] setupMatrix = j.getCurrMachine().getSetupMatrix();
 			final int machineSetup = j.getCurrMachine().currMachine.setupState;
 
-			return setupMatrix[machineSetup][j.getCurrentOperation().setupState];
+			return setupMatrix[machineSetup][j.getCurrentOperation().getSetupState()];
 		}
 	}
 
@@ -149,32 +148,26 @@ public class Wintersim2010GPRules {
 			double sAvg = setupAvg();
 
 			return bf
-					* max(bf
-							* ifte(max(1, rpt) - sl, w, bf)
-							* (rpt * ifte(bf - sl, w, bf) / sl + 2 * rpt / sl - s)
-							+ rpt * ifte(bf - s, w, bf) / sl + rpt / sl - s,
-							ifte(bf - sl, w, bf)
-									* max(-ifte(max(1, rpt) - max(sl, ttd), w,
-											bf)
-											- rpt
+					* max(bf * ifte(
+							max(1, rpt)
+									- sl,
+							w,
+							bf) * (rpt * ifte(bf - sl, w, bf) / sl
+									+ 2 * rpt
 											/ sl
-											+ (bf - max(1, ttd))
-											* ifte(bf - max(1, ttd), w, bf)
-											+ bf,
-											sAvg
-													+ bf
-													* ifte(max(1, rpt)
-															- max(sl, ttd), w,
-															bf) - s
-													- max(1, rpt, sl)
-													+ max(1, rpt) + 1) + rpt
-									/ sl - s)
+									- s)
+							+ rpt * ifte(bf - s, w, bf)
+									/ sl
+							+ rpt / sl - s,
+					ifte(bf - sl, w, bf)
+							* max(-ifte(max(1, rpt) - max(sl, ttd), w, bf) - rpt / sl
+									+ (bf - max(1, ttd)) * ifte(bf - max(1, ttd), w, bf) + bf,
+							sAvg + bf * ifte(max(1, rpt) - max(sl, ttd), w, bf) - s - max(1, rpt, sl) + max(1, rpt) + 1)
+							+ rpt / sl - s)
 					* ifte(max(
-							bf * rpt * ifte(max(1, rpt) - sl, w, bf) / sl
-									- ifte(bf - sl, w, bf) + (bf - max(1, ttd))
-									* ifte(bf - max(1, ttd), w, bf), sAvg + bf
-									* ifte(max(1, rpt) - max(sl, ttd), w, bf)
-									- s - max(1, rpt, sl) + max(1, rpt) + 1)
+							bf * rpt * ifte(max(1, rpt) - sl, w, bf) / sl - ifte(bf - sl, w, bf)
+									+ (bf - max(1, ttd)) * ifte(bf - max(1, ttd), w, bf),
+							sAvg + bf * ifte(max(1, rpt) - max(sl, ttd), w, bf) - s - max(1, rpt, sl) + max(1, rpt) + 1)
 							* w, w, bf);
 			// return mul(max(add(sub(mul(max(add(sub(mul(sub(bf, max(1, ttd)),
 			// ifte(sub(bf, max(1, ttd)), w, bf)), add(
@@ -216,23 +209,24 @@ public class Wintersim2010GPRules {
 			double rpt = j.remainingProcTime();
 			double sAvg = setupAvg();
 
-			return ifte(max(1, rpt) - max(1, rpt, sl), w, bf)
-					* bf
-					* max(ifte(bf - sl, w, bf)
-							* max(-ifte(max(1, rpt) - max(sl, ttd), w, bf) + s
-									+ bf,
-									bf
-											* ifte(-max(sl, ttd), w, bf)
-											+ bf
-											* ifte(-max(sl, ttd) - sl
-													+ max(1, rpt), w, bf) - s
-											- max(1, rpt, sl) + max(1, rpt))
-							+ rpt / sl - s,
-							sAvg
-									+ bf
-									* ifte(max(1, rpt) - sl, w, bf)
-									* (rpt * ifte(bf - sl, w, bf) / sl + 2
-											* rpt / sl - s) + rpt / sl - s + 1);
+			return ifte(
+					max(1, rpt)
+							- max(1, rpt,
+									sl),
+					w, bf)
+					* bf * max(
+							ifte(bf - sl, w,
+									bf) * max(
+											-ifte(max(1, rpt) - max(sl, ttd), w, bf) + s
+													+ bf,
+											bf * ifte(-max(sl, ttd), w, bf)
+													+ bf * ifte(-max(sl, ttd) - sl + max(1, rpt), w, bf) - s
+													- max(1, rpt,
+															sl)
+													+ max(1, rpt))
+									+ rpt / sl - s,
+							sAvg + bf * ifte(max(1, rpt) - sl, w, bf)
+									* (rpt * ifte(bf - sl, w, bf) / sl + 2 * rpt / sl - s) + rpt / sl - s + 1);
 			// return mul(max(add(sub(mul(max(add(sub(s, ifte(sub(max(rpt, 1),
 			// max(sl, ttd)), w, bf)), bf), add(add(sub(mul(bf, ifte(sub(
 			// 0, max(sl, ttd)), w, bf)), s), sub(max(rpt, 1), max(sl,
@@ -262,20 +256,22 @@ public class Wintersim2010GPRules {
 			double rpt = j.remainingProcTime();
 			double sAvg = setupAvg();
 
-			return ifte(max(1, rpt) - max(1, rpt, sl), w, bf)
-					* bf
-					* max(ifte(bf - sl, w, bf)
-							* max(-ifte(max(1, rpt) - max(sl, ttd), w, bf) + s
-									+ bf,
-									bf
-											* ifte(max(1, rpt) - max(sl, ttd),
-													w, bf) + bf
-											* ifte(max(1, rpt) - sl, w, bf) - s
-											- max(1, rpt, sl) + max(1, rpt))
-							+ rpt / sl - s, bf
-							* ifte(max(1, rpt) - sl, w, bf)
-							* (sAvg + rpt * ifte(bf - sl, w, bf) / sl + rpt
-									/ sl - s + 1) + sAvg + rpt / sl - s + 1);
+			return ifte(
+					max(1, rpt)
+							- max(1, rpt,
+									sl),
+					w, bf)
+					* bf * max(
+							ifte(bf - sl, w, bf)
+									* max(-ifte(max(1, rpt) - max(sl, ttd), w, bf) + s + bf,
+											bf * ifte(max(1, rpt) - max(sl, ttd), w, bf)
+													+ bf * ifte(max(1, rpt) - sl, w, bf) - s
+													- max(1, rpt, sl) + max(1,
+															rpt))
+									+ rpt / sl - s,
+							bf * ifte(max(1, rpt) - sl, w, bf)
+									* (sAvg + rpt * ifte(bf - sl, w, bf) / sl + rpt / sl - s + 1) + sAvg + rpt / sl - s
+									+ 1);
 			// return mul(max(add(sub(mul(max(add(sub(s, ifte(sub(max(rpt, 1),
 			// max(sl, ttd)), w, bf)), bf), add(add(sub(mul(bf, ifte(sub(
 			// max(rpt, 1), max(sl, ttd)), w, bf)), s), sub(max(rpt, 1),
@@ -305,21 +301,11 @@ public class Wintersim2010GPRules {
 			double tiq = j.getShop().simTime() - j.getArriveTime();
 			double p = j.currProcTime();
 
-			return ifte(
-					w + bf - max(1, s),
-					max(1, sAvg),
-					2
-							* w
-							- max(ifte(tiq - bf, max(1, s),
-									ifte(tiq - bf, max(1, s), bf * tiq)),
-									max(1, s) * ttd / rpt)
-							- max(ifte(tiq - bf, max(1, s), bf * tiq), ttd
-									/ (rpt * (w + p)) + max(1, s)))
-					+ w
-					+ bf
-					- max(ifte(max(1, s) - bf, max(1, s), max(0, sAvg)),
-							w + ttd / (max(1, s) * rpt) - bf
-									- max(1, s, rpt * (w - bf) / ttd))
+			return ifte(w + bf - max(1, s), max(1, sAvg),
+					2 * w - max(ifte(tiq - bf, max(1, s), ifte(tiq - bf, max(1, s), bf * tiq)), max(1, s) * ttd / rpt)
+							- max(ifte(tiq - bf, max(1, s), bf * tiq), ttd / (rpt * (w + p)) + max(1, s)))
+					+ w + bf - max(ifte(max(1, s) - bf, max(1, s), max(0, sAvg)),
+							w + ttd / (max(1, s) * rpt) - bf - max(1, s, rpt * (w - bf) / ttd))
 					- max(1, s);
 			// return sub(add(sub(w, sub(max(1, s), bf)), ifte(sub(w, sub(
 			// max(1, s), bf)), max(1, sAvg), sub(add(w, sub(w, max(add(
@@ -348,15 +334,17 @@ public class Wintersim2010GPRules {
 			double rpt = j.remainingProcTime();
 			double sAvg = setupAvg();
 
-			return ifte(bf - max(1, ttd), w, bf)
-					* max(bf * (bf * ifte(bf - sl, w, bf) + bf)
-							+ ifte(rpt / sl - max(1, ttd), w, bf) - s
-							- max(1, rpt, sl) + max(1, rpt),
-							ifte(max(1, rpt) - max(1, rpt, sl), w, bf)
-									* bf
-									* (sAvg / sl + 3 * rpt / sl - 2 * s + max(
-											1, bf - max(1, ttd))) + rpt * w
-									/ sl + rpt / sl - s);
+			return ifte(
+					bf - max(1,
+							ttd),
+					w, bf) * max(
+							bf * (bf * ifte(bf - sl, w, bf) + bf) + ifte(rpt / sl - max(1, ttd), w, bf) - s
+									- max(1, rpt,
+											sl)
+									+ max(1, rpt),
+							ifte(max(1, rpt) - max(1, rpt, sl), w, bf) * bf
+									* (sAvg / sl + 3 * rpt / sl - 2 * s + max(1, bf - max(1, ttd))) + rpt * w / sl
+									+ rpt / sl - s);
 			// return mul(max(add(sub(mul(add(sub(add(div(rpt, sl), add(sub(add(
 			// div(rpt, sl), div(rpt, sl)), s), div(sAvg, sl))), s), max(
 			// 1, sub(bf, max(1, ttd)))), mul(bf, ifte(sub(max(rpt, 1),
@@ -384,15 +372,12 @@ public class Wintersim2010GPRules {
 			double sAvg = setupAvg();
 
 			return ifte(max(1, rpt) - max(1, rpt, sl), w, bf)
-					* bf
-					* max(rpt
-							/ sl
-							+ max(-ifte(bf - sl, w, bf) + s + bf, sAvg + bf
-									* ifte(max(1, rpt) - max(sl, ttd), w, bf)
-									- s - max(1, rpt, sl) + max(1, rpt) + 1)
-							* ifte(bf - sl, w, bf) - s,
-							sAvg + bf * ifte(max(1, rpt) - sl, w, bf)
-									* (2 * rpt / sl - s) + rpt / sl - s + 1);
+					* bf * max(
+							rpt / sl + max(-ifte(bf - sl, w, bf) + s + bf,
+									sAvg + bf * ifte(max(1, rpt) - max(sl, ttd), w, bf) - s - max(1, rpt, sl)
+											+ max(1, rpt) + 1)
+									* ifte(bf - sl, w, bf) - s,
+							sAvg + bf * ifte(max(1, rpt) - sl, w, bf) * (2 * rpt / sl - s) + rpt / sl - s + 1);
 			// return mul(
 			// max(add(sub(mul(max(add(sub(s, ifte(sub(bf, sl), w, bf)),
 			// bf), add(add(sub(mul(bf, ifte(sub(max(rpt, 1), max(
@@ -419,13 +404,8 @@ public class Wintersim2010GPRules {
 			double rpt = j.remainingProcTime();
 			double sAvg = setupAvg();
 
-			return w
-					+ bf
-					- max(max(1, s) - bf,
-							w + ttd / rpt - bf
-									- max(1, s, rpt * (w - bf) / ttd)
-									- max(1, 1 / bf)) - max(1, s)
-					+ max(0, sAvg);
+			return w + bf - max(max(1, s) - bf, w + ttd / rpt - bf - max(1, s, rpt * (w - bf) / ttd) - max(1, 1 / bf))
+					- max(1, s) + max(0, sAvg);
 			// return sub(add(sub(w, sub(max(1, s), bf)), max(0, sAvg)),
 			// max(add(
 			// sub(sub(sub(w, bf), max(div(sub(w, bf), div(ttd, rpt)),
@@ -446,12 +426,7 @@ public class Wintersim2010GPRules {
 			double s = setupTime(j);
 			double rpt = j.remainingProcTime();
 
-			return w
-					+ bf
-					- max(1,
-							s,
-							w + ttd / (max(1, s) * rpt) - bf
-									- max(1, s, rpt * (w - bf) / ttd)) - 1;
+			return w + bf - max(1, s, w + ttd / (max(1, s) * rpt) - bf - max(1, s, rpt * (w - bf) / ttd)) - 1;
 			// return sub(sub(w, sub(1, bf)), max(add(sub(sub(w, bf),
 			// max(div(sub(
 			// w, bf), div(ttd, rpt)), max(1, s))), div(div(ttd, rpt),
@@ -471,8 +446,7 @@ public class Wintersim2010GPRules {
 			double s = setupTime(j);
 			double rpt = j.remainingProcTime();
 
-			return rpt / sl + bf * ifte(max(1, rpt) - max(rpt / sl, sl), w, bf)
-					- s;
+			return rpt / sl + bf * ifte(max(1, rpt) - max(rpt / sl, sl), w, bf) - s;
 			// return add(sub(mul(bf, ifte(
 			// sub(max(rpt, 1), max(sl, div(rpt, sl))), w, bf)), s), div(
 			// rpt, sl));

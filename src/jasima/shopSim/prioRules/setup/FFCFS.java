@@ -47,15 +47,14 @@ public class FFCFS extends PR {
 	}
 
 	public double earliestFamilyArrival(PrioRuleTarget j) {
-		final int family = j.getCurrentOperation().setupState;
+		final int family = j.getCurrentOperation().getSetupState();
 		final PriorityQueue<Job> q = j.getCurrMachine().queue;
 		assert q.size() > 0;
 
 		double at = Double.POSITIVE_INFINITY;
 		for (int i = 0; i < q.size(); i++) {
 			Job job = q.get(i);
-			if (job.getCurrentOperation().setupState == family
-					&& job.getArriveTime() < at) {
+			if (job.getCurrentOperation().getSetupState() == family && job.getArriveTime() < at) {
 				at = job.getArriveTime();
 			}
 		}

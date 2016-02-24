@@ -55,7 +55,7 @@ public class MMS extends PR {
 			if (arrivesTooLate(j))
 				continue;
 
-			String sf = "" + j.getCurrentOperation().setupState;
+			String sf = "" + j.getCurrentOperation().getSetupState();
 			if (jobsPerFamily.get(sf) == null) {
 				jobsPerFamily.put(sf, 1);
 			} else {
@@ -72,9 +72,8 @@ public class MMS extends PR {
 		if (arrivesTooLate(j))
 			return PriorityQueue.MIN_PRIO;
 
-		double marginalSetup = getOwner().getSetupMatrix()[getOwner().currMachine.setupState][j
-				.getCurrentOperation().setupState]
-				/ jobsPerFamily.get("" + j.getCurrentOperation().setupState);
+		double marginalSetup = getOwner().getSetupMatrix()[getOwner().currMachine.setupState][j.getCurrentOperation()
+				.getSetupState()] / jobsPerFamily.get("" + j.getCurrentOperation().getSetupState());
 
 		return -marginalSetup;
 	}

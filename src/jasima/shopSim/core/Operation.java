@@ -24,20 +24,59 @@ package jasima.shopSim.core;
  * Operations specify what to process.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id: Operation.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com$"
+ * @version "$Id: Operation.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com$"
  */
 public class Operation implements Cloneable {
 
-	public WorkStation machine;
-	public double procTime = Double.NaN;
-	public int setupState = WorkStation.DEF_SETUP;
-	public String batchFamily = WorkStation.BATCH_INCOMPATIBLE;
-	public int maxBatchSize = 1;
+	private WorkStation machine;
+	private double procTime = Double.NaN;
+	private int setupState = WorkStation.DEF_SETUP;
+	private String batchFamily = WorkStation.BATCH_INCOMPATIBLE;
+	private int maxBatchSize = 1;
 
 	@Override
 	public Operation clone() throws CloneNotSupportedException {
 		return (Operation) super.clone();
+	}
+
+	public WorkStation getMachine() {
+		return machine;
+	}
+
+	public void setMachine(WorkStation machine) {
+		this.machine = machine;
+	}
+
+	public int getSetupState() {
+		return setupState;
+	}
+
+	public void setSetupState(int setupState) {
+		this.setupState = setupState;
+	}
+
+	public String getBatchFamily() {
+		return batchFamily;
+	}
+
+	public void setBatchFamily(String batchFamily) {
+		this.batchFamily = batchFamily;
+	}
+
+	public int getMaxBatchSize() {
+		return maxBatchSize;
+	}
+
+	public void setMaxBatchSize(int maxBatchSize) {
+		this.maxBatchSize = maxBatchSize;
+	}
+
+	public double getProcTime() {
+		return procTime;
+	}
+
+	public void setProcTime(double procTime) {
+		this.procTime = procTime;
 	}
 
 }

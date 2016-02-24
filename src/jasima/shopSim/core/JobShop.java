@@ -123,7 +123,7 @@ public class JobShop extends Simulation {
 		if (numListener() > 0)
 			fire(JOB_RELEASED);
 
-		WorkStation mach = nextJob.getCurrentOperation().machine;
+		WorkStation mach = nextJob.getCurrentOperation().getMachine();
 		mach.enqueueOrProcess(nextJob);
 	}
 

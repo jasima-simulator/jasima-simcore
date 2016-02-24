@@ -49,7 +49,7 @@ public class FEDD extends PR {
 	}
 
 	public double earliestFamilyDueDate(PrioRuleTarget j) {
-		final int family = j.getCurrentOperation().setupState;
+		final int family = j.getCurrentOperation().getSetupState();
 		final PriorityQueue<Job> q = j.getCurrMachine().queue;
 		assert q.size() > 0;
 
@@ -58,8 +58,7 @@ public class FEDD extends PR {
 			Job job = q.get(i);
 			if (arrivesTooLate(job))
 				continue;
-			if (job.getCurrentOperation().setupState == family
-					&& job.getDueDate() < dd) {
+			if (job.getCurrentOperation().getSetupState() == family && job.getDueDate() < dd) {
 				dd = job.getDueDate();
 			}
 		}

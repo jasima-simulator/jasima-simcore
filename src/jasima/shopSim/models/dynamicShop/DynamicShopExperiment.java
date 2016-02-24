@@ -54,8 +54,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * {@code BasicJobStatCollector}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * @see BasicJobStatCollector
  */
 public class DynamicShopExperiment extends JobShopExperiment {
@@ -90,8 +89,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 		if (getScenario() == null)
 			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"No scenario specified, should be one of %s.",
-					Arrays.toString(Scenario.values())));
+					"No scenario specified, should be one of %s.", Arrays.toString(Scenario.values())));
 
 		Objects.requireNonNull(procTimes);
 
@@ -157,7 +155,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 					machineChosen[mi] = true;
 
 					if (getScenario() == Scenario.JOB_SHOP) {
-						ops[i].machine = m;
+						ops[i].setMachine(m);
 					}
 				}
 
@@ -165,13 +163,13 @@ public class DynamicShopExperiment extends JobShopExperiment {
 					int k = 0;
 					for (int i = 0; i < shop.machines.length; i++) {
 						if (machineChosen[i])
-							ops[k++].machine = shop.machines[i];
+							ops[k++].setMachine(shop.machines[i]);
 					}
 				}
 
 				// procTimes
 				for (Operation o : ops) {
-					o.procTime = getProcTimes().nextDbl();
+					o.setProcTime(getProcTimes().nextDbl());
 				}
 
 				return ops;
@@ -181,23 +179,18 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		double iaMean = calcIaMean();
 
 		ArrivalsStationary arrivals = new ArrivalsStationary();
-		arrivals.setInterArrivalTimes(new DblDistribution(
-				new ExponentialDistribution(iaMean)));
+		arrivals.setInterArrivalTimes(new DblDistribution(new ExponentialDistribution(iaMean)));
 		arrivals.setName("arrivalStream");
 		src.setArrivalProcess(arrivals);
 
 		int min = getNumOpsMin() > 0 ? getNumOpsMin() : getNumMachines();
 		int max = getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines();
 		if (min > max)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"invalid range for numOps: [%d; %d]", getNumOpsMin(),
-					getNumOpsMax()));
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE, "invalid range for numOps: [%d; %d]",
+					getNumOpsMin(), getNumOpsMax()));
 		if (max > getNumMachines())
-			throw new IllegalArgumentException(
-					String.format(
-							Util.DEF_LOCALE,
-							"Can't have more operations (%d) than there are machines (%d).",
-							max, getNumMachines()));
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+					"Can't have more operations (%d) than there are machines (%d).", max, getNumMachines()));
 		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);
 		src.setNumOps(numOps);
 
@@ -205,8 +198,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		procTimes2.setName("procTimesStream");
 		src.setProcTimes(procTimes2);
 
-		src.setMachIdx(new IntUniformRange("machIdxStream", 0,
-				getNumMachines() - 1));
+		src.setMachIdx(new IntUniformRange("machIdxStream", 0, getNumMachines() - 1));
 
 		src.setDueDateFactors(TypeUtil.cloneIfPossible(getDueDateFactor()));
 
@@ -235,8 +227,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 		double meanOps = 0.5d * (opsMax + opsMin);
 		double meanOpProc = getProcTimes().getNumericalMean();
 
-		double jobsPerDay = getUtilLevel() * getNumMachines() * MINUTES_PER_DAY
-				/ (meanOps * meanOpProc);
+		double jobsPerDay = getUtilLevel() * getNumMachines() * MINUTES_PER_DAY / (meanOps * meanOpProc);
 		return (1.0d * MINUTES_PER_DAY / jobsPerDay);
 	}
 

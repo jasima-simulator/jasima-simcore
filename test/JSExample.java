@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -49,8 +50,8 @@ public class JSExample extends JobShop {
 
 	private static double LENGTH_SIM = 365.0;
 
-	float meanService[][] = { { 0.50f, 0.60f, 0.85f, 0.50f },
-			{ 1.10f, 0.80f, 0.75f }, { 1.20f, 0.25f, 0.70f, 0.90f, 1.00f } };
+	float meanService[][] = { { 0.50f, 0.60f, 0.85f, 0.50f }, { 1.10f, 0.80f, 0.75f },
+			{ 1.20f, 0.25f, 0.70f, 0.90f, 1.00f } };
 
 	// Number of tasks for each job type
 	WorkStation route[][];// = { { 2, 0, 1, 4 }, { 3, 0, 2 }, { 1, 4, 0, 3, 2 }
@@ -72,12 +73,9 @@ public class JSExample extends JobShop {
 		js.addMachine(new WorkStation(1));
 
 		// int route[][] = { { 2, 0, 1, 4 }, { 3, 0, 2 }, { 1, 4, 0, 3, 2 } };
-		js.route = new WorkStation[][] {
-				{ js.machines[2], js.machines[0], js.machines[1],
-						js.machines[4] },
+		js.route = new WorkStation[][] { { js.machines[2], js.machines[0], js.machines[1], js.machines[4] },
 				{ js.machines[3], js.machines[0], js.machines[2] },
-				{ js.machines[1], js.machines[4], js.machines[0],
-						js.machines[3], js.machines[2] } };
+				{ js.machines[1], js.machines[4], js.machines[0], js.machines[3], js.machines[2] } };
 
 		js.init();
 		js.run();
@@ -95,13 +93,12 @@ public class JSExample extends JobShop {
 		installMachineListener(new WorkStationListenerBase() {
 
 			@Override
-			protected void operationStarted(WorkStation m, PrioRuleTarget b,
-					int oldSetupState, int newSetupState, double setupTime) {
+			protected void operationStarted(WorkStation m, PrioRuleTarget b, int oldSetupState, int newSetupState,
+					double setupTime) {
 				assert b.numJobsInBatch() == 1;
 				Job job = b.job(0);
 
-				jobTypeDelay[job.getJobType()].value(simTime()
-						- job.getArriveTime());
+				jobTypeDelay[job.getJobType()].value(simTime() - job.getArriveTime());
 			}
 		}, false);
 		installMachineListener(new MachineStatCollector(), true);
@@ -111,13 +108,10 @@ public class JSExample extends JobShop {
 			public Job createNextJob() {
 				Job job = new Job(JSExample.this);
 
-				job.setRelDate(simTime()
-						+ RandomHelper.expon(meanInterarrival,
-								streamInterarrival));
+				job.setRelDate(simTime() + RandomHelper.expon(meanInterarrival, streamInterarrival));
 
 				// Set JobType and TaskNumber of new job
-				job.setJobType(RandomHelper.randomInteger(probDistribJobType,
-						streamJobType));
+				job.setJobType(RandomHelper.randomInteger(probDistribJobType, streamJobType));
 				// job.setJobType(1);
 				job.setTaskNumber(0);
 
@@ -125,12 +119,12 @@ public class JSExample extends JobShop {
 
 				job.setOps(Util.initializedArray(ms.length, Operation.class));
 				for (int i = 0; i < ms.length; i++) {
-					job.getOps()[i].machine = ms[i];
+					job.getOps()[i].setMachine(ms[i]);
 				}
 
 				for (int i = 0; i < ms.length; i++) {
-					job.getOps()[i].procTime = RandomHelper.erlang(2,
-							meanService[job.getJobType()][i], streamService);
+					job.getOps()[i]
+							.setProcTime(RandomHelper.erlang(2, meanService[job.getJobType()][i], streamService));
 				}
 
 				return job;
@@ -188,16 +182,10 @@ public class JSExample extends JobShop {
 		for (int i = 0; i < machines.length; i++) {
 			WorkStation m = machines[i];
 			SummaryStat aniq = (SummaryStat) res.get(m.getName() + ".qLen");
-			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName()
-					+ ".util");
-			SummaryStat stationDelay = (SummaryStat) res.get(m.getName()
-					+ ".qWait");
-			addRecord(String.valueOf(i)
-					+ "        "
-					+ String.valueOf(aniq.mean())
-					+ "        "
-					+ String.valueOf(aveMachinesBusy.mean()
-							/ machines[i].numInGroup()) + "        "
+			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName() + ".util");
+			SummaryStat stationDelay = (SummaryStat) res.get(m.getName() + ".qWait");
+			addRecord(String.valueOf(i) + "        " + String.valueOf(aniq.mean()) + "        "
+					+ String.valueOf(aveMachinesBusy.mean() / machines[i].numInGroup()) + "        "
 					+ String.valueOf(stationDelay.mean()));
 		}
 	}

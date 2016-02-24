@@ -29,8 +29,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * taking into account the processing time of a job's next operation.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class PTPlusWINQPlusNPT extends PR {
 
@@ -38,7 +37,7 @@ public class PTPlusWINQPlusNPT extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		return -(2 * j.getCurrentOperation().procTime + WINQ.winq(j) + npt(j));
+		return -(2 * j.currProcTime() + WINQ.winq(j) + npt(j));
 	}
 
 	/**
@@ -49,7 +48,7 @@ public class PTPlusWINQPlusNPT extends PR {
 		if (nextTask >= job.getOps().length)
 			return 0.0d;
 		else
-			return job.getOps()[nextTask].procTime;
+			return job.getOps()[nextTask].getProcTime();
 	}
 
 }

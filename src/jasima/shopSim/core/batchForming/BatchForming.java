@@ -43,8 +43,7 @@ import java.util.Map;
  * 
  * @author Christoph Pickardt, 2010-05-27
  * @author Torsten Hildebrandt, 2010-03-18
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public abstract class BatchForming implements Cloneable, Serializable {
 
@@ -64,7 +63,7 @@ public abstract class BatchForming implements Cloneable, Serializable {
 		Map<String, List<Job>> jobsPerFamily = new HashMap<String, List<Job>>();
 		for (int i = 0; i < numElems; i++) {
 			Job j = jobs[i];
-			String bf = j.getCurrentOperation().batchFamily;
+			String bf = j.getCurrentOperation().getBatchFamily();
 
 			List<Job> jobsInFamily = jobsPerFamily.get(bf);
 			if (jobsInFamily == null) {
@@ -132,11 +131,11 @@ public abstract class BatchForming implements Cloneable, Serializable {
 		Operation opJ = job.getCurrentOperation();
 
 		Operation op = new Operation();
-		op.machine = opJ.machine;
-		op.batchFamily = opJ.batchFamily;
-		op.setupState = opJ.setupState;
-		op.procTime = opJ.procTime;
-		op.maxBatchSize = opJ.maxBatchSize;
+		op.setMachine(opJ.getMachine());
+		op.setBatchFamily(opJ.getBatchFamily());
+		op.setSetupState(opJ.getSetupState());
+		op.setProcTime(opJ.getProcTime());
+		op.setMaxBatchSize(opJ.getMaxBatchSize());
 
 		b.op = op;
 	}
@@ -145,10 +144,10 @@ public abstract class BatchForming implements Cloneable, Serializable {
 		Operation opJ = b.job(0).getCurrentOperation();
 		for (int i = 1; i < b.numJobsInBatch(); i++) {
 			Operation op = b.job(i).getCurrentOperation();
-			assert opJ.batchFamily.equals(op.batchFamily);
-			assert opJ.maxBatchSize == op.maxBatchSize;
-			assert Math.abs(opJ.procTime - op.procTime) < 1e-6;
-			assert opJ.setupState == op.setupState;
+			assert opJ.getBatchFamily().equals(op.getBatchFamily());
+			assert opJ.getMaxBatchSize() == op.getMaxBatchSize();
+			assert Math.abs(opJ.getProcTime() - op.getProcTime()) < 1e-6;
+			assert opJ.getSetupState() == op.getSetupState();
 		}
 		return true;
 	}

@@ -96,7 +96,7 @@ public class StaticShopExperiment extends JobShopExperiment {
 				Route route = shop.routes[orig.routeNum];
 				double procSum = 0.0;
 				for (Operation o : route.ops()) {
-					procSum += o.procTime;
+					procSum += o.getProcTime();
 				}
 
 				double dd = getDueDateTightness() * procSum;

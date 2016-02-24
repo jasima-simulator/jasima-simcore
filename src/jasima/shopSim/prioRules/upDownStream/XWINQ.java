@@ -55,7 +55,7 @@ public class XWINQ extends PR {
 		if (nextTask >= job.getOps().length)
 			return 0;
 
-		WorkStation mNext = job.getOps()[nextTask].machine;
+		WorkStation mNext = job.getOps()[nextTask].getMachine();
 		return mNext.workContent(true);
 	}
 

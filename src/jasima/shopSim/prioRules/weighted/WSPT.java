@@ -36,7 +36,7 @@ public class WSPT extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		double p = job.getCurrentOperation().procTime;
+		double p = job.currProcTime();
 		if (p > 0)
 			return job.getWeight() / p;
 		else

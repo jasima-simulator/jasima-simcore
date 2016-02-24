@@ -54,7 +54,7 @@ public class WINQ extends PR {
 		if (nextTask >= job.numOps())
 			return 0;
 
-		WorkStation mNext = job.getOps()[nextTask].machine;
+		WorkStation mNext = job.getOps()[nextTask].getMachine();
 		return mNext.workContent(false);
 	}
 

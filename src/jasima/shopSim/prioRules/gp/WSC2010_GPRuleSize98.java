@@ -34,8 +34,7 @@ import java.util.Map;
  * , WinterSim 2010, doi:10.1109/WSC.2010.5678946.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class WSC2010_GPRuleSize98 extends GPRuleBase {
 
@@ -53,7 +52,7 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 	}
 
 	private int numCompatible(PrioRuleTarget j) {
-		String bf = j.getCurrentOperation().batchFamily;
+		String bf = j.getCurrentOperation().getBatchFamily();
 		return famSizes.get(bf).intValue();
 	}
 
@@ -68,7 +67,7 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 		for (int i = 0, n = q.size(); i < n; i++) {
 			Job j = q.get(i);
 
-			final String family = j.getCurrentOperation().batchFamily;
+			final String family = j.getCurrentOperation().getBatchFamily();
 			Integer k = famSizes.get(family);
 			if (k == null || "BATCH_INCOMPATIBLE".equals(family))
 				k = 0;
@@ -90,7 +89,7 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 			Job j2 = q.get(i);
 			assert !j2.isFuture();
 			if (!j2.isFuture()) {
-				setupAvg += setupMatrix[machineSetup][j2.getCurrentOperation().setupState];
+				setupAvg += setupMatrix[machineSetup][j2.getCurrentOperation().getSetupState()];
 				numNonFutures++;
 			}
 		}
@@ -102,7 +101,7 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 		final double[][] setupMatrix = j.getCurrMachine().getSetupMatrix();
 		final int machineSetup = j.getCurrMachine().currMachine.setupState;
 
-		return setupMatrix[machineSetup][j.getCurrentOperation().setupState];
+		return setupMatrix[machineSetup][j.getCurrentOperation().getSetupState()];
 	}
 
 	@Override
@@ -115,19 +114,12 @@ public class WSC2010_GPRuleSize98 extends GPRuleBase {
 		double rpt = j.remainingProcTime();
 		double sAvg = setupAvg();
 
-		return ifte(max(1, rpt) - max(max(1, rpt), sl), w, bf)
-				* bf
-				* max(rpt
-						/ sl
-						+ max(-ifte(bf - sl, w, bf) + s + bf,
-								sAvg
-										+ bf
-										* ifte(max(1, rpt) - max(sl, ttd), w,
-												bf) - s - max(max(1, rpt), sl)
-										+ max(1, rpt) + 1)
+		return ifte(max(1, rpt) - max(max(1, rpt), sl), w, bf) * bf * max(
+				rpt / sl + max(-ifte(bf - sl, w, bf) + s + bf,
+						sAvg + bf * ifte(max(1, rpt) - max(sl, ttd), w, bf) - s - max(max(1, rpt), sl) + max(1, rpt)
+								+ 1)
 						* ifte(bf - sl, w, bf) - s,
-						sAvg + bf * ifte(max(1, rpt) - sl, w, bf)
-								* (2 * rpt / sl - s) + rpt / sl - s + 1);
+				sAvg + bf * ifte(max(1, rpt) - sl, w, bf) * (2 * rpt / sl - s) + rpt / sl - s + 1);
 		// return mul(max(add(sub(mul(max(add(sub(mul(sub(bf, max(1, ttd)),
 		// ifte(sub(bf, max(1, ttd)), w, bf)), add(
 		// sub(div(rpt, sl), s), ifte(sub(max(rpt, 1), max(sl, ttd)),

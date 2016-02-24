@@ -35,7 +35,7 @@ public class SPT extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		return -job.getCurrentOperation().procTime;
+		return -job.currProcTime();
 	}
 
 }

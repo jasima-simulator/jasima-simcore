@@ -29,8 +29,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * job.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class PTPlusWINQPlusSlack extends PR {
 
@@ -38,9 +37,8 @@ public class PTPlusWINQPlusSlack extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		return -(j.getCurrentOperation().procTime + WINQ.winq(j) + Math.min(
-				j.getDueDate() - j.getShop().simTime() - j.remainingProcTime(),
-				0.0d));
+		return -(j.currProcTime() + WINQ.winq(j)
+				+ Math.min(j.getDueDate() - j.getShop().simTime() - j.remainingProcTime(), 0.0d));
 	}
 
 }

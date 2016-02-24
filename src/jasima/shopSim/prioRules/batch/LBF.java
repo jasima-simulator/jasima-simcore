@@ -45,15 +45,13 @@ public class LBF extends PR {
 		if (arrivesTooLate(j))
 			return PriorityQueue.MIN_PRIO;
 
-		final String family = j.getCurrentOperation().batchFamily;
+		final String family = j.getCurrentOperation().getBatchFamily();
 		if (WorkStation.BATCH_INCOMPATIBLE.equals(family))
 			return 1;
 
 		int res = 0;
-		for (int i = 0; i < j.getCurrMachine().getJobsByFamily().get(family)
-				.size(); i++) {
-			if (!arrivesTooLate(j.getCurrMachine().getJobsByFamily()
-					.get(family).get(i)))
+		for (int i = 0; i < j.getCurrMachine().getJobsByFamily().get(family).size(); i++) {
+			if (!arrivesTooLate(j.getCurrMachine().getJobsByFamily().get(family).get(i)))
 				res++;
 		}
 		assert res >= 1;

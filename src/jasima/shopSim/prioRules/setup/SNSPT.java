@@ -55,8 +55,7 @@ public class SNSPT extends PR {
 				continue;
 
 			procNorm += j.currProcTime();
-			setupNorm += setupMatrix[getOwner().currMachine.setupState][j
-					.getCurrentOperation().setupState];
+			setupNorm += setupMatrix[getOwner().currMachine.setupState][j.getCurrentOperation().getSetupState()];
 			numJobs++;
 		}
 		procNorm = (procNorm / numJobs);
@@ -70,10 +69,10 @@ public class SNSPT extends PR {
 		if (arrivesTooLate(job))
 			return PriorityQueue.MIN_PRIO;
 
-		double sRatio = setupNorm != 0.0 ? setupMatrix[getOwner().currMachine.setupState][job
-				.getCurrentOperation().setupState] / setupNorm
+		double sRatio = setupNorm != 0.0
+				? setupMatrix[getOwner().currMachine.setupState][job.getCurrentOperation().getSetupState()] / setupNorm
 				: 0.0;
-		return -(sRatio + (job.getCurrentOperation().procTime / procNorm));
+		return -(sRatio + (job.currProcTime() / procNorm));
 	}
 
 }

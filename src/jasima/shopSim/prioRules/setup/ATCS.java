@@ -81,8 +81,7 @@ public class ATCS extends PR {
 				continue;
 
 			slackNorm += j.currProcTime();
-			setupNorm += setupMatrix[getOwner().currMachine.setupState][j
-					.getCurrentOperation().setupState];
+			setupNorm += setupMatrix[getOwner().currMachine.setupState][j.getCurrentOperation().getSetupState()];
 			numJobs++;
 		}
 		slackNorm = (slackNorm / numJobs) * k1;
@@ -96,11 +95,10 @@ public class ATCS extends PR {
 		if (arrivesTooLate(job))
 			return PriorityQueue.MIN_PRIO;
 
-		double slack = job.getCurrentOperationDueDate()
-				- job.getShop().simTime() - job.currProcTime();
+		double slack = job.getCurrentOperationDueDate() - job.getShop().simTime() - job.currProcTime();
 		double prod1 = -Math.max(slack, 0.0d) / slackNorm;
-		double prod2 = setupNorm != 0.0 ? -setupMatrix[getOwner().currMachine.setupState][job
-				.getCurrentOperation().setupState] / setupNorm
+		double prod2 = setupNorm != 0.0
+				? -setupMatrix[getOwner().currMachine.setupState][job.getCurrentOperation().getSetupState()] / setupNorm
 				: 0.0;
 
 		return Math.log(job.getWeight() / job.currProcTime()) + prod1 + prod2;

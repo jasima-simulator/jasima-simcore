@@ -35,8 +35,7 @@ import java.util.Map;
  * utilization, average queue length, average setup time per operation).
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class MachineStatCollector extends WorkStationListenerBase {
 
@@ -60,8 +59,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 
 	@Override
 	protected void init(WorkStation m) {
-		aveMachinesBusy = new TimeWeightedSummaryStat(m.numBusy(), m.shop()
-				.simTime());
+		aveMachinesBusy = new TimeWeightedSummaryStat(m.numBusy(), m.shop().simTime());
 		aniq = new TimeWeightedSummaryStat();
 		stationDelay = new SummaryStat();
 		capacityUtilized = new SummaryStat();
@@ -100,8 +98,8 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	}
 
 	@Override
-	protected void operationStarted(WorkStation m, PrioRuleTarget jobOrBatch,
-			int oldSetupState, int newSetupState, double setTime) {
+	protected void operationStarted(WorkStation m, PrioRuleTarget jobOrBatch, int oldSetupState, int newSetupState,
+			double setTime) {
 		if (jobOrBatch == null)
 			return;
 
@@ -116,8 +114,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 		// Schedule a service completion for this batch at this
 		// station.
 		Operation op = jobOrBatch.getCurrentOperation();
-		capacityUtilized.value((double) jobOrBatch.numJobsInBatch()
-				/ op.maxBatchSize);
+		capacityUtilized.value((double) jobOrBatch.numJobsInBatch() / op.getMaxBatchSize());
 		aveBatchSize.value(jobOrBatch.numJobsInBatch());
 
 		aniq.value(m.numJobsWaiting(), simTime);
@@ -127,8 +124,7 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	}
 
 	@Override
-	protected void operationCompleted(WorkStation m,
-			PrioRuleTarget justCompleted) {
+	protected void operationCompleted(WorkStation m, PrioRuleTarget justCompleted) {
 		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
 	}
 

@@ -37,8 +37,8 @@ public class SSPT extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		return -(getOwner().getSetupMatrix()[getOwner().currMachine.setupState][job
-				.getCurrentOperation().setupState] + job.getCurrentOperation().procTime);
+		return -(getOwner().getSetupMatrix()[getOwner().currMachine.setupState][job.getCurrentOperation()
+				.getSetupState()] + job.currProcTime());
 	}
 
 }

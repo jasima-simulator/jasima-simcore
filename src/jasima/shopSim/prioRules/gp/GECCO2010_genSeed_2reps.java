@@ -29,8 +29,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  * GECCO 2010, doi:10.1145/1830483.1830530
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class GECCO2010_genSeed_2reps extends GPRuleBase {
 
@@ -38,33 +37,22 @@ public class GECCO2010_genSeed_2reps extends GPRuleBase {
 
 	@Override
 	public double calcPrio(PrioRuleTarget j) {
-		double p = j.getCurrentOperation().procTime;
+		double p = j.currProcTime();
 		double winq = jasima.shopSim.prioRules.upDownStream.WINQ.winq(j);
 		double tiq = j.getShop().simTime() - j.getArriveTime();
 		double npt = PTPlusWINQPlusNPT.npt(j);
 		double tis = j.getShop().simTime() - j.getRelDate();
 		double rpt = j.remainingProcTime();
 
-		return max(
-				winq,
-				ifte((2 * p * tiq / (winq + 2 * p) + max(p, winq))
-						/ (ifte(ifte(winq - tis, 2 - p, tis + p) + winq - rpt,
-								npt * (winq + 2 * p) / (2 * p) + p,
-								ifte(winq - tis, -winq + rpt + 2 * p,
-										max(tis + p, winq)))
-								+ winq + max(p, winq))
-						+ max(2 * p, 6 * (p * p)),
-						npt * (winq + p) * (winq + max(p, winq) + 1)
-								/ (p * (rpt + p)),
-						tis
-								* (((winq + p) * (winq + max(p, winq) + 1)
-										/ (rpt + p) + max(p, winq))
-										* max(winq / tis, (1 - p) * (winq + p)
-												/ max(p, winq)) + p) / tiq)
-						+ ifte(p - winq,
-								npt * (winq + 2 * p) + rpt + p,
-								max(tis, ifte(winq - tis, 1 - winq, tis + p)
-										+ winq)))
+		return max(winq, ifte(
+				(2 * p * tiq / (winq + 2 * p) + max(p, winq))
+						/ (ifte(ifte(winq - tis, 2 - p, tis + p) + winq - rpt, npt * (winq + 2 * p) / (2 * p) + p,
+								ifte(winq - tis, -winq + rpt + 2 * p, max(tis + p, winq))) + winq + max(p, winq))
+				+ max(2 * p, 6 * (p * p)),
+				npt * (winq + p) * (winq + max(p, winq) + 1) / (p * (rpt + p)),
+				tis * (((winq + p) * (winq + max(p, winq) + 1) / (rpt + p) + max(p, winq))
+						* max(winq / tis, (1 - p) * (winq + p) / max(p, winq)) + p) / tiq)
+				+ ifte(p - winq, npt * (winq + 2 * p) + rpt + p, max(tis, ifte(winq - tis, 1 - winq, tis + p) + winq)))
 				- npt * (winq / tis + winq) - max(npt, 2 * p * (2 * p + 1));
 	}
 
