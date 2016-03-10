@@ -20,6 +20,12 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
+
 import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.util.TypeUtil;
@@ -28,11 +34,6 @@ import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>
@@ -47,9 +48,7 @@ import java.util.Set;
  * perform clean-up, collecting simulation results, etc.
  * </p>
  * 
- * @author Torsten Hildebrandt, 2012-02-08
- * @version 
- *          "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
@@ -81,8 +80,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		private Object[] params;
 		private String message;
 
-		public SimPrintEvent(Simulation sim, SimMsgCategory category,
-				String message) {
+		public SimPrintEvent(Simulation sim, SimMsgCategory category, String message) {
 			super();
 
 			if (message == null)
@@ -93,8 +91,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 			this.message = message;
 		}
 
-		public SimPrintEvent(Simulation sim, SimMsgCategory category,
-				String messageFormatString, Object... params) {
+		public SimPrintEvent(Simulation sim, SimMsgCategory category, String messageFormatString, Object... params) {
 			super();
 			this.sim = sim;
 			this.category = category;
@@ -106,8 +103,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		public String getMessage() {
 			// lazy creation of message only when needed
 			if (message == null) {
-				message = String.format(Util.DEF_LOCALE, messageFormatString,
-						params);
+				message = String.format(Util.DEF_LOCALE, messageFormatString, params);
 				messageFormatString = null;
 				params = null;
 			}
@@ -251,8 +247,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	protected boolean handleError(Throwable t) {
 		String errorString = Util.exceptionToString(t);
 
-		print(SimMsgCategory.ERROR,
-				"An uncaught exception occurred. Current event='%s', exception='%s'",
+		print(SimMsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'",
 				currentEvent(), errorString);
 
 		return true;
@@ -303,9 +298,8 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 */
 	public void schedule(Event event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio)
-			print(SimMsgCategory.WARN,
-					"Priority inversion (current: %d, scheduled: %d, event=%s).",
-					currPrio, event.getPrio(), event.toString());
+			print(SimMsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
+					event.getPrio(), event.toString());
 		if (event.getTime() < simTime) {
 			print(SimMsgCategory.ERROR,
 					"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
@@ -316,6 +310,56 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		if (event.isAppEvent())
 			numAppEvents++;
 		eventList.insert(event);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at certain point in time.
+	 * 
+	 * @param time
+	 *            The time when to call {@code method}.
+	 * @param prio
+	 *            Priority of the event (to deterministically sequence events at
+	 *            the same time.
+	 * @param method
+	 *            The method to call at the given moment.
+	 */
+	public void schedule(double time, int prio, SimMethod method) {
+		Event e = new MethodCallEvent(time, prio, method);
+		schedule(e);
+	}
+
+	/**
+	 * Periodically calls a certain method. While this method returns true, a
+	 * next invocation after the given time interval.
+	 */
+	public void schedulePeriodically(double interval, int prio, BooleanSupplier method) {
+		schedule(new Event(simTime() + interval, prio) {
+			@Override
+			public void handle() {
+				if (method.getAsBoolean()) {
+					// schedule next invocation
+					setTime(simTime() + interval);
+					schedule(this);
+				}
+			}
+		});
+	}
+
+	/**
+	 * This class is used internally by {@link #schedule(double,int,SimMethod)}.
+	 */
+	private static final class MethodCallEvent extends Event {
+		public final SimMethod m;
+
+		private MethodCallEvent(double time, int prio, SimMethod method) {
+			super(time, prio);
+			m = method;
+		}
+
+		@Override
+		public void handle() {
+			m.handle();
+		}
 	}
 
 	/**
@@ -390,8 +434,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * {@code messageFormatString} (used with the arguments given in
 	 * {@code params}).
 	 */
-	public void print(SimMsgCategory category, String messageFormatString,
-			Object... params) {
+	public void print(SimMsgCategory category, String messageFormatString, Object... params) {
 		if (numListener() > 0) {
 			fire(new SimPrintEvent(this, category, messageFormatString, params));
 		}
@@ -458,8 +501,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	private NotifierAdapter<Simulation, SimEvent> adapter = null;
 
 	@Override
-	public void addNotifierListener(
-			NotifierListener<Simulation, SimEvent> listener) {
+	public void addNotifierListener(NotifierListener<Simulation, SimEvent> listener) {
 		if (adapter == null)
 			adapter = new NotifierAdapter<Simulation, SimEvent>(this);
 		adapter.addNotifierListener(listener);
@@ -477,8 +519,8 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 *            whether to try to clone a new instance for each machine using
 	 *            {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
-	public NotifierListener<Simulation, SimEvent> installSimulationListener(
-			NotifierListener<Simulation, SimEvent> l, boolean cloneIfPossbile) {
+	public NotifierListener<Simulation, SimEvent> installSimulationListener(NotifierListener<Simulation, SimEvent> l,
+			boolean cloneIfPossbile) {
 		if (cloneIfPossbile)
 			l = TypeUtil.cloneIfPossible(l);
 		addNotifierListener(l);
@@ -491,8 +533,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	}
 
 	@Override
-	public void removeNotifierListener(
-			NotifierListener<Simulation, SimEvent> listener) {
+	public void removeNotifierListener(NotifierListener<Simulation, SimEvent> listener) {
 		adapter.removeNotifierListener(listener);
 	}
 
@@ -504,6 +545,26 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	@Override
+	public void disableEvents() {
+		if (adapter != null)
+			adapter.disableEvents();
+	}
+
+	@Override
+	public void enableEvents() {
+		if (adapter != null)
+			adapter.enableEvents();
+	}
+
+	@Override
+	public boolean eventsEnabled() {
+		if (adapter != null)
+			return adapter.eventsEnabled();
+		else
+			return false;
 	}
 
 	/**

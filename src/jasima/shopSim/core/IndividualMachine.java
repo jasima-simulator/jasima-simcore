@@ -30,8 +30,6 @@ import java.util.List;
  * {@link WorkStation}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public class IndividualMachine {
 
@@ -80,8 +78,7 @@ public class IndividualMachine {
 	/** Activation from DOWN state. */
 	public void activate() {
 		if (state != MachineState.DOWN)
-			throw new IllegalStateException(
-					"Only a machine in state DOWN can be activated.");
+			throw new IllegalStateException("Only a machine in state DOWN can be activated.");
 		assert curJob == null;
 
 		state = MachineState.IDLE;
@@ -110,14 +107,11 @@ public class IndividualMachine {
 
 			// don't interrupt ongoing operation/downtime, postpone takeDown
 			// instead
-			shop.schedule(new Event(procFinished, WorkStation.TAKE_DOWN_PRIO) {
-				@Override
-				public void handle() {
-					assert workStation.currMachine == null;
-					workStation.currMachine = IndividualMachine.this;
-					takeDown(downReason);
-					workStation.currMachine = null;
-				}
+			shop.schedule(procFinished, WorkStation.TAKE_DOWN_PRIO, () -> {
+				assert workStation.currMachine == null;
+				workStation.currMachine = IndividualMachine.this;
+				takeDown(downReason);
+				workStation.currMachine = null;
 			});
 		} else {
 			assert state == MachineState.IDLE;
@@ -139,16 +133,12 @@ public class IndividualMachine {
 		state = MachineState.DOWN;
 
 		// schedule initial activation
-		workStation.shop
-				.schedule(new Event(relDate, WorkStation.ACTIVATE_PRIO) {
-					@Override
-					public void handle() {
-						assert workStation.currMachine == null;
-						workStation.currMachine = IndividualMachine.this;
-						IndividualMachine.this.activate();
-						workStation.currMachine = null;
-					}
-				});
+		workStation.shop.schedule(relDate, WorkStation.ACTIVATE_PRIO, () -> {
+			assert workStation.currMachine == null;
+			workStation.currMachine = IndividualMachine.this;
+			IndividualMachine.this.activate();
+			workStation.currMachine = null;
+		});
 
 		// init downsources
 		for (DowntimeSource ds : downsources) {
@@ -159,8 +149,7 @@ public class IndividualMachine {
 	@Override
 	public String toString() {
 		if (name == null)
-			name = workStation.getName()
-					+ (workStation.numInGroup() > 1 ? "." + idx : "");
+			name = workStation.getName() + (workStation.numInGroup() > 1 ? "." + idx : "");
 		return name;
 	}
 

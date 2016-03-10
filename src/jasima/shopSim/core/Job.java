@@ -20,15 +20,15 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
+
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.Job.JobEvent;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Main work unit in a shop.
@@ -551,6 +551,26 @@ public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobE
 	protected void fire(JobEvent event) {
 		if (adapter != null)
 			adapter.fire(event);
+	}
+
+	@Override
+	public void disableEvents() {
+		if (adapter != null)
+			adapter.disableEvents();
+	}
+
+	@Override
+	public void enableEvents() {
+		if (adapter != null)
+			adapter.enableEvents();
+	}
+
+	@Override
+	public boolean eventsEnabled() {
+		if (adapter != null)
+			return adapter.eventsEnabled();
+		else
+			return false;
 	}
 
 }

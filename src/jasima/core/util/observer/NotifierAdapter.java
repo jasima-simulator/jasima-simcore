@@ -33,11 +33,8 @@ import java.util.Iterator;
  * notifier functionality for some real Notifier.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
-public class NotifierAdapter<N extends Notifier<N, E>, E> implements
-		Notifier<N, E>, Serializable, Cloneable {
+public class NotifierAdapter<N extends Notifier<N, E>, E> implements Notifier<N, E>, Serializable, Cloneable {
 
 	private static final long serialVersionUID = 72063783838585993L;
 
@@ -46,6 +43,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 	private ArrayList<NotifierListener<N, E>> listeners = new ArrayList<NotifierListener<N, E>>();
 	private ArrayDeque<E> events = null;
 	private Iterator<NotifierListener<N, E>> it;
+	private int disableEventCounter = 0;
 
 	public NotifierAdapter(final N notifier) {
 		if (notifier == null)
@@ -53,6 +51,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 		this.setNotifier(notifier);
 	}
 
+	@Override
 	public void addNotifierListener(NotifierListener<N, E> listener) {
 		if (listener == null)
 			throw new NullPointerException("listener");
@@ -61,6 +60,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 		listeners.add(listener);
 	}
 
+	@Override
 	public void removeNotifierListener(NotifierListener<N, E> listener) {
 		if (listener == null)
 			throw new NullPointerException("listener");
@@ -74,6 +74,9 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 	}
 
 	public void fire(E event) {
+		if (!eventsEnabled())
+			return;
+
 		if (it != null) {
 			// already firing, i.e., listener triggered another event
 			if (events == null)
@@ -94,6 +97,25 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 		}
 	}
 
+	@Override
+	public void disableEvents() {
+		disableEventCounter++;
+	}
+
+	@Override
+	public void enableEvents() {
+		if (disableEventCounter <= 0)
+			throw new IllegalStateException();
+
+		disableEventCounter--;
+	}
+
+	@Override
+	public boolean eventsEnabled() {
+		return disableEventCounter == 0;
+	}
+
+	@Override
 	public int numListener() {
 		return listeners.size();
 	}
@@ -130,8 +152,7 @@ public class NotifierAdapter<N extends Notifier<N, E>, E> implements
 
 		c.listeners = new ArrayList<NotifierListener<N, E>>(listeners.size());
 		for (int i = 0, n = listeners.size(); i < n; i++) {
-			NotifierListener<N, E> clone = TypeUtil.cloneIfPossible(listeners
-					.get(i));
+			NotifierListener<N, E> clone = TypeUtil.cloneIfPossible(listeners.get(i));
 			c.listeners.add(clone);
 		}
 

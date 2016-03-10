@@ -76,11 +76,8 @@ import java.util.Map;
  * </p>
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id: Experiment.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com$"
  */
-public abstract class Experiment implements Cloneable, Serializable,
-		Notifier<Experiment, ExperimentEvent> {
+public abstract class Experiment implements Cloneable, Serializable, Notifier<Experiment, ExperimentEvent> {
 
 	private static final long serialVersionUID = -5981694222402234985L;
 
@@ -122,8 +119,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 		private String messageFormatString;
 		private Object[] params;
 
-		public ExpPrintEvent(Experiment exp, ExpMsgCategory category,
-				String message) {
+		public ExpPrintEvent(Experiment exp, ExpMsgCategory category, String message) {
 			super();
 			if (message == null)
 				throw new NullPointerException();
@@ -132,8 +128,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 			this.message = message;
 		}
 
-		public ExpPrintEvent(Experiment exp, ExpMsgCategory category,
-				String messageFormatString, Object... params) {
+		public ExpPrintEvent(Experiment exp, ExpMsgCategory category, String messageFormatString, Object... params) {
 			super();
 			this.exp = exp;
 			this.category = category;
@@ -193,15 +188,13 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 */
 	public Map<String, Object> results;
 
-	public static class UniqueNamesCheckingHashMap extends
-			LinkedHashMap<String, Object> {
+	public static class UniqueNamesCheckingHashMap extends LinkedHashMap<String, Object> {
 		private static final long serialVersionUID = -6783419937586790463L;
 
 		@Override
 		public Object put(String key, Object value) {
 			if (containsKey(key))
-				throw new RuntimeException("Map already contains value '" + key
-						+ "'.");
+				throw new RuntimeException("Map already contains value '" + key + "'.");
 			return super.put(key.intern(), value);
 		}
 	}
@@ -407,8 +400,7 @@ public abstract class Experiment implements Cloneable, Serializable,
 	 * @param params
 	 *            Parameters to use in the format string.
 	 */
-	public void print(ExpMsgCategory category, String messageFormat,
-			Object... params) {
+	public void print(ExpMsgCategory category, String messageFormat, Object... params) {
 		if (numListener() > 0) {
 			fire(new ExpPrintEvent(this, category, messageFormat, params));
 		}
@@ -529,22 +521,19 @@ public abstract class Experiment implements Cloneable, Serializable,
 	private NotifierAdapter<Experiment, ExperimentEvent> adapter = null;
 
 	@Override
-	public void addNotifierListener(
-			NotifierListener<Experiment, ExperimentEvent> listener) {
+	public void addNotifierListener(NotifierListener<Experiment, ExperimentEvent> listener) {
 		if (adapter == null)
 			adapter = new NotifierAdapter<Experiment, ExperimentEvent>(this);
 		adapter.addNotifierListener(listener);
 	}
 
 	@Override
-	public NotifierListener<Experiment, ExperimentEvent> getNotifierListener(
-			int index) {
+	public NotifierListener<Experiment, ExperimentEvent> getNotifierListener(int index) {
 		return adapter.getNotifierListener(index);
 	}
 
 	@Override
-	public void removeNotifierListener(
-			NotifierListener<Experiment, ExperimentEvent> listener) {
+	public void removeNotifierListener(NotifierListener<Experiment, ExperimentEvent> listener) {
 		adapter.removeNotifierListener(listener);
 	}
 
@@ -556,6 +545,26 @@ public abstract class Experiment implements Cloneable, Serializable,
 	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
+	}
+
+	@Override
+	public void disableEvents() {
+		if (adapter != null)
+			adapter.disableEvents();
+	}
+
+	@Override
+	public void enableEvents() {
+		if (adapter != null)
+			adapter.enableEvents();
+	}
+
+	@Override
+	public boolean eventsEnabled() {
+		if (adapter != null)
+			return adapter.eventsEnabled();
+		else
+			return false;
 	}
 
 	// ******************* static methods ************************

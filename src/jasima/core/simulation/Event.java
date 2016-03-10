@@ -28,9 +28,8 @@ import jasima.core.simulation.Simulation.EventQueue;
  * enforce FIFO order of concurrent events with the same priority).
  * 
  * @author Torsten Hildebrandt
- * @version $Id$
  */
-public abstract class Event implements Comparable<Event> {
+public abstract class Event implements Comparable<Event>, SimMethod {
 
 	private static final int PRIO_INCREMENT = Integer.MAX_VALUE / 4;
 
@@ -56,6 +55,7 @@ public abstract class Event implements Comparable<Event> {
 		this.prio = prio;
 	}
 
+	@Override
 	public abstract void handle();
 
 	public void setTime(double time) {

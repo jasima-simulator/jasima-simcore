@@ -20,6 +20,16 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import jasima.core.simulation.Event;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
@@ -32,16 +42,6 @@ import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Class to represent a workstation. A workstation is a collection of identical
@@ -113,30 +113,6 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 	public IndividualMachine currMachine;
 
 	ArrayDeque<IndividualMachine> freeMachines;
-	// reuse select event objects
-	private SelectEvent selectEventCache;
-
-	private final class SelectEvent extends Event {
-		private SelectEvent(double time) {
-			super(time, SELECT_PRIO);
-		}
-
-		@Override
-		public void handle() {
-			// are there jobs that could be started and is there at
-			// least one free machine
-			if (numBusy < numInGroup && numJobsWaiting() > 0) {
-				// at least 1 machine idle, start job selection
-				selectAndStart0();
-			}
-
-			// reuseEvent(this);
-			this.next = selectEventCache;
-			selectEventCache = this;
-		}
-
-		protected SelectEvent next = null; // linked list, see selectEventCache
-	}
 
 	protected double workContentReal, workContentFuture;
 	private ArrayList<String> setupStateTranslate;
@@ -189,7 +165,6 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		numBusy = 0;
 
 		queue.clear();
-		selectEventCache = null;
 		currMachine = null;
 
 		for (int i = machDat.length - 1; i >= 0; i--) {
@@ -237,8 +212,6 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 	}
 
 	public void done() {
-		selectEventCache = null;
-
 		if (numListener() > 0) {
 			fire(WS_DONE);
 		}
@@ -274,15 +247,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 	public void futureArrival(final Job f, final double arrivesAt) {
 		// execute asynchronously a little later so exactly concurrent job
 		// selections don't see each others results
-		shop.schedule(new Event(shop.simTime(), LOOKAHEAD_PRIO) {
-
-			@Override
-			public void handle() {
-				assert f.isFuture();
-				assert !queue.contains(f);
-				addToQueue(f, arrivesAt);
-			}
-		});
+		shop.schedule(shop.simTime(), LOOKAHEAD_PRIO, () -> addToQueue(f, arrivesAt));
 	}
 
 	private void addToQueue(Job j, double arrivesAt) {
@@ -438,39 +403,32 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 	 * know exactly what you are doing.
 	 */
 	public void selectAndStart() {
-		// reuse select event objects
-		SelectEvent e = selectEventCache;
-		if (e == null) {
-			e = new SelectEvent(shop.simTime());
-		} else {
-			selectEventCache = e.next;
-			e.setTime(shop.simTime());
-		}
-
 		// execute asynchronously so all jobs arrived/departed before selection
-		shop.schedule(e);
+		shop.schedule(shop.simTime(), SELECT_PRIO, this::selectAndStart0);
 	}
 
 	protected void selectAndStart0() {
-		assert numJobsWaiting() > 0;
-		assert numBusy < numInGroup;
+		// are there jobs that could be started and is there at
+		// least one free machine
+		if (numBusy < numInGroup && numJobsWaiting() > 0) {
+			// at least 1 machine idle, start job selection
+			PrioRuleTarget nextBatch = nextJobAndMachine();
+			assert freeMachines.contains(currMachine);
 
-		PrioRuleTarget nextBatch = nextJobAndMachine();
-		assert freeMachines.contains(currMachine);
+			// start work on selected job/batch
+			if (nextBatch != null) {
+				startProc(nextBatch);
+			}
 
-		// start work on selected job/batch
-		if (nextBatch != null) {
-			startProc(nextBatch);
+			// inform listener
+			if (numListener() > 0) {
+				justStarted = nextBatch;
+				fire(WS_JOB_SELECTED);
+				justStarted = null;
+			}
+
+			currMachine = null;
 		}
-
-		// inform listener
-		if (numListener() > 0) {
-			justStarted = nextBatch;
-			fire(WS_JOB_SELECTED);
-			justStarted = null;
-		}
-
-		currMachine = null;
 	}
 
 	protected PrioRuleTarget nextJobAndMachine() {
@@ -773,14 +731,34 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		adapter.removeNotifierListener(listener);
 	}
 
+	protected void fire(WorkStationEvent event) {
+		if (adapter != null)
+			adapter.fire(event);
+	}
+
 	@Override
 	public int numListener() {
 		return adapter == null ? 0 : adapter.numListener();
 	}
 
-	protected void fire(WorkStationEvent event) {
+	@Override
+	public void disableEvents() {
 		if (adapter != null)
-			adapter.fire(event);
+			adapter.disableEvents();
+	}
+
+	@Override
+	public void enableEvents() {
+		if (adapter != null)
+			adapter.enableEvents();
+	}
+
+	@Override
+	public boolean eventsEnabled() {
+		if (adapter != null)
+			return adapter.eventsEnabled();
+		else
+			return false;
 	}
 
 	/**

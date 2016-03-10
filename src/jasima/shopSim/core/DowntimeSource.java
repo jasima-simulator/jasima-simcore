@@ -22,7 +22,6 @@ package jasima.shopSim.core;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
-import jasima.core.simulation.Event;
 import jasima.shopSim.util.WorkStationListenerBase;
 
 /**
@@ -40,8 +39,7 @@ import jasima.shopSim.util.WorkStationListenerBase;
  * 
  * @see MaintenanceSource
  * @author Torsten Hildebrandt, 2014-04-15
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DowntimeSource {
 
@@ -58,10 +56,8 @@ public class DowntimeSource {
 	public void init() {
 		// initialize random streams
 		RandomFactory fact = machine.workStation.shop.getRndStreamFactory();
-		if (timeBetweenFailures != null
-				&& timeBetweenFailures.getRndGen() == null) {
-			fact.initRndGen(timeBetweenFailures, toString()
-					+ ".timeBetweenFailures");
+		if (timeBetweenFailures != null && timeBetweenFailures.getRndGen() == null) {
+			fact.initRndGen(timeBetweenFailures, toString() + ".timeBetweenFailures");
 			timeBetweenFailures.init();
 		}
 		if (timeToRepair != null && timeToRepair.getRndGen() == null) {
@@ -71,19 +67,15 @@ public class DowntimeSource {
 
 		machine.workStation.addNotifierListener(new WorkStationListenerBase() {
 			@Override
-			protected void activated(WorkStation m,
-					IndividualMachine justActivated) {
-				if (justActivated == machine
-						&& machine.downReason == DowntimeSource.this) {
+			protected void activated(WorkStation m, IndividualMachine justActivated) {
+				if (justActivated == machine && machine.downReason == DowntimeSource.this) {
 					onActivate();
 				}
 			}
 
 			@Override
-			protected void deactivated(WorkStation m,
-					IndividualMachine justDeactivated) {
-				if (justDeactivated == machine
-						&& machine.downReason == DowntimeSource.this) {
+			protected void deactivated(WorkStation m, IndividualMachine justDeactivated) {
+				if (justDeactivated == machine && machine.downReason == DowntimeSource.this) {
 					onDeactivate();
 				}
 			}
@@ -104,14 +96,11 @@ public class DowntimeSource {
 
 			// schedule next downtime
 			double nextFailure = calcDeactivateTime(shop);
-			shop.schedule(new Event(nextFailure, WorkStation.TAKE_DOWN_PRIO) {
-				@Override
-				public void handle() {
-					assert machine.workStation.currMachine == null;
-					machine.workStation.currMachine = machine;
-					machine.takeDown(DowntimeSource.this);
-					machine.workStation.currMachine = null;
-				}
+			shop.schedule(nextFailure, WorkStation.TAKE_DOWN_PRIO, () -> {
+				assert machine.workStation.currMachine == null;
+				machine.workStation.currMachine = machine;
+				machine.takeDown(DowntimeSource.this);
+				machine.workStation.currMachine = null;
 			});
 		}
 	}
@@ -127,14 +116,11 @@ public class DowntimeSource {
 		machine.procFinished = whenReactivated;
 
 		// schedule reactivation
-		shop.schedule(new Event(whenReactivated, WorkStation.ACTIVATE_PRIO) {
-			@Override
-			public void handle() {
-				assert machine.workStation.currMachine == null;
-				machine.workStation.currMachine = machine;
-				machine.activate();
-				machine.workStation.currMachine = null;
-			}
+		shop.schedule(whenReactivated, WorkStation.ACTIVATE_PRIO, () -> {
+			assert machine.workStation.currMachine == null;
+			machine.workStation.currMachine = machine;
+			machine.activate();
+			machine.workStation.currMachine = null;
 		});
 	}
 
@@ -148,8 +134,7 @@ public class DowntimeSource {
 
 	@Override
 	public String toString() {
-		return "downSource." + String.valueOf(machine)
-				+ (name != null ? "." + name : "");
+		return "downSource." + String.valueOf(machine) + (name != null ? "." + name : "");
 	}
 
 	// boring getters and setters below
