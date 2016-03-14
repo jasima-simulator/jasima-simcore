@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
+import java.util.Map;
+
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
-
-import java.util.Map;
 
 /**
  * Collects a variety of job statistics: cMax (completion time of last job
@@ -33,19 +33,19 @@ import java.util.Map;
  * additional kpi's see {@link ExtendedJobStatCollector}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  * @see ExtendedJobStatCollector
  */
 public class BasicJobStatCollector extends ShopListenerBase {
-
-	private static final long serialVersionUID = -4011992602302111428L;
 
 	private SummaryStat flowtime;
 	private SummaryStat tardiness;
 	private int numTardy;
 	private int numFinished;
 	private double cMax;
+
+	public BasicJobStatCollector() {
+		super();
+	}
 
 	@Override
 	protected void init(Simulation sim) {
@@ -78,7 +78,7 @@ public class BasicJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	public void produceResults(Simulation sim, Map<String, Object> res) {
+	protected void produceResults(Simulation sim, Map<String, Object> res) {
 		put(res, flowtime);
 		put(res, tardiness);
 

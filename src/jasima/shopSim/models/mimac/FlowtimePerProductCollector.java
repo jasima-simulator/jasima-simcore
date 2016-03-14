@@ -20,6 +20,9 @@
  *******************************************************************************/
 package jasima.shopSim.models.mimac;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
@@ -27,18 +30,12 @@ import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.util.ShopListenerBase;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Collects flowtimes seperately for each product.
  * 
- * @version 
- *          "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class FlowtimePerProductCollector extends ShopListenerBase {
-
-	private static final long serialVersionUID = -855108312093612967L;
 
 	private HashMap<Integer, SummaryStat> flowtimesPerProduct;
 

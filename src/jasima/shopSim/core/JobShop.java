@@ -20,26 +20,32 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.simulation.Simulation;
-import jasima.core.util.TypeUtil;
-import jasima.core.util.observer.NotifierListener;
-import jasima.shopSim.core.WorkStation.WorkStationEvent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponentContainer;
+import jasima.core.simulation.SimComponentContainerBase;
+import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
+import jasima.core.util.TypeUtil;
+import jasima.core.util.ValueStore;
+import jasima.core.util.observer.Subscriber;
+import jasima.shopSim.core.WorkStation.WorkStationEvent;
 
 /**
  * Implements a shop simulation. Despite its name the scenario not necessarily
  * has to be a job shop.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
-public class JobShop extends Simulation {
+public class JobShop extends SimComponentContainerBase<SimComponent>
+		implements SimComponentContainer<SimComponent>, ValueStore {
 
-	public static class JobShopEvent extends SimEvent {
+	public static class JobShopEvent {
 	}
 
 	// constants for default events thrown by a shop (in addition to simulation
@@ -52,8 +58,8 @@ public class JobShop extends Simulation {
 	private int stopAfterNumJobs = 0;
 	private boolean enableLookAhead = false;
 
-	public JobSource[] sources = {};
-	public WorkStation[] machines = {};
+	private SimComponentContainerBase<JobSource> sources;
+	private SimComponentContainerBase<WorkStation> machines;
 	public Route[] routes = {};
 
 	public int jobsFinished;
@@ -65,63 +71,46 @@ public class JobShop extends Simulation {
 
 	public JobShop() {
 		super();
+
+		sources = new SimComponentContainerBase<>();
+		addComponent(sources);
+
+		machines = new SimComponentContainerBase<>();
+		addComponent(machines);
 	}
 
 	@Override
-	protected void init() {
+	public void init() {
 		super.init();
 
 		jobsStarted = jobsFinished = 0;
-	}
-
-	@Override
-	protected void beforeRun() {
-		super.beforeRun();
-
-		for (WorkStation m : machines)
-			m.init();
-
-		for (JobSource s : sources)
-			s.init();
-	}
-
-	@Override
-	protected void done() {
-		super.done();
-
-		for (WorkStation m : machines)
-			m.done();
 	}
 
 	public void jobFinished(Job j) {
 		jobsFinished++;
 
 		if (getStopAfterNumJobs() > 0 && jobsFinished >= getStopAfterNumJobs()) {
-			end(); // abort simulation
+			getSim().end(); // abort simulation
 		}
 
 		j.jobFinished();
 
 		lastJobFinished = j;
-		if (numListener() > 0)
-			fire(JOB_FINISHED);
+		getSim().publishNotification(this, JOB_FINISHED);
 	}
 
 	public void startJob(Job nextJob) {
 		nextJob.setJobNum(jobsStarted++);
 
-		if (getMaxJobsInSystem() > 0
-				&& (jobsStarted - jobsFinished) >= getMaxJobsInSystem()) {
-			print(SimMsgCategory.WARN, "WIP reaches %d, aborting sim.",
-					getMaxJobsInSystem());
-			end(); // abort simulation
+		if (getMaxJobsInSystem() > 0 && (jobsStarted - jobsFinished) >= getMaxJobsInSystem()) {
+			getSim().print(MsgCategory.WARN, "WIP reaches %d, aborting sim.", getMaxJobsInSystem());
+			getSim().end(); // abort simulation
 		}
 
 		nextJob.jobReleased();
 
 		lastJobReleased = nextJob;
-		if (numListener() > 0)
-			fire(JOB_RELEASED);
+		getSim().publishNotification(this, JOB_RELEASED);
 
 		WorkStation mach = nextJob.getCurrentOperation().getMachine();
 		mach.enqueueOrProcess(nextJob);
@@ -134,10 +123,6 @@ public class JobShop extends Simulation {
 		res.put("numJobsFinished", jobsFinished);
 		res.put("numJobsStarted", jobsStarted);
 		res.put("numWIP", jobsStarted - jobsFinished);
-
-		for (WorkStation m : machines) {
-			m.produceResults(res);
-		}
 	}
 
 	/**
@@ -149,14 +134,13 @@ public class JobShop extends Simulation {
 	 *            whether to try to clone a new instance for each machine using
 	 *            {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
-	public void installMachineListener(
-			NotifierListener<WorkStation, WorkStationEvent> listener,
-			boolean cloneIfPossible) {
-		for (WorkStation m : machines) {
-			NotifierListener<WorkStation, WorkStationEvent> ml = listener;
+	public void installMachineListener(Subscriber listener, boolean cloneIfPossible) {
+		for (WorkStation m : machines.getComponents()) {
+			Subscriber ml = listener;
 			if (cloneIfPossible)
-				ml = TypeUtil.cloneIfPossible(listener);
-			m.addNotifierListener(ml);
+				ml = TypeUtil.cloneIfPossible(ml);
+
+			getSim().getNotifierService().addSubscription(WorkStationEvent.class, o -> o == m, null, ml);
 		}
 	}
 
@@ -227,6 +211,10 @@ public class JobShop extends Simulation {
 	 * @return The array of job sources.
 	 */
 	public JobSource[] getSources() {
+		return sources.getComponents().toArray(new JobSource[0]);
+	}
+
+	public SimComponentContainer<JobSource> sources() {
 		return sources;
 	}
 
@@ -237,37 +225,28 @@ public class JobShop extends Simulation {
 	 *            An array with all job sources.
 	 */
 	public void setSources(JobSource[] sources) {
-		this.sources = sources.clone();
+		this.sources.removeAll();
 
-		int i = 0;
 		for (JobSource js : sources) {
-			js.setShop(this);
-			js.index = i++;
+			addJobSource(js);
 		}
 	}
 
 	public void addJobSource(JobSource js) {
-		ArrayList<JobSource> list = new ArrayList<JobSource>(
-				Arrays.asList(sources));
-		list.add(js);
-
 		js.setShop(this);
-		js.index = list.size() - 1;
-
-		sources = list.toArray(new JobSource[list.size()]);
+		js.index = sources.numComponents();
+		sources.addComponent(js);
 	}
 
 	public void removeJobSource(JobSource js) {
-		ArrayList<JobSource> list = new ArrayList<JobSource>(
-				Arrays.asList(sources));
-		if (list.remove(js)) {
+		if (sources.removeComponent(js)) {
 			js.setShop(null);
 			js.index = -1;
+
 			int i = 0;
-			for (JobSource s : list) {
+			for (JobSource s : sources.getComponents()) {
 				s.index = i++;
 			}
-			sources = list.toArray(new JobSource[list.size()]);
 		}
 	}
 
@@ -278,6 +257,10 @@ public class JobShop extends Simulation {
 	 * @return An array of all workstations of this shop.
 	 */
 	public WorkStation[] getMachines() {
+		return machines.getComponents().toArray(new WorkStation[0]);
+	}
+
+	public SimComponentContainer<WorkStation> machines() {
 		return machines;
 	}
 
@@ -288,11 +271,10 @@ public class JobShop extends Simulation {
 	 *            An array containing all workstations for this shop.
 	 */
 	public void setMachines(WorkStation[] machines) {
-		this.machines = machines.clone();
-		int i = 0;
-		for (WorkStation w : machines) {
-			w.shop = this;
-			w.index = i++;
+		this.machines.removeAll();
+
+		for (WorkStation ws : machines) {
+			addMachine(ws);
 		}
 	}
 
@@ -304,14 +286,9 @@ public class JobShop extends Simulation {
 	 *            The workstation to add.
 	 */
 	public void addMachine(WorkStation machine) {
-		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
-				Arrays.asList(machines));
-		list.add(machine);
-
 		machine.shop = this;
-		machine.index = list.size() - 1;
-
-		machines = list.toArray(new WorkStation[list.size()]);
+		machine.index = machines.numComponents();
+		machines.addComponent(machine);
 	}
 
 	/**
@@ -321,16 +298,14 @@ public class JobShop extends Simulation {
 	 *            The workstation to remove.
 	 */
 	public void removeMachine(WorkStation machine) {
-		ArrayList<WorkStation> list = new ArrayList<WorkStation>(
-				Arrays.asList(machines));
-		if (list.remove(machine)) {
+		if (machines.removeComponent(machine)) {
 			machine.shop = null;
 			machine.index = -1;
+
 			int i = 0;
-			for (WorkStation w : list) {
+			for (WorkStation w : machines.getComponents()) {
 				w.index = i++;
 			}
-			machines = list.toArray(new WorkStation[list.size()]);
 		}
 	}
 
@@ -387,6 +362,82 @@ public class JobShop extends Simulation {
 		if (list.remove(r)) {
 			routes = list.toArray(new Route[list.size()]);
 		}
+	}
+
+	//
+	//
+	// ValueStore implementation
+	//
+	//
+
+	private HashMap<Object, Object> valueStore;
+
+	/**
+	 * Offers a simple get/put-mechanism to store and retrieve information as a
+	 * kind of global data store. This can be used as a simple extension
+	 * mechanism.
+	 * 
+	 * @param key
+	 *            The key name.
+	 * @param value
+	 *            value to assign to {@code key}.
+	 * @see #valueStoreGet(Object)
+	 */
+	@Override
+	public void valueStorePut(Object key, Object value) {
+		if (valueStore == null)
+			valueStore = new HashMap<Object, Object>();
+		valueStore.put(key, value);
+	}
+
+	/**
+	 * Retrieves a value from the value store.
+	 * 
+	 * @param key
+	 *            The entry to return, e.g., identified by a name.
+	 * @return The value associated with {@code key}.
+	 * @see #valueStorePut(Object, Object)
+	 */
+	@Override
+	public Object valueStoreGet(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.get(key);
+	}
+
+	/**
+	 * Returns the number of keys in this job's value store.
+	 */
+	@Override
+	public int valueStoreGetNumKeys() {
+		return (valueStore == null) ? 0 : valueStore.size();
+	}
+
+	/**
+	 * Returns a list of all keys contained in this job's value store.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Object> valueStoreGetAllKeys() {
+		if (valueStore == null)
+			return Collections.EMPTY_SET;
+		else
+			return valueStore.keySet();
+	}
+
+	/**
+	 * Removes an entry from this job's value store.
+	 * 
+	 * @return The value previously associated with "key", or null, if no such
+	 *         key was found.
+	 */
+	@Override
+	public Object valueStoreRemove(Object key) {
+		if (valueStore == null)
+			return null;
+		else
+			return valueStore.remove(key);
 	}
 
 }

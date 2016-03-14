@@ -20,85 +20,50 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimEvent;
-import jasima.core.simulation.Simulation.SimPrintEvent;
-import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.observer.NotifierService;
+import jasima.core.util.observer.Subscriber;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
-
-import java.io.Serializable;
-import java.util.Map;
+import jasima.shopSim.core.JobShop.JobShopEvent;
 
 /**
  * This class can be used as a base class for classes collecting results based
  * on job releases/job completions.
  * 
- * @author Torsten Hildebrandt, 2012-08-21
+ * @author Torsten Hildebrandt
  * 
  * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
- * @version 
- *          "$Id$"
  */
-public abstract class ShopListenerBase implements
-		NotifierListener<Simulation, SimEvent>, Serializable, Cloneable {
-
-	private static final long serialVersionUID = 8342338485821153287L;
+public abstract class ShopListenerBase extends SimLifeCycleListenerBase implements Subscriber, Cloneable {
 
 	private double initialPeriod = 0;
 	private int ignoreFirst = 0;
 
+	public ShopListenerBase() {
+		super();
+	}
+
+	@Override
+	public void register(NotifierService ns) {
+		super.register(ns);
+		ns.addSubscription(JobShopEvent.class, this);
+	}
+
 	/**
 	 * Update method to be notified of shop events.
-	 * 
-	 * @param sim
-	 * @param event
 	 */
 	@Override
-	public final void update(Simulation sim, SimEvent event) {
-		if (event == JobShop.JOB_RELEASED) {
-			JobShop shop = (JobShop) sim;
+	public void inform(Object o, Object e) {
+		if (e == JobShop.JOB_RELEASED) {
+			JobShop shop = (JobShop) o;
 			jobReleased(shop, shop.lastJobReleased);
-		} else if (event == JobShop.JOB_FINISHED) {
-			JobShop shop = (JobShop) sim;
+		} else if (e == JobShop.JOB_FINISHED) {
+			JobShop shop = (JobShop) o;
 			jobFinished(shop, shop.lastJobFinished);
-		} else if (event == Simulation.COLLECT_RESULTS) {
-			produceResults(sim, sim.resultMap);
-		} else if (event == Simulation.SIM_START) {
-			simStart(sim);
-		} else if (event == Simulation.SIM_END) {
-			simEnd(sim);
-		} else if (event == Simulation.SIM_INIT) {
-			init(sim);
-		} else if (event == Simulation.SIM_DONE) {
-			done(sim);
-		} else if (event instanceof SimPrintEvent) {
-			print(sim, (SimPrintEvent) event);
 		} else {
-			handleOther(sim, event);
+			super.inform(o, e);
 		}
-	}
-
-	protected void handleOther(Simulation sim, SimEvent event) {
-	}
-
-	protected void print(Simulation sim, SimPrintEvent event) {
-	}
-
-	protected void done(Simulation sim) {
-	}
-
-	protected void init(Simulation sim) {
-	}
-
-	protected void simStart(Simulation sim) {
-	}
-
-	protected void simEnd(Simulation sim) {
-	}
-
-	protected void produceResults(Simulation sim, Map<String, Object> resultMap) {
 	}
 
 	protected void jobReleased(JobShop shop, Job j) {

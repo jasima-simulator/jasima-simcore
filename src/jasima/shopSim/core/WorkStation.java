@@ -31,12 +31,10 @@ import java.util.Map;
 import java.util.Set;
 
 import jasima.core.simulation.Event;
+import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponentBase;
 import jasima.core.util.ValueStore;
-import jasima.core.util.observer.Notifier;
-import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.IndividualMachine.MachineState;
-import jasima.shopSim.core.WorkStation.WorkStationEvent;
 import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.prioRules.basic.FCFS;
@@ -48,9 +46,8 @@ import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
  * {@link IndividualMachine}s sharing a common queue.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
-public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, ValueStore {
+public class WorkStation extends SimComponentBase implements ValueStore, SimComponent {
 
 	/** Base class for workstation events. */
 	public static class WorkStationEvent {
@@ -153,7 +150,10 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		}
 	}
 
+	@Override
 	public void init() {
+		super.init();
+
 		assert translateSetupState(DEF_SETUP_STR) == DEF_SETUP;
 
 		batchingUsed = false;
@@ -178,9 +178,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		if (getBatchSequencingRule() != null)
 			getBatchSequencingRule().init();
 
-		if (numListener() > 0) {
-			fire(WS_INIT);
-		}
+		getSim().publishNotification(this, WS_INIT);
 	}
 
 	void activated(IndividualMachine im) {
@@ -194,9 +192,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		if (numJobsWaiting() > 0)
 			selectAndStart();
 
-		if (numListener() > 0) {
-			fire(WS_ACTIVATED);
-		}
+		getSim().publishNotification(this, WS_ACTIVATED);
 	}
 
 	void takenDown(IndividualMachine im) {
@@ -206,20 +202,18 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		numBusy++;
 		assert numBusy >= 0 && numBusy <= numInGroup;
 
-		if (numListener() > 0) {
-			fire(WS_DEACTIVATED);
-		}
+		getSim().publishNotification(this, WS_DEACTIVATED);
 	}
 
+	@Override
 	public void done() {
-		if (numListener() > 0) {
-			fire(WS_DONE);
-		}
+		getSim().publishNotification(this, WS_DONE);
 	}
 
+	@Override
 	public void produceResults(Map<String, Object> res) {
 		resultMap = res;
-		fire(WS_COLLECT_RESULTS);
+		getSim().publishNotification(this, WS_COLLECT_RESULTS);
 		resultMap = null;
 	}
 
@@ -247,7 +241,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 	public void futureArrival(final Job f, final double arrivesAt) {
 		// execute asynchronously a little later so exactly concurrent job
 		// selections don't see each others results
-		shop.schedule(shop.simTime(), LOOKAHEAD_PRIO, () -> addToQueue(f, arrivesAt));
+		getSim().schedule(shop.simTime(), LOOKAHEAD_PRIO, () -> addToQueue(f, arrivesAt));
 	}
 
 	private void addToQueue(Job j, double arrivesAt) {
@@ -269,11 +263,9 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		if (jobsPerBatchFamily != null)
 			addJobToBatchFamily(j);
 
-		if (numListener() > 0) {
-			justArrived = j;
-			fire(WS_JOB_ARRIVAL);
-			justArrived = null;
-		}
+		justArrived = j;
+		getSim().publishNotification(this, WS_JOB_ARRIVAL);
+		justArrived = null;
 
 		// are there jobs that could be started and at least a free
 		// machine
@@ -345,7 +337,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		currMachine.procFinished = tCompl;
 		currMachine.procStarted = simTime;
 		currMachine.curJob = batch;
-		shop.schedule(currMachine.onDepart);
+		getSim().schedule(currMachine.onDepart);
 
 		notifyJobsOfProcStart(batch);
 
@@ -373,11 +365,9 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 
 		numBusy--;
 
-		if (numListener() > 0) {
-			justCompleted = b;
-			fire(WS_JOB_COMPLETED);
-			justCompleted = null;
-		}
+		justCompleted = b;
+		getSim().publishNotification(this, WS_JOB_COMPLETED);
+		justCompleted = null;
 
 		notifyJobsOfDepart(b);
 
@@ -404,7 +394,7 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 	 */
 	public void selectAndStart() {
 		// execute asynchronously so all jobs arrived/departed before selection
-		shop.schedule(shop.simTime(), SELECT_PRIO, this::selectAndStart0);
+		getSim().schedule(shop.simTime(), SELECT_PRIO, this::selectAndStart0);
 	}
 
 	protected void selectAndStart0() {
@@ -421,11 +411,9 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 			}
 
 			// inform listener
-			if (numListener() > 0) {
-				justStarted = nextBatch;
-				fire(WS_JOB_SELECTED);
-				justStarted = null;
-			}
+			justStarted = nextBatch;
+			getSim().publishNotification(this, WS_JOB_SELECTED);
+			justStarted = null;
 
 			currMachine = null;
 		}
@@ -706,61 +694,6 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 		return batchSequencingRule;
 	}
 
-	//
-	//
-	// event notification
-	//
-	//
-
-	private NotifierAdapter<WorkStation, WorkStationEvent> adapter = null;
-
-	@Override
-	public void addNotifierListener(NotifierListener<WorkStation, WorkStationEvent> listener) {
-		if (adapter == null)
-			adapter = new NotifierAdapter<WorkStation, WorkStationEvent>(this);
-		adapter.addNotifierListener(listener);
-	}
-
-	@Override
-	public NotifierListener<WorkStation, WorkStationEvent> getNotifierListener(int index) {
-		return adapter.getNotifierListener(index);
-	}
-
-	@Override
-	public void removeNotifierListener(NotifierListener<WorkStation, WorkStationEvent> listener) {
-		adapter.removeNotifierListener(listener);
-	}
-
-	protected void fire(WorkStationEvent event) {
-		if (adapter != null)
-			adapter.fire(event);
-	}
-
-	@Override
-	public int numListener() {
-		return adapter == null ? 0 : adapter.numListener();
-	}
-
-	@Override
-	public void disableEvents() {
-		if (adapter != null)
-			adapter.disableEvents();
-	}
-
-	@Override
-	public void enableEvents() {
-		if (adapter != null)
-			adapter.enableEvents();
-	}
-
-	@Override
-	public boolean eventsEnabled() {
-		if (adapter != null)
-			return adapter.eventsEnabled();
-		else
-			return false;
-	}
-
 	/**
 	 * Offers a simple get/put-mechanism to store and retrieve information as a
 	 * kind of global data store. This can be used as a simple extension
@@ -836,11 +769,6 @@ public class WorkStation implements Notifier<WorkStation, WorkStationEvent>, Val
 
 		if (valueStore != null) {
 			ws.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		}
-
-		if (adapter != null) {
-			ws.adapter = adapter.clone();
-			ws.adapter.setNotifier(ws);
 		}
 
 		return ws;

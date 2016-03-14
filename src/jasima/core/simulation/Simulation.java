@@ -20,78 +20,61 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 
 import jasima.core.random.RandomFactory;
-import jasima.core.simulation.Simulation.SimEvent;
-import jasima.core.util.TypeUtil;
+import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 import jasima.core.util.Util;
-import jasima.core.util.ValueStore;
-import jasima.core.util.observer.Notifier;
-import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.observer.NotifierService;
 
 /**
- * <p>
  * Base class for a discrete event simulation. This class doesn't do much, but
  * only maintains an event queue and manages simulation time.
- * </p>
  * <p>
  * The typical life cycle of a simulation would be to create it, and
  * subsequently set any parameters. Afterwards {@link #init()} has to be called
  * before the actual simulation can be performed in {@link #run()}. After
  * completing a simulation the {@link #done()}-method should be called to
  * perform clean-up, collecting simulation results, etc.
- * </p>
  * 
  * @author Torsten Hildebrandt
  */
-public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
+public class Simulation {
 
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
 
-	/**
-	 * Base class for notifier events (NOT simulation events, they are not
-	 * handled by the event queue, just send to listeners).
-	 */
-	public static class SimEvent {
-	}
+	public static class SimPrintEvent {
 
-	// constants for default events thrown by a simulation
-	public static final SimEvent SIM_INIT = new SimEvent();
-	public static final SimEvent SIM_START = new SimEvent();
-	public static final SimEvent SIM_END = new SimEvent();
-	public static final SimEvent SIM_DONE = new SimEvent();
-	public static final SimEvent COLLECT_RESULTS = new SimEvent();
+		public enum MsgCategory {
+			OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL
+		}
 
-	public enum SimMsgCategory {
-		OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL
-	}
-
-	public static class SimPrintEvent extends SimEvent {
 		public final Simulation sim;
-		public final SimMsgCategory category;
+		public final MsgCategory category;
 		private String messageFormatString;
 		private Object[] params;
 		private String message;
 
-		public SimPrintEvent(Simulation sim, SimMsgCategory category, String message) {
+		public SimPrintEvent(Simulation sim, MsgCategory category, String message) {
 			super();
 
-			if (message == null)
-				throw new NullPointerException();
+			Objects.requireNonNull(message);
 
 			this.sim = sim;
 			this.category = category;
 			this.message = message;
 		}
 
-		public SimPrintEvent(Simulation sim, SimMsgCategory category, String messageFormatString, Object... params) {
+		public SimPrintEvent(Simulation sim, MsgCategory category, String messageFormatString, Object... params) {
 			super();
 			this.sim = sim;
 			this.category = category;
@@ -125,16 +108,38 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		public Event extract();
 	}
 
+	@FunctionalInterface
+	public interface SimMethod {
+		void handle();
+	}
+
+	public static class SimLifeCycleEvent {
+		public static final SimLifeCycleEvent INIT = new SimLifeCycleEvent();
+		public static final SimLifeCycleEvent BEFORE_RUN = new SimLifeCycleEvent();
+		public static final SimLifeCycleEvent AFTER_RUN = new SimLifeCycleEvent();
+		public static final SimLifeCycleEvent DONE = new SimLifeCycleEvent();
+	}
+
+	public static class ProduceResultsEvent extends SimLifeCycleEvent {
+
+		public final Map<String, Object> resultMap;
+
+		public ProduceResultsEvent(Map<String, Object> resultMap) {
+			super();
+			this.resultMap = resultMap;
+		}
+
+	}
+
 	// /////////// simulation parameters
+
 	private double simulationLength = 0.0d;
 	private RandomFactory rndStreamFactory;
-
-	private HashMap<Object, Object> valueStore;
-
 	private String name = null;
-
-	// fields used during event notification
-	public Map<String, Object> resultMap;
+	private NotifierService notifierService;
+	private SimComponentContainer<SimComponent> rootComponent;
+	private MsgCategory printLevel = MsgCategory.ALL;
+	private ArrayList<Consumer<SimPrintEvent>> printListener;
 
 	// ////////////// attributes/fields used during a simulation
 
@@ -145,22 +150,58 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	private long numEventsProcessed;
 
 	// event queue
-	private EventQueue eventList;
+	private EventQueue events;
 	// eventNum is used to enforce FIFO-order of concurrent events with equal
 	// priorities
 	private int eventNum;
 	private boolean continueSim;
 	private int numAppEvents;
 
+	public Simulation() {
+		super();
+
+		printListener = new ArrayList<>();
+
+		setNotifierService(new NotifierService());
+
+		RandomFactory randomFactory = RandomFactory.newInstance();
+		setRndStreamFactory(randomFactory);
+
+		setRootComponent(new SimComponentContainerBase<>());
+	}
+
+	public void addPrintListener(Consumer<SimPrintEvent> listener) {
+		printListener.add(listener);
+	}
+
+	public boolean removePrintListener(Consumer<SimPrintEvent> listener) {
+		return printListener.remove(listener);
+	}
+
+	public int numPrintListener() {
+		return printListener.size();
+	}
+
+	public List<Consumer<SimPrintEvent>> listener() {
+		return Collections.unmodifiableList(printListener);
+	}
+
 	/**
 	 * Performs all initializations required for a successful simulation
 	 * {@link #run()}.
 	 */
-	protected void init() {
-		eventList = createEventQueue();
+	public void init() {
+		init0();
+
+		rootComponent.init();
+
+		publishNotification(this, SimLifeCycleEvent.INIT);
+	}
+
+	protected void init0() {
+		events = createEventQueue();
 		// set to dummy event
 		currEvent = new Event(Double.NEGATIVE_INFINITY, Event.EVENT_PRIO_MIN) {
-
 			@Override
 			public void handle() {
 			}
@@ -170,10 +211,6 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 		numEventsProcessed = 0;
-
-		if (numListener() > 0) {
-			fire(SIM_INIT);
-		}
 	}
 
 	/**
@@ -199,7 +236,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 			try {
 				// main event loop
 				while (continueSim) {
-					currEvent = eventList.extract();
+					currEvent = events.extract();
 
 					// Advance clock to time of next event
 					simTime = currEvent.getTime();
@@ -247,8 +284,8 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	protected boolean handleError(Throwable t) {
 		String errorString = Util.exceptionToString(t);
 
-		print(SimMsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'",
-				currentEvent(), errorString);
+		print(MsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'", currentEvent(),
+				errorString);
 
 		return true;
 	}
@@ -268,9 +305,9 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 				}
 			});
 
-		if (numListener() > 0) {
-			fire(SIM_START);
-		}
+		rootComponent.beforeRun();
+
+		publishNotification(this, SimLifeCycleEvent.BEFORE_RUN);
 	}
 
 	/**
@@ -278,19 +315,19 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * but before {@link #done()} is called.
 	 */
 	protected void afterRun() {
-		if (numListener() > 0) {
-			fire(SIM_END);
-		}
+		rootComponent.afterRun();
+
+		publishNotification(this, SimLifeCycleEvent.AFTER_RUN);
 	}
 
 	/**
 	 * Performs clean-up etc., after a simulation's {@link #run()} method
 	 * finished.
 	 */
-	protected void done() {
-		if (numListener() > 0) {
-			fire(SIM_DONE);
-		}
+	public void done() {
+		rootComponent.done();
+
+		publishNotification(this, SimLifeCycleEvent.DONE);
 	}
 
 	/**
@@ -298,10 +335,10 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 */
 	public void schedule(Event event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio)
-			print(SimMsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
+			print(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
 					event.getPrio(), event.toString());
 		if (event.getTime() < simTime) {
-			print(SimMsgCategory.ERROR,
+			print(MsgCategory.ERROR,
 					"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
 					event.getTime(), event.getPrio(), event.toString());
 			end();
@@ -309,7 +346,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		event.eventNum = eventNum++;
 		if (event.isAppEvent())
 			numAppEvents++;
-		eventList.insert(event);
+		events.insert(event);
 	}
 
 	/**
@@ -330,19 +367,51 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 
 	/**
 	 * Periodically calls a certain method. While this method returns true, a
-	 * next invocation after the given time interval.
+	 * next invocation after the given time interval is scheduled.
 	 */
-	public void schedulePeriodically(double interval, int prio, BooleanSupplier method) {
-		schedule(new Event(simTime() + interval, prio) {
+	public void schedulePeriodically(double firstInvocation, double interval, int prio, BooleanSupplier method) {
+		schedule(new Event(firstInvocation, prio) {
 			@Override
 			public void handle() {
 				if (method.getAsBoolean()) {
-					// schedule next invocation
+					// schedule next invocation reusing Event object
 					setTime(simTime() + interval);
 					schedule(this);
 				}
 			}
 		});
+	}
+
+	/**
+	 * Calls a certain method at the times returned by the method itself. The
+	 * first invocation is performed at the current time (asynchronously, i.e.,
+	 * {@code scheduleProcess()} returns before {@code method} is called for the
+	 * first time). Subsequent calls are scheduled at the absolute times
+	 * returned by the previous method invocation. No more invocations are
+	 * scheduled if {@code method} returned NaN or a negative value.
+	 */
+	public void scheduleProcess(int prio, DoubleSupplier method) {
+		schedule(new Event(simTime(), prio) {
+			@Override
+			public void handle() {
+				double next = method.getAsDouble();
+				if (!(next < 0.0)) {
+					// schedule next invocation reusing Event object
+					setTime(next);
+					schedule(this);
+				}
+			}
+		});
+	}
+
+	public Map<String, Object> runSim() {
+		init();
+		run();
+		done();
+
+		Map<String, Object> res = new HashMap<>();
+		produceResults(res);
+		return res;
 	}
 
 	/**
@@ -396,23 +465,31 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		return numEventsProcessed;
 	}
 
+	/**
+	 * Populates the given HashMap with results produced in the simulation run.
+	 */
 	public void produceResults(Map<String, Object> res) {
 		res.put("simTime", simTime());
-
-		resultMap = res;
-		fire(COLLECT_RESULTS);
-		resultMap = null;
+		rootComponent.produceResults(res);
+		publishNotification(this, new ProduceResultsEvent(res));
 	}
 
 	/**
-	 * Triggers a print event of category "normal".
+	 * Convenience method to add a new component to the root component.
+	 */
+	public void addComponent(SimComponent sc) {
+		getRootComponent().addComponent(sc);
+	}
+
+	/**
+	 * Triggers a print event of category "INFO".
 	 * 
 	 * @param message
 	 *            The message to print.
-	 * @see #print(SimMsgCategory, String)
+	 * @see #print(MsgCategory, String)
 	 */
 	public void print(String message) {
-		print(SimMsgCategory.INFO, message);
+		print(MsgCategory.INFO, message);
 	}
 
 	/**
@@ -422,9 +499,9 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * @param message
 	 *            The message to print.
 	 */
-	public void print(SimMsgCategory category, String message) {
-		if (numListener() > 0) {
-			fire(new SimPrintEvent(this, category, message));
+	public void print(MsgCategory category, String message) {
+		if (numPrintListener() > 0) {
+			print(new SimPrintEvent(this, category, message));
 		}
 	}
 
@@ -434,18 +511,26 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 * {@code messageFormatString} (used with the arguments given in
 	 * {@code params}).
 	 */
-	public void print(SimMsgCategory category, String messageFormatString, Object... params) {
-		if (numListener() > 0) {
-			fire(new SimPrintEvent(this, category, messageFormatString, params));
+	public void print(MsgCategory category, String messageFormatString, Object... params) {
+		if (numPrintListener() > 0) {
+			print(new SimPrintEvent(this, category, messageFormatString, params));
 		}
 	}
 
 	/**
-	 * Same as {@link #print(SimMsgCategory, String, Object...)}, but defaulting
-	 * to category {@code INFO}
+	 * Same as {@link #print(MsgCategory, String, Object...)}, but defaulting to
+	 * category {@code INFO}
 	 */
 	public void print(String messageFormatString, Object... params) {
-		print(SimMsgCategory.INFO, messageFormatString, params);
+		print(MsgCategory.INFO, messageFormatString, params);
+	}
+
+	/**
+	 * Prints a certain {@link SimPrintEvent} by passing it to the registered
+	 * print listeners.
+	 */
+	public void print(SimPrintEvent e) {
+		printListener.forEach((l) -> l.accept(e));
 	}
 
 	/**
@@ -483,6 +568,7 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 	 */
 	public void setRndStreamFactory(RandomFactory rndStreamFactory) {
 		this.rndStreamFactory = rndStreamFactory;
+		rndStreamFactory.setSim(this);
 	}
 
 	public String getName() {
@@ -496,157 +582,48 @@ public class Simulation implements Notifier<Simulation, SimEvent>, ValueStore {
 		this.name = name;
 	}
 
-	// event notification
-
-	private NotifierAdapter<Simulation, SimEvent> adapter = null;
-
-	@Override
-	public void addNotifierListener(NotifierListener<Simulation, SimEvent> listener) {
-		if (adapter == null)
-			adapter = new NotifierAdapter<Simulation, SimEvent>(this);
-		adapter.addNotifierListener(listener);
+	public SimComponentContainer<SimComponent> getRootComponent() {
+		return rootComponent;
 	}
 
-	/**
-	 * Adds a listener to this simulation. This method only differs from
-	 * {@link #addNotifierListener(NotifierListener)} in its ability to
-	 * (optionally) clone the listener (using
-	 * {@link TypeUtil#cloneIfPossible(Object)}) before installing it.
-	 * 
-	 * @param l
-	 *            The shop listener to add.
-	 * @param cloneIfPossbile
-	 *            whether to try to clone a new instance for each machine using
-	 *            {@link TypeUtil#cloneIfPossible(Object)}.
-	 */
-	public NotifierListener<Simulation, SimEvent> installSimulationListener(NotifierListener<Simulation, SimEvent> l,
-			boolean cloneIfPossbile) {
-		if (cloneIfPossbile)
-			l = TypeUtil.cloneIfPossible(l);
-		addNotifierListener(l);
-		return l;
+	public void setRootComponent(SimComponentContainer<SimComponent> rootComponent) {
+		if (this.rootComponent != null) {
+			this.rootComponent.setSim(null);
+		}
+
+		this.rootComponent = rootComponent;
+		rootComponent.setSim(this);
 	}
 
-	@Override
-	public NotifierListener<Simulation, SimEvent> getNotifierListener(int index) {
-		return adapter.getNotifierListener(index);
+	public NotifierService getNotifierService() {
+		return notifierService;
 	}
 
-	@Override
-	public void removeNotifierListener(NotifierListener<Simulation, SimEvent> listener) {
-		adapter.removeNotifierListener(listener);
+	public void setNotifierService(NotifierService notifierService) {
+		this.notifierService = notifierService;
 	}
 
-	protected void fire(SimEvent event) {
-		if (adapter != null)
-			adapter.fire(event);
+	public MsgCategory getPrintLevel() {
+		return printLevel;
 	}
 
-	@Override
-	public int numListener() {
-		return adapter == null ? 0 : adapter.numListener();
+	public void setPrintLevel(MsgCategory printLevel) {
+		Objects.requireNonNull(printLevel);
+		this.printLevel = printLevel;
 	}
 
-	@Override
-	public void disableEvents() {
-		if (adapter != null)
-			adapter.disableEvents();
+	public boolean isTrace() {
+		return getPrintLevel().ordinal() >= MsgCategory.TRACE.ordinal();
 	}
 
-	@Override
-	public void enableEvents() {
-		if (adapter != null)
-			adapter.enableEvents();
-	}
-
-	@Override
-	public boolean eventsEnabled() {
-		if (adapter != null)
-			return adapter.eventsEnabled();
-		else
-			return false;
-	}
-
-	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(Object)
-	 */
-	@Override
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	@Override
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
-	 * Returns the number of keys in this simulation's value store.
-	 */
-	@Override
-	public int valueStoreGetNumKeys() {
-		return (valueStore == null) ? 0 : valueStore.size();
-	}
-
-	/**
-	 * Returns a list of all keys contained in this simulation's value store.
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Object> valueStoreGetAllKeys() {
-		if (valueStore == null)
-			return Collections.EMPTY_SET;
-		else
-			return valueStore.keySet();
-	}
-
-	/**
-	 * Removes an entry from this simulation's value store.
-	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
-	 */
-	@Override
-	public Object valueStoreRemove(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.remove(key);
-	}
-
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Simulation sim = (Simulation) super.clone();
-		if (valueStore != null) {
-			sim.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		}
-		if (adapter != null) {
-			sim.adapter = adapter.clone();
-			sim.adapter.setNotifier(sim);
-		}
 		return sim;
+	}
+
+	public void publishNotification(Object sender, Object notification) {
+		getNotifierService().publish(sender, notification);
 	}
 
 }

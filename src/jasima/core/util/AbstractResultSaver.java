@@ -20,23 +20,20 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.experiment.ExperimentListenerBase;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jasima.core.experiment.ExperimentListenerBase;
+
 /**
  * Base class for result saver.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public abstract class AbstractResultSaver extends ExperimentListenerBase {
 
-	private static final long serialVersionUID = -1643003626220225101L;
 	private String resultFileName = null;
 	private String resultFileNameHint = "runResults";
 	private String actualResultFileName = null;
@@ -50,15 +47,13 @@ public abstract class AbstractResultSaver extends ExperimentListenerBase {
 		this.resultFileName = resultFileName.isEmpty() ? null : resultFileName;
 	}
 
-	public static String findFreeFile(final String baseName,
-			final String extension) {
+	public static String findFreeFile(final String baseName, final String extension) {
 		int index = 0;
 		String retVal = baseName;
 
 		while (true) {
 			try {
-				boolean createRes = new File(retVal + extension)
-						.createNewFile();
+				boolean createRes = new File(retVal + extension).createNewFile();
 				if (createRes)
 					break; // while
 			} catch (IOException e) {
@@ -69,8 +64,7 @@ public abstract class AbstractResultSaver extends ExperimentListenerBase {
 			if (index > 1000) {
 				// give up
 				throw new RuntimeException(String.format(Util.DEF_LOCALE,
-						"Cant't create new file (baseName=%s,ext=%s).",
-						baseName, extension));
+						"Cant't create new file (baseName=%s,ext=%s).", baseName, extension));
 			}
 		}
 
@@ -91,13 +85,10 @@ public abstract class AbstractResultSaver extends ExperimentListenerBase {
 	public String getActualResultBaseName() {
 		if (actualResultFileName == null) {
 			if (resultFileName == null) {
-				actualResultFileName = findFreeFile(resultFileNameHint
-						.replaceFirst("\\..*?$", "")
-						+ new SimpleDateFormat("_yyyyMMdd_HHmm")
-								.format(new Date()));
+				actualResultFileName = findFreeFile(resultFileNameHint.replaceFirst("\\..*?$", "")
+						+ new SimpleDateFormat("_yyyyMMdd_HHmm").format(new Date()));
 			} else {
-				actualResultFileName = findFreeFile(resultFileName
-						.replaceFirst("\\..*?$", ""));
+				actualResultFileName = findFreeFile(resultFileName.replaceFirst("\\..*?$", ""));
 			}
 		}
 		return actualResultFileName;

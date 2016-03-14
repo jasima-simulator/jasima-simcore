@@ -20,25 +20,21 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
+import java.util.Map;
+
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 
-import java.util.Map;
-
 /**
  * Collects batch statistics (flowtime and tardiness). A batch consists of a
  * certain number of jobs stated in succession.
  * 
  * @author Torsten Hildebrandt, 2012-08-21
- * @version 
- *          "$Id$"
  */
 public class BatchStatCollector extends ShopListenerBase {
-
-	private static final long serialVersionUID = 7842780799230820976L;
 
 	private int numBatches = 1;
 	private int batchSize = 2000;

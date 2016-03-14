@@ -20,14 +20,15 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import jasima.core.util.observer.NotifierListener;
+import java.util.Map;
+
+import jasima.core.util.observer.NotifierService;
+import jasima.core.util.observer.Subscriber;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.core.WorkStation.WorkStationEvent;
-
-import java.util.Map;
 
 /**
  * Possible base class for workstation listeners. Delegates all events to
@@ -35,19 +36,27 @@ import java.util.Map;
  * {@link #handleOther(WorkStation, WorkStation.WorkStationEvent)}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
-public abstract class WorkStationListenerBase implements
-		NotifierListener<WorkStation, WorkStationEvent>, Cloneable {
+public abstract class WorkStationListenerBase implements Subscriber, Cloneable {
+
+	public WorkStationListenerBase() {
+		super();
+	}
 
 	@Override
-	public final void update(WorkStation m, WorkStationEvent event) {
+	public void register(NotifierService ns) {
+		ns.addSubscription(WorkStationEvent.class, this);
+	}
+
+	@Override
+	public void inform(Object o, Object e) {
+		WorkStation m = (WorkStation) o;
+		WorkStationEvent event = (WorkStationEvent) e;
+
 		if (event == WorkStation.WS_JOB_ARRIVAL) {
 			arrival(m, m.justArrived);
 		} else if (event == WorkStation.WS_JOB_SELECTED) {
-			operationStarted(m, m.justStarted, m.oldSetupState,
-					m.newSetupState, m.setupTime);
+			operationStarted(m, m.justStarted, m.oldSetupState, m.newSetupState, m.setupTime);
 		} else if (event == WorkStation.WS_JOB_COMPLETED) {
 			operationCompleted(m, m.justCompleted);
 		} else if (event == WorkStation.WS_ACTIVATED) {
@@ -77,12 +86,11 @@ public abstract class WorkStationListenerBase implements
 	protected void done(WorkStation m) {
 	}
 
-	protected void operationCompleted(WorkStation m,
-			PrioRuleTarget justCompleted) {
+	protected void operationCompleted(WorkStation m, PrioRuleTarget justCompleted) {
 	}
 
-	protected void operationStarted(WorkStation m, PrioRuleTarget justStarted,
-			int oldSetupState, int newSetupState, double setupTime) {
+	protected void operationStarted(WorkStation m, PrioRuleTarget justStarted, int oldSetupState, int newSetupState,
+			double setupTime) {
 	}
 
 	protected void arrival(WorkStation m, Job justArrived) {

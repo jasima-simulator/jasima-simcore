@@ -20,6 +20,11 @@
  *******************************************************************************/
 package jasima.shopSim.models.dynamicShop;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import org.apache.commons.math3.distribution.ExponentialDistribution;
+
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
@@ -38,11 +43,6 @@ import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ShopListenerBase;
 
-import java.util.Arrays;
-import java.util.Objects;
-
-import org.apache.commons.math3.distribution.ExponentialDistribution;
-
 /**
  * Simulates dynamic job shops and flow shops, based on some parameters. See
  * Rajendran, C.; Holthaus O.:
@@ -54,7 +54,6 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
  * {@code BasicJobStatCollector}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * @see BasicJobStatCollector
  */
 public class DynamicShopExperiment extends JobShopExperiment {
@@ -93,7 +92,6 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 		Objects.requireNonNull(procTimes);
 
-		@SuppressWarnings("serial")
 		ShopListenerBase stopSrc = new ShopListenerBase() {
 			int maxJob = getStopArrivalsAfterNumJobs();
 			int numJobs = maxJob;
@@ -109,7 +107,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 				}
 			}
 		};
-		shop.installSimulationListener(stopSrc, false);
+		stopSrc.register(sim.getNotifierService());
 	}
 
 	@Override
@@ -151,7 +149,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 						mi = getMachIdx().nextInt();
 					} while (machineChosen[mi]);
 
-					WorkStation m = shop.machines[mi];
+					WorkStation m = shop.machines().getComponent(mi);
 					machineChosen[mi] = true;
 
 					if (getScenario() == Scenario.JOB_SHOP) {
@@ -161,9 +159,9 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 				if (getScenario() == Scenario.FLOW_SHOP) {
 					int k = 0;
-					for (int i = 0; i < shop.machines.length; i++) {
+					for (int i = 0, j = shop.machines().numComponents(); i < j; i++) {
 						if (machineChosen[i])
-							ops[k++].setMachine(shop.machines[i]);
+							ops[k++].setMachine(shop.machines().getComponent(i));
 					}
 				}
 

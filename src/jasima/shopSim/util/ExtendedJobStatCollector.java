@@ -21,14 +21,15 @@
 package jasima.shopSim.util;
 
 import static jasima.shopSim.util.BasicJobStatCollector.put;
+
+import java.util.Map;
+
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
-
-import java.util.Map;
 
 /**
  * Collects a variety of job statistics that are not produced by the
@@ -48,13 +49,9 @@ import java.util.Map;
  * </ul>
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  * @see BasicJobStatCollector
  */
 public class ExtendedJobStatCollector extends ShopListenerBase {
-
-	private static final long serialVersionUID = 5946876977646917920L;
 
 	private SummaryStat lateness;
 	private SummaryStat noProcTime;
@@ -64,6 +61,11 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	private SummaryStat weightedConditionalTardiness;
 	private SummaryStat weightedTardinessWithWIP;
 	private double numTardyWeighted;
+	private JobShop shop;
+
+	public ExtendedJobStatCollector() {
+		super();
+	}
 
 	@Override
 	protected void init(Simulation sim) {
@@ -72,9 +74,10 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		weightedFlowtime = new SummaryStat("weightedFlowtimes");
 		weightedTardiness = new SummaryStat("weightedTardiness");
 		conditionalTardiness = new SummaryStat("conditionalTardiness");
-		weightedConditionalTardiness = new SummaryStat(
-				"weightedConditionalTardiness");
+		weightedConditionalTardiness = new SummaryStat("weightedConditionalTardiness");
 		numTardyWeighted = 0.0;
+
+		shop = null;
 	}
 
 	@Override
@@ -82,17 +85,17 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
 		weightedTardinessWithWIP.setName("weightedTardinessWithWIP");
 
-		JobShop shop = (JobShop) sim;
-		for (WorkStation m : shop.machines) {
-			for (int i = 0, n = m.queue.size(); i < n; i++) {
-				storeWIPJob(m.queue.get(i));
+		if (shop != null)
+			for (WorkStation m : shop.machines().getComponents()) {
+				for (int i = 0, n = m.queue.size(); i < n; i++) {
+					storeWIPJob(m.queue.get(i));
+				}
+				for (int i = 0; i < m.numInGroup(); i++) {
+					PrioRuleTarget j = m.getProcessedJob(i);
+					if (j != null)
+						storeWIPJob(j);
+				}
 			}
-			for (int i = 0; i < m.numInGroup(); i++) {
-				PrioRuleTarget j = m.getProcessedJob(i);
-				if (j != null)
-					storeWIPJob(j);
-			}
-		}
 	}
 
 	/**
@@ -105,15 +108,16 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 			if (j.isFuture())
 				continue;
 
-			double tard = Math.max(
-					j.getShop().simTime() - j.getCurrentOperationDueDate(), 0);
+			double tard = Math.max(j.getShop().simTime() - j.getCurrentOperationDueDate(), 0);
 			weightedTardinessWithWIP.value(j.getWeight() * tard);
 		}
 	}
 
 	@Override
 	protected void jobReleased(JobShop shop, Job j) {
+		assert this.shop == null || this.shop == shop;
 
+		this.shop = shop;
 	}
 
 	@Override
@@ -140,8 +144,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		}
 	}
 
-	@Override
-	public void produceResults(Simulation sim, Map<String, Object> res) {
+	protected void produceResults(Simulation sim, Map<String, Object> res) {
 		put(res, noProcTime);
 		put(res, weightedFlowtime);
 		put(res, lateness);

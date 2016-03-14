@@ -20,14 +20,6 @@
  *******************************************************************************/
 package jasima.shopSim.models.staticShop;
 
-import jasima.shopSim.core.JobShopExperiment;
-import jasima.shopSim.core.Operation;
-import jasima.shopSim.core.Route;
-import jasima.shopSim.core.StaticJobSource;
-import jasima.shopSim.core.StaticJobSource.JobSpec;
-import jasima.shopSim.util.TextFileReader;
-import jasima.shopSim.util.modelDef.ShopDef;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +29,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import jasima.shopSim.core.JobShopExperiment;
+import jasima.shopSim.core.Operation;
+import jasima.shopSim.core.Route;
+import jasima.shopSim.core.StaticJobSource;
+import jasima.shopSim.core.StaticJobSource.JobSpec;
+import jasima.shopSim.util.TextFileReader;
+import jasima.shopSim.util.modelDef.ShopDef;
+
 /**
  * Experiment which loads a scheduling instance from a file or URL/URI. Shop and
  * job data has to be described in this file.
- * 
- * @version 
- *          "$Id$"
  */
 public class StaticShopExperiment extends JobShopExperiment {
 
@@ -68,10 +65,8 @@ public class StaticShopExperiment extends JobShopExperiment {
 
 	@Override
 	protected void configureShop() {
-		if (getInstFileName() == null && getInstURI() == null
-				&& getShopDef() == null)
-			throw new IllegalArgumentException(
-					"Either 'instFileName', 'instURI' or 'shopDef' have to be specified.");
+		if (getInstFileName() == null && getInstURI() == null && getShopDef() == null)
+			throw new IllegalArgumentException("Either 'instFileName', 'instURI' or 'shopDef' have to be specified.");
 
 		// ShopDef given explicitly?
 		ShopDef def = getShopDef();
@@ -81,13 +76,14 @@ public class StaticShopExperiment extends JobShopExperiment {
 		}
 
 		// configure shop using ShopDef
+		def.getShopConfigurator().configureSimulation(sim);
 		def.getShopConfigurator().configureMdl(shop);
 
 		super.configureShop();
 
 		// overwrite JobSpec data with new due dates
 		if (!Double.isNaN(getDueDateTightness())) {
-			StaticJobSource src = (StaticJobSource) shop.sources[0];
+			StaticJobSource src = (StaticJobSource) shop.sources().getComponent(0);
 			JobSpec[] jobs = src.jobs;
 
 			for (int i = 0, n = src.jobs.length; i < n; i++) {
@@ -108,8 +104,7 @@ public class StaticShopExperiment extends JobShopExperiment {
 					dd = Math.round(dd);
 				}
 
-				jobs[i] = new JobSpec(orig.routeNum, orig.releaseDate, dd,
-						orig.weight, orig.name);
+				jobs[i] = new JobSpec(orig.routeNum, orig.releaseDate, dd, orig.weight, orig.name);
 			}
 		}
 	}
@@ -129,8 +124,7 @@ public class StaticShopExperiment extends JobShopExperiment {
 				// try to load as a resource
 				URL u = this.getClass().getResource(getInstFileName());
 				if (u == null)
-					u = Thread.currentThread().getContextClassLoader()
-							.getResource(getInstFileName());
+					u = Thread.currentThread().getContextClassLoader().getResource(getInstFileName());
 				if (u != null)
 					try {
 						uri = u.toURI();
@@ -150,8 +144,8 @@ public class StaticShopExperiment extends JobShopExperiment {
 			Object src = getInstURI();
 			if (src == null)
 				src = getInstFileName();
-			throw new IllegalArgumentException("Could not load model from '"
-					+ src.toString() + "'. Perhaps file is not accessible.");
+			throw new IllegalArgumentException(
+					"Could not load model from '" + src.toString() + "'. Perhaps file is not accessible.");
 		}
 
 		// open stream and produce a shopDef

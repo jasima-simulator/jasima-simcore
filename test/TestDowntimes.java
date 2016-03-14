@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -19,6 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import jasima.core.random.continuous.DblConst;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.FileFormat;
@@ -31,24 +43,11 @@ import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.util.MachineStatCollector;
 import jasima.shopSim.util.TraceFileProducer;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import util.ExtendedJobStatCollector;
 
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
  */
 @SuppressWarnings("deprecation")
 public class TestDowntimes extends ExperimentTest {
@@ -56,8 +55,7 @@ public class TestDowntimes extends ExperimentTest {
 	@Test
 	@Ignore
 	public void test_js02x05() throws Exception {
-		Map<String, Object> res = new HashMap<String, Object>(test(
-				"testInstances/js02x05.txt", 5));
+		Map<String, Object> res = new HashMap<String, Object>(test("testInstances/js02x05.txt", 5));
 		res.remove("weightedCondTardMax");
 		res.remove("weightedCondTardVariance");
 		res.remove("weightedCondTardMean");
@@ -65,8 +63,8 @@ public class TestDowntimes extends ExperimentTest {
 		res.remove("weightedNumTardy");
 
 		@SuppressWarnings("unchecked")
-		Map<String, Object> expected = (Map<String, Object>) XmlUtil
-				.loadXML(FileFormat.XSTREAM, new File("testInstances/js02x05.txt.results"));
+		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(FileFormat.XSTREAM,
+				new File("testInstances/js02x05.txt.results"));
 
 		checkKeySets(res, expected);
 		checkResults(res, expected);
@@ -76,8 +74,7 @@ public class TestDowntimes extends ExperimentTest {
 	@Test
 	@Ignore
 	public void test_js01x02() throws Exception {
-		Map<String, Object> res = new HashMap<String, Object>(test(
-				"testInstances/js01x03.txt", 3));
+		Map<String, Object> res = new HashMap<String, Object>(test("testInstances/js01x03.txt", 3));
 		res.remove("weightedCondTardMax");
 		res.remove("weightedCondTardVariance");
 		res.remove("weightedCondTardMean");
@@ -85,8 +82,8 @@ public class TestDowntimes extends ExperimentTest {
 		res.remove("weightedNumTardy");
 
 		@SuppressWarnings("unchecked")
-		Map<String, Object> expected = (Map<String, Object>) XmlUtil
-				.loadXML(FileFormat.XSTREAM, new File("testInstances/js01x03.txt.results"));
+		Map<String, Object> expected = (Map<String, Object>) XmlUtil.loadXML(FileFormat.XSTREAM,
+				new File("testInstances/js01x03.txt.results"));
 
 		checkKeySets(res, expected);
 		checkResults(res, expected);
@@ -97,9 +94,9 @@ public class TestDowntimes extends ExperimentTest {
 		@SuppressWarnings("serial")
 		StaticShopExperiment e = new StaticShopExperiment() {
 			@Override
-			protected void postConfigShop() {
-				super.postConfigShop();
-				for (WorkStation m : shop.machines) {
+			protected void configureShop() {
+				super.configureShop();
+				for (WorkStation m : shop.getMachines()) {
 					for (IndividualMachine im : m.machDat()) {
 						DowntimeSource dt = new DowntimeSource(im);
 						dt.setTimeBetweenFailures(new DblConst(1.0));
@@ -111,8 +108,7 @@ public class TestDowntimes extends ExperimentTest {
 		};
 		e.setStopAfterNumJobs(n);
 		e.setInstFileName(fn);
-		e.setSequencingRule(new FASFS()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		e.setSequencingRule(new FASFS().setFinalTieBreaker(new TieBreakerFASFS()));
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addMachineListener(new MachineStatCollector());
 		e.addShopListener(new TraceFileProducer("log_" + new File(fn).getName()));

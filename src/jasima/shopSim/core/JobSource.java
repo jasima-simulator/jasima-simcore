@@ -20,21 +20,21 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.simulation.Event;
-import jasima.core.util.ValueStore;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
+
+import jasima.core.simulation.Event;
+import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponentBase;
+import jasima.core.util.ValueStore;
 
 /**
  * A job source is an abstract base class for classes producing {@link Job}s.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
-public abstract class JobSource implements ValueStore {
+public abstract class JobSource extends SimComponentBase implements ValueStore, SimComponent {
 
 	// bigger than WorkStation.DEPART_PRIO but smaller than
 	// WorkStation.SELECT_PRIO
@@ -51,7 +51,10 @@ public abstract class JobSource implements ValueStore {
 		super();
 	}
 
+	@Override
 	public void init() {
+		super.init();
+
 		stopArrivals = false;
 		jobsStarted = 0;
 
@@ -68,13 +71,12 @@ public abstract class JobSource implements ValueStore {
 				Job job = createNextJob();
 
 				if (job != null) {
-					if (job.getRelDate() < getShop().simTime())
-						throw new IllegalStateException(
-								"arrival time is in the past: " + job);
+					if (job.getRelDate() < simTime())
+						throw new IllegalStateException("arrival time is in the past: " + job);
 
 					// schedule next arrival reusing this Event object
 					this.setTime(job.getRelDate());
-					getShop().schedule(this);
+					getSim().schedule(this);
 				}
 
 				// release "nextJob"
@@ -86,9 +88,10 @@ public abstract class JobSource implements ValueStore {
 			}
 
 		};
+
 		// schedule first arrival
-		arriveEvent.setTime(getShop().simTime());
-		getShop().schedule(arriveEvent);
+		arriveEvent.setTime(simTime());
+		getSim().schedule(arriveEvent);
 	}
 
 	public abstract Job createNextJob();

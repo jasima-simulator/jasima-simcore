@@ -20,10 +20,6 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.experiment.Experiment;
-import jasima.core.experiment.FullFactorialExperiment;
-import jasima.core.experiment.MultipleReplicationExperiment;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,6 +28,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
+
+import jasima.core.experiment.Experiment;
+import jasima.core.experiment.FullFactorialExperiment;
+import jasima.core.experiment.MultipleReplicationExperiment;
 
 /**
  * This class uses Java's serialization mechanism to save experiment results in
@@ -42,14 +42,10 @@ import java.util.Map;
  * subclass of {@code ResultSaver} is used, e.g., {@link ExcelSaver}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public class ResultSaver extends AbstractResultSaver {
 
 	public static final String SER_EXTENSION = ".jasResBin";
-
-	private static final long serialVersionUID = -6333367038346285154L;
 
 	// save intermediate results after 100 results
 	private static final int MAX_UNSAVED = 100;
@@ -104,8 +100,7 @@ public class ResultSaver extends AbstractResultSaver {
 
 		// create output stream
 		try {
-			tmpDatOut = new ObjectOutputStream(new BufferedOutputStream(
-					new FileOutputStream(f)));
+			tmpDatOut = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -119,8 +114,7 @@ public class ResultSaver extends AbstractResultSaver {
 	}
 
 	@Override
-	protected void multiExperimentCompletedTask(Experiment me, Experiment e,
-			Map<String, Object> runRes) {
+	protected void multiExperimentCompletedTask(Experiment me, Experiment e, Map<String, Object> runRes) {
 		if (isSaveSubExperiments())
 			saveExperiment(e, runRes);
 	}
@@ -190,8 +184,7 @@ public class ResultSaver extends AbstractResultSaver {
 
 		unsavedResults++;
 
-		if (unsavedResults >= MAX_UNSAVED
-				|| System.currentTimeMillis() > nextSaveTime) {
+		if (unsavedResults >= MAX_UNSAVED || System.currentTimeMillis() > nextSaveTime) {
 			flushTmpFile();
 			unsavedResults = 0;
 			nextSaveTime = System.currentTimeMillis() + SAVE_INTERVAL;

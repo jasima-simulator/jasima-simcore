@@ -20,24 +20,22 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.simulation.Simulation.SimMsgCategory;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+
+import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 
 /**
  * An implementation of a priority queue. The two supported operations are add(T
  * t) and removeLeast(). Order of the elements is determined by a sequencing
  * rule PR.
  * 
- * @author Torsten Hildebrandt, 2009-08-01
+ * @author Torsten Hildebrandt
  * 
  * @param <T>
  *            The element type contained in this PriorityQueue.
- * @version 
- *          "$Id$"
  */
 public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 
@@ -46,8 +44,7 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 	public static final double MAX_PRIO = Double.MAX_VALUE;
 	public static final double MIN_PRIO = -MAX_PRIO;
 
-	private final class ComparatorImpl<O extends PrioRuleTarget> implements
-			Comparator<ListEntry<O>>, Serializable {
+	private final class ComparatorImpl<O extends PrioRuleTarget> implements Comparator<ListEntry<O>>, Serializable {
 		private static final long serialVersionUID = -6907667564606558578L;
 
 		@Override
@@ -61,8 +58,7 @@ public class PriorityQueue<T extends PrioRuleTarget> implements Serializable {
 
 			int res = comparePrioArrays(p1, p2);
 			if (res == 0)
-				getWorkStation().shop().print(SimMsgCategory.WARN,
-						"equal priorities.");
+				getWorkStation().getSim().print(MsgCategory.WARN, "equal priorities.");
 			return res;
 		}
 	}

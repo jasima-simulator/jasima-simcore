@@ -20,10 +20,10 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.simulation.Event;
-
 import java.util.Collections;
 import java.util.List;
+
+import jasima.core.simulation.Event;
 
 /**
  * This class represents a single machine, which is part of a
@@ -78,7 +78,7 @@ public class IndividualMachine {
 	/** Activation from DOWN state. */
 	public void activate() {
 		if (state != MachineState.DOWN)
-			throw new IllegalStateException("Only a machine in state DOWN can be activated.");
+			throw new IllegalStateException("Only a machine in state DOWN can be activated .");
 		assert curJob == null;
 
 		state = MachineState.IDLE;
@@ -107,7 +107,7 @@ public class IndividualMachine {
 
 			// don't interrupt ongoing operation/downtime, postpone takeDown
 			// instead
-			shop.schedule(procFinished, WorkStation.TAKE_DOWN_PRIO, () -> {
+			shop.getSim().schedule(procFinished, WorkStation.TAKE_DOWN_PRIO, () -> {
 				assert workStation.currMachine == null;
 				workStation.currMachine = IndividualMachine.this;
 				takeDown(downReason);
@@ -133,7 +133,7 @@ public class IndividualMachine {
 		state = MachineState.DOWN;
 
 		// schedule initial activation
-		workStation.shop.schedule(relDate, WorkStation.ACTIVATE_PRIO, () -> {
+		workStation.getSim().schedule(relDate, WorkStation.ACTIVATE_PRIO, () -> {
 			assert workStation.currMachine == null;
 			workStation.currMachine = IndividualMachine.this;
 			IndividualMachine.this.activate();

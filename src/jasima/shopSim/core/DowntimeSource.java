@@ -39,7 +39,6 @@ import jasima.shopSim.util.WorkStationListenerBase;
  * 
  * @see MaintenanceSource
  * @author Torsten Hildebrandt, 2014-04-15
- * @version "$Id$"
  */
 public class DowntimeSource {
 
@@ -55,7 +54,7 @@ public class DowntimeSource {
 
 	public void init() {
 		// initialize random streams
-		RandomFactory fact = machine.workStation.shop.getRndStreamFactory();
+		RandomFactory fact = machine.workStation.getSim().getRndStreamFactory();
 		if (timeBetweenFailures != null && timeBetweenFailures.getRndGen() == null) {
 			fact.initRndGen(timeBetweenFailures, toString() + ".timeBetweenFailures");
 			timeBetweenFailures.init();
@@ -65,7 +64,7 @@ public class DowntimeSource {
 			timeToRepair.init();
 		}
 
-		machine.workStation.addNotifierListener(new WorkStationListenerBase() {
+		new WorkStationListenerBase() {
 			@Override
 			protected void activated(WorkStation m, IndividualMachine justActivated) {
 				if (justActivated == machine && machine.downReason == DowntimeSource.this) {
@@ -82,9 +81,9 @@ public class DowntimeSource {
 
 			@Override
 			protected void done(WorkStation m) {
-				m.removeNotifierListener(this);
+				machine.workStation.getSim().getNotifierService().removeSubscriber(this);
 			}
-		});
+		}.register(machine.workStation.getSim().getNotifierService());
 
 		// schedule begin of first downtime
 		onActivate();
@@ -96,7 +95,7 @@ public class DowntimeSource {
 
 			// schedule next downtime
 			double nextFailure = calcDeactivateTime(shop);
-			shop.schedule(nextFailure, WorkStation.TAKE_DOWN_PRIO, () -> {
+			shop.getSim().schedule(nextFailure, WorkStation.TAKE_DOWN_PRIO, () -> {
 				assert machine.workStation.currMachine == null;
 				machine.workStation.currMachine = machine;
 				machine.takeDown(DowntimeSource.this);
@@ -116,7 +115,7 @@ public class DowntimeSource {
 		machine.procFinished = whenReactivated;
 
 		// schedule reactivation
-		shop.schedule(whenReactivated, WorkStation.ACTIVATE_PRIO, () -> {
+		shop.getSim().schedule(whenReactivated, WorkStation.ACTIVATE_PRIO, () -> {
 			assert machine.workStation.currMachine == null;
 			machine.workStation.currMachine = machine;
 			machine.activate();

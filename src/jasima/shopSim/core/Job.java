@@ -25,19 +25,14 @@ import java.util.HashMap;
 import java.util.Set;
 
 import jasima.core.util.ValueStore;
-import jasima.core.util.observer.Notifier;
-import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.NotifierListener;
-import jasima.shopSim.core.Job.JobEvent;
 
 /**
  * Main work unit in a shop.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 // TODO: PrioRuleTarget should be an interface
-public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobEvent>, ValueStore {
+public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
 
 	/** Base class for workstation events. */
 	public static class JobEvent {
@@ -164,22 +159,22 @@ public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobE
 	}
 
 	void jobReleased() {
-		fire(JOB_RELEASED);
+		shop.getSim().publishNotification(this, JOB_RELEASED);
 	}
 
 	void jobFinished() {
-		fire(JOB_FINISHED);
+		shop.getSim().publishNotification(this, JOB_FINISHED);
 	}
 
 	void arriveInQueue(WorkStation workStation, double arrivesAt) {
 		setCurrMachine(workStation);
 		setArriveTime(arrivesAt);
 
-		fire(JOB_ARRIVED_IN_QUEUE);
+		shop.getSim().publishNotification(this, JOB_ARRIVED_IN_QUEUE);
 	}
 
 	void removedFromQueue() {
-		fire(JOB_REMOVED_FROM_QUEUE);
+		shop.getSim().publishNotification(this, JOB_REMOVED_FROM_QUEUE);
 	}
 
 	void startProcessing() {
@@ -187,11 +182,11 @@ public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobE
 		setStartTime(currMachine.shop().simTime());
 		notifyNextMachine();
 
-		fire(JOB_START_OPERATION);
+		shop.getSim().publishNotification(this, JOB_START_OPERATION);
 	}
 
 	void endProcessing() {
-		fire(JOB_END_OPERATION);
+		shop.getSim().publishNotification(this, JOB_END_OPERATION);
 	}
 
 	/**
@@ -229,11 +224,6 @@ public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobE
 
 		if (valueStore != null) {
 			j.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		}
-
-		if (adapter != null) {
-			j.adapter = adapter.clone();
-			j.adapter.setNotifier(j);
 		}
 
 		return j;
@@ -516,61 +506,6 @@ public class Job extends PrioRuleTarget implements Cloneable, Notifier<Job, JobE
 			return null;
 		else
 			return valueStore.remove(key);
-	}
-
-	//
-	//
-	// event notification
-	//
-	//
-
-	private NotifierAdapter<Job, JobEvent> adapter = null;
-
-	@Override
-	public void addNotifierListener(NotifierListener<Job, JobEvent> listener) {
-		if (adapter == null)
-			adapter = new NotifierAdapter<Job, JobEvent>(this);
-		adapter.addNotifierListener(listener);
-	}
-
-	@Override
-	public NotifierListener<Job, JobEvent> getNotifierListener(int index) {
-		return adapter.getNotifierListener(index);
-	}
-
-	@Override
-	public void removeNotifierListener(NotifierListener<Job, JobEvent> listener) {
-		adapter.removeNotifierListener(listener);
-	}
-
-	@Override
-	public int numListener() {
-		return adapter == null ? 0 : adapter.numListener();
-	}
-
-	protected void fire(JobEvent event) {
-		if (adapter != null)
-			adapter.fire(event);
-	}
-
-	@Override
-	public void disableEvents() {
-		if (adapter != null)
-			adapter.disableEvents();
-	}
-
-	@Override
-	public void enableEvents() {
-		if (adapter != null)
-			adapter.enableEvents();
-	}
-
-	@Override
-	public boolean eventsEnabled() {
-		if (adapter != null)
-			return adapter.eventsEnabled();
-		else
-			return false;
 	}
 
 }

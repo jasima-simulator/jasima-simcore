@@ -20,56 +20,63 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import java.util.Map;
+
 import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.Experiment.ExperimentEvent;
-import jasima.core.util.observer.NotifierListener;
-
-import java.io.Serializable;
-import java.util.Map;
+import jasima.core.util.observer.NotifierService;
+import jasima.core.util.observer.Subscriber;
 
 /**
  * This class can be used as a base class for experiment listeners. It delegates
  * all events of {@link Experiment} to separate methods.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
-public abstract class ExperimentListenerBase implements
-		NotifierListener<Experiment, ExperimentEvent>, Cloneable, Serializable {
+public abstract class ExperimentListenerBase implements Subscriber, Cloneable {
 
-	private static final long serialVersionUID = -3880665781275114403L;
+	public ExperimentListenerBase() {
+		super();
+	}
 
 	@Override
-	public final void update(Experiment e, ExperimentEvent event) {
+	public void register(NotifierService s) {
+		s.addSubscription(ExperimentEvent.class, this);
+	}
+
+	@Override
+	public void inform(Object e, Object event) {
 		if (event == Experiment.EXPERIMENT_STARTING) {
-			starting(e);
+			starting((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_INITIALIZED) {
-			initialized(e);
+			initialized((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_BEFORE_RUN) {
-			beforeRun(e);
+			beforeRun((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_AFTER_RUN) {
-			afterRun(e);
+			afterRun((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_DONE) {
-			done(e);
+			done((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_COLLECT_RESULTS) {
-			produceResults(e, e.results);
+			Experiment exp = (Experiment) e;
+			produceResults(exp, exp.results);
 		} else if (event == Experiment.EXPERIMENT_FINISHING) {
-			finishing(e, e.results);
+			Experiment exp = (Experiment) e;
+			finishing(exp, exp.results);
 		} else if (event == Experiment.EXPERIMENT_FINISHED) {
-			finished(e, e.getResults());
+			Experiment exp = (Experiment) e;
+			finished(exp, exp.results);
 		} else if (event instanceof ExpPrintEvent) {
-			print(e, (ExpPrintEvent) event);
+			print((Experiment) e, (ExpPrintEvent) event);
 		} else if (event instanceof BaseExperimentCompleted) {
 			BaseExperimentCompleted evt = (BaseExperimentCompleted) event;
-			multiExperimentCompletedTask(e, evt.experimentRun, evt.results);
+			multiExperimentCompletedTask((Experiment) e, evt.experimentRun, evt.results);
 		} else {
 			handleOther(e, event);
 		}
 	}
 
-	protected void handleOther(Experiment e, ExperimentEvent event) {
+	protected void handleOther(Object e, Object event) {
 	}
 
 	protected void print(Experiment e, ExpPrintEvent event) {
@@ -99,8 +106,8 @@ public abstract class ExperimentListenerBase implements
 	protected void finished(Experiment e, Map<String, Object> results) {
 	}
 
-	protected void multiExperimentCompletedTask(Experiment baseExp,
-			Experiment runExperiment, Map<String, Object> runResults) {
+	protected void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment,
+			Map<String, Object> runResults) {
 	}
 
 	@Override

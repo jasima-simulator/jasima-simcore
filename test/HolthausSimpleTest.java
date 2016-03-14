@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -19,13 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
 import jasima.core.random.continuous.DblConst;
-import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.observer.Subscriber;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
@@ -35,18 +40,11 @@ import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.BatchStatCollector;
-
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import util.ExtendedJobStatCollector;
 
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
  */
 @SuppressWarnings("deprecation")
 public class HolthausSimpleTest {
@@ -54,8 +52,7 @@ public class HolthausSimpleTest {
 	@Before
 	public void setUp() {
 		System.out.println("setting up");
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactoryOld.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
 	}
 
 	@Test
@@ -64,7 +61,7 @@ public class HolthausSimpleTest {
 		e.setInitialSeed(8346);
 
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 

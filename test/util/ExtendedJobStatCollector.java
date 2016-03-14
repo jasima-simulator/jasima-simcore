@@ -20,6 +20,8 @@
  *******************************************************************************/
 package util;
 
+import java.util.Map;
+
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
@@ -30,8 +32,6 @@ import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.util.ShopListenerBase;
-
-import java.util.Map;
 
 /**
  * This is an old version now only used to maintain compatibility with old test
@@ -47,13 +47,9 @@ import java.util.Map;
  * reducible components of the flowtime, i.e., waiting and setup times.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
  */
 @Deprecated
 public class ExtendedJobStatCollector extends ShopListenerBase {
-
-	private static final long serialVersionUID = -6311778884767987852L;
 
 	private SummaryStat lateness;
 	private SummaryStat flowtime;
@@ -69,6 +65,8 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	private int numFinished;
 	private double cMax;
 
+	private JobShop shop;
+
 	@Override
 	protected void init(Simulation sim) {
 		flowtime = new SummaryStat("flowtimes");
@@ -78,8 +76,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		weightedFlowtime = new SummaryStat("weightedFlowtimes");
 		weightedTardiness = new SummaryStat("weightedTardiness");
 		conditionalTardiness = new SummaryStat("conditionalTardiness");
-		weightedConditionalTardiness = new SummaryStat(
-				"weightedConditionalTardiness");
+		weightedConditionalTardiness = new SummaryStat("weightedConditionalTardiness");
 		numTardyWeighted = 0.0;
 		numTardy = 0;
 		numFinished = 0;
@@ -90,22 +87,22 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	protected void done(Simulation sim) {
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
 
-		JobShop shop = (JobShop) sim;
-		for (WorkStation m : shop.machines) {
-			PR pr = m.queue.getSequencingRule();
+		if (shop != null)
+			for (WorkStation m : shop.getMachines()) {
+				PR pr = m.queue.getSequencingRule();
 
-			m.queue.setSequencingRule(new TieBreakerFASFS());
-			for (Job j : m.queue.getAllElementsInOrder(new Job[m.queue.size()])) {
-				storeWIPJob(j);
-			}
-			m.queue.setSequencingRule(pr);
-
-			for (int i = 0; i < m.numInGroup(); i++) {
-				PrioRuleTarget j = m.getProcessedJob(i);
-				if (j != null)
+				m.queue.setSequencingRule(new TieBreakerFASFS());
+				for (Job j : m.queue.getAllElementsInOrder(new Job[m.queue.size()])) {
 					storeWIPJob(j);
+				}
+				m.queue.setSequencingRule(pr);
+
+				for (int i = 0; i < m.numInGroup(); i++) {
+					PrioRuleTarget j = m.getProcessedJob(i);
+					if (j != null)
+						storeWIPJob(j);
+				}
 			}
-		}
 	}
 
 	/**
@@ -118,15 +115,14 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 			if (j.isFuture())
 				continue;
 
-			double tard = Math.max(
-					j.getShop().simTime() - j.getCurrentOperationDueDate(), 0);
+			double tard = Math.max(j.getShop().simTime() - j.getCurrentOperationDueDate(), 0);
 			weightedTardinessWithWIP.value(j.getWeight() * tard);
 		}
 	}
 
 	@Override
 	protected void jobReleased(JobShop shop, Job j) {
-
+		this.shop = shop;
 	}
 
 	@Override
@@ -174,8 +170,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		Util.putMeanMaxVar(weightedTardinessWithWIP, "weightedTardWIP", res);
 
 		Util.putMeanMaxVar(conditionalTardiness, "condTard", res);
-		Util.putMeanMaxVar(weightedConditionalTardiness, "weightedCondTard",
-				res);
+		Util.putMeanMaxVar(weightedConditionalTardiness, "weightedCondTard", res);
 
 		res.put("tardPercentage", ((double) numTardy) / numFinished);
 		res.put("numTardy", numTardy);

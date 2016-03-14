@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -20,17 +21,18 @@
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import jasima.core.statistics.SummaryStat;
-import jasima.shopSim.core.WorkStation;
 
 import java.util.HashMap;
 
 import org.junit.Test;
 
+import jasima.core.simulation.Simulation;
+import jasima.core.statistics.SummaryStat;
+import jasima.shopSim.core.WorkStation;
+
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
  */
 public class JobShopTests {
 
@@ -51,19 +53,19 @@ public class JobShopTests {
 		js.addMachine(new WorkStation(3));
 		js.addMachine(new WorkStation(1));
 
-		js.route = new WorkStation[][] {
-				{ js.machines[2], js.machines[0], js.machines[1],
-						js.machines[4] },
-				{ js.machines[3], js.machines[0], js.machines[2] },
-				{ js.machines[1], js.machines[4], js.machines[0],
-						js.machines[3], js.machines[2] } };
+		WorkStation[] ws = js.getMachines();
+		js.route = new WorkStation[][] { { ws[2], ws[0], ws[1], ws[4] }, { ws[3], ws[0], ws[2] },
+				{ ws[1], ws[4], ws[0], ws[3], ws[2] } };
+
+		Simulation s = new Simulation();
 
 		// js.setLengthSimulation(30);
-		js.setSimulationLength(8 * 365.0f);
+		s.setSimulationLength(8 * 365.0f);
+		s.setRootComponent(js);
 
-		js.init();
-		js.run();
-		js.done();
+		s.init();
+		s.run();
+		s.done();
 
 		js.report();
 
@@ -75,8 +77,7 @@ public class JobShopTests {
 			 * task times the number of tasks
 			 */
 			double ajtd = js.jobTypeDelay[i].mean() * js.route[i].length;
-			assertEquals("avDelay", new double[] { 25.274267d, 17.918234d,
-					40.184708d }[i], ajtd, 0.0001d);
+			assertEquals("avDelay", new double[] { 25.274267d, 17.918234d, 40.184708d }[i], ajtd, 0.0001d);
 			/*
 			 * oajtd is a weighted average of the total time a job waits in
 			 * queue. Total waits (ojtd) are multiplied by the probability job
@@ -85,37 +86,32 @@ public class JobShopTests {
 			oajtd += (js.probDistribJobType[i] - sumProbs) * ajtd;
 			sumProbs = js.probDistribJobType[i];
 		}
-		assertEquals("Overall average job total delay: ", 24.578339d, oajtd,
-				0.0001d);
+		assertEquals("Overall average job total delay: ", 24.578339d, oajtd, 0.0001d);
 
 		System.out.println(js.jobsFinished);
 		assertEquals("numFinished", 11551, js.jobsFinished);
 
 		HashMap<String, Object> res = new HashMap<String, Object>();
-		js.produceResults(res);
+		s.produceResults(res);
 
-		for (int i = 0; i < js.machines.length; i++) {
-			WorkStation m = js.machines[i];
+		int i = 0;
+		for (WorkStation m : js.getMachines()) {
 
 			SummaryStat aniq = (SummaryStat) res.get(m.getName() + ".qLen");
-			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName()
-					+ ".util");
-			SummaryStat stationDelay = (SummaryStat) res
-					.get(m.getName() + ".qWait");
+			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName() + ".util");
+			SummaryStat stationDelay = (SummaryStat) res.get(m.getName() + ".qWait");
 
-			assertEquals("Average Number in Queue", new double[] {
-					10.640711097463264, 43.506917495137166, 0.6860489627173679,
-					41.67933338913038, 1.8671606451165894 }[i], aniq.mean(),
-					0.0001d);
-			assertEquals("Average Utilization", new double[] {
-					0.9507663051379164, 0.9906905798380076, 0.7214107612790233,
-					0.967256788472735, 0.803024879706631 }[i],
-					aveMachinesBusy.mean() / js.machines[i].numInGroup(), 0.0001d);
-			assertEquals("Average Delay in Queue",
-					new double[] { 2.6724790935697262, 21.627010141269572,
-							0.17260580485393026, 14.956587844458907,
-							0.938571153953861 }[i], stationDelay.mean(),
-					0.0001d);
+			assertEquals("Average Number in Queue", new double[] { 10.640711097463264, 43.506917495137166,
+					0.6860489627173679, 41.67933338913038, 1.8671606451165894 }[i], aniq.mean(), 0.0001d);
+			assertEquals(
+					"Average Utilization", new double[] { 0.9507663051379164, 0.9906905798380076, 0.7214107612790233,
+							0.967256788472735, 0.803024879706631 }[i],
+					aveMachinesBusy.mean() / m.numInGroup(), 0.0001d);
+			assertEquals(
+					"Average Delay in Queue", new double[] { 2.6724790935697262, 21.627010141269572,
+							0.17260580485393026, 14.956587844458907, 0.938571153953861 }[i],
+					stationDelay.mean(), 0.0001d);
+			i++;
 		}
 	}
 
@@ -129,18 +125,17 @@ public class JobShopTests {
 		js.addMachine(new WorkStation(3));
 		js.addMachine(new WorkStation(1));
 
-		js.route = new WorkStation[][] {
-				{ js.machines[2], js.machines[0], js.machines[1],
-						js.machines[4] },
-				{ js.machines[3], js.machines[0], js.machines[2] },
-				{ js.machines[1], js.machines[4], js.machines[0],
-						js.machines[3], js.machines[2] } };
+		WorkStation[] ws = js.getMachines();
+		js.route = new WorkStation[][] { { ws[2], ws[0], ws[1], ws[4] }, { ws[3], ws[0], ws[2] },
+				{ ws[1], ws[4], ws[0], ws[3], ws[2] } };
 
-		js.setSimulationLength(8 * 100 * 365f);
+		Simulation s = new Simulation();
+		s.setSimulationLength(8 * 100 * 365f);
+		s.setRootComponent(js);
 
-		js.init();
-		js.run();
-		js.done();
+		s.init();
+		s.run();
+		s.done();
 
 		js.report();
 
@@ -148,30 +143,23 @@ public class JobShopTests {
 		assertEquals("numFinished", 1168292, js.jobsFinished);
 
 		HashMap<String, Object> res = new HashMap<String, Object>();
-		js.produceResults(res);
+		s.produceResults(res);
 
-		for (int i = 0; i < js.machines.length; i++) {
-			WorkStation m = js.machines[i];
-
+		int i = 0;
+		for (WorkStation m : js.getMachines()) {
 			SummaryStat aniq = (SummaryStat) res.get(m.getName() + ".qLen");
-			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName()
-					+ ".util");
-			SummaryStat stationDelay = (SummaryStat) res
-					.get(m.getName() + ".qWait");
+			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName() + ".util");
+			SummaryStat stationDelay = (SummaryStat) res.get(m.getName() + ".qWait");
 
-			assertEquals("Average Number in Queue", new double[] {
-					13.216440696313796, 77.25100792930898, 0.7498628369283316,
-					22.870835950650495, 1.9520833472252603 }[i], aniq.mean(),
-					0.00001d);
-			assertEquals("Average Utilization", new double[] {
-					0.958749123958056, 0.9911394388506134, 0.7248176313853936,
-					0.9726069395363314, 0.7998228342590076 }[i],
-					aveMachinesBusy.mean() / js.machines[i].numInGroup(),
-					0.00001d);
-			assertEquals("Average Delay in Queue", new double[] {
-					3.30305880395206, 38.59318497492146, 0.18740648456724288,
-					8.1645576457121, 0.9752793709934672 }[i],
-					stationDelay.mean(), 0.00001d);
+			assertEquals("Average Number in Queue", new double[] { 13.216440696313796, 77.25100792930898,
+					0.7498628369283316, 22.870835950650495, 1.9520833472252603 }[i], aniq.mean(), 0.00001d);
+			assertEquals(
+					"Average Utilization", new double[] { 0.958749123958056, 0.9911394388506134, 0.7248176313853936,
+							0.9726069395363314, 0.7998228342590076 }[i],
+					aveMachinesBusy.mean() / m.numInGroup(), 0.00001d);
+			assertEquals("Average Delay in Queue", new double[] { 3.30305880395206, 38.59318497492146,
+					0.18740648456724288, 8.1645576457121, 0.9752793709934672 }[i], stationDelay.mean(), 0.00001d);
+			i++;
 		}
 	}
 

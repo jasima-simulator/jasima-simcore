@@ -20,13 +20,6 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.experiment.AbstractMultiExperiment;
-import jasima.core.experiment.Experiment;
-import jasima.core.experiment.Experiment.ExpMsgCategory;
-import jasima.core.experiment.Experiment.ExpPrintEvent;
-import jasima.core.experiment.ExperimentListenerBase;
-import jasima.core.statistics.SummaryStat;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,16 +28,19 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import jasima.core.experiment.AbstractMultiExperiment;
+import jasima.core.experiment.Experiment;
+import jasima.core.experiment.Experiment.ExpMsgCategory;
+import jasima.core.experiment.Experiment.ExpPrintEvent;
+import jasima.core.experiment.ExperimentListenerBase;
+import jasima.core.statistics.SummaryStat;
+
 /**
  * Prints experiment messages to the console.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public class ConsolePrinter extends ExperimentListenerBase {
-
-	private static final long serialVersionUID = 6722626849679009737L;
 
 	private ExpMsgCategory logLevel = ExpMsgCategory.INFO;
 	private Locale locale = Util.DEF_LOCALE;
@@ -79,9 +75,8 @@ public class ConsolePrinter extends ExperimentListenerBase {
 			if (name == null)
 				name = "exp@" + Integer.toHexString(e.hashCode());
 
-			String msg = String.format(getLocale(), getLogFormat(), new Date(),
-					event.category.toString(), event.getMessage(getLocale()),
-					name);
+			String msg = String.format(getLocale(), getLogFormat(), new Date(), event.category.toString(),
+					event.getMessage(getLocale()), name);
 			if (getOut() == null)
 				System.out.println(msg);
 			else
@@ -127,15 +122,14 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	}
 
 	@Override
-	protected void multiExperimentCompletedTask(Experiment e,
-			Experiment runExperiment, Map<String, Object> runResults) {
+	protected void multiExperimentCompletedTask(Experiment e, Experiment runExperiment,
+			Map<String, Object> runResults) {
 		if (isPrintStdEvents() && e instanceof AbstractMultiExperiment) {
 			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
 
 			Double runTime = (Double) runResults.get(Experiment.RUNTIME);
 			Integer aborted = (Integer) runResults.get(Experiment.EXP_ABORTED);
-			String errorMsg = (String) runResults
-					.get(Experiment.EXCEPTION_MESSAGE);
+			String errorMsg = (String) runResults.get(Experiment.EXCEPTION_MESSAGE);
 
 			String abortStr = "";
 			if (aborted != null && aborted.doubleValue() != 0.0) {
@@ -144,8 +138,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 					abortStr += "; " + toString(errorMsg);
 			}
 
-			me.print("finished experiment %d/%d in %.2fs%s",
-					me.getNumTasksExecuted(), me.getNumTasks(), runTime,
+			me.print("finished experiment %d/%d in %.2fs%s", me.getNumTasksExecuted(), me.getNumTasks(), runTime,
 					abortStr);
 		}
 	}
@@ -258,8 +251,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	 * @param res
 	 *            The list of results.
 	 */
-	public static void printResults(PrintWriter out, Experiment e,
-			Map<String, Object> res) {
+	public static void printResults(PrintWriter out, Experiment e, Map<String, Object> res) {
 		out.println();
 		out.println(getDescription(e));
 
@@ -298,9 +290,8 @@ public class ConsolePrinter extends ExperimentListenerBase {
 
 			for (String k : valStatNames) {
 				SummaryStat vs = (SummaryStat) res.get(k);
-				out.printf(Util.DEF_LOCALE,
-						"%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f%n", k, vs.mean(),
-						vs.min(), vs.max(), vs.stdDev(), vs.numObs(), vs.sum());
+				out.printf(Util.DEF_LOCALE, "%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f%n", k, vs.mean(), vs.min(), vs.max(),
+						vs.stdDev(), vs.numObs(), vs.sum());
 			}
 		}
 
@@ -322,8 +313,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 		}
 
 		out.println();
-		out.printf(Util.DEF_LOCALE, "time needed:\t%fs%n",
-				res.get(Experiment.RUNTIME));
+		out.printf(Util.DEF_LOCALE, "time needed:\t%fs%n", res.get(Experiment.RUNTIME));
 
 		out.flush();
 	}
@@ -338,11 +328,9 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	public static String getDescription(Experiment e) {
 		String s;
 		if (e.getName() != null)
-			s = String.format(Util.DEF_LOCALE, "Results of %s '%s'", e
-					.getClass().getSimpleName(), e.getName());
+			s = String.format(Util.DEF_LOCALE, "Results of %s '%s'", e.getClass().getSimpleName(), e.getName());
 		else
-			s = String.format(Util.DEF_LOCALE, "Results of %s", e.getClass()
-					.getSimpleName());
+			s = String.format(Util.DEF_LOCALE, "Results of %s", e.getClass().getSimpleName());
 		return s;
 	}
 }

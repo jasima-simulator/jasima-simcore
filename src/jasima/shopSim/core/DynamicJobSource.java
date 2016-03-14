@@ -24,6 +24,7 @@ import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
+import jasima.core.simulation.SimComponentContainer;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 
 /**
@@ -42,8 +43,7 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
  * have to be set. A route created this way will create a random route with no
  * machine being revisited.
  * 
- * @author Torsten Hildebrandt, 2010-03-12
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class DynamicJobSource extends JobSource {
 
@@ -61,7 +61,7 @@ public class DynamicJobSource extends JobSource {
 
 		super.init();
 
-		RandomFactory fact = getShop().getRndStreamFactory();
+		RandomFactory fact = getSim().getRndStreamFactory();
 		init(getArrivalProcess(), prefix + "arrivalStream", fact);
 		init(getDueDateFactors(), prefix + "dueDateStream", fact);
 		init(getJobWeights(), prefix + "weightStream", fact);
@@ -98,13 +98,15 @@ public class DynamicJobSource extends JobSource {
 
 	protected Operation[] createRoute() {
 		// machine order
-		final int n = getNumOps() != null ? getNumOps().nextInt() : getShop().machines.length;
+		SimComponentContainer<WorkStation> machines = getShop().machines();
+
+		final int n = getNumOps() != null ? getNumOps().nextInt() : machines.numComponents();
 		assert n > 0;
 
 		Operation[] ops = new Operation[n];
 
 		// initially all false
-		boolean[] machineChosen = new boolean[getShop().machines.length];
+		boolean[] machineChosen = new boolean[machines.numComponents()];
 
 		for (int i = 0; i < n; i++) {
 			// TODO: change: not very elegant but works for now
@@ -113,7 +115,7 @@ public class DynamicJobSource extends JobSource {
 				mi = getMachIdx().nextInt();
 			} while (machineChosen[mi]);
 
-			WorkStation m = getShop().machines[mi];
+			WorkStation m = machines.getComponent(mi);
 			machineChosen[mi] = true;
 
 			Operation o = ops[i] = new Operation();

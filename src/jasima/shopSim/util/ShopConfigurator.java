@@ -20,7 +20,10 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
+import java.util.Arrays;
+
 import jasima.core.random.continuous.DblStream;
+import jasima.core.simulation.Simulation;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.shopSim.core.DynamicJobSource;
 import jasima.shopSim.core.IndividualMachine;
@@ -42,8 +45,6 @@ import jasima.shopSim.util.modelDef.SourceDef;
 import jasima.shopSim.util.modelDef.StaticSourceDef;
 import jasima.shopSim.util.modelDef.WorkstationDef;
 
-import java.util.Arrays;
-
 public class ShopConfigurator {
 
 	private ShopDef shopDef;
@@ -58,9 +59,12 @@ public class ShopConfigurator {
 		tfr.configureMdl(shop);
 	}
 
+	public void configureSimulation(Simulation sim) {
+		sim.setName(shopDef.getName());
+		sim.setSimulationLength(shopDef.getSimulationLength());
+	}
+
 	public void configureMdl(JobShop shop) {
-		shop.setName(shopDef.getName());
-		shop.setSimulationLength(shopDef.getSimulationLength());
 		shop.setEnableLookAhead(shopDef.isEnableLookAhead());
 		shop.setStopAfterNumJobs(shopDef.getStopAfterNumJobs());
 		shop.setMaxJobsInSystem(shopDef.getMaxJobsInSystem());
@@ -194,7 +198,7 @@ public class ShopConfigurator {
 			Operation o = new Operation();
 
 			// TODO: od.getName()
-			o.setMachine(shop.machines[indexOf(od.getWorkstation(), shopDef.getWorkstations())]);
+			o.setMachine(shop.machines().getComponent(indexOf(od.getWorkstation(), shopDef.getWorkstations())));
 			o.setProcTime(od.getProcTime());
 			// TODO: od.procTimeReal
 

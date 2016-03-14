@@ -22,13 +22,6 @@ package jasima.core.experiment;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import jasima.core.experiment.OCBAExperiment.ProblemType;
-import jasima.core.statistics.SummaryStat;
-import jasima.core.util.ExcelSaver;
-import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
-import jasima.shopSim.prioRules.basic.SPT;
-import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
-import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -37,12 +30,17 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import jasima.core.experiment.OCBAExperiment.ProblemType;
+import jasima.core.statistics.SummaryStat;
+import jasima.core.util.ExcelSaver;
+import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
+import jasima.shopSim.prioRules.basic.SPT;
+import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
+import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 import util.ExtendedJobStatCollector;
 
 /**
  * Basic tests for the {@link OCBAExperiment} class.
- * 
- * @version $Id$
  */
 @SuppressWarnings("deprecation")
 public class OCBATest {
@@ -63,10 +61,8 @@ public class OCBATest {
 		ocbaExperiment.setBaseExperiment(he);
 
 		// define configurations to test
-		ocbaExperiment.addFactor("sequencingRule",
-				new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
-		ocbaExperiment.addFactor("sequencingRule", new PTPlusWINQPlusNPT()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		ocbaExperiment.addFactor("sequencingRule", new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		ocbaExperiment.addFactor("sequencingRule", new PTPlusWINQPlusNPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
 		// define objective function
 		ocbaExperiment.setObjective("flowMean");
@@ -78,7 +74,7 @@ public class OCBATest {
 		ocbaExperiment.setPcsLevel(0.95);
 
 		// optionally produce an Excel file with results and details
-		ocbaExperiment.addNotifierListener(new ExcelSaver());
+		new ExcelSaver().register(ocbaExperiment.notifierService());
 
 		// run
 		ocbaExperiment.runExperiment();
@@ -143,8 +139,8 @@ public class OCBATest {
 		double[] means = new double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
 		ProblemType type = ProblemType.MAXIMIZE;
 
-		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type,
-				new int[] { 0, 0, 0, 80, 652, 268 }, 553.53, 0.602976739490846);
+		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type, new int[] { 0, 0, 0, 80, 652, 268 }, 553.53,
+				0.602976739490846);
 	}
 
 	@Test
@@ -155,27 +151,24 @@ public class OCBATest {
 		double[] means = new double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
 		ProblemType type = ProblemType.MINIMIZE;
 
-		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type,
-				new int[] { 880, 120, 0, 0, 0, 0 }, 375.595, 0.901348254380218);
+		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type, new int[] { 880, 120, 0, 0, 0, 0 }, 375.595,
+				0.901348254380218);
 	}
 
 	@Test
-	public void maximizationNoOverallBudgetShouldGiveSameResults()
-			throws Exception {
+	public void maximizationNoOverallBudgetShouldGiveSameResults() throws Exception {
 		int NUM_ITERS = 100;
 		int MAX_REPS = 0;
 		String OBJ = "mean";
 		double[] means = new double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
 		ProblemType type = ProblemType.MAXIMIZE;
 
-		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type,
-				new int[] { 0, 0, 0, 9, 75, 16 }, 36839.95, 0.9518640709807842);
+		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type, new int[] { 0, 0, 0, 9, 75, 16 }, 36839.95,
+				0.9518640709807842);
 	}
 
-	private void performManyOCBARunsAndCheck(int numIters, int maxReps,
-			String obs, double[] means, ProblemType type,
-			int[] selFreqExpected, double expsPerRunExpected,
-			double avgPCSExpected) {
+	private void performManyOCBARunsAndCheck(int numIters, int maxReps, String obs, double[] means, ProblemType type,
+			int[] selFreqExpected, double expsPerRunExpected, double avgPCSExpected) {
 		int[] ocbaResults = new int[means.length];
 
 		SummaryStat evals = new SummaryStat();
@@ -186,8 +179,7 @@ public class OCBATest {
 		for (int n = 0; n < numIters; n++) {
 			long seed = rnd.nextLong();
 
-			Map<String, Object> res = performSingleOCBARun(maxReps, obs, means,
-					type, seed);
+			Map<String, Object> res = performSingleOCBARun(maxReps, obs, means, type, seed);
 
 			TextExp best = (TextExp) res.get("bestConfiguration");
 			int bestIdx = indexOf(best.mean, means);
@@ -197,20 +189,18 @@ public class OCBATest {
 			ocbaResults[bestIdx]++;
 		}
 
-		System.out.println("freq. selected as best:\t"
-				+ Arrays.toString(ocbaResults));
-		System.out.println("experiments executed:\t" + evals.mean() + "\t"
-				+ evals.min() + "\t" + evals.max() + "\t" + evals.stdDev());
-		System.out.println("PCS at end:\t" + pcs.mean() + "\t" + pcs.min()
-				+ "\t" + pcs.max() + "\t" + pcs.stdDev());
+		System.out.println("freq. selected as best:\t" + Arrays.toString(ocbaResults));
+		System.out.println("experiments executed:\t" + evals.mean() + "\t" + evals.min() + "\t" + evals.max() + "\t"
+				+ evals.stdDev());
+		System.out.println("PCS at end:\t" + pcs.mean() + "\t" + pcs.min() + "\t" + pcs.max() + "\t" + pcs.stdDev());
 
 		assertArrayEquals("selection frequency", selFreqExpected, ocbaResults);
 		assertEquals("avgEvaluations", expsPerRunExpected, evals.mean(), 0.01);
 		assertEquals("avgPCS", avgPCSExpected, pcs.mean(), 0.0001);
 	}
 
-	private Map<String, Object> performSingleOCBARun(int maxReps, String obj,
-			double[] means, ProblemType type, long seed) {
+	private Map<String, Object> performSingleOCBARun(int maxReps, String obj, double[] means, ProblemType type,
+			long seed) {
 		OCBAExperiment exp = new OCBAExperiment();
 		exp.setPcsLevel(0.95);
 		exp.setBaseExperiment(new TextExp());

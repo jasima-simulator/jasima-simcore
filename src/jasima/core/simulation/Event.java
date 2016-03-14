@@ -21,6 +21,7 @@
 package jasima.core.simulation;
 
 import jasima.core.simulation.Simulation.EventQueue;
+import jasima.core.simulation.Simulation.SimMethod;
 
 /**
  * Abstract base class for all simulation events. Events are sequenced by an

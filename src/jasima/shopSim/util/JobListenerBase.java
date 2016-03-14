@@ -26,7 +26,9 @@ import static jasima.shopSim.core.Job.JOB_FINISHED;
 import static jasima.shopSim.core.Job.JOB_RELEASED;
 import static jasima.shopSim.core.Job.JOB_REMOVED_FROM_QUEUE;
 import static jasima.shopSim.core.Job.JOB_START_OPERATION;
-import jasima.core.util.observer.NotifierListener;
+
+import jasima.core.util.observer.NotifierService;
+import jasima.core.util.observer.Subscriber;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Job.JobEvent;
 import jasima.shopSim.core.JobShop;
@@ -36,19 +38,24 @@ import jasima.shopSim.core.WorkStation;
  * This class can be used as a base class for classes collecting results based
  * on job releases/job completions.
  * 
- * @author Torsten Hildebrandt, 2013-06-28
- * @version 
- *          "$Id$"
+ * @author Torsten Hildebrandt
  */
-public abstract class JobListenerBase implements Cloneable,
-		NotifierListener<Job, JobEvent> {
+public abstract class JobListenerBase implements Subscriber, Cloneable {
 
 	public JobListenerBase() {
 		super();
 	}
 
 	@Override
-	public final void update(Job j, JobEvent event) {
+	public void register(NotifierService ns) {
+		ns.addSubscription(JobEvent.class, this);
+	}
+
+	@Override
+	public final void inform(Object o, Object e) {
+		Job j = (Job) o;
+		JobEvent event = (JobEvent) e;
+
 		final JobShop shop = j.getShop();
 		if (event == JOB_RELEASED) {
 			released(shop, j);
@@ -60,8 +67,7 @@ public abstract class JobListenerBase implements Cloneable,
 			removedFromQueue(shop, j);
 		} else if (event == JOB_START_OPERATION) {
 			WorkStation m = j.getCurrMachine();
-			operationStarted(shop, j, m.oldSetupState, m.newSetupState,
-					m.setupTime);
+			operationStarted(shop, j, m.oldSetupState, m.newSetupState, m.setupTime);
 		} else if (event == JOB_END_OPERATION) {
 			endOperation(shop, j);
 		} else {
@@ -75,8 +81,7 @@ public abstract class JobListenerBase implements Cloneable,
 	protected void endOperation(JobShop shop, Job j) {
 	}
 
-	protected void operationStarted(JobShop shop, Job j, int oldSetupState,
-			int newSetupState, double setupTime) {
+	protected void operationStarted(JobShop shop, Job j, int oldSetupState, int newSetupState, double setupTime) {
 	}
 
 	protected void removedFromQueue(JobShop shop, Job j) {

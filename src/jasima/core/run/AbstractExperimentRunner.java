@@ -22,6 +22,17 @@ package jasima.core.run;
 
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
@@ -34,18 +45,7 @@ import jasima.core.util.Pair;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.XmlSaver;
-import jasima.core.util.observer.NotifierListener;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import jasima.core.util.observer.Subscriber;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.util.KeyValuePair;
@@ -58,12 +58,10 @@ import joptsimple.util.KeyValuePair;
  * 
  * @author Robin Kreis
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public abstract class AbstractExperimentRunner {
 
-	protected Map<Object, NotifierListener<Experiment, ExperimentEvent>> listeners;
+	protected Map<Object, Subscriber> listeners;
 	protected boolean hideResults = false;
 	protected String experimentFileName = null;
 	protected String[] packageSearchPath = Util.DEF_CLASS_SEARCH_PATH;
@@ -71,36 +69,28 @@ public abstract class AbstractExperimentRunner {
 
 	public AbstractExperimentRunner() {
 		super();
-		listeners = new HashMap<Object, NotifierListener<Experiment, ExperimentEvent>>();
-		listeners.put(ConsolePrinter.class, new ConsolePrinter(
-				ExpMsgCategory.INFO));
+		listeners = new HashMap<>();
+		listeners.put(ConsolePrinter.class, new ConsolePrinter(ExpMsgCategory.INFO));
 		manualProps = new ArrayList<>();
 	}
 
 	protected void createGenericOptions(OptionParser p) {
-		p.acceptsAll(asList("h", "?", "help"), "Display this help text.")
-				.forHelp();
+		p.acceptsAll(asList("h", "?", "help"), "Display this help text.").forHelp();
 
 		ExpMsgCategory[] values = ExpMsgCategory.values();
 		String logLevels = Arrays.toString(values).replaceAll("[\\[\\]]", "");
-		p.acceptsAll(
-				asList("l", "log"),
-				String.format(Util.DEF_LOCALE,
-						"Set log level to one of %s. Default: INFO.", logLevels))
+		p.acceptsAll(asList("l", "log"),
+				String.format(Util.DEF_LOCALE, "Set log level to one of %s. Default: INFO.", logLevels))
 				.withRequiredArg().describedAs("level");
 
-		p.accepts("xmlres", "Save results in XML format.").withOptionalArg()
-				.describedAs("filename");
-		p.accepts("xlsres", "Save results in Excel format.").withOptionalArg()
-				.describedAs("filename");
+		p.accepts("xmlres", "Save results in XML format.").withOptionalArg().describedAs("filename");
+		p.accepts("xlsres", "Save results in Excel format.").withOptionalArg().describedAs("filename");
 
 		p.accepts("nores", "Does not print results to console.");
 
-		p.accepts("D", "Sets a property to a certain value.").withRequiredArg()
-				.describedAs("property=value");
+		p.accepts("D", "Sets a property to a certain value.").withRequiredArg().describedAs("property=value");
 
-		p.accepts("p", "Add an entry to the package search path.")
-				.withRequiredArg().describedAs("packageName");
+		p.accepts("p", "Add an entry to the package search path.").withRequiredArg().describedAs("packageName");
 	}
 
 	protected boolean createAdditionalOptions(OptionParser p) {
@@ -130,8 +120,7 @@ public abstract class AbstractExperimentRunner {
 		List<?> argList = new ArrayList<>(opts.nonOptionArguments());
 		handleRemainingArgs(argList);
 		if (argList.size() > 0) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"unrecognized command line parameters: %s",
+			throw new RuntimeException(String.format(Util.DEF_LOCALE, "unrecognized command line parameters: %s",
 					Arrays.toString(argList.toArray())));
 		}
 	}
@@ -146,8 +135,7 @@ public abstract class AbstractExperimentRunner {
 		if (opts.has("log")) {
 			String vs = (String) opts.valueOf("log");
 
-			ExpMsgCategory cat = Enum.valueOf(ExpMsgCategory.class,
-					vs.toUpperCase(Locale.US));
+			ExpMsgCategory cat = Enum.valueOf(ExpMsgCategory.class, vs.toUpperCase(Locale.US));
 			if (cat == ExpMsgCategory.OFF) {
 				listeners.remove(ConsolePrinter.class);
 			} else {
@@ -188,13 +176,11 @@ public abstract class AbstractExperimentRunner {
 		}
 
 		for (Object o : opts.valuesOf("p")) {
-			packageSearchPath = Util.addToArray(packageSearchPath,
-					String.class, (String) o);
+			packageSearchPath = Util.addToArray(packageSearchPath, String.class, (String) o);
 		}
 	}
 
-	protected void printErrorAndExit(int exitCode, String format,
-			Object... args) {
+	protected void printErrorAndExit(int exitCode, String format, Object... args) {
 		System.err.printf(format, args);
 		System.exit(exitCode);
 	}
@@ -236,8 +222,7 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	protected String getHelpFooterText() {
-		return lineSeparator()
-				+ "All parameter names are CASE-SENSITIVE. For detailed information see "
+		return lineSeparator() + "All parameter names are CASE-SENSITIVE. For detailed information see "
 				+ lineSeparator() + "http://jasima.googlecode.com.";
 	}
 
@@ -252,21 +237,19 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	public void run() {
-		System.out
-				.println("**********************************************************************");
+		System.out.println("**********************************************************************");
 		System.out.println(Util.ID_STRING);
 		System.out.println();
 		System.out.println(Util.getJavaEnvString());
 		System.out.println(Util.getOSEnvString());
-		System.out
-				.println("**********************************************************************");
+		System.out.println("**********************************************************************");
 		System.out.println();
 		try {
 			Experiment exp = configureExperiment();
 			doRun(exp);
 		} catch (Throwable t) {
-			printErrorAndExit(10, "%s: %s (%s)", getResultFileNameHint(),
-					t.getLocalizedMessage(), Util.exceptionToString(t));
+			printErrorAndExit(10, "%s: %s (%s)", getResultFileNameHint(), t.getLocalizedMessage(),
+					Util.exceptionToString(t));
 		}
 	}
 
@@ -275,14 +258,12 @@ public abstract class AbstractExperimentRunner {
 		Experiment exp = createExperiment();
 		String resultFileNameHint = getResultFileNameHint();
 
-		for (NotifierListener<Experiment, ExperimentEvent> lstnr : listeners
-				.values()) {
-			if (resultFileNameHint != null
-					&& lstnr instanceof AbstractResultSaver) {
-				((AbstractResultSaver) lstnr)
-						.setFileNameHint(resultFileNameHint);
+		for (Subscriber lstnr : listeners.values()) {
+			if (resultFileNameHint != null && lstnr instanceof AbstractResultSaver) {
+				((AbstractResultSaver) lstnr).setFileNameHint(resultFileNameHint);
 			}
-			exp.addNotifierListener(lstnr);
+
+			exp.notifierService().addSubscription(ExperimentEvent.class, lstnr);
 		}
 
 		exp = setPropsFromCmdLine(exp);
@@ -291,8 +272,7 @@ public abstract class AbstractExperimentRunner {
 
 	protected void doRun(Experiment exp) {
 		try {
-			ExperimentFuture ef = ExperimentExecutor.getExecutor()
-					.runExperiment(exp, null);
+			ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(exp, null);
 			Map<String, Object> res = ef.get();
 
 			String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
@@ -341,8 +321,7 @@ public abstract class AbstractExperimentRunner {
 			String name = p.a;
 			Object value = p.b;
 
-			TypeUtil.setPropertyValue(exp, name, value, getClass()
-					.getClassLoader(), packageSearchPath);
+			TypeUtil.setPropertyValue(exp, name, value, getClass().getClassLoader(), packageSearchPath);
 		}
 
 		return exp;

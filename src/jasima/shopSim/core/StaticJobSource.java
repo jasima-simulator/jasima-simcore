@@ -25,8 +25,6 @@ package jasima.shopSim.core;
  * {@link JobSpec}).
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public class StaticJobSource extends JobSource {
 
@@ -37,13 +35,11 @@ public class StaticJobSource extends JobSource {
 		public final double weight;
 		public final String name;
 
-		public JobSpec(int routeNum, double releaseDate, double dueDate,
-				double weight) {
+		public JobSpec(int routeNum, double releaseDate, double dueDate, double weight) {
 			this(routeNum, releaseDate, dueDate, weight, null);
 		}
 
-		public JobSpec(int routeNum, double releaseDate, double dueDate,
-				double weight, String name) {
+		public JobSpec(int routeNum, double releaseDate, double dueDate, double weight, String name) {
 			super();
 			this.routeNum = routeNum;
 			this.releaseDate = releaseDate;

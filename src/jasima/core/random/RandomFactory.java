@@ -20,14 +20,15 @@
  *******************************************************************************/
 package jasima.core.random;
 
-import jasima.core.random.continuous.DblStream;
-import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimMsgCategory;
-import jasima.core.util.MersenneTwister;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Random;
+
+import jasima.core.experiment.Experiment;
+import jasima.core.random.continuous.DblStream;
+import jasima.core.simulation.Simulation;
+import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
+import jasima.core.util.MersenneTwister;
 
 /**
  * <p>
@@ -47,34 +48,28 @@ import java.util.Random;
  * </ol>
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public class RandomFactory implements Serializable {
 	private static final long serialVersionUID = 4828925858942593527L;
 
-	public static final String RANDOM_FACTORY_PROP_KEY = RandomFactory.class
-			.getName();
+	public static final String RANDOM_FACTORY_PROP_KEY = RandomFactory.class.getName();
 	public static final String DEFAULT_FACTORY = RandomFactory.class.getName();
 
-	public static RandomFactory newInstance(Simulation s) {
-		String factName = System.getProperty(RANDOM_FACTORY_PROP_KEY,
-				DEFAULT_FACTORY);
+	public static RandomFactory newInstance() {
+		String factName = System.getProperty(RANDOM_FACTORY_PROP_KEY, DEFAULT_FACTORY);
 
 		try {
 			Class<?> factClass = Class.forName(factName);
 			RandomFactory o = (RandomFactory) factClass.newInstance();
-			o.setSim(s);
+			o.setSeed(Experiment.DEFAULT_SEED);
 			return o;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static final String RANDOM_CLASS_PROP_KEY = RandomFactory.class
-			.getName() + ".randomClass";
-	public static final String DEFAULT_RANDOM_CLASS = MersenneTwister.class
-			.getName();
+	public static final String RANDOM_CLASS_PROP_KEY = RandomFactory.class.getName() + ".randomClass";
+	public static final String DEFAULT_RANDOM_CLASS = MersenneTwister.class.getName();
 
 	private HashMap<Long, String> seeds = new HashMap<Long, String>();
 	private Random seedStream = new Random();
@@ -90,8 +85,7 @@ public class RandomFactory implements Serializable {
 		super();
 
 		// which Random implementation to use?
-		String rndClassName = System.getProperty(RANDOM_CLASS_PROP_KEY,
-				DEFAULT_RANDOM_CLASS);
+		String rndClassName = System.getProperty(RANDOM_CLASS_PROP_KEY, DEFAULT_RANDOM_CLASS);
 		try {
 			randomClass = Class.forName(rndClassName);
 		} catch (ClassNotFoundException e) {
@@ -102,9 +96,7 @@ public class RandomFactory implements Serializable {
 	public Random createInstance(final String name) {
 		long seed = getSeed(name);
 		if (getSim() != null)
-			getSim().print(SimMsgCategory.DEBUG,
-					"created random stream '%s' with initial seed %d.", name,
-					seed);
+			getSim().print(MsgCategory.DEBUG, "created random stream '%s' with initial seed %d.", name, seed);
 		return createRandom(seed);
 	}
 
@@ -134,12 +126,10 @@ public class RandomFactory implements Serializable {
 		String s;
 		while ((s = seeds.get(seed)) != null) {
 			if (s.equals(name))
-				throw new IllegalArgumentException("Already created stream '"
-						+ name + "', please use unique names.");
+				throw new IllegalArgumentException("Already created stream '" + name + "', please use unique names.");
 
 			if (getSim() != null)
-				getSim().print(
-						SimMsgCategory.WARN,
+				getSim().print(MsgCategory.WARN,
 						"Collision for random streams named '%s' and '%s'. If possible use different stream names to avoid problems with comparability/reproducability of results.",
 						name, s);
 
@@ -187,8 +177,7 @@ public class RandomFactory implements Serializable {
 	/**
 	 * Initializes the random number generator of a DblStream if it is not
 	 * already set using the streams name. This method is the same as
-	 * {@link #initRndGen(DblStream, String)}, just without a default
-	 * name.
+	 * {@link #initRndGen(DblStream, String)}, just without a default name.
 	 * 
 	 * @param stream
 	 *            The {@link DblStream} to configure.
@@ -202,7 +191,10 @@ public class RandomFactory implements Serializable {
 		return sim;
 	}
 
-	protected void setSim(Simulation sim) {
+	/**
+	 * Sets the simulation this random factory is currently used with.
+	 */
+	public void setSim(Simulation sim) {
 		this.sim = sim;
 	}
 }

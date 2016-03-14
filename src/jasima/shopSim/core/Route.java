@@ -31,8 +31,6 @@ import java.util.Set;
 
 /**
  * Simple container for Operations.
- * 
- * @version "$Id$"
  */
 public class Route implements ValueStore {
 

@@ -20,10 +20,6 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.experiment.Experiment;
-import jasima.core.experiment.Experiment.ExpMsgCategory;
-import jasima.core.statistics.SummaryStat;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -41,6 +37,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import jasima.core.experiment.Experiment;
+import jasima.core.experiment.Experiment.ExpMsgCategory;
+import jasima.core.statistics.SummaryStat;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.write.Label;
@@ -69,8 +68,6 @@ import jxl.write.WritableWorkbook;
  * Data can be transposed when stored, i.e., rows and columns swapped.
  * 
  * @author Torsten Hildebrandt, 2009-08-27
- * @version 
- *          "$Id$"
  */
 public class ExcelSaver extends ResultSaver {
 
@@ -85,13 +82,10 @@ public class ExcelSaver extends ResultSaver {
 	private static final String SHEET_NAME_COUNT = "sub-exp. count";
 	// private static final String SHEET_NAME_SUM = "sub-exp. sum";
 
-	private static final String[] SUB_RES_SHEETS = { SHEET_NAME_MEAN,
-			SHEET_NAME_MIN, SHEET_NAME_MAX, SHEET_NAME_SD, SHEET_NAME_COUNT /*
-																			 * ,
-																			 * SHEET_NAME_SUM
-																			 */};
-
-	private static final long serialVersionUID = 342144249972918192L;
+	private static final String[] SUB_RES_SHEETS = { SHEET_NAME_MEAN, SHEET_NAME_MIN, SHEET_NAME_MAX, SHEET_NAME_SD,
+			SHEET_NAME_COUNT /*
+								 * , SHEET_NAME_SUM
+								 */ };
 
 	/**
 	 * This main method can be used to manually convert a {@code .jasResBin}
@@ -102,8 +96,7 @@ public class ExcelSaver extends ResultSaver {
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			System.err.println("usage: " + ExcelSaver.class.getName()
-					+ " <file1ToConvert> [<file2ToConvert> ...]");
+			System.err.println("usage: " + ExcelSaver.class.getName() + " <file1ToConvert> [<file2ToConvert> ...]");
 			return;
 		}
 
@@ -111,12 +104,10 @@ public class ExcelSaver extends ResultSaver {
 			File in = new File(a);
 			File out = new File(a + XLS_EXTENSION);
 
-			System.out.println("reading '" + in.toString() + "', writing to '"
-					+ out.toString() + "'...");
+			System.out.println("reading '" + in.toString() + "', writing to '" + out.toString() + "'...");
 
 			if (out.exists()) {
-				System.out.println("  skipping '" + out
-						+ "', file already exists.");
+				System.out.println("  skipping '" + out + "', file already exists.");
 			} else {
 				try {
 					ExcelSaver es = new ExcelSaver();
@@ -130,8 +121,7 @@ public class ExcelSaver extends ResultSaver {
 	}
 
 	public void convertFile(File in, File out) throws IOException {
-		ObjectInputStream is = new ObjectInputStream(new BufferedInputStream(
-				new FileInputStream(in)));
+		ObjectInputStream is = new ObjectInputStream(new BufferedInputStream(new FileInputStream(in)));
 		OutputStream os = null;
 		try {
 			// recover column names by reading file once
@@ -140,8 +130,7 @@ public class ExcelSaver extends ResultSaver {
 			is = null;
 
 			// now read a second time and produce Excel file
-			is = new ObjectInputStream(new BufferedInputStream(
-					new FileInputStream(in)));
+			is = new ObjectInputStream(new BufferedInputStream(new FileInputStream(in)));
 			os = new BufferedOutputStream(new FileOutputStream(out));
 			convertToExcelFile(is, os);
 		} finally {
@@ -181,8 +170,7 @@ public class ExcelSaver extends ResultSaver {
 	public ExcelSaver() {
 		super();
 
-		WritableFont arial10ptBold = new WritableFont(WritableFont.ARIAL, 10,
-				WritableFont.BOLD);
+		WritableFont arial10ptBold = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
 		headerCellFormat = new WritableCellFormat(arial10ptBold);
 
 		defFormat = new WritableCellFormat(NumberFormats.DEFAULT);
@@ -198,8 +186,7 @@ public class ExcelSaver extends ResultSaver {
 		File tmp = new File(getActualResultBaseName() + SER_EXTENSION);
 		File out = new File(getActualResultBaseName() + XLS_EXTENSION);
 
-		e.print(ExpMsgCategory.INFO, "writing results to Excel file '%s'...",
-				out.getName());
+		e.print(ExpMsgCategory.INFO, "writing results to Excel file '%s'...", out.getName());
 
 		try {
 			convertFile(tmp, out);
@@ -276,8 +263,7 @@ public class ExcelSaver extends ResultSaver {
 	}
 
 	private void writeMainExpHeader() throws Exception {
-		ArrayList<ColumnData> sortedColumns = new ArrayList<ColumnData>(
-				mainExpColumns);
+		ArrayList<ColumnData> sortedColumns = new ArrayList<ColumnData>(mainExpColumns);
 		Collections.sort(sortedColumns, new Comparator<ColumnData>() {
 
 			@Override
@@ -378,8 +364,7 @@ public class ExcelSaver extends ResultSaver {
 						if (isSubExp) {
 							ColumnData col = columns.get(cd.colIdx);
 							if (col.isParamColumn) {
-								Set<Object> values = (Set<Object>) paramValues
-										.get(col.name);
+								Set<Object> values = (Set<Object>) paramValues.get(col.name);
 								if (values == null) {
 									values = new LinkedHashSet<Object>();
 									paramValues.put(col.name, values);
@@ -415,8 +400,7 @@ public class ExcelSaver extends ResultSaver {
 			}
 		});
 
-		addHeaderCell(SHEET_NAME_OVERVIEW, 0, 0,
-				"parameters used (constant parameters are not shown on other sheets)");
+		addHeaderCell(SHEET_NAME_OVERVIEW, 0, 0, "parameters used (constant parameters are not shown on other sheets)");
 
 		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 0, "name");
 		addHeaderCell(SHEET_NAME_OVERVIEW, 2, 1, "distinct values");
@@ -442,10 +426,8 @@ public class ExcelSaver extends ResultSaver {
 				int j = 2;
 				int num = 0;
 				for (Object v : values) {
-					if (getMaxParamValues() > 0
-							&& ++num == getMaxParamValues() + 1) {
-						String moreString = "... " + (values.size() - num + 1)
-								+ " more ...";
+					if (getMaxParamValues() > 0 && ++num == getMaxParamValues() + 1) {
+						String moreString = "... " + (values.size() - num + 1) + " more ...";
 						addCell(SHEET_NAME_OVERVIEW, i + 3, j++, moreString);
 						break; // for v
 					}
@@ -501,25 +483,22 @@ public class ExcelSaver extends ResultSaver {
 		}
 	}
 
-	private void addHeaderCell(String sheetName, int row, int column,
-			String string) throws Exception {
+	private void addHeaderCell(String sheetName, int row, int column, String string) throws Exception {
 		addCell0(sheetName, row, column, string, headerCellFormat);
 	}
 
-	private void addCell(String sheetName, int row, int column, Object o)
-			throws Exception {
+	private void addCell(String sheetName, int row, int column, Object o) throws Exception {
 		addCell0(sheetName, row, column, o, defFormat);
 	}
 
-	private void addCellEachSheet(int row0, int col0, String value)
-			throws Exception {
+	private void addCellEachSheet(int row0, int col0, String value) throws Exception {
 		for (String sheet : SUB_RES_SHEETS) {
 			addHeaderCell(sheet, row0, col0, value);
 		}
 	}
 
-	private void addCell0(String sheetBaseName, int row0, int col0,
-			Object value, WritableCellFormat format) throws Exception {
+	private void addCell0(String sheetBaseName, int row0, int col0, Object value, WritableCellFormat format)
+			throws Exception {
 		int row = row0;
 		int col = col0;
 
@@ -551,8 +530,7 @@ public class ExcelSaver extends ResultSaver {
 
 		// add to Excel sheet
 		if (value instanceof java.lang.Number) {
-			valSheet.addCell(createCell4Number(col, row,
-					(java.lang.Number) value));
+			valSheet.addCell(createCell4Number(col, row, (java.lang.Number) value));
 		} else {
 			valSheet.addCell(new Label(col, row, (String) value, format));
 		}
@@ -607,8 +585,8 @@ public class ExcelSaver extends ResultSaver {
 		WritableCellFormat f = defFormat;
 		if (n.getClass() == Double.class || n.getClass() == Float.class) {
 			f = floatFormat;
-		} else if (n.getClass() == Integer.class || n.getClass() == Long.class
-				|| n.getClass() == Short.class || n.getClass() == Byte.class) {
+		} else if (n.getClass() == Integer.class || n.getClass() == Long.class || n.getClass() == Short.class
+				|| n.getClass() == Byte.class) {
 			f = intFormat;
 		}
 
@@ -670,8 +648,7 @@ public class ExcelSaver extends ResultSaver {
 	 */
 	public void setMaxParamValues(int maxParamValues) {
 		if (maxParamValues < 0)
-			throw new IllegalArgumentException(
-					"maxParamValues mustn't be negative. " + maxParamValues);
+			throw new IllegalArgumentException("maxParamValues mustn't be negative. " + maxParamValues);
 		this.maxParamValues = maxParamValues;
 	}
 
@@ -688,8 +665,7 @@ public class ExcelSaver extends ResultSaver {
 	 */
 	public void setMaxStringLength(int maxStringLength) {
 		if (maxStringLength < 0)
-			throw new IllegalArgumentException(
-					"maxStringLength mustn't be negative. " + maxStringLength);
+			throw new IllegalArgumentException("maxStringLength mustn't be negative. " + maxStringLength);
 		this.maxStringLength = maxStringLength;
 	}
 

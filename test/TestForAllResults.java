@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -18,15 +19,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+import java.io.File;
+import java.util.Map;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleReplicationExperiment;
 import jasima.core.random.RandomFactory;
-import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimEvent;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.FileFormat;
 import jasima.core.util.XmlUtil;
-import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.observer.Subscriber;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.BestOfFamilyBatching;
@@ -45,20 +50,11 @@ import jasima.shopSim.prioRules.weighted.WMOD;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.BatchStatCollector;
 import jasima.shopSim.util.MachineStatCollector;
-
-import java.io.File;
-import java.util.Map;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import util.ExtendedJobStatCollector;
 
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
  */
 @SuppressWarnings({ "unused", "deprecation" })
 public class TestForAllResults extends ExperimentTest {
@@ -67,8 +63,7 @@ public class TestForAllResults extends ExperimentTest {
 
 	@BeforeClass
 	public static void setUp() {
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactory.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	@Test
@@ -78,7 +73,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -101,12 +96,11 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setEnableLookAhead(true);
-		e.setSequencingRule(new AdaptiveLAThreshold(0.0)
-				.setFinalTieBreaker(new SPT()
-						.setFinalTieBreaker(new TieBreakerFASFS())));
+		e.setSequencingRule(
+				new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -130,12 +124,11 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setEnableLookAhead(true);
-		e.setSequencingRule(new AdaptiveLAThreshold(0.5)
-				.setFinalTieBreaker(new SPT()
-						.setFinalTieBreaker(new TieBreakerFASFS())));
+		e.setSequencingRule(
+				new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -151,8 +144,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.runExperiment();
 		e.printResults();
 
-		checkResults(e.getResults(), new File(
-				"testInstances/holthausResLA50.xml"));
+		checkResults(e.getResults(), new File("testInstances/holthausResLA50.xml"));
 	}
 
 	@Test
@@ -160,12 +152,11 @@ public class TestForAllResults extends ExperimentTest {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 		e.setInitialSeed(42);
 		e.setEnableLookAhead(true);
-		e.setSequencingRule(new AdaptiveLAThreshold(1.0)
-				.setFinalTieBreaker(new SPT()
-						.setFinalTieBreaker(new TieBreakerFASFS())));
+		e.setSequencingRule(
+				new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -180,8 +171,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.runExperiment();
 		e.printResults();
 
-		checkResults(e.getResults(), new File(
-				"testInstances/holthausResLA100.xml"));
+		checkResults(e.getResults(), new File("testInstances/holthausResLA100.xml"));
 	}
 
 	@Test
@@ -190,7 +180,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -202,15 +192,13 @@ public class TestForAllResults extends ExperimentTest {
 		batchStatCollector.setIgnoreFirst(500);
 		e.addShopListener(batchStatCollector);
 
-		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(
-				e, 7);
+		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(e, 7);
 		mre.addKeepResultName("tardMean");
 		mre.addKeepResultName("flowMean");
 		mre.runExperiment();
 		mre.printResults();
 
-		checkResults(mre.getResults(), new File(
-				"testInstances/holthausResMult.xml"));
+		checkResults(mre.getResults(), new File("testInstances/holthausResMult.xml"));
 	}
 
 	@Test
@@ -219,7 +207,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
-		NotifierListener<Simulation, SimEvent>[] l = e.getShopListener();
+		Subscriber[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -231,17 +219,14 @@ public class TestForAllResults extends ExperimentTest {
 		batchStatCollector.setIgnoreFirst(500);
 		e.addShopListener(batchStatCollector);
 
-		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(
-				e, 7);
+		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(e, 7);
 		mre.addKeepResultName("tardMean");
 		mre.addKeepResultName("flowMean");
 
 		FullFactorialExperiment ffe = new FullFactorialExperiment();
 		ffe.setBaseExperiment(mre);
-		ffe.addFactor("baseExperiment.sequencingRule",
-				new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
-		ffe.addFactor("baseExperiment.sequencingRule",
-				new FCFS().setFinalTieBreaker(new TieBreakerFASFS()));
+		ffe.addFactor("baseExperiment.sequencingRule", new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		ffe.addFactor("baseExperiment.sequencingRule", new FCFS().setFinalTieBreaker(new TieBreakerFASFS()));
 		ffe.addFactors("baseExperiment.utilLevel", 0.8, 0.9);
 		ffe.addKeepResultName("tardMean");
 		ffe.addKeepResultName("flowMean");
@@ -249,8 +234,7 @@ public class TestForAllResults extends ExperimentTest {
 		ffe.runExperiment();
 		ffe.printResults();
 
-		checkResults(ffe.getResults(), new File(
-				"testInstances/holthausResMultFFE.xml"));
+		checkResults(ffe.getResults(), new File("testInstances/holthausResMultFFE.xml"));
 	}
 
 	@Test
@@ -258,40 +242,31 @@ public class TestForAllResults extends ExperimentTest {
 		PR pr = new WMOD().setFinalTieBreaker(new TieBreakerFASFS());
 		BatchForming batchForming = new BestOfFamilyBatching();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"),
-				false);
+				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"), false);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleBestOfFamilyBatchingLAThreshold0() {
-		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD())
-				.setFinalTieBreaker(new TieBreakerFASFS());
+		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD()).setFinalTieBreaker(new TieBreakerFASFS());
 		BatchForming batchForming = new BestOfFamilyBatching();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"),
-				true);
+				new File("testInstances/mimac4rResBestOfFamilyBatching.xml"), true);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleBestOfFamilyBatchingLAThreshold50() {
-		PR pr = new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		PR pr = new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
 		BatchForming batchForming = new BestOfFamilyBatching();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResBestOfFamilyBatching50.xml"),
-				true);
+				new File("testInstances/mimac4rResBestOfFamilyBatching50.xml"), true);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleBestOfFamilyBatchingLAThreshold100() {
-		PR pr = new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		PR pr = new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
 		BatchForming batchForming = new BestOfFamilyBatching();
-		Map<String, Object> res = runMimac4rAndCheck(
-				pr,
-				batchForming,
-				new File("testInstances/mimac4rResBestOfFamilyBatching100.xml"),
-				true);
+		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
+				new File("testInstances/mimac4rResBestOfFamilyBatching100.xml"), true);
 	}
 
 	@Test
@@ -299,14 +274,12 @@ public class TestForAllResults extends ExperimentTest {
 		PR pr = new WMOD().setFinalTieBreaker(new TieBreakerFASFS());
 		BatchForming batchForming = new MostCompleteBatch();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResMostCompleteBatch.xml"),
-				false);
+				new File("testInstances/mimac4rResMostCompleteBatch.xml"), false);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleMostCompleteBatchLAThreshold0() {
-		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
 		BatchForming batchForming = new MostCompleteBatch();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
 				new File("testInstances/mimac4rResMostCompleteBatch.xml"), true);
@@ -314,69 +287,50 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleMostCompleteBatchLAThreshold50() {
-		PR pr = new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		PR pr = new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
 		BatchForming batchForming = new MostCompleteBatch();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResMostCompleteBatch50.xml"),
-				true);
+				new File("testInstances/mimac4rResMostCompleteBatch50.xml"), true);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleMostCompleteBatchLAThreshold100() {
-		PR pr = new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		PR pr = new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
 		BatchForming batchForming = new MostCompleteBatch();
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResMostCompleteBatch100.xml"),
-				true);
+				new File("testInstances/mimac4rResMostCompleteBatch100.xml"), true);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleHighestJobBatchingMBS() {
 		PR pr = new WMOD().setFinalTieBreaker(new TieBreakerFASFS());
-		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(
-				5.0 / 8.0);
+		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(5.0 / 8.0);
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResHighestJobBatchingMBS.xml"),
-				false);
+				new File("testInstances/mimac4rResHighestJobBatchingMBS.xml"), false);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleHighestJobBatchingMBSLAThreshold0() {
-		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
-		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(
-				5.0 / 8.0);
+		PR pr = new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
+		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(5.0 / 8.0);
 		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
-				new File("testInstances/mimac4rResHighestJobBatchingMBS.xml"),
-				true);
+				new File("testInstances/mimac4rResHighestJobBatchingMBS.xml"), true);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleHighestJobBatchingMBSLAThreshold50() {
-		PR pr = new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
-		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(
-				5.0 / 8.0);
-		Map<String, Object> res = runMimac4rAndCheck(
-				pr,
-				batchForming,
-				new File("testInstances/mimac4rResHighestJobBatchingMBS50.xml"),
-				true);
+		PR pr = new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
+		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(5.0 / 8.0);
+		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
+				new File("testInstances/mimac4rResHighestJobBatchingMBS50.xml"), true);
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleHighestJobBatchingMBSLAThreshold100() {
-		PR pr = new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new WMOD()
-				.setFinalTieBreaker(new TieBreakerFASFS()));
-		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(
-				5.0 / 8.0);
-		Map<String, Object> res = runMimac4rAndCheck(
-				pr,
-				batchForming,
-				new File("testInstances/mimac4rResHighestJobBatchingMBS100.xml"),
-				true);
+		PR pr = new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new WMOD().setFinalTieBreaker(new TieBreakerFASFS()));
+		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(5.0 / 8.0);
+		Map<String, Object> res = runMimac4rAndCheck(pr, batchForming,
+				new File("testInstances/mimac4rResHighestJobBatchingMBS100.xml"), true);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -393,8 +347,7 @@ public class TestForAllResults extends ExperimentTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> runMimac4rAndCheck(PR pr,
-			BatchForming batchForming, File f, boolean lookAhead) {
+	private Map<String, Object> runMimac4rAndCheck(PR pr, BatchForming batchForming, File f, boolean lookAhead) {
 		MimacExperiment e = createMIMAC4r(pr, batchForming);
 		e.setEnableLookAhead(lookAhead);
 		e.runExperiment();
@@ -429,10 +382,8 @@ public class TestForAllResults extends ExperimentTest {
 
 	@Test
 	public void mimac4r_MRE_FFE_ShouldBeReproducible() {
-		PR pr1 = new SetupAvoidance().setFinalTieBreaker(new WMOD())
-				.setFinalTieBreaker(new TieBreakerFASFS());
-		PR pr2 = new SetupAvoidance().setFinalTieBreaker(new FCFS())
-				.setFinalTieBreaker(new TieBreakerFASFS());
+		PR pr1 = new SetupAvoidance().setFinalTieBreaker(new WMOD()).setFinalTieBreaker(new TieBreakerFASFS());
+		PR pr2 = new SetupAvoidance().setFinalTieBreaker(new FCFS()).setFinalTieBreaker(new TieBreakerFASFS());
 
 		BatchForming batchForming = new HighestJobBatchingMBS(5.0 / 8.0);
 		BatchForming batchForming2 = new MostCompleteBatch();
@@ -445,22 +396,19 @@ public class TestForAllResults extends ExperimentTest {
 		e.addMachineListener(new MachineStatCollector());
 		e.addShopListener(new FlowtimePerProductCollector());
 
-		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(
-				e, 7);
+		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(e, 7);
 		mre.setBaseExperiment(e);
 		mre.addKeepResultName("tardMean");
 
 		FullFactorialExperiment ffe = new FullFactorialExperiment();
 		ffe.setBaseExperiment(mre);
 		ffe.addFactors("baseExperiment.sequencingRule", pr1, pr2);
-		ffe.addFactors("baseExperiment.batchForming", batchForming,
-				batchForming2);
+		ffe.addFactors("baseExperiment.batchForming", batchForming, batchForming2);
 		ffe.addKeepResultName("tardMean");
 
 		ffe.runExperiment();
 		ffe.printResults();
 
-		checkResults(ffe.getResults(), new File(
-				"testInstances/mimac4r_MRE_FFE.xml"));
+		checkResults(ffe.getResults(), new File("testInstances/mimac4r_MRE_FFE.xml"));
 	}
 }

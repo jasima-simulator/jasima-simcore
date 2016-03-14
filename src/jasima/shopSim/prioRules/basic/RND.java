@@ -20,18 +20,17 @@
  *******************************************************************************/
 package jasima.shopSim.prioRules.basic;
 
+import java.util.Random;
+
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
-
-import java.util.Random;
 
 /**
  * Implements the random rule, i.e., each waiting job has an equal chance of
  * being selected.
  * 
- * @author Torsten Hildebrandt, 2012-03-08
- * @version $Id$
+ * @author Torsten Hildebrandt
  */
 public class RND extends PR {
 
@@ -52,11 +51,8 @@ public class RND extends PR {
 		super.beforeCalc(q);
 
 		if (rnd == null) {
-			rnd = getOwner()
-					.shop()
-					.getRndStreamFactory()
-					.createInstance(
-							getOwner().toString() + "." + RND.class.getName());
+			rnd = getOwner().getSim().getRndStreamFactory()
+					.createInstance(getOwner().toString() + "." + RND.class.getName());
 
 			// modify seed
 			long seed = rnd.nextLong();

@@ -19,6 +19,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+import java.util.HashMap;
+import java.util.Random;
+
+import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
@@ -30,14 +34,9 @@ import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.util.MachineStatCollector;
 import jasima.shopSim.util.WorkStationListenerBase;
 
-import java.util.HashMap;
-import java.util.Random;
-
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: JSExample.java 112 2013-05-16 13:08:03Z THildebrandt@gmail.com
- *          $
  */
 public class JSExample extends JobShop {
 	final Random streamService = new Random(1234234535);
@@ -62,9 +61,12 @@ public class JSExample extends JobShop {
 	SummaryStat[] jobTypeDelay;
 
 	public static void main(String args[]) throws Exception {
-		JSExample js = new JSExample();
+		Simulation s = new Simulation();
 
-		js.setSimulationLength(LENGTH_SIM);
+		JSExample js = new JSExample();
+		s.setRootComponent(js);
+
+		s.setSimulationLength(LENGTH_SIM);
 
 		js.addMachine(new WorkStation(3));
 		js.addMachine(new WorkStation(2));
@@ -73,13 +75,13 @@ public class JSExample extends JobShop {
 		js.addMachine(new WorkStation(1));
 
 		// int route[][] = { { 2, 0, 1, 4 }, { 3, 0, 2 }, { 1, 4, 0, 3, 2 } };
-		js.route = new WorkStation[][] { { js.machines[2], js.machines[0], js.machines[1], js.machines[4] },
-				{ js.machines[3], js.machines[0], js.machines[2] },
-				{ js.machines[1], js.machines[4], js.machines[0], js.machines[3], js.machines[2] } };
+		WorkStation[] ws = js.getMachines();
+		js.route = new WorkStation[][] { { ws[2], ws[0], ws[1], ws[4] }, { ws[3], ws[0], ws[2] },
+				{ ws[1], ws[4], ws[0], ws[3], ws[2] } };
 
-		js.init();
-		js.run();
-		js.done();
+		s.init();
+		s.run();
+		s.done();
 		js.report();
 	} // End of main
 
@@ -131,6 +133,8 @@ public class JSExample extends JobShop {
 			}
 		});
 
+		setSim(getSim());
+
 		super.init();
 
 		jobTypeDelay = new SummaryStat[NUM_JOB_TYPES];
@@ -179,14 +183,15 @@ public class JSExample extends JobShop {
 
 		HashMap<String, Object> res = new HashMap<String, Object>();
 		produceResults(res);
-		for (int i = 0; i < machines.length; i++) {
-			WorkStation m = machines[i];
+		int i = 0;
+		for (WorkStation m : getMachines()) {
 			SummaryStat aniq = (SummaryStat) res.get(m.getName() + ".qLen");
 			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName() + ".util");
 			SummaryStat stationDelay = (SummaryStat) res.get(m.getName() + ".qWait");
 			addRecord(String.valueOf(i) + "        " + String.valueOf(aniq.mean()) + "        "
-					+ String.valueOf(aveMachinesBusy.mean() / machines[i].numInGroup()) + "        "
+					+ String.valueOf(aveMachinesBusy.mean() / m.numInGroup()) + "        "
 					+ String.valueOf(stationDelay.mean()));
+			i++;
 		}
 	}
 

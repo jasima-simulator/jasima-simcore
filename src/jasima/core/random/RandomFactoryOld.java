@@ -20,16 +20,14 @@
  *******************************************************************************/
 package jasima.core.random;
 
-import jasima.core.simulation.Simulation.SimMsgCategory;
-
 import java.util.Random;
+
+import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 
 /**
  * Use {@link RandomFactory} instead.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  * @deprecated Use {@link RandomFactory} instead.
  */
 @Deprecated
@@ -64,8 +62,7 @@ public class RandomFactoryOld extends RandomFactory {
 
 		if (res == 0) {
 			if (getSim() != null)
-				getSim().print(
-						SimMsgCategory.WARN,
+				getSim().print(MsgCategory.WARN,
 						"Collision for random stream name '%s', if possible use unique stream names to avoid problems with comparability/reproducability of results.",
 						name);
 			res = seedStream.nextLong();

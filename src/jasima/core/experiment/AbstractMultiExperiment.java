@@ -20,11 +20,6 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
-import jasima.core.expExecution.ExperimentExecutor;
-import jasima.core.expExecution.ExperimentFuture;
-import jasima.core.statistics.SummaryStat;
-import jasima.core.util.Pair;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,12 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import jasima.core.expExecution.ExperimentExecutor;
+import jasima.core.expExecution.ExperimentFuture;
+import jasima.core.statistics.SummaryStat;
+import jasima.core.util.Pair;
+
 /**
  * Parent class of an experiment which runs a number of child experiments.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
  */
 public abstract class AbstractMultiExperiment extends Experiment {
 
@@ -51,9 +49,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 */
 	public static class BaseExperimentCompleted extends ExperimentEvent {
 
-		public BaseExperimentCompleted(Experiment experimentRun,
-				Map<String, Object> results) {
-			super();
+		public BaseExperimentCompleted(Experiment experimentRun, Map<String, Object> results) {
+			super("BaseExperimentCompleted#");
 			this.experimentRun = experimentRun;
 			this.results = results;
 		}
@@ -117,8 +114,8 @@ public abstract class AbstractMultiExperiment extends Experiment {
 				// start execution and store process results in the same order
 				// as they are stored in tasks
 				int n = 0;
-				Collection<ExperimentFuture> allFutures = ExperimentExecutor
-						.getExecutor().runAllExperiments(experiments, this);
+				Collection<ExperimentFuture> allFutures = ExperimentExecutor.getExecutor()
+						.runAllExperiments(experiments, this);
 				Iterator<ExperimentFuture> it = allFutures.iterator();
 				while (it.hasNext()) {
 					ExperimentFuture f = it.next();
@@ -157,15 +154,13 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		}
 	}
 
-	private void getAndStoreResults(Experiment e, ExperimentFuture f)
-			throws InterruptedException {
+	private void getAndStoreResults(Experiment e, ExperimentFuture f) throws InterruptedException {
 		Map<String, Object> res = f.get();
 
 		numTasksExecuted++;
 		storeRunResults(e, res);
-		if (numListener() > 0) {
-			fire(new BaseExperimentCompleted(e, res));
-		}
+
+		notifierService().publish(this, new BaseExperimentCompleted(e, res));
 	}
 
 	protected void configureRunExperiment(Experiment e) {
@@ -201,12 +196,10 @@ public abstract class AbstractMultiExperiment extends Experiment {
 			Object val = r.get(key);
 
 			if (shouldKeepDetails(key))
-				detailedResultsOther.put(key + "." + prefix()
-						+ padNumTasks(getNumTasksExecuted()), r.get(key));
+				detailedResultsOther.put(key + "." + prefix() + padNumTasks(getNumTasksExecuted()), r.get(key));
 
 			if (isProduceAveragedResults()) {
-				if ((val != null)
-						&& ((val instanceof SummaryStat) || ((val instanceof Number))))
+				if ((val != null) && ((val instanceof SummaryStat) || ((val instanceof Number))))
 					handleNumericValue(key, val);
 				else
 					handleOtherValue(key, val);
@@ -299,16 +292,13 @@ public abstract class AbstractMultiExperiment extends Experiment {
 			wasSummaryStat = false;
 		} else
 			// should never occur
-			throw new AssertionError("Illegal experiment result type: "
-					+ val.getClass().getName());
+			throw new AssertionError("Illegal experiment result type: " + val.getClass().getName());
 
 		// get/create entry in "detailedResultsNumeric"
 		@SuppressWarnings("unchecked")
-		Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
-				.get(key);
+		Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric.get(key);
 		if (data == null) {
-			data = new Pair<Boolean, SummaryStat>(wasSummaryStat,
-					new SummaryStat());
+			data = new Pair<Boolean, SummaryStat>(wasSummaryStat, new SummaryStat());
 			detailedResultsNumeric.put(key, data);
 		}
 		SummaryStat repValues = data.b;
@@ -320,8 +310,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	}
 
 	protected boolean isSpecialKey(String key) {
-		return key.endsWith(RUNTIME) || key.endsWith(NUM_TASKS_EXECUTED)
-				|| key.endsWith(EXP_ABORTED);
+		return key.endsWith(RUNTIME) || key.endsWith(NUM_TASKS_EXECUTED) || key.endsWith(EXP_ABORTED);
 	}
 
 	@Override
@@ -330,8 +319,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 		for (String key : detailedResultsNumeric.keySet()) {
 			@SuppressWarnings("unchecked")
-			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
-					.get(key);
+			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric.get(key);
 			SummaryStat val = data.b;
 
 			if (isSpecialKey(key)) {
@@ -376,8 +364,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	public void addKeepResultName(String name) {
 		// temporarily convert to list
-		ArrayList<String> list = new ArrayList<String>(
-				Arrays.asList(keepResults));
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(keepResults));
 		list.add(name);
 		// convert back to array
 		keepResults = list.toArray(new String[list.size()]);
@@ -385,8 +372,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 
 	public boolean removeKeepResultName(String name) {
 		// temporarily convert to list
-		ArrayList<String> list = new ArrayList<String>(
-				Arrays.asList(keepResults));
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(keepResults));
 		boolean res = list.remove(name);
 		// convert back to array
 		keepResults = list.toArray(new String[list.size()]);
@@ -477,8 +463,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 *            Whether or not to abort execution of sub-experiments upon the
 	 *            first execution error.
 	 */
-	public void setAbortUponBaseExperimentAbort(
-			boolean abortUponBaseExperimentAbort) {
+	public void setAbortUponBaseExperimentAbort(boolean abortUponBaseExperimentAbort) {
 		this.abortUponBaseExperimentAbort = abortUponBaseExperimentAbort;
 	}
 
