@@ -96,6 +96,7 @@ public class TestDowntimes extends ExperimentTest {
 			@Override
 			protected void configureShop() {
 				super.configureShop();
+
 				for (WorkStation m : shop.getMachines()) {
 					for (IndividualMachine im : m.machDat()) {
 						DowntimeSource dt = new DowntimeSource(im);

@@ -20,6 +20,13 @@
  *******************************************************************************/
 package jasima.shopSim.models.mimac;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.commons.math3.distribution.ExponentialDistribution;
+
 import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
@@ -28,32 +35,21 @@ import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.util.TextFileReader;
 import jasima.shopSim.util.modelDef.ShopDef;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.commons.math3.distribution.ExponentialDistribution;
-
 /**
  * Implements simulations of the MIMAC Scenarios.
  * 
  * @author Torsten Hildebrandt, 2010-03-12
- * @version 
- *          "$Id$"
  */
 public class MimacExperiment extends JobShopExperiment {
 
 	private static final long serialVersionUID = -1460963355772995049L;
 
 	public static enum DataSet {
-		FAB4("fab4.txt",
-				new double[] { 1440d / 4.07999048, 1440d / 0.447999403 }), FAB4r(
-				"fab4r.txt", new double[] { 1440d / 4.07999048,
-						1440d / 0.447999403 }), FAB6("fab6.txt", new double[] {
-				1440d / 0.7875, 1440d / 0.258125, 1440d / 0.54641667,
-				1440d / 0.65891667, 1440d / 2.196375, 1440d / 1.39279167,
-				1440d / 0.58391667, 1440d / 0.50358333, 1440d / 0.68033333 });
+		FAB4("fab4.txt", new double[] { 1440d / 4.07999048, 1440d / 0.447999403 }), FAB4r("fab4r.txt",
+				new double[] { 1440d / 4.07999048, 1440d / 0.447999403 }), FAB6("fab6.txt",
+						new double[] { 1440d / 0.7875, 1440d / 0.258125, 1440d / 0.54641667, 1440d / 0.65891667,
+								1440d / 2.196375, 1440d / 1.39279167, 1440d / 0.58391667, 1440d / 0.50358333,
+								1440d / 0.68033333 });
 
 		public final String resourceName;
 		public final double[] defaultIats;
@@ -83,14 +79,12 @@ public class MimacExperiment extends JobShopExperiment {
 			String baseName = MimacExperiment.class.getName();
 			int index = baseName.lastIndexOf('.');
 			if (index != -1) {
-				name = baseName.substring(0, index).replace('.', '/') + "/"
-						+ name;
+				name = baseName.substring(0, index).replace('.', '/') + "/" + name;
 			}
 
 			InputStream inp = cl.getResourceAsStream(name);
 			if (inp == null)
-				throw new RuntimeException("Can't find input stream '" + name
-						+ "'.");
+				throw new RuntimeException("Can't find input stream '" + name + "'.");
 			BufferedReader in = new BufferedReader(new InputStreamReader(inp));
 			TextFileReader reader = new TextFileReader();
 			reader.readData(in);
@@ -113,17 +107,16 @@ public class MimacExperiment extends JobShopExperiment {
 	private boolean arrivalAtTimeZero = false;
 
 	@Override
-	protected void configureShop() {
+	protected void createShop() {
+		super.createShop();
+
 		// configure model from file
 		getScenario().getShopDef().getShopConfigurator().configureMdl(shop);
-
-		super.configureShop();
 
 		// create job sources
 		DblStream[] iats = getInterArrivalTimes();
 		if (iats != null && shop.routes.length != iats.length) {
-			throw new RuntimeException("Number of routes ("
-					+ shop.routes.length + ") and inter-arrival streams ("
+			throw new RuntimeException("Number of routes (" + shop.routes.length + ") and inter-arrival streams ("
 					+ iats.length + ") doesn't match.");
 		}
 
@@ -137,9 +130,8 @@ public class MimacExperiment extends JobShopExperiment {
 			if (iats != null && iats[i] != null) {
 				arrivals.setInterArrivalTimes(iats[i]);
 			} else {
-				arrivals.setInterArrivalTimes(new DblDistribution(
-						new ExponentialDistribution(
-								getScenario().defaultIats[i])));
+				arrivals.setInterArrivalTimes(
+						new DblDistribution(new ExponentialDistribution(getScenario().defaultIats[i])));
 			}
 			s.setArrivalProcess(arrivals);
 
@@ -151,6 +143,11 @@ public class MimacExperiment extends JobShopExperiment {
 
 			shop.addJobSource(s);
 		}
+	}
+
+	@Override
+	protected void configureShop() {
+		super.configureShop();
 	}
 
 	@Override

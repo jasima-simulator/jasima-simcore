@@ -64,7 +64,9 @@ public class StaticShopExperiment extends JobShopExperiment {
 	}
 
 	@Override
-	protected void configureShop() {
+	protected void createShop() {
+		super.createShop();
+
 		if (getInstFileName() == null && getInstURI() == null && getShopDef() == null)
 			throw new IllegalArgumentException("Either 'instFileName', 'instURI' or 'shopDef' have to be specified.");
 
@@ -78,7 +80,10 @@ public class StaticShopExperiment extends JobShopExperiment {
 		// configure shop using ShopDef
 		def.getShopConfigurator().configureSimulation(sim);
 		def.getShopConfigurator().configureMdl(shop);
+	}
 
+	@Override
+	protected void configureShop() {
 		super.configureShop();
 
 		// overwrite JobSpec data with new due dates

@@ -111,13 +111,18 @@ public class DynamicShopExperiment extends JobShopExperiment {
 	}
 
 	@Override
-	protected void configureShop() {
-		super.configureShop();
+	protected void createShop() {
+		super.createShop();
 
 		createMachines();
 
 		src = createJobSource();
 		shop.addJobSource(src);
+	}
+
+	@Override
+	protected void configureShop() {
+		super.configureShop();
 
 		if (getStopAfterNumJobs() <= 0)
 			shop.setStopAfterNumJobs(10 * getStopArrivalsAfterNumJobs());
