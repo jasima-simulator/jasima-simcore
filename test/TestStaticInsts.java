@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -20,6 +21,17 @@
  *******************************************************************************/
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Map;
+
+import org.junit.Test;
+
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.PR;
@@ -39,17 +51,6 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 import jasima.shopSim.prioRules.upDownStream.WINQ;
 import jasima.shopSim.prioRules.upDownStream.XWINQ;
 import jasima.shopSim.prioRules.weighted.WSPT;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
-
-import org.junit.Test;
-
 import util.Bremen1;
 import util.Bremen2;
 import util.ExtendedJobStatCollector;
@@ -57,8 +58,6 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
  */
 @SuppressWarnings("deprecation")
 public class TestStaticInsts {
@@ -78,29 +77,21 @@ public class TestStaticInsts {
 		testFromFile("testInstances/js20x05.txt", rules);
 	}
 
-	public static void testFromFile(String fileName, PR[] rules)
-			throws Exception {
+	public static void testFromFile(String fileName, PR[] rules) throws Exception {
 		String[] res = test(fileName, rules);
 		System.out.println(Arrays.toString(res));
 		String[] exp = Util.lines(new File(fileName + ".expected"));
 		assertArrayEquals("simulation results", exp, res);
 	}
 
-	static PR[] rules = new PR[] { new IgnoreFutureJobs(new SPT()),
-			new IgnoreFutureJobs(new FCFS()),
-			new IgnoreFutureJobs(new PTPlusWINQPlusNPT()),
-			new IgnoreFutureJobs(new WINQ()),
-			new IgnoreFutureJobs(new Inverse(new FCFS())),
-			new IgnoreFutureJobs(new Inverse(new SPT())),
-			new IgnoreFutureJobs(new WSPT()),
-			new IgnoreFutureJobs(new Inverse(new WSPT())),
-			new IgnoreFutureJobs(new EDD()), new IgnoreFutureJobs(new FASFS()),
-			new IgnoreFutureJobs(new SLK()),
-			new IgnoreFutureJobs(new Inverse(new CR())),
-			new IgnoreFutureJobs(new Inverse(new CR.Variant1())),
-			new IgnoreFutureJobs(new Inverse(new CR.Variant2())),
-			new IgnoreFutureJobs(new ATC(1.0)), new Bremen1(), new Bremen2(),
-			new IgnoreFutureJobs(new IFTMinusUITPlusNPT()), new XWINQ() };
+	static PR[] rules = new PR[] { new IgnoreFutureJobs(new SPT()), new IgnoreFutureJobs(new FCFS()),
+			new IgnoreFutureJobs(new PTPlusWINQPlusNPT()), new IgnoreFutureJobs(new WINQ()),
+			new IgnoreFutureJobs(new Inverse(new FCFS())), new IgnoreFutureJobs(new Inverse(new SPT())),
+			new IgnoreFutureJobs(new WSPT()), new IgnoreFutureJobs(new Inverse(new WSPT())),
+			new IgnoreFutureJobs(new EDD()), new IgnoreFutureJobs(new FASFS()), new IgnoreFutureJobs(new SLK()),
+			new IgnoreFutureJobs(new Inverse(new CR())), new IgnoreFutureJobs(new Inverse(new CR.Variant1())),
+			new IgnoreFutureJobs(new Inverse(new CR.Variant2())), new IgnoreFutureJobs(new ATC(1.0)), new Bremen1(),
+			new Bremen2(), new IgnoreFutureJobs(new IFTMinusUITPlusNPT()), new XWINQ() };
 
 	public static String[] test(String fn, PR[] rules) throws Exception {
 		ArrayList<String> res = new ArrayList<String>();
@@ -116,22 +107,19 @@ public class TestStaticInsts {
 		return res.toArray(new String[res.size()]);
 	}
 
-	public static StaticShopExperiment createTstModel(File f, PR sr)
-			throws FileNotFoundException, IOException {
+	public static StaticShopExperiment createTstModel(File f, PR sr) throws FileNotFoundException, IOException {
 		StaticShopExperiment shopExperiment = new StaticShopExperiment();
 		shopExperiment.setInstFileName(f.toString());
 		shopExperiment.setEnableLookAhead(true);
-		shopExperiment.setSequencingRule(sr.silentClone()
-				.setFinalTieBreaker(new FCFS())
-				.setFinalTieBreaker(new TieBreakerFASFS()));
+		shopExperiment.setSequencingRule(
+				sr.silentClone().setFinalTieBreaker(new FCFS()).setFinalTieBreaker(new TieBreakerFASFS()));
 		shopExperiment.addShopListener(new ExtendedJobStatCollector());
 
 		return shopExperiment;
 	}
 
 	// get some selected results
-	public static void getResults(Map<String, Object> expRes, String prefix,
-			ArrayList<String> res) {
+	public static void getResults(Map<String, Object> expRes, String prefix, ArrayList<String> res) {
 		res.add(prefix + "\tsimtime\t" + expRes.get("simTime"));
 		res.add(prefix + "\tcMax\t" + expRes.get("cMax"));
 		res.add(formatValueStat(prefix, (SummaryStat) expRes.get("flowMean")));
@@ -140,10 +128,8 @@ public class TestStaticInsts {
 	}
 
 	private static String formatValueStat(String prefix, SummaryStat stat) {
-		return String.format(Locale.ENGLISH,
-				"%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", prefix,
-				stat.getName(), stat.mean(), stat.min(), stat.max(),
-				stat.stdDev(), stat.sum(), stat.numObs());
+		return String.format(Locale.ENGLISH, "%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", prefix, stat.getName(),
+				stat.mean(), stat.min(), stat.max(), stat.stdDev(), stat.sum(), stat.numObs());
 	}
 
 }

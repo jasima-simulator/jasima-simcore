@@ -75,10 +75,6 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 		shop = doCreateShop();
 		sim.getRootComponent().addComponent(shop);
 
-		shop.setMaxJobsInSystem(getMaxJobsInSystem());
-		shop.setStopAfterNumJobs(getStopAfterNumJobs());
-		shop.setEnableLookAhead(isEnableLookAhead());
-
 		// forward simulation print events to experiment print events
 		sim.addPrintListener(this::print);
 	}
@@ -93,6 +89,10 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	}
 
 	protected void configureShop() {
+		shop.setMaxJobsInSystem(getMaxJobsInSystem());
+		shop.setStopAfterNumJobs(getStopAfterNumJobs());
+		shop.setEnableLookAhead(isEnableLookAhead());
+
 		// set dispatching rule of machines
 		for (int i = 0, n = shop.machines().numComponents(); i < n; i++) {
 			WorkStation m = shop.machines().getComponent(i);
