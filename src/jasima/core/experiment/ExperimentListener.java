@@ -24,7 +24,7 @@ import java.util.Map;
 
 import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
-import jasima.core.experiment.Experiment.ExperimentEvent;
+import jasima.core.experiment.Experiment.ExperimentMessage;
 import jasima.core.util.observer.NotifierListener;
 
 /**
@@ -33,26 +33,26 @@ import jasima.core.util.observer.NotifierListener;
  * 
  * @author Torsten Hildebrandt
  */
-public interface ExperimentListener extends NotifierListener<Experiment, ExperimentEvent> {
+public interface ExperimentListener extends NotifierListener<Experiment, ExperimentMessage> {
 
-	default void inform(Experiment e, ExperimentEvent event) {
-		if (event == Experiment.EXPERIMENT_STARTING) {
+	default void inform(Experiment e, ExperimentMessage event) {
+		if (event == ExperimentMessage.EXPERIMENT_STARTING) {
 			starting((Experiment) e);
-		} else if (event == Experiment.EXPERIMENT_INITIALIZED) {
+		} else if (event == ExperimentMessage.EXPERIMENT_INITIALIZED) {
 			initialized((Experiment) e);
-		} else if (event == Experiment.EXPERIMENT_BEFORE_RUN) {
+		} else if (event == ExperimentMessage.EXPERIMENT_BEFORE_RUN) {
 			beforeRun((Experiment) e);
-		} else if (event == Experiment.EXPERIMENT_AFTER_RUN) {
+		} else if (event == ExperimentMessage.EXPERIMENT_AFTER_RUN) {
 			afterRun((Experiment) e);
-		} else if (event == Experiment.EXPERIMENT_DONE) {
+		} else if (event == ExperimentMessage.EXPERIMENT_DONE) {
 			done((Experiment) e);
-		} else if (event == Experiment.EXPERIMENT_COLLECT_RESULTS) {
+		} else if (event == ExperimentMessage.EXPERIMENT_COLLECT_RESULTS) {
 			Experiment exp = (Experiment) e;
 			produceResults(exp, exp.resultMap);
-		} else if (event == Experiment.EXPERIMENT_FINISHING) {
+		} else if (event == ExperimentMessage.EXPERIMENT_FINISHING) {
 			Experiment exp = (Experiment) e;
 			finishing(exp, exp.resultMap);
-		} else if (event == Experiment.EXPERIMENT_FINISHED) {
+		} else if (event == ExperimentMessage.EXPERIMENT_FINISHED) {
 			Experiment exp = (Experiment) e;
 			finished(exp, exp.resultMap);
 		} else if (event instanceof ExpPrintEvent) {
@@ -65,7 +65,7 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		}
 	}
 
-	default void handleOther(Experiment e, ExperimentEvent event) {
+	default void handleOther(Experiment e, ExperimentMessage event) {
 	}
 
 	default void print(Experiment e, ExpPrintEvent event) {

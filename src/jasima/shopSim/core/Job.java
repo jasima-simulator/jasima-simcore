@@ -39,18 +39,30 @@ import jasima.core.util.observer.NotifierListener;
 // TODO: PrioRuleTarget should be an interface
 public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueStore, Notifier<Job, Object> {
 
-	/** Base class for workstation events. */
-	public static class JobEvent {
+	/** Base class for job messages. */
+	public static class JobMessage {
+
+		private final String name;
+
+		public JobMessage(String name) {
+			super();
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		// constants for events thrown by a job
+
+		public static final JobMessage JOB_RELEASED = new JobMessage("JOB_RELEASED");
+		public static final JobMessage JOB_FINISHED = new JobMessage("JOB_FINISHED");
+		public static final JobMessage JOB_ARRIVED_IN_QUEUE = new JobMessage("JOB_ARRIVED_IN_QUEUE");
+		public static final JobMessage JOB_REMOVED_FROM_QUEUE = new JobMessage("JOB_REMOVED_FROM_QUEUE");
+		public static final JobMessage JOB_START_OPERATION = new JobMessage("JOB_START_OPERATION");
+		public static final JobMessage JOB_END_OPERATION = new JobMessage("JOB_END_OPERATION");
 	}
-
-	// constants for events thrown by a job
-
-	public static final JobEvent JOB_RELEASED = new JobEvent();
-	public static final JobEvent JOB_FINISHED = new JobEvent();
-	public static final JobEvent JOB_ARRIVED_IN_QUEUE = new JobEvent();
-	public static final JobEvent JOB_REMOVED_FROM_QUEUE = new JobEvent();
-	public static final JobEvent JOB_START_OPERATION = new JobEvent();
-	public static final JobEvent JOB_END_OPERATION = new JobEvent();
 
 	private final Shop shop;
 
@@ -168,12 +180,12 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 
 	void jobReleased() {
 		if (numListener() > 0)
-			fire(JOB_RELEASED);
+			fire(JobMessage.JOB_RELEASED);
 	}
 
 	void jobFinished() {
 		if (numListener() > 0)
-			fire(JOB_FINISHED);
+			fire(JobMessage.JOB_FINISHED);
 	}
 
 	void arriveInQueue(WorkStation workStation, double arrivesAt) {
@@ -181,12 +193,12 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 		setArriveTime(arrivesAt);
 
 		if (numListener() > 0)
-			fire(JOB_ARRIVED_IN_QUEUE);
+			fire(JobMessage.JOB_ARRIVED_IN_QUEUE);
 	}
 
 	void removedFromQueue() {
 		if (numListener() > 0)
-			fire(JOB_REMOVED_FROM_QUEUE);
+			fire(JobMessage.JOB_REMOVED_FROM_QUEUE);
 	}
 
 	void startProcessing() {
@@ -195,12 +207,12 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 		notifyNextMachine();
 
 		if (numListener() > 0)
-			fire(JOB_START_OPERATION);
+			fire(JobMessage.JOB_START_OPERATION);
 	}
 
 	void endProcessing() {
 		if (numListener() > 0)
-			fire(JOB_END_OPERATION);
+			fire(JobMessage.JOB_END_OPERATION);
 	}
 
 	/**

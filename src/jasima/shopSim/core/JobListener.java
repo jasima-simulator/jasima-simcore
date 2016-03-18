@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import static jasima.shopSim.core.Job.JOB_ARRIVED_IN_QUEUE;
-import static jasima.shopSim.core.Job.JOB_END_OPERATION;
-import static jasima.shopSim.core.Job.JOB_FINISHED;
-import static jasima.shopSim.core.Job.JOB_RELEASED;
-import static jasima.shopSim.core.Job.JOB_REMOVED_FROM_QUEUE;
-import static jasima.shopSim.core.Job.JOB_START_OPERATION;
+import static jasima.shopSim.core.Job.JobMessage.JOB_ARRIVED_IN_QUEUE;
+import static jasima.shopSim.core.Job.JobMessage.JOB_END_OPERATION;
+import static jasima.shopSim.core.Job.JobMessage.JOB_FINISHED;
+import static jasima.shopSim.core.Job.JobMessage.JOB_RELEASED;
+import static jasima.shopSim.core.Job.JobMessage.JOB_REMOVED_FROM_QUEUE;
+import static jasima.shopSim.core.Job.JobMessage.JOB_START_OPERATION;
 
 import jasima.core.util.observer.NotifierListener;
 

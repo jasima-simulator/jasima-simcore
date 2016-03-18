@@ -48,12 +48,12 @@ import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
  */
 public class WorkStation extends SimComponentBase implements ValueStore {
 
-	/** Base class for workstation events. */
-	public static class WorkStationEvent {
+	/** Base class for workstation messages. */
+	public static class WorkStationMessage {
 
 		private final String name;
 
-		public WorkStationEvent(String name) {
+		public WorkStationMessage(String name) {
 			super();
 			this.name = name;
 		}
@@ -65,11 +65,11 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 		// constants for default events thrown by a workstation
 
-		public static final WorkStationEvent WS_ACTIVATED = new WorkStationEvent("WS_JOB_ARRIVAL");
-		public static final WorkStationEvent WS_DEACTIVATED = new WorkStationEvent("WS_JOB_ARRIVAL");
-		public static final WorkStationEvent WS_JOB_ARRIVAL = new WorkStationEvent("WS_JOB_ARRIVAL");
-		public static final WorkStationEvent WS_JOB_SELECTED = new WorkStationEvent("WS_JOB_SELECTED");
-		public static final WorkStationEvent WS_JOB_COMPLETED = new WorkStationEvent("WS_JOB_COMPLETED");
+		public static final WorkStationMessage WS_ACTIVATED = new WorkStationMessage("WS_JOB_ARRIVAL");
+		public static final WorkStationMessage WS_DEACTIVATED = new WorkStationMessage("WS_JOB_ARRIVAL");
+		public static final WorkStationMessage WS_JOB_ARRIVAL = new WorkStationMessage("WS_JOB_ARRIVAL");
+		public static final WorkStationMessage WS_JOB_SELECTED = new WorkStationMessage("WS_JOB_SELECTED");
+		public static final WorkStationMessage WS_JOB_COMPLETED = new WorkStationMessage("WS_JOB_COMPLETED");
 	}
 
 	public static final String DEF_SETUP_STR = "DEF_SETUP";
@@ -198,7 +198,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 			selectAndStart();
 
 		if (numListener() > 0) {
-			fire(WorkStationEvent.WS_ACTIVATED);
+			fire(WorkStationMessage.WS_ACTIVATED);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 		assert numBusy >= 0 && numBusy <= numInGroup;
 
 		if (numListener() > 0) {
-			fire(WorkStationEvent.WS_DEACTIVATED);
+			fire(WorkStationMessage.WS_DEACTIVATED);
 		}
 	}
 
@@ -262,7 +262,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 		if (numListener() > 0) {
 			justArrived = j;
-			fire(WorkStationEvent.WS_JOB_ARRIVAL);
+			fire(WorkStationMessage.WS_JOB_ARRIVAL);
 			justArrived = null;
 		}
 
@@ -366,7 +366,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 		if (numListener() > 0) {
 			justCompleted = b;
-			fire(WorkStationEvent.WS_JOB_COMPLETED);
+			fire(WorkStationMessage.WS_JOB_COMPLETED);
 			justCompleted = null;
 		}
 
@@ -414,7 +414,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 			// inform listener
 			if (numListener() > 0) {
 				justStarted = nextBatch;
-				fire(WorkStationEvent.WS_JOB_SELECTED);
+				fire(WorkStationMessage.WS_JOB_SELECTED);
 				justStarted = null;
 			}
 

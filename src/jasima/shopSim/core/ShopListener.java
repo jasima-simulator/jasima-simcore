@@ -22,7 +22,7 @@ package jasima.shopSim.core;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
-import jasima.shopSim.core.Shop.ShopEvent;
+import jasima.shopSim.core.Shop.ShopMessage;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ExtendedJobStatCollector;
 
@@ -42,10 +42,10 @@ public interface ShopListener extends SimComponentLifeCycleListener {
 	 */
 	@Override
 	default void inform(SimComponent c, Object msg) {
-		if (msg == ShopEvent.JOB_RELEASED) {
+		if (msg == ShopMessage.JOB_RELEASED) {
 			Shop shop = (Shop) c;
 			jobReleased(shop, shop.lastJobReleased);
-		} else if (msg == ShopEvent.JOB_FINISHED) {
+		} else if (msg == ShopMessage.JOB_FINISHED) {
 			Shop shop = (Shop) c;
 			jobFinished(shop, shop.lastJobFinished);
 		} else {

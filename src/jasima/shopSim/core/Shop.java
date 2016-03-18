@@ -43,11 +43,11 @@ import jasima.core.util.observer.NotifierListener;
  */
 public class Shop extends SimComponentContainerBase<SimComponent> implements ValueStore {
 
-	public static class ShopEvent {
+	public static class ShopMessage {
 
 		private final String name;
 
-		public ShopEvent(String name) {
+		public ShopMessage(String name) {
 			super();
 			this.name = name;
 		}
@@ -58,9 +58,9 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		}
 
 		// constants for default events thrown by a shop (in addition to
-		// simulation events)
-		public static final ShopEvent JOB_RELEASED = new ShopEvent("JOB_RELEASED");
-		public static final ShopEvent JOB_FINISHED = new ShopEvent("JOB_FINISHED");
+		// SimComponent events)
+		public static final ShopMessage JOB_RELEASED = new ShopMessage("JOB_RELEASED");
+		public static final ShopMessage JOB_FINISHED = new ShopMessage("JOB_FINISHED");
 
 	}
 
@@ -107,7 +107,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		j.jobFinished();
 
 		lastJobFinished = j;
-		fire(ShopEvent.JOB_FINISHED);
+		fire(ShopMessage.JOB_FINISHED);
 	}
 
 	public void startJob(Job nextJob) {
@@ -121,7 +121,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		nextJob.jobReleased();
 
 		lastJobReleased = nextJob;
-		fire(ShopEvent.JOB_RELEASED);
+		fire(ShopMessage.JOB_RELEASED);
 
 		WorkStation mach = nextJob.getCurrentOperation().getMachine();
 		mach.enqueueOrProcess(nextJob);

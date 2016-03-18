@@ -29,7 +29,7 @@ import java.util.Map;
 
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
-import jasima.core.experiment.Experiment.ExperimentEvent;
+import jasima.core.experiment.Experiment.ExperimentMessage;
 import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
@@ -77,7 +77,7 @@ import jasima.core.util.observer.NotifierListener;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class Experiment implements Notifier<Experiment, ExperimentEvent>, Cloneable, Serializable {
+public abstract class Experiment implements Notifier<Experiment, ExperimentMessage>, Cloneable, Serializable {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -92,12 +92,12 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 	public static final String EXCEPTION_MESSAGE = "exceptionMessage";
 
 	/**
-	 * Simple base class for events used by the notification mechanism.
+	 * Simple base class for messages used by the notification mechanism.
 	 */
-	public static class ExperimentEvent {
+	public static class ExperimentMessage {
 		public final String s;
 
-		public ExperimentEvent(String s) {
+		public ExperimentMessage(String s) {
 			super();
 			this.s = s;
 		}
@@ -106,16 +106,17 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 		public String toString() {
 			return s;
 		}
-	}
 
-	public static final ExperimentEvent EXPERIMENT_STARTING = new ExperimentEvent("EXPERIMENT_STARTING");
-	public static final ExperimentEvent EXPERIMENT_INITIALIZED = new ExperimentEvent("EXPERIMENT_INITIALIZED");
-	public static final ExperimentEvent EXPERIMENT_BEFORE_RUN = new ExperimentEvent("EXPERIMENT_BEFORE_RUN");
-	public static final ExperimentEvent EXPERIMENT_AFTER_RUN = new ExperimentEvent("EXPERIMENT_AFTER_RUN");
-	public static final ExperimentEvent EXPERIMENT_DONE = new ExperimentEvent("EXPERIMENT_DONE");
-	public static final ExperimentEvent EXPERIMENT_COLLECT_RESULTS = new ExperimentEvent("EXPERIMENT_COLLECT_RESULTS");
-	public static final ExperimentEvent EXPERIMENT_FINISHING = new ExperimentEvent("EXPERIMENT_FINISHING");
-	public static final ExperimentEvent EXPERIMENT_FINISHED = new ExperimentEvent("EXPERIMENT_FINISHED");
+		public static final ExperimentMessage EXPERIMENT_STARTING = new ExperimentMessage("EXPERIMENT_STARTING");
+		public static final ExperimentMessage EXPERIMENT_INITIALIZED = new ExperimentMessage("EXPERIMENT_INITIALIZED");
+		public static final ExperimentMessage EXPERIMENT_BEFORE_RUN = new ExperimentMessage("EXPERIMENT_BEFORE_RUN");
+		public static final ExperimentMessage EXPERIMENT_AFTER_RUN = new ExperimentMessage("EXPERIMENT_AFTER_RUN");
+		public static final ExperimentMessage EXPERIMENT_DONE = new ExperimentMessage("EXPERIMENT_DONE");
+		public static final ExperimentMessage EXPERIMENT_COLLECT_RESULTS = new ExperimentMessage(
+				"EXPERIMENT_COLLECT_RESULTS");
+		public static final ExperimentMessage EXPERIMENT_FINISHING = new ExperimentMessage("EXPERIMENT_FINISHING");
+		public static final ExperimentMessage EXPERIMENT_FINISHED = new ExperimentMessage("EXPERIMENT_FINISHED");
+	}
 
 	/**
 	 * Enum for the category of a message produced by an experiment.
@@ -127,7 +128,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 	/**
 	 * Class to store print messages of an experiment.
 	 */
-	public static class ExpPrintEvent extends ExperimentEvent {
+	public static class ExpPrintEvent extends ExperimentMessage {
 
 		public final Experiment exp;
 		public final ExpMsgCategory category;
@@ -193,7 +194,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
 
-	private NotifierAdapter<Experiment, ExperimentEvent> adapter;
+	private NotifierAdapter<Experiment, ExperimentMessage> adapter;
 
 	// fields used during run
 	private long runTimeReal;
@@ -278,26 +279,26 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 			runTimeReal = System.currentTimeMillis();
 
 			if (numListener() > 0)
-				fire(EXPERIMENT_STARTING);
+				fire(ExperimentMessage.EXPERIMENT_STARTING);
 
 			init();
 
 			if (numListener() > 0)
-				fire(EXPERIMENT_INITIALIZED);
+				fire(ExperimentMessage.EXPERIMENT_INITIALIZED);
 
 			beforeRun();
 			if (numListener() > 0)
-				fire(EXPERIMENT_BEFORE_RUN);
+				fire(ExperimentMessage.EXPERIMENT_BEFORE_RUN);
 
 			performRun();
 
 			if (numListener() > 0)
-				fire(EXPERIMENT_AFTER_RUN);
+				fire(ExperimentMessage.EXPERIMENT_AFTER_RUN);
 
 			done();
 
 			if (numListener() > 0)
-				fire(EXPERIMENT_DONE);
+				fire(ExperimentMessage.EXPERIMENT_DONE);
 		} finally {
 			runTimeReal = System.currentTimeMillis() - runTimeReal;
 		}
@@ -308,18 +309,18 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 		produceResults();
 
 		if (numListener() > 0)
-			fire(EXPERIMENT_COLLECT_RESULTS);
+			fire(ExperimentMessage.EXPERIMENT_COLLECT_RESULTS);
 
 		// give experiments and listener a chance to view/modify results
 		finish();
 
 		if (numListener() > 0)
-			fire(EXPERIMENT_FINISHING);
+			fire(ExperimentMessage.EXPERIMENT_FINISHING);
 
 		// we are done, don't change results any more
 		resultMap = Collections.unmodifiableMap(resultMap);
 		if (numListener() > 0)
-			fire(EXPERIMENT_FINISHED);
+			fire(ExperimentMessage.EXPERIMENT_FINISHED);
 
 		// return results
 		return getResults();
@@ -482,22 +483,22 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 	}
 
 	@Override
-	public void addListener(NotifierListener<Experiment, ExperimentEvent> l) {
+	public void addListener(NotifierListener<Experiment, ExperimentMessage> l) {
 		adapter.addListener(l);
 	}
 
 	@Override
-	public boolean removeListener(NotifierListener<Experiment, ExperimentEvent> l) {
+	public boolean removeListener(NotifierListener<Experiment, ExperimentMessage> l) {
 		return adapter.removeListener(l);
 	}
 
 	@Override
-	public NotifierListener<Experiment, ExperimentEvent> getListener(int idx) {
+	public NotifierListener<Experiment, ExperimentMessage> getListener(int idx) {
 		return adapter.getListener(idx);
 	}
 
 	@Override
-	public void fire(ExperimentEvent msg) {
+	public void fire(ExperimentMessage msg) {
 		adapter.fire(msg);
 	}
 

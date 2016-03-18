@@ -47,7 +47,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	/**
 	 * Complex event object triggered upon sub-experiment completion.
 	 */
-	public static class BaseExperimentCompleted extends ExperimentEvent {
+	public static class BaseExperimentCompleted extends ExperimentMessage {
 
 		public BaseExperimentCompleted(Experiment experimentRun, Map<String, Object> results) {
 			super("BaseExperimentCompleted#");

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import jasima.core.simulation.Event;
-import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentBase;
 import jasima.core.util.ValueStore;
 
@@ -34,7 +33,7 @@ import jasima.core.util.ValueStore;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class JobSource extends SimComponentBase implements ValueStore, SimComponent {
+public abstract class JobSource extends SimComponentBase implements ValueStore {
 
 	// bigger than WorkStation.DEPART_PRIO but smaller than
 	// WorkStation.SELECT_PRIO

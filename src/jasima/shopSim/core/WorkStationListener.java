@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_ACTIVATED;
-import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_DEACTIVATED;
-import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_JOB_ARRIVAL;
-import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_JOB_COMPLETED;
-import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_JOB_SELECTED;
+import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_ACTIVATED;
+import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_DEACTIVATED;
+import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_JOB_ARRIVAL;
+import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_JOB_COMPLETED;
+import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_JOB_SELECTED;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
@@ -32,7 +32,7 @@ import jasima.core.simulation.SimComponentLifeCycleListener;
 /**
  * Possible base class for workstation listeners. Delegates all events to
  * seperate methods. Additional events can be processed by overriding
- * {@link #handleOther(WorkStation, WorkStation.WorkStationEvent)}.
+ * {@link #handleOther(WorkStation, WorkStation.WorkStationMessage)}.
  * 
  * @author Torsten Hildebrandt
  */
