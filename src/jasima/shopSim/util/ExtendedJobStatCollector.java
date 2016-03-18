@@ -24,11 +24,12 @@ import static jasima.shopSim.util.BasicJobStatCollector.put;
 
 import java.util.Map;
 
-import jasima.core.simulation.Simulation;
+import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.ShopListenerBase;
 import jasima.shopSim.core.WorkStation;
 
 /**
@@ -68,7 +69,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	protected void init(Simulation sim) {
+	public void init(SimComponent sim) {
 		noProcTime = new SummaryStat("noProcTime");
 		lateness = new SummaryStat("lateness");
 		weightedFlowtime = new SummaryStat("weightedFlowtimes");
@@ -81,7 +82,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	protected void done(Simulation sim) {
+	public void done(SimComponent sim) {
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
 		weightedTardinessWithWIP.setName("weightedTardinessWithWIP");
 
@@ -114,14 +115,14 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	protected void jobReleased(JobShop shop, Job j) {
+	public void jobReleased(JobShop shop, Job j) {
 		assert this.shop == null || this.shop == shop;
 
 		this.shop = shop;
 	}
 
 	@Override
-	protected void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(JobShop shop, Job j) {
 		if (!shouldCollect(j))
 			return;
 
@@ -144,7 +145,8 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		}
 	}
 
-	protected void produceResults(Simulation sim, Map<String, Object> res) {
+	@Override
+	public void produceResults(SimComponent sim, Map<String, Object> res) {
 		put(res, noProcTime);
 		put(res, weightedFlowtime);
 		put(res, lateness);

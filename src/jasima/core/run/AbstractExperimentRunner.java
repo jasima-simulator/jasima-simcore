@@ -37,7 +37,7 @@ import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.Experiment.ExpMsgCategory;
-import jasima.core.experiment.Experiment.ExperimentEvent;
+import jasima.core.experiment.ExperimentListener;
 import jasima.core.util.AbstractResultSaver;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
@@ -45,7 +45,6 @@ import jasima.core.util.Pair;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.XmlSaver;
-import jasima.core.util.observer.Subscriber;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.util.KeyValuePair;
@@ -61,7 +60,7 @@ import joptsimple.util.KeyValuePair;
  */
 public abstract class AbstractExperimentRunner {
 
-	protected Map<Object, Subscriber> listeners;
+	protected Map<Object, ExperimentListener> listeners;
 	protected boolean hideResults = false;
 	protected String experimentFileName = null;
 	protected String[] packageSearchPath = Util.DEF_CLASS_SEARCH_PATH;
@@ -258,12 +257,12 @@ public abstract class AbstractExperimentRunner {
 		Experiment exp = createExperiment();
 		String resultFileNameHint = getResultFileNameHint();
 
-		for (Subscriber lstnr : listeners.values()) {
+		for (ExperimentListener lstnr : listeners.values()) {
 			if (resultFileNameHint != null && lstnr instanceof AbstractResultSaver) {
 				((AbstractResultSaver) lstnr).setFileNameHint(resultFileNameHint);
 			}
 
-			exp.notifierService().addSubscription(ExperimentEvent.class, lstnr);
+			exp.addListener(lstnr);
 		}
 
 		exp = setPropsFromCmdLine(exp);

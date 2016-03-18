@@ -3,17 +3,17 @@ package jasima.core.simulation;
 import java.util.List;
 import java.util.Map;
 
-public interface SimComponentContainer<T extends SimComponent> extends SimComponent {
+public interface SimComponentContainer<SUB extends SimComponent> extends SimComponent {
 
-	List<T> getComponents();
+	List<SUB> getComponents();
 
-	void addComponent(T sc);
+	void addComponent(SUB sc);
 
-	boolean removeComponent(T sc);
+	boolean removeComponent(SUB sc);
 
 	void removeAll();
-	
-	T getComponent(int index);
+
+	SUB getComponent(int index);
 
 	int numComponents();
 

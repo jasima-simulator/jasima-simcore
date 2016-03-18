@@ -182,13 +182,18 @@ public abstract class JobSource extends SimComponentBase implements ValueStore, 
 			return valueStore.remove(key);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		JobSource js = (JobSource) super.clone();
-		if (valueStore != null)
-			js.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		return js;
+	public JobSource clone() throws CloneNotSupportedException {
+		JobSource s = (JobSource) super.clone();
+
+		if (valueStore != null) {
+			@SuppressWarnings("unchecked")
+			HashMap<Object, Object> clone = (HashMap<Object, Object>) valueStore.clone();
+			
+			s.valueStore = clone;
+		}
+
+		return s;
 	}
 
 }

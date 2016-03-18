@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -24,18 +25,13 @@ import org.junit.runners.Suite;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class,
-		TestStaticInsts.class, TestStaticInstsTraces.class,
-		TestOrderIndependence.class, TestSetups.class, TestBatching.class,
-		TestBestOfFamilyBatching.class, TestGECCOContinuity.class,
-		TestWinterSim2010Continuity.class, TestMIMAC.class,
-		TestForAllResults.class, TestMimacFab4Trace.class,
-		jasima.core.experiment.AllTests.class, TestDetailedTraces.class,
-		TestDowntimes.class, jasima.core.util.AllTests.class,
-		jasima.core.statistics.AllTests.class })
+@Suite.SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class, TestStaticInsts.class, TestStaticInstsTraces.class,
+		TestOrderIndependence.class, TestSetups.class, TestBatching.class, TestBestOfFamilyBatching.class,
+		TestGECCOContinuity.class, TestWinterSim2010Continuity.class, TestMIMAC.class, TestForAllResults.class,
+		TestMimacFab4Trace.class, jasima.core.experiment.AllTests.class, TestDetailedTraces.class, TestDowntimes.class,
+		jasima.core.util.AllTests.class, jasima.core.statistics.AllTests.class })
 public class AllTests {
 
 }

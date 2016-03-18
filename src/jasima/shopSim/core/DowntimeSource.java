@@ -22,7 +22,7 @@ package jasima.shopSim.core;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
-import jasima.shopSim.util.WorkStationListenerBase;
+import jasima.core.simulation.SimComponent;
 
 /**
  * Abstraction of a downtime source. Each {@link IndividualMachine} can have
@@ -64,26 +64,27 @@ public class DowntimeSource {
 			timeToRepair.init();
 		}
 
-		new WorkStationListenerBase() {
+		WorkStationListenerBase wsl = new WorkStationListenerBase() {
 			@Override
-			protected void activated(WorkStation m, IndividualMachine justActivated) {
+			public void activated(WorkStation m, IndividualMachine justActivated) {
 				if (justActivated == machine && machine.downReason == DowntimeSource.this) {
 					onActivate();
 				}
 			}
 
 			@Override
-			protected void deactivated(WorkStation m, IndividualMachine justDeactivated) {
+			public void deactivated(WorkStation m, IndividualMachine justDeactivated) {
 				if (justDeactivated == machine && machine.downReason == DowntimeSource.this) {
 					onDeactivate();
 				}
 			}
 
 			@Override
-			protected void done(WorkStation m) {
-				machine.workStation.getSim().getNotifierService().removeSubscriber(this);
+			public void done(SimComponent m) {
+				machine.workStation.removeListener(this);
 			}
-		}.register(machine.workStation.getSim().getNotifierService());
+		};
+		machine.workStation.addListener(wsl);
 
 		// schedule begin of first downtime
 		onActivate();

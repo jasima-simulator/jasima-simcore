@@ -34,7 +34,6 @@ import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Subscriber;
-import jasima.shopSim.core.WorkStation.WorkStationEvent;
 
 /**
  * Implements a shop simulation. Despite its name the scenario not necessarily
@@ -42,16 +41,7 @@ import jasima.shopSim.core.WorkStation.WorkStationEvent;
  * 
  * @author Torsten Hildebrandt
  */
-public class JobShop extends SimComponentContainerBase<SimComponent>
-		implements SimComponentContainer<SimComponent>, ValueStore {
-
-	public static class JobShopEvent {
-	}
-
-	// constants for default events thrown by a shop (in addition to simulation
-	// events)
-	public static final JobShopEvent JOB_RELEASED = new JobShopEvent();
-	public static final JobShopEvent JOB_FINISHED = new JobShopEvent();
+public class JobShop extends SimComponentContainerBase<SimComponent> implements ValueStore {
 
 	// parameters
 	private int maxJobsInSystem = 0;
@@ -96,7 +86,7 @@ public class JobShop extends SimComponentContainerBase<SimComponent>
 		j.jobFinished();
 
 		lastJobFinished = j;
-		getSim().publishNotification(this, JOB_FINISHED);
+		fire(JobShopEvent.JOB_FINISHED);
 	}
 
 	public void startJob(Job nextJob) {
@@ -110,7 +100,7 @@ public class JobShop extends SimComponentContainerBase<SimComponent>
 		nextJob.jobReleased();
 
 		lastJobReleased = nextJob;
-		getSim().publishNotification(this, JOB_RELEASED);
+		fire(JobShopEvent.JOB_RELEASED);
 
 		WorkStation mach = nextJob.getCurrentOperation().getMachine();
 		mach.enqueueOrProcess(nextJob);
@@ -134,13 +124,13 @@ public class JobShop extends SimComponentContainerBase<SimComponent>
 	 *            whether to try to clone a new instance for each machine using
 	 *            {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
-	public void installMachineListener(Subscriber listener, boolean cloneIfPossible) {
+	public void installMachineListener(Subscriber<SimComponent, Object> listener, boolean cloneIfPossible) {
 		for (WorkStation m : machines.getComponents()) {
-			Subscriber ml = listener;
+			Subscriber<SimComponent, Object> ml = listener;
 			if (cloneIfPossible)
 				ml = TypeUtil.cloneIfPossible(ml);
 
-			getSim().getNotifierService().addSubscription(WorkStationEvent.class, o -> o == m, null, ml);
+			m.addListener(ml);
 		}
 	}
 
@@ -438,6 +428,19 @@ public class JobShop extends SimComponentContainerBase<SimComponent>
 			return null;
 		else
 			return valueStore.remove(key);
+	}
+
+	@Override
+	public JobShop clone() throws CloneNotSupportedException {
+		JobShop s = (JobShop) super.clone();
+
+		if (valueStore != null) {
+			@SuppressWarnings("unchecked")
+			HashMap<Object, Object> clone = (HashMap<Object, Object>) valueStore.clone();
+			s.valueStore = clone;
+		}
+
+		return s;
 	}
 
 }

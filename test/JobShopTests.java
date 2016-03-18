@@ -29,6 +29,7 @@ import org.junit.Test;
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.util.MachineStatCollector;
 
 /**
  * 
@@ -61,7 +62,7 @@ public class JobShopTests {
 
 		// js.setLengthSimulation(30);
 		s.setSimulationLength(8 * 365.0f);
-		s.setRootComponent(js);
+		s.addComponent(js);
 
 		s.init();
 		s.run();
@@ -131,7 +132,7 @@ public class JobShopTests {
 
 		Simulation s = new Simulation();
 		s.setSimulationLength(8 * 100 * 365f);
-		s.setRootComponent(js);
+		s.addComponent(js);
 
 		s.init();
 		s.run();

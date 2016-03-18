@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.Simulation.SimPrintEvent;
 import jasima.core.simulation.SimulationExperiment;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.observer.Subscriber;
-import jasima.shopSim.core.WorkStation.WorkStationEvent;
 import jasima.shopSim.core.batchForming.BatchForming;
 
 /**
@@ -56,9 +56,9 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	private PR[] batchSequencingRules;
 	private BatchForming[] batchFormingRules;
 
-	private Subscriber[] shopListener;
-	private Subscriber[] machineListener;
-	private HashMap<String, Subscriber[]> machListenerSpecific;
+	private Subscriber<SimComponent, Object>[] shopListener;
+	private Subscriber<SimComponent, Object>[] machineListener;
+	private HashMap<String, Subscriber<SimComponent, Object>[]> machListenerSpecific;
 
 	// fields used during experiment execution
 	protected JobShop shop;
@@ -121,13 +121,14 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 
 		// install shop listener
 		if (shopListener != null)
-			for (Subscriber l : shopListener) {
-				TypeUtil.cloneIfPossible(l).register(sim.getNotifierService());
+			for (Subscriber<SimComponent, Object> l : shopListener) {
+				Subscriber<SimComponent, Object> c = TypeUtil.cloneIfPossible(l);
+				shop.addListener(c);
 			}
 
 		// install generic machine listener
 		if (machineListener != null)
-			for (Subscriber l : machineListener) {
+			for (Subscriber<SimComponent, Object> l : machineListener) {
 				shop.installMachineListener(l, true);
 			}
 
@@ -140,11 +141,10 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 							"Error installing machine listener: can't find a workstation named '" + machName + "'");
 				}
 
-				Subscriber[] mls = machListenerSpecific.get(machName);
-				for (Subscriber ml : mls) {
+				Subscriber<SimComponent, Object>[] mls = machListenerSpecific.get(machName);
+				for (Subscriber<SimComponent, Object> ml : mls) {
 					ml = TypeUtil.cloneIfPossible(ml);
-
-					sim.getNotifierService().addSubscription(WorkStationEvent.class, o -> o == ws, null, ml);
+					ws.addListener(ml);
 				}
 			}
 		}
@@ -161,7 +161,6 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	@Override
 	protected void beforeRun() {
 		super.beforeRun();
-
 	}
 
 	protected PR getSequencingRule(int i) {
@@ -221,7 +220,7 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 		clone.machineListener = TypeUtil.deepCloneArrayIfPossible(machineListener);
 
 		if (machListenerSpecific != null) {
-			clone.machListenerSpecific = new HashMap<String, Subscriber[]>();
+			clone.machListenerSpecific = new HashMap<>();
 			for (String name : machListenerSpecific.keySet()) {
 				clone.machListenerSpecific.put(name, TypeUtil.cloneIfPossible(machListenerSpecific.get(name)));
 			}
@@ -387,7 +386,7 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * 
 	 * @return The array of shop listeners; can be null.
 	 */
-	public Subscriber[] getShopListener() {
+	public Subscriber<SimComponent, Object>[] getShopListener() {
 		return shopListener;
 	}
 
@@ -397,7 +396,7 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * @param shopListener
 	 *            The listeners to install during experiment execution.
 	 */
-	public void setShopListener(Subscriber[] shopListener) {
+	public void setShopListener(Subscriber<SimComponent, Object>[] shopListener) {
 		this.shopListener = shopListener;
 	}
 
@@ -407,14 +406,17 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * @param l
 	 *            The listener to install during experiment execution.
 	 */
-	public void addShopListener(Subscriber l) {
+	public void addShopListener(Subscriber<SimComponent, Object> l) {
 		if (shopListener == null) {
-			final Subscriber[] resArray = new Subscriber[] { l };
+			@SuppressWarnings("unchecked")
+			final Subscriber<SimComponent, Object>[] resArray = new Subscriber[] { l };
 			shopListener = resArray;
 		} else {
-			ArrayList<Subscriber> list = new ArrayList<Subscriber>(Arrays.asList(shopListener));
+			ArrayList<Subscriber<SimComponent, Object>> list = new ArrayList<>(Arrays.asList(shopListener));
 			list.add(l);
-			final Subscriber[] resArray = new Subscriber[list.size()];
+
+			@SuppressWarnings("unchecked")
+			final Subscriber<SimComponent, Object>[] resArray = new Subscriber[list.size()];
 			shopListener = list.toArray(resArray);
 		}
 	}
@@ -424,7 +426,7 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * 
 	 * @return The array of workstation listeners. Can be null.
 	 */
-	public Subscriber[] getMachineListener() {
+	public Subscriber<SimComponent, Object>[] getMachineListener() {
 		return machineListener;
 	}
 
@@ -435,7 +437,7 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * @param machineListener
 	 *            The listeners to install during experiment execution.
 	 */
-	public void setMachineListener(Subscriber[] machineListener) {
+	public void setMachineListener(Subscriber<SimComponent, Object>[] machineListener) {
 		this.machineListener = machineListener;
 	}
 
@@ -446,14 +448,16 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * @param l
 	 *            The listener to install during experiment execution.
 	 */
-	public void addMachineListener(Subscriber l) {
+	public void addMachineListener(Subscriber<SimComponent, Object> l) {
 		if (this.machineListener == null) {
-			final Subscriber[] resArray = new Subscriber[] { l };
+			@SuppressWarnings("unchecked")
+			final Subscriber<SimComponent, Object>[] resArray = new Subscriber[] { l };
 			this.machineListener = resArray;
 		} else {
-			ArrayList<Subscriber> list = new ArrayList<Subscriber>(Arrays.asList(this.machineListener));
+			ArrayList<Subscriber<SimComponent, Object>> list = new ArrayList<>(Arrays.asList(this.machineListener));
 			list.add(l);
-			final Subscriber[] resArray = new Subscriber[list.size()];
+			@SuppressWarnings("unchecked")
+			final Subscriber<SimComponent, Object>[] resArray = new Subscriber[list.size()];
 			machineListener = list.toArray(resArray);
 		}
 	}
@@ -467,19 +471,20 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 * @param l
 	 *            The listener to install during experiment execution.
 	 */
-	public void addMachineListener(String name, Subscriber l) {
+	public void addMachineListener(String name, Subscriber<SimComponent, Object> l) {
 		if (machListenerSpecific == null)
-			machListenerSpecific = new HashMap<String, Subscriber[]>();
+			machListenerSpecific = new HashMap<>();
 
 		// create new array using an intermediary list
-		Subscriber[] listeners = machListenerSpecific.get(name);
-		ArrayList<Subscriber> list = new ArrayList<Subscriber>();
+		Subscriber<SimComponent, Object>[] listeners = machListenerSpecific.get(name);
+		ArrayList<Subscriber<SimComponent, Object>> list = new ArrayList<>();
 		if (listeners != null) {
 			list.addAll(Arrays.asList(listeners));
 		}
 		list.add(l);
 
-		final Subscriber[] resArray = new Subscriber[list.size()];
+		@SuppressWarnings("unchecked")
+		final Subscriber<SimComponent, Object>[] resArray = new Subscriber[list.size()];
 		machListenerSpecific.put(name, list.toArray(resArray));
 	}
 
@@ -492,9 +497,10 @@ public abstract class JobShopExperiment extends SimulationExperiment {
 	 *            The workstation's name.
 	 * @return An array of all listeners for the given machine name.
 	 */
-	public Subscriber[] getMachineListenerSpecific(String name) {
+	public Subscriber<SimComponent, Object>[] getMachineListenerSpecific(String name) {
 		if (machListenerSpecific == null) {
-			final Subscriber[] resArray = new Subscriber[0];
+			@SuppressWarnings("unchecked")
+			final Subscriber<SimComponent, Object>[] resArray = new Subscriber[0];
 			return resArray;
 		} else {
 			return machListenerSpecific.get(name);

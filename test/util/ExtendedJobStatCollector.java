@@ -22,16 +22,16 @@ package util;
 
 import java.util.Map;
 
-import jasima.core.simulation.Simulation;
+import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.ShopListenerBase;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
-import jasima.shopSim.util.ShopListenerBase;
 
 /**
  * This is an old version now only used to maintain compatibility with old test
@@ -68,7 +68,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	private JobShop shop;
 
 	@Override
-	protected void init(Simulation sim) {
+	public void init(SimComponent c) {
 		flowtime = new SummaryStat("flowtimes");
 		noProcTime = new SummaryStat("noProcTime");
 		tardiness = new SummaryStat("tardiness");
@@ -84,7 +84,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	protected void done(Simulation sim) {
+	public void done(SimComponent c) {
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
 
 		if (shop != null)
@@ -121,12 +121,12 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	protected void jobReleased(JobShop shop, Job j) {
+	public void jobReleased(JobShop shop, Job j) {
 		this.shop = shop;
 	}
 
 	@Override
-	protected void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(JobShop shop, Job j) {
 		if (!shouldCollect(j))
 			return;
 
@@ -158,7 +158,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	public void produceResults(Simulation sim, Map<String, Object> res) {
+	public void produceResults(SimComponent shop, Map<String, Object> res) {
 		Util.putMeanMaxVar(flowtime, "flow", res);
 		Util.putMeanMaxVar(noProcTime, "noProc", res);
 		Util.putMeanMaxVar(weightedFlowtime, "weightedFlow", res);

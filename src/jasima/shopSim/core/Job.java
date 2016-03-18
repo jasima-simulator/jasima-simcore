@@ -24,7 +24,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
+import jasima.core.util.SilentCloneable;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
+import jasima.core.util.observer.Notifier;
+import jasima.core.util.observer.NotifierAdapter;
+import jasima.core.util.observer.Subscriber;
 
 /**
  * Main work unit in a shop.
@@ -32,7 +37,7 @@ import jasima.core.util.ValueStore;
  * @author Torsten Hildebrandt
  */
 // TODO: PrioRuleTarget should be an interface
-public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
+public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueStore, Notifier<Job, Object> {
 
 	/** Base class for workstation events. */
 	public static class JobEvent {
@@ -72,7 +77,10 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
 
 	public Job(JobShop shop) {
 		super();
+
 		this.shop = shop;
+
+		adapter = new NotifierAdapter<Job, Object>(this);
 	}
 
 	public void setArriveTime(double fl) {
@@ -159,22 +167,23 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
 	}
 
 	void jobReleased() {
-		shop.getSim().publishNotification(this, JOB_RELEASED);
+		if (numListener() > 0)
+			fire(JOB_RELEASED);
 	}
 
 	void jobFinished() {
-		shop.getSim().publishNotification(this, JOB_FINISHED);
+		fire(JOB_FINISHED);
 	}
 
 	void arriveInQueue(WorkStation workStation, double arrivesAt) {
 		setCurrMachine(workStation);
 		setArriveTime(arrivesAt);
 
-		shop.getSim().publishNotification(this, JOB_ARRIVED_IN_QUEUE);
+		fire(JOB_ARRIVED_IN_QUEUE);
 	}
 
 	void removedFromQueue() {
-		shop.getSim().publishNotification(this, JOB_REMOVED_FROM_QUEUE);
+		fire(JOB_REMOVED_FROM_QUEUE);
 	}
 
 	void startProcessing() {
@@ -182,11 +191,11 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
 		setStartTime(currMachine.shop().simTime());
 		notifyNextMachine();
 
-		shop.getSim().publishNotification(this, JOB_START_OPERATION);
+		fire(JOB_START_OPERATION);
 	}
 
 	void endProcessing() {
-		shop.getSim().publishNotification(this, JOB_END_OPERATION);
+		fire(JOB_END_OPERATION);
 	}
 
 	/**
@@ -214,27 +223,6 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
 		}
 		future.setTaskNumber(taskNumber + 1);
 		return future;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Job clone() throws CloneNotSupportedException {
-		Job j = (Job) super.clone();
-		j.future = null;
-
-		if (valueStore != null) {
-			j.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		}
-
-		return j;
-	}
-
-	public Job silentClone() {
-		try {
-			return clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	void setFuture(boolean isFuture) {
@@ -506,6 +494,61 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore {
 			return null;
 		else
 			return valueStore.remove(key);
+	}
+
+	//
+	//
+	// Event notification
+	//
+	//
+
+	private NotifierAdapter<Job, Object> adapter;
+
+	@Override
+	public int numListener() {
+		return adapter.numListener();
+	}
+
+	@Override
+	public void addListener(Subscriber<Job, Object> l) {
+		adapter.addListener(l);
+	}
+
+	@Override
+	public boolean removeListener(Subscriber<Job, Object> l) {
+		return adapter.removeListener(l);
+	}
+
+	@Override
+	public Subscriber<Job, Object> getListener(int idx) {
+		return getListener(idx);
+	}
+
+	@Override
+	public void fire(Object msg) {
+		adapter.fire(msg);
+	}
+
+	// cloning
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Job clone() throws CloneNotSupportedException {
+		Job j = (Job) super.clone();
+		j.future = null;
+
+		// clone value store copying (but not cloning!) all of its entries
+		if (valueStore != null) {
+			j.valueStore = (HashMap<Object, Object>) valueStore.clone();
+		}
+
+		// clone listeners
+		j.adapter = new NotifierAdapter<>(j);
+		for (int i = 0; i < numListener(); i++) {
+			j.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+		}
+
+		return j;
 	}
 
 }

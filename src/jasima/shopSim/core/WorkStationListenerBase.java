@@ -18,17 +18,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.shopSim.util;
+package jasima.shopSim.core;
 
-import java.util.Map;
-
-import jasima.core.util.observer.NotifierService;
-import jasima.core.util.observer.Subscriber;
-import jasima.shopSim.core.IndividualMachine;
-import jasima.shopSim.core.Job;
-import jasima.shopSim.core.PrioRuleTarget;
-import jasima.shopSim.core.WorkStation;
-import jasima.shopSim.core.WorkStation.WorkStationEvent;
+import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponentLifeCycleListener;
 
 /**
  * Possible base class for workstation listeners. Delegates all events to
@@ -37,21 +30,10 @@ import jasima.shopSim.core.WorkStation.WorkStationEvent;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class WorkStationListenerBase implements Subscriber, Cloneable {
+public interface WorkStationListenerBase extends SimComponentLifeCycleListener {
 
-	public WorkStationListenerBase() {
-		super();
-	}
-
-	@Override
-	public void register(NotifierService ns) {
-		ns.addSubscription(WorkStationEvent.class, this);
-	}
-
-	@Override
-	public void inform(Object o, Object e) {
+	default void inform(SimComponent o, Object event) {
 		WorkStation m = (WorkStation) o;
-		WorkStationEvent event = (WorkStationEvent) e;
 
 		if (event == WorkStation.WS_JOB_ARRIVAL) {
 			arrival(m, m.justArrived);
@@ -63,53 +45,25 @@ public abstract class WorkStationListenerBase implements Subscriber, Cloneable {
 			activated(m, m.currMachine);
 		} else if (event == WorkStation.WS_DEACTIVATED) {
 			deactivated(m, m.currMachine);
-		} else if (event == WorkStation.WS_DONE) {
-			done(m);
-		} else if (event == WorkStation.WS_COLLECT_RESULTS) {
-			produceResults(m, m.resultMap);
-		} else if (event == WorkStation.WS_INIT) {
-			init(m);
 		} else {
-			handleOther(m, event);
+			SimComponentLifeCycleListener.super.inform(o, event);
 		}
 	}
 
-	protected void handleOther(WorkStation m, WorkStationEvent event) {
+	default void operationCompleted(WorkStation m, PrioRuleTarget justCompleted) {
 	}
 
-	protected void init(WorkStation m) {
-	}
-
-	protected void produceResults(WorkStation m, Map<String, Object> resultMap) {
-	}
-
-	protected void done(WorkStation m) {
-	}
-
-	protected void operationCompleted(WorkStation m, PrioRuleTarget justCompleted) {
-	}
-
-	protected void operationStarted(WorkStation m, PrioRuleTarget justStarted, int oldSetupState, int newSetupState,
+	default void operationStarted(WorkStation m, PrioRuleTarget justStarted, int oldSetupState, int newSetupState,
 			double setupTime) {
 	}
 
-	protected void arrival(WorkStation m, Job justArrived) {
+	default void arrival(WorkStation m, Job justArrived) {
 	}
 
-	protected void activated(WorkStation m, IndividualMachine justActivated) {
+	default void activated(WorkStation m, IndividualMachine justActivated) {
 	}
 
-	protected void deactivated(WorkStation m, IndividualMachine justDeactivated) {
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	default void deactivated(WorkStation m, IndividualMachine justDeactivated) {
 	}
 
 }

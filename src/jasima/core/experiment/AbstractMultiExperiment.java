@@ -160,7 +160,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 		numTasksExecuted++;
 		storeRunResults(e, res);
 
-		notifierService().publish(this, new BaseExperimentCompleted(e, res));
+		fire(new BaseExperimentCompleted(e, res));
 	}
 
 	protected void configureRunExperiment(Experiment e) {

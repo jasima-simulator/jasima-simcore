@@ -32,7 +32,7 @@ import jasima.core.experiment.AbstractMultiExperiment;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
-import jasima.core.experiment.ExperimentListenerBase;
+import jasima.core.experiment.ExperimentListener;
 import jasima.core.statistics.SummaryStat;
 
 /**
@@ -40,7 +40,7 @@ import jasima.core.statistics.SummaryStat;
  * 
  * @author Torsten Hildebrandt
  */
-public class ConsolePrinter extends ExperimentListenerBase {
+public class ConsolePrinter implements ExperimentListener {
 
 	private ExpMsgCategory logLevel = ExpMsgCategory.INFO;
 	private Locale locale = Util.DEF_LOCALE;
@@ -69,7 +69,7 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	}
 
 	@Override
-	protected void print(Experiment e, ExpPrintEvent event) {
+	public void print(Experiment e, ExpPrintEvent event) {
 		if (event.category.ordinal() <= getLogLevel().ordinal()) {
 			String name = e.getName();
 			if (name == null)
@@ -85,45 +85,44 @@ public class ConsolePrinter extends ExperimentListenerBase {
 	}
 
 	@Override
-	protected void starting(final Experiment e) {
+	public void starting(Experiment e) {
 		if (isPrintStdEvents()) {
 			e.print("starting...");
 		}
 	}
 
 	@Override
-	protected void initialized(final Experiment e) {
+	public void initialized(Experiment e) {
 		if (isPrintStdEvents())
 			e.print("initializing...");
 	}
 
 	@Override
-	protected void beforeRun(Experiment e) {
+	public void beforeRun(Experiment e) {
 		if (isPrintStdEvents())
 			e.print("running...");
 	}
 
 	@Override
-	protected void afterRun(Experiment e) {
+	public void afterRun(Experiment e) {
 		if (isPrintStdEvents())
 			e.print("terminating...");
 	}
 
 	@Override
-	protected void done(Experiment e) {
+	public void done(Experiment e) {
 		if (isPrintStdEvents())
 			e.print("collecting results...");
 	}
 
 	@Override
-	protected void finished(Experiment e, Map<String, Object> results) {
+	public void finished(Experiment e, Map<String, Object> results) {
 		if (isPrintStdEvents())
 			e.print("finished.");
 	}
 
 	@Override
-	protected void multiExperimentCompletedTask(Experiment e, Experiment runExperiment,
-			Map<String, Object> runResults) {
+	public void multiExperimentCompletedTask(Experiment e, Experiment runExperiment, Map<String, Object> runResults) {
 		if (isPrintStdEvents() && e instanceof AbstractMultiExperiment) {
 			AbstractMultiExperiment me = (AbstractMultiExperiment) e;
 

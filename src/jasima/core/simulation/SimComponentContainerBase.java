@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SimComponentContainerBase<T extends SimComponent> extends SimComponentBase
-		implements SimComponentContainer<T> {
+public class SimComponentContainerBase<SUB extends SimComponent> extends SimComponentBase
+		implements SimComponentContainer<SUB> {
 
-	private ArrayList<T> components;
+	private ArrayList<SUB> components;
 
 	public SimComponentContainerBase() {
 		super();
@@ -22,23 +22,23 @@ public class SimComponentContainerBase<T extends SimComponent> extends SimCompon
 	}
 
 	@Override
-	public List<T> getComponents() {
+	public List<SUB> getComponents() {
 		return Collections.unmodifiableList(components);
 	}
 
 	@Override
-	public T getComponent(int index) {
+	public SUB getComponent(int index) {
 		return components.get(index);
 	}
 
 	@Override
-	public void addComponent(T sc) {
+	public void addComponent(SUB sc) {
 		components.add(sc);
 		sc.setParent(this);
 	}
 
 	@Override
-	public boolean removeComponent(T sc) {
+	public boolean removeComponent(SUB sc) {
 		boolean b = components.remove(sc);
 		if (b) {
 			sc.setParent(null);
@@ -55,6 +55,20 @@ public class SimComponentContainerBase<T extends SimComponent> extends SimCompon
 	@Override
 	public int numComponents() {
 		return components.size();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SimComponentContainerBase<SUB> clone() throws CloneNotSupportedException {
+		SimComponentContainerBase<SUB> clone = (SimComponentContainerBase<SUB>) super.clone();
+
+		clone.components = new ArrayList<>();
+		for (int i = 0; i < numComponents(); i++) {
+			SUB c = getComponent(i);
+			clone.addComponent((SUB) c.clone());
+		}
+
+		return clone;
 	}
 
 }

@@ -29,12 +29,15 @@ import java.util.Map;
 
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
+import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
-import jasima.core.util.observer.NotifierService;
+import jasima.core.util.observer.Notifier;
+import jasima.core.util.observer.NotifierAdapter;
+import jasima.core.util.observer.Subscriber;
 
 /**
  * <p>
@@ -67,14 +70,14 @@ import jasima.core.util.observer.NotifierService;
  * </p>
  * <p>
  * Experiments can have listeners registered (derived from
- * {@link ExperimentListenerBase}), which are informed of various events such as
+ * {@link ExperimentListener}), which are informed of various events such as
  * an experiment's start and completion and can be used by subclasses to provide
  * additional events.
  * </p>
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class Experiment implements Cloneable, Serializable {
+public abstract class Experiment implements Notifier<Experiment, ExperimentEvent>, Cloneable, Serializable {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -189,18 +192,13 @@ public abstract class Experiment implements Cloneable, Serializable {
 	private int nestingLevel = 0;
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
-	private NotifierService ns;
+
+	private NotifierAdapter<Experiment, ExperimentEvent> adapter;
 
 	// fields used during run
 	private long runTimeReal;
 	protected int aborted;
 	protected Map<String, Object> resultMap;
-
-	/**
-	 * used during event notification and only temporarily contains a reference
-	 * to {@link #resultMap}.
-	 */
-	public Map<String, Object> results;
 
 	public static class UniqueNamesCheckingHashMap extends LinkedHashMap<String, Object> {
 		private static final long serialVersionUID = -6783419937586790463L;
@@ -216,7 +214,7 @@ public abstract class Experiment implements Cloneable, Serializable {
 	public Experiment() {
 		super();
 
-		ns = new NotifierService();
+		adapter = new NotifierAdapter<>(this);
 	}
 
 	/**
@@ -279,42 +277,49 @@ public abstract class Experiment implements Cloneable, Serializable {
 		try {
 			runTimeReal = System.currentTimeMillis();
 
-			ns.publish(this, EXPERIMENT_STARTING);
+			if (numListener() > 0)
+				fire(EXPERIMENT_STARTING);
 
 			init();
 
-			ns.publish(this, EXPERIMENT_INITIALIZED);
+			if (numListener() > 0)
+				fire(EXPERIMENT_INITIALIZED);
 
 			beforeRun();
-			ns.publish(this, EXPERIMENT_BEFORE_RUN);
+			if (numListener() > 0)
+				fire(EXPERIMENT_BEFORE_RUN);
 
 			performRun();
 
-			ns.publish(this, EXPERIMENT_AFTER_RUN);
+			if (numListener() > 0)
+				fire(EXPERIMENT_AFTER_RUN);
 
 			done();
 
-			ns.publish(this, EXPERIMENT_DONE);
+			if (numListener() > 0)
+				fire(EXPERIMENT_DONE);
 		} finally {
 			runTimeReal = System.currentTimeMillis() - runTimeReal;
 		}
 
 		// build result map
 		resultMap = new UniqueNamesCheckingHashMap();
+
 		produceResults();
-		results = resultMap;
-		ns.publish(this, EXPERIMENT_COLLECT_RESULTS);
-		results = null;
+
+		if (numListener() > 0)
+			fire(EXPERIMENT_COLLECT_RESULTS);
 
 		// give experiments and listener a chance to view/modify results
 		finish();
-		results = resultMap;
-		ns.publish(this, EXPERIMENT_FINISHING);
-		results = null;
+
+		if (numListener() > 0)
+			fire(EXPERIMENT_FINISHING);
 
 		// we are done, don't change results any more
 		resultMap = Collections.unmodifiableMap(resultMap);
-		ns.publish(this, EXPERIMENT_FINISHED);
+		if (numListener() > 0)
+			fire(EXPERIMENT_FINISHED);
 
 		// return results
 		return getResults();
@@ -397,7 +402,8 @@ public abstract class Experiment implements Cloneable, Serializable {
 	 * @see ConsolePrinter
 	 */
 	public void print(ExpMsgCategory category, String message) {
-		ns.publish(this, new ExpPrintEvent(this, category, message));
+		if (numListener() > 0)
+			fire(new ExpPrintEvent(this, category, message));
 	}
 
 	/**
@@ -413,7 +419,8 @@ public abstract class Experiment implements Cloneable, Serializable {
 	 *            Parameters to use in the format string.
 	 */
 	public void print(ExpMsgCategory category, String messageFormat, Object... params) {
-		ns.publish(this, new ExpPrintEvent(this, category, messageFormat, params));
+		if (numListener() > 0)
+			fire(new ExpPrintEvent(this, category, messageFormat, params));
 	}
 
 	/**
@@ -443,6 +450,12 @@ public abstract class Experiment implements Cloneable, Serializable {
 	@Override
 	public Experiment clone() throws CloneNotSupportedException {
 		Experiment c = (Experiment) super.clone();
+
+		c.adapter = new NotifierAdapter<>(c);
+		for (int i = 0; i < numListener(); i++) {
+			c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+		}
+
 		return c;
 	}
 
@@ -459,6 +472,33 @@ public abstract class Experiment implements Cloneable, Serializable {
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	// event notification
+
+	@Override
+	public int numListener() {
+		return adapter.numListener();
+	}
+
+	@Override
+	public void addListener(Subscriber<Experiment, ExperimentEvent> l) {
+		adapter.addListener(l);
+	}
+
+	@Override
+	public boolean removeListener(Subscriber<Experiment, ExperimentEvent> l) {
+		return adapter.removeListener(l);
+	}
+
+	@Override
+	public Subscriber<Experiment, ExperimentEvent> getListener(int idx) {
+		return adapter.getListener(idx);
+	}
+
+	@Override
+	public void fire(ExperimentEvent msg) {
+		adapter.fire(msg);
 	}
 
 	/**
@@ -514,10 +554,6 @@ public abstract class Experiment implements Cloneable, Serializable {
 	 */
 	public void setInitialSeed(long initialSeed) {
 		this.initialSeed = initialSeed;
-	}
-
-	public NotifierService notifierService() {
-		return ns;
 	}
 
 	// ******************* static methods ************************

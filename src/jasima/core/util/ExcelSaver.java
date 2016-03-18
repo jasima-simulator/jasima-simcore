@@ -179,7 +179,7 @@ public class ExcelSaver extends ResultSaver {
 	}
 
 	@Override
-	protected void finished(Experiment e, Map<String, Object> results) {
+	public void finished(Experiment e, Map<String, Object> results) {
 		super.finished(e, results);
 
 		// convert data to Excel file

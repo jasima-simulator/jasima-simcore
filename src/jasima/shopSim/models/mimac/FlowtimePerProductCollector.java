@@ -23,12 +23,12 @@ package jasima.shopSim.models.mimac;
 import java.util.HashMap;
 import java.util.Map;
 
-import jasima.core.simulation.Simulation;
+import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
-import jasima.shopSim.util.ShopListenerBase;
+import jasima.shopSim.core.ShopListenerBase;
 
 /**
  * Collects flowtimes seperately for each product.
@@ -40,14 +40,12 @@ public class FlowtimePerProductCollector extends ShopListenerBase {
 	private HashMap<Integer, SummaryStat> flowtimesPerProduct;
 
 	@Override
-	protected void init(Simulation sim) {
+	public void init(SimComponent c) {
 		flowtimesPerProduct = new HashMap<Integer, SummaryStat>();
 	}
 
 	@Override
-	protected void jobFinished(JobShop shop, Job j) {
-		super.jobFinished(shop, j);
-
+	public void jobFinished(JobShop shop, Job j) {
 		if (!shouldCollect(j))
 			return;
 
@@ -62,7 +60,7 @@ public class FlowtimePerProductCollector extends ShopListenerBase {
 	}
 
 	@Override
-	protected void produceResults(Simulation sim, Map<String, Object> res) {
+	public void produceResults(SimComponent c, Map<String, Object> res) {
 		for (Integer prodTypeId : flowtimesPerProduct.keySet()) {
 			String prefix = "p" + prodTypeId;
 			SummaryStat stats = flowtimesPerProduct.get(prodTypeId);

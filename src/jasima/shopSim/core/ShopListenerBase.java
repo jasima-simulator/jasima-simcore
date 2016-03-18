@@ -18,13 +18,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.shopSim.util;
+package jasima.shopSim.core;
 
-import jasima.core.util.observer.NotifierService;
-import jasima.core.util.observer.Subscriber;
-import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
-import jasima.shopSim.core.JobShop.JobShopEvent;
+import jasima.core.util.SilentCloneable;
+import jasima.shopSim.util.BasicJobStatCollector;
+import jasima.shopSim.util.ExtendedJobStatCollector;
 
 /**
  * This class can be used as a base class for classes collecting results based
@@ -35,41 +33,13 @@ import jasima.shopSim.core.JobShop.JobShopEvent;
  * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
  */
-public abstract class ShopListenerBase extends SimLifeCycleListenerBase implements Subscriber, Cloneable {
+public abstract class ShopListenerBase implements ShopListener, SilentCloneable<ShopListenerBase> {
 
 	private double initialPeriod = 0;
 	private int ignoreFirst = 0;
 
 	public ShopListenerBase() {
 		super();
-	}
-
-	@Override
-	public void register(NotifierService ns) {
-		super.register(ns);
-		ns.addSubscription(JobShopEvent.class, this);
-	}
-
-	/**
-	 * Update method to be notified of shop events.
-	 */
-	@Override
-	public void inform(Object o, Object e) {
-		if (e == JobShop.JOB_RELEASED) {
-			JobShop shop = (JobShop) o;
-			jobReleased(shop, shop.lastJobReleased);
-		} else if (e == JobShop.JOB_FINISHED) {
-			JobShop shop = (JobShop) o;
-			jobFinished(shop, shop.lastJobFinished);
-		} else {
-			super.inform(o, e);
-		}
-	}
-
-	protected void jobReleased(JobShop shop, Job j) {
-	}
-
-	protected void jobFinished(JobShop shop, Job j) {
 	}
 
 	protected boolean shouldCollect(Job j) {

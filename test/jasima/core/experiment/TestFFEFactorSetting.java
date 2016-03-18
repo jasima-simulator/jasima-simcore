@@ -156,7 +156,8 @@ public class TestFFEFactorSetting {
 		FullFactorialExperiment ffe = new FullFactorialExperiment();
 		ffe.setBaseExperiment(base);
 		ffe.setAbortUponBaseExperimentAbort(true);
-		new ConsolePrinter().register(ffe.notifierService());
+		ffe.addListener(new ConsolePrinter());
+
 		return ffe;
 	}
 

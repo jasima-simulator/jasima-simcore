@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import jasima.core.experiment.OCBAExperiment.ProblemType;
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.ExcelSaver;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
@@ -74,7 +73,7 @@ public class OCBATest {
 		ocbaExperiment.setPcsLevel(0.95);
 
 		// optionally produce an Excel file with results and details
-		new ExcelSaver().register(ocbaExperiment.notifierService());
+		// ocbaExperiment.addListener(new ExcelSaver());
 
 		// run
 		ocbaExperiment.runExperiment();

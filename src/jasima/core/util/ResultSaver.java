@@ -91,7 +91,7 @@ public class ResultSaver extends AbstractResultSaver {
 	private ArrayList<ColumnData> columns;
 
 	@Override
-	protected void starting(Experiment e) {
+	public void starting(Experiment e) {
 		columns = new ArrayList<ColumnData>();
 		unsavedResults = 0;
 		nextSaveTime = 0;
@@ -114,13 +114,13 @@ public class ResultSaver extends AbstractResultSaver {
 	}
 
 	@Override
-	protected void multiExperimentCompletedTask(Experiment me, Experiment e, Map<String, Object> runRes) {
+	public void multiExperimentCompletedTask(Experiment me, Experiment e, Map<String, Object> runRes) {
 		if (isSaveSubExperiments())
 			saveExperiment(e, runRes);
 	}
 
 	@Override
-	protected void finished(Experiment e, Map<String, Object> results) {
+	public void finished(Experiment e, Map<String, Object> results) {
 		// write marker for begin of main results
 		addCell(-3, null);
 		columns.clear();

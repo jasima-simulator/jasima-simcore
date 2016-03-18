@@ -39,9 +39,10 @@ import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
+import jasima.shopSim.core.ShopListener;
+import jasima.shopSim.core.ShopListenerBase;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.util.BasicJobStatCollector;
-import jasima.shopSim.util.ShopListenerBase;
 
 /**
  * Simulates dynamic job shops and flow shops, based on some parameters. See
@@ -92,12 +93,12 @@ public class DynamicShopExperiment extends JobShopExperiment {
 
 		Objects.requireNonNull(procTimes);
 
-		ShopListenerBase stopSrc = new ShopListenerBase() {
+		ShopListener stopSrc = new ShopListenerBase() {
 			int maxJob = getStopArrivalsAfterNumJobs();
 			int numJobs = maxJob;
 
 			@Override
-			protected void jobFinished(JobShop shop, Job j) {
+			public void jobFinished(JobShop shop, Job j) {
 				// stop arrivals after the first, e.g., 2500, jobs were
 				// completed
 				if (j.getJobNum() < maxJob) {
@@ -107,7 +108,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 				}
 			}
 		};
-		stopSrc.register(sim.getNotifierService());
+		shop.addListener(stopSrc);
 	}
 
 	@Override

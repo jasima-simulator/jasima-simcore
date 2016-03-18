@@ -34,7 +34,7 @@ import jasima.core.experiment.Experiment;
 public class XmlSaver extends AbstractResultSaver {
 
 	@Override
-	protected void finished(Experiment e, Map<String, Object> results) {
+	public void finished(Experiment e, Map<String, Object> results) {
 		XmlUtil.saveXML(FileFormat.XSTREAM, results, new File(getActualResultBaseName() + ".xml"));
 	}
 

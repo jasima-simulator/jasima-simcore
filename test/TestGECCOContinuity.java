@@ -189,7 +189,8 @@ public class TestGECCOContinuity {
 
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addShopListener(new TraceFileProducer("traceNew.txt"));
-		e.addShopListener(new ConsolePrinter(ExpMsgCategory.ALL));
+		
+		e.addListener(new ConsolePrinter(ExpMsgCategory.ALL));
 
 		GECCO2010_genSeed_2reps pr = new GECCO2010_genSeed_2reps();
 		pr.setTieBreaker(new TieBreakerFASFS());

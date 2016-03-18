@@ -25,7 +25,6 @@ import java.util.Map;
 import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.Experiment.ExperimentEvent;
-import jasima.core.util.observer.NotifierService;
 import jasima.core.util.observer.Subscriber;
 
 /**
@@ -34,19 +33,9 @@ import jasima.core.util.observer.Subscriber;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class ExperimentListenerBase implements Subscriber, Cloneable {
+public interface ExperimentListener extends Subscriber<Experiment, ExperimentEvent> {
 
-	public ExperimentListenerBase() {
-		super();
-	}
-
-	@Override
-	public void register(NotifierService s) {
-		s.addSubscription(ExperimentEvent.class, this);
-	}
-
-	@Override
-	public void inform(Object e, Object event) {
+	default void inform(Experiment e, ExperimentEvent event) {
 		if (event == Experiment.EXPERIMENT_STARTING) {
 			starting((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_INITIALIZED) {
@@ -59,13 +48,13 @@ public abstract class ExperimentListenerBase implements Subscriber, Cloneable {
 			done((Experiment) e);
 		} else if (event == Experiment.EXPERIMENT_COLLECT_RESULTS) {
 			Experiment exp = (Experiment) e;
-			produceResults(exp, exp.results);
+			produceResults(exp, exp.resultMap);
 		} else if (event == Experiment.EXPERIMENT_FINISHING) {
 			Experiment exp = (Experiment) e;
-			finishing(exp, exp.results);
+			finishing(exp, exp.resultMap);
 		} else if (event == Experiment.EXPERIMENT_FINISHED) {
 			Experiment exp = (Experiment) e;
-			finished(exp, exp.results);
+			finished(exp, exp.resultMap);
 		} else if (event instanceof ExpPrintEvent) {
 			print((Experiment) e, (ExpPrintEvent) event);
 		} else if (event instanceof BaseExperimentCompleted) {
@@ -76,43 +65,38 @@ public abstract class ExperimentListenerBase implements Subscriber, Cloneable {
 		}
 	}
 
-	protected void handleOther(Object e, Object event) {
+	default void handleOther(Experiment e, ExperimentEvent event) {
 	}
 
-	protected void print(Experiment e, ExpPrintEvent event) {
+	default void print(Experiment e, ExpPrintEvent event) {
 	}
 
-	protected void starting(Experiment e) {
+	default void starting(Experiment e) {
 	}
 
-	protected void initialized(Experiment e) {
+	default void initialized(Experiment e) {
 	}
 
-	protected void beforeRun(Experiment e) {
+	default void beforeRun(Experiment e) {
 	}
 
-	protected void afterRun(Experiment e) {
+	default void afterRun(Experiment e) {
 	}
 
-	protected void done(Experiment e) {
+	default void done(Experiment e) {
 	}
 
-	protected void produceResults(Experiment e, Map<String, Object> res) {
+	default void produceResults(Experiment e, Map<String, Object> res) {
 	}
 
-	protected void finishing(Experiment e, Map<String, Object> results) {
+	default void finishing(Experiment e, Map<String, Object> results) {
 	}
 
-	protected void finished(Experiment e, Map<String, Object> results) {
+	default void finished(Experiment e, Map<String, Object> results) {
 	}
 
-	protected void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment,
+	default void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment,
 			Map<String, Object> runResults) {
-	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
 	}
 
 }

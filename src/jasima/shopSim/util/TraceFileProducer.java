@@ -27,13 +27,16 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.Simulation;
 import jasima.core.util.AbstractResultSaver;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.ShopListener;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.core.WorkStationListenerBase;
 
 /**
  * Produces a detailed trace of all events of a {@link JobShop} in a text file.
@@ -42,7 +45,7 @@ import jasima.shopSim.core.WorkStation;
  * 
  * @author Torsten Hildebrandt, 2012-08-24
  */
-public class TraceFileProducer extends ShopListenerBase {
+public class TraceFileProducer implements ShopListener {
 
 	// parameters
 
@@ -67,7 +70,7 @@ public class TraceFileProducer extends ShopListenerBase {
 	protected WorkStationListenerBase createWSListener() {
 		return new WorkStationListenerBase() {
 			@Override
-			protected void arrival(WorkStation m, Job j) {
+			public void arrival(WorkStation m, Job j) {
 				if (!j.isFuture()) {
 					print(m.shop().simTime() + "\tarrives_at\t" + j + "\t" + m + "\t"
 							+ (m.numBusy() == 0 ? "IDLE" : "PROCESSING") + "\t" + (m.numJobsWaiting() - 1));
@@ -75,20 +78,20 @@ public class TraceFileProducer extends ShopListenerBase {
 			}
 
 			@Override
-			protected void activated(WorkStation ws, IndividualMachine m) {
+			public void activated(WorkStation ws, IndividualMachine m) {
 				print(ws.shop().simTime() + "\tbecomes_available\t" + m.toString() + "\t" + ws.numJobsWaiting()
 						+ (m.downReason == null ? "" : "\t" + String.valueOf(m.downReason)));
 			}
 
 			@Override
-			protected void deactivated(WorkStation ws, IndividualMachine m) {
+			public void deactivated(WorkStation ws, IndividualMachine m) {
 				print(ws.shop().simTime() + "\tunavailable\t" + m.toString() + "\t" + ws.numJobsWaiting()
 						+ (m.downReason == null ? "" : "\t" + String.valueOf(m.downReason)));
 			}
 
 			@Override
-			protected void operationStarted(WorkStation m, PrioRuleTarget jobOrBatch, int oldSetupState,
-					int newSetupState, double setTime) {
+			public void operationStarted(WorkStation m, PrioRuleTarget jobOrBatch, int oldSetupState, int newSetupState,
+					double setTime) {
 				if (jobOrBatch == null) {
 					print(m.shop().simTime() + "\tkeeping_idle\t" + m.currMachine.toString() + "\t" + jobOrBatch);
 				} else {
@@ -107,7 +110,7 @@ public class TraceFileProducer extends ShopListenerBase {
 			}
 
 			@Override
-			protected void operationCompleted(WorkStation m, PrioRuleTarget jobOrBatch) {
+			public void operationCompleted(WorkStation m, PrioRuleTarget jobOrBatch) {
 				// shop.log().debug(
 				// shop.simTime + "\tfinished_processing\t" + machName + "\t"
 				// + b);
@@ -119,41 +122,35 @@ public class TraceFileProducer extends ShopListenerBase {
 	}
 
 	@Override
-	protected void jobReleased(JobShop shop, Job j) {
+	public void jobReleased(JobShop shop, Job j) {
 		print(shop.simTime() + "\tenter_system\t" + j);
 	}
 
 	@Override
-	protected void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(JobShop shop, Job j) {
 		print(shop.simTime() + "\tleave_system\t" + j);
 	}
 
 	@Override
-	protected void simEnd(Simulation sim) {
-		print(sim.simTime() + "\tsim_end");
+	public void simEnd(SimComponent shop) {
+		print(shop.getSim().simTime() + "\tsim_end");
 
 		log.close();
 		log = null;
 	}
 
 	@Override
-	protected void init(Simulation sim) {
-		createLogFile(sim);
+	public void init(SimComponent shop) {
+		createLogFile(shop.getSim());
 	}
 
 	@Override
-	protected void simStart(Simulation sim) {
-		print(sim.simTime() + "\tsim_start");
+	public void simStart(SimComponent shop) {
+		print(shop.getSim().simTime() + "\tsim_start");
 
-		JobShop shop = (JobShop) sim.getRootComponent().getComponent(0); // TODO:
-																			// fix
-		shop.installMachineListener(createWSListener(), false);
+		JobShop s = (JobShop) shop;
+		s.installMachineListener(createWSListener(), false);
 	}
-
-	// @Override
-	// protected void print(Simulation sim, SimPrintEvent event) {
-	// print(sim.simTime() + "\tprint\t" + event.getMessage());
-	// }
 
 	protected void print(String line) {
 		log.println(line);

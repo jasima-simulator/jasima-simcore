@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.shopSim.util;
+package jasima.shopSim.core;
 
 import static jasima.shopSim.core.Job.JOB_ARRIVED_IN_QUEUE;
 import static jasima.shopSim.core.Job.JOB_END_OPERATION;
@@ -27,12 +27,7 @@ import static jasima.shopSim.core.Job.JOB_RELEASED;
 import static jasima.shopSim.core.Job.JOB_REMOVED_FROM_QUEUE;
 import static jasima.shopSim.core.Job.JOB_START_OPERATION;
 
-import jasima.core.util.observer.NotifierService;
 import jasima.core.util.observer.Subscriber;
-import jasima.shopSim.core.Job;
-import jasima.shopSim.core.Job.JobEvent;
-import jasima.shopSim.core.JobShop;
-import jasima.shopSim.core.WorkStation;
 
 /**
  * This class can be used as a base class for classes collecting results based
@@ -40,70 +35,48 @@ import jasima.shopSim.core.WorkStation;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class JobListenerBase implements Subscriber, Cloneable {
-
-	public JobListenerBase() {
-		super();
-	}
+public interface JobListenerBase extends Subscriber<Job, Object> {
 
 	@Override
-	public void register(NotifierService ns) {
-		ns.addSubscription(JobEvent.class, this);
-	}
-
-	@Override
-	public final void inform(Object o, Object e) {
-		Job j = (Job) o;
-		JobEvent event = (JobEvent) e;
-
-		final JobShop shop = j.getShop();
+	default void inform(Job o, Object event) {
+		final JobShop shop = o.getShop();
 		if (event == JOB_RELEASED) {
-			released(shop, j);
+			released(shop, o);
 		} else if (event == JOB_FINISHED) {
-			finished(shop, j);
+			finished(shop, o);
 		} else if (event == JOB_ARRIVED_IN_QUEUE) {
-			arrivedInQueue(shop, j);
+			arrivedInQueue(shop, o);
 		} else if (event == JOB_REMOVED_FROM_QUEUE) {
-			removedFromQueue(shop, j);
+			removedFromQueue(shop, o);
 		} else if (event == JOB_START_OPERATION) {
-			WorkStation m = j.getCurrMachine();
-			operationStarted(shop, j, m.oldSetupState, m.newSetupState, m.setupTime);
+			WorkStation m = o.getCurrMachine();
+			operationStarted(shop, o, m.oldSetupState, m.newSetupState, m.setupTime);
 		} else if (event == JOB_END_OPERATION) {
-			endOperation(shop, j);
+			endOperation(shop, o);
 		} else {
-			handleOther(shop, j, event);
+			handleOther(shop, o, event);
 		}
 	}
 
-	protected void handleOther(JobShop shop, Job j, JobEvent event) {
+	default void handleOther(JobShop shop, Job j, Object event) {
 	}
 
-	protected void endOperation(JobShop shop, Job j) {
+	default void endOperation(JobShop shop, Job j) {
 	}
 
-	protected void operationStarted(JobShop shop, Job j, int oldSetupState, int newSetupState, double setupTime) {
+	default void operationStarted(JobShop shop, Job j, int oldSetupState, int newSetupState, double setupTime) {
 	}
 
-	protected void removedFromQueue(JobShop shop, Job j) {
+	default void removedFromQueue(JobShop shop, Job j) {
 	}
 
-	protected void arrivedInQueue(JobShop shop, Job j) {
+	default void arrivedInQueue(JobShop shop, Job j) {
 	}
 
-	protected void finished(JobShop shop, Job j) {
+	default void finished(JobShop shop, Job j) {
 	}
 
-	protected void released(JobShop shop, Job j) {
-	}
-
-	@Override
-	public JobListenerBase clone() throws CloneNotSupportedException {
-		return (JobListenerBase) super.clone();
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
+	default void released(JobShop shop, Job j) {
 	}
 
 }

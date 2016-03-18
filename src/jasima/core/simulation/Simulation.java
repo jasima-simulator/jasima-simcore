@@ -33,7 +33,6 @@ import java.util.function.DoubleSupplier;
 import jasima.core.random.RandomFactory;
 import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 import jasima.core.util.Util;
-import jasima.core.util.observer.NotifierService;
 
 /**
  * Base class for a discrete event simulation. This class doesn't do much, but
@@ -113,19 +112,31 @@ public class Simulation {
 		void handle();
 	}
 
-	public static class SimLifeCycleEvent {
-		public static final SimLifeCycleEvent INIT = new SimLifeCycleEvent();
-		public static final SimLifeCycleEvent BEFORE_RUN = new SimLifeCycleEvent();
-		public static final SimLifeCycleEvent AFTER_RUN = new SimLifeCycleEvent();
-		public static final SimLifeCycleEvent DONE = new SimLifeCycleEvent();
+	public static class SimComponentLifeCycleEvent {
+
+		private final String name;
+
+		public SimComponentLifeCycleEvent(String s) {
+			name = s;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static final SimComponentLifeCycleEvent INIT = new SimComponentLifeCycleEvent("INIT");
+		public static final SimComponentLifeCycleEvent BEFORE_RUN = new SimComponentLifeCycleEvent("BEFORE_RUN");
+		public static final SimComponentLifeCycleEvent AFTER_RUN = new SimComponentLifeCycleEvent("AFTER_RUN");
+		public static final SimComponentLifeCycleEvent DONE = new SimComponentLifeCycleEvent("DONE");
 	}
 
-	public static class ProduceResultsEvent extends SimLifeCycleEvent {
+	public static class ProduceResultsEvent extends SimComponentLifeCycleEvent {
 
 		public final Map<String, Object> resultMap;
 
 		public ProduceResultsEvent(Map<String, Object> resultMap) {
-			super();
+			super("ProduceResultsEvent");
 			this.resultMap = resultMap;
 		}
 
@@ -136,7 +147,6 @@ public class Simulation {
 	private double simulationLength = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
-	private NotifierService notifierService;
 	private SimComponentContainer<SimComponent> rootComponent;
 	private MsgCategory printLevel = MsgCategory.ALL;
 	private ArrayList<Consumer<SimPrintEvent>> printListener;
@@ -162,8 +172,6 @@ public class Simulation {
 
 		printListener = new ArrayList<>();
 
-		setNotifierService(new NotifierService());
-
 		RandomFactory randomFactory = RandomFactory.newInstance();
 		setRndStreamFactory(randomFactory);
 
@@ -182,7 +190,7 @@ public class Simulation {
 		return printListener.size();
 	}
 
-	public List<Consumer<SimPrintEvent>> listener() {
+	public List<Consumer<SimPrintEvent>> printListener() {
 		return Collections.unmodifiableList(printListener);
 	}
 
@@ -194,8 +202,6 @@ public class Simulation {
 		init0();
 
 		rootComponent.init();
-
-		publishNotification(this, SimLifeCycleEvent.INIT);
 	}
 
 	protected void init0() {
@@ -306,8 +312,6 @@ public class Simulation {
 			});
 
 		rootComponent.beforeRun();
-
-		publishNotification(this, SimLifeCycleEvent.BEFORE_RUN);
 	}
 
 	/**
@@ -316,8 +320,6 @@ public class Simulation {
 	 */
 	protected void afterRun() {
 		rootComponent.afterRun();
-
-		publishNotification(this, SimLifeCycleEvent.AFTER_RUN);
 	}
 
 	/**
@@ -326,8 +328,6 @@ public class Simulation {
 	 */
 	public void done() {
 		rootComponent.done();
-
-		publishNotification(this, SimLifeCycleEvent.DONE);
 	}
 
 	/**
@@ -471,11 +471,11 @@ public class Simulation {
 	public void produceResults(Map<String, Object> res) {
 		res.put("simTime", simTime());
 		rootComponent.produceResults(res);
-		publishNotification(this, new ProduceResultsEvent(res));
 	}
 
 	/**
-	 * Convenience method to add a new component to the root component.
+	 * Convenience method to add a new component to the root component of this
+	 * simulation.
 	 */
 	public void addComponent(SimComponent sc) {
 		getRootComponent().addComponent(sc);
@@ -586,21 +586,13 @@ public class Simulation {
 		return rootComponent;
 	}
 
-	public void setRootComponent(SimComponentContainer<SimComponent> rootComponent) {
+	protected void setRootComponent(SimComponentContainer<SimComponent> rootComponent) {
 		if (this.rootComponent != null) {
 			this.rootComponent.setSim(null);
 		}
 
 		this.rootComponent = rootComponent;
 		rootComponent.setSim(this);
-	}
-
-	public NotifierService getNotifierService() {
-		return notifierService;
-	}
-
-	public void setNotifierService(NotifierService notifierService) {
-		this.notifierService = notifierService;
 	}
 
 	public MsgCategory getPrintLevel() {
@@ -620,10 +612,6 @@ public class Simulation {
 	protected Object clone() throws CloneNotSupportedException {
 		Simulation sim = (Simulation) super.clone();
 		return sim;
-	}
-
-	public void publishNotification(Object sender, Object notification) {
-		getNotifierService().publish(sender, notification);
 	}
 
 }

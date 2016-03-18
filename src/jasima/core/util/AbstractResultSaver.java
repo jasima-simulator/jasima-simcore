@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import jasima.core.experiment.ExperimentListenerBase;
+import jasima.core.experiment.ExperimentListener;
 
 /**
  * Base class for result saver.
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class AbstractResultSaver extends ExperimentListenerBase {
+public abstract class AbstractResultSaver implements ExperimentListener {
 
 	private String resultFileName = null;
 	private String resultFileNameHint = "runResults";

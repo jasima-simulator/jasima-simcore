@@ -31,8 +31,8 @@ import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
+import jasima.shopSim.core.WorkStationListenerBase;
 import jasima.shopSim.util.MachineStatCollector;
-import jasima.shopSim.util.WorkStationListenerBase;
 
 /**
  * 
@@ -64,7 +64,7 @@ public class JSExample extends JobShop {
 		Simulation s = new Simulation();
 
 		JSExample js = new JSExample();
-		s.setRootComponent(js);
+		s.addComponent(js);
 
 		s.setSimulationLength(LENGTH_SIM);
 
@@ -95,7 +95,7 @@ public class JSExample extends JobShop {
 		installMachineListener(new WorkStationListenerBase() {
 
 			@Override
-			protected void operationStarted(WorkStation m, PrioRuleTarget b, int oldSetupState, int newSetupState,
+			public void operationStarted(WorkStation m, PrioRuleTarget b, int oldSetupState, int newSetupState,
 					double setupTime) {
 				assert b.numJobsInBatch() == 1;
 				Job job = b.job(0);
@@ -132,8 +132,6 @@ public class JSExample extends JobShop {
 				return job;
 			}
 		});
-
-		setSim(getSim());
 
 		super.init();
 

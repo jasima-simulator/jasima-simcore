@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import jasima.core.simulation.Event;
-import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentBase;
 import jasima.core.util.ValueStore;
 import jasima.shopSim.core.IndividualMachine.MachineState;
@@ -47,7 +46,7 @@ import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
  * 
  * @author Torsten Hildebrandt
  */
-public class WorkStation extends SimComponentBase implements ValueStore, SimComponent {
+public class WorkStation extends SimComponentBase implements ValueStore {
 
 	/** Base class for workstation events. */
 	public static class WorkStationEvent {
@@ -60,9 +59,6 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 	public static final WorkStationEvent WS_JOB_ARRIVAL = new WorkStationEvent();
 	public static final WorkStationEvent WS_JOB_SELECTED = new WorkStationEvent();
 	public static final WorkStationEvent WS_JOB_COMPLETED = new WorkStationEvent();
-	public static final WorkStationEvent WS_DONE = new WorkStationEvent();
-	public static final WorkStationEvent WS_COLLECT_RESULTS = new WorkStationEvent();
-	public static final WorkStationEvent WS_INIT = new WorkStationEvent();
 
 	public static final String DEF_SETUP_STR = "DEF_SETUP";
 	public static final int DEF_SETUP = 0;
@@ -122,7 +118,6 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 	public int oldSetupState;
 	public int newSetupState;
 	public double setupTime;
-	public Map<String, Object> resultMap;
 
 	public WorkStation() {
 		this(1);
@@ -177,8 +172,6 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 
 		if (getBatchSequencingRule() != null)
 			getBatchSequencingRule().init();
-
-		getSim().publishNotification(this, WS_INIT);
 	}
 
 	void activated(IndividualMachine im) {
@@ -192,7 +185,9 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 		if (numJobsWaiting() > 0)
 			selectAndStart();
 
-		getSim().publishNotification(this, WS_ACTIVATED);
+		if (numListener() > 0) {
+			fire(WS_ACTIVATED);
+		}
 	}
 
 	void takenDown(IndividualMachine im) {
@@ -202,19 +197,9 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 		numBusy++;
 		assert numBusy >= 0 && numBusy <= numInGroup;
 
-		getSim().publishNotification(this, WS_DEACTIVATED);
-	}
-
-	@Override
-	public void done() {
-		getSim().publishNotification(this, WS_DONE);
-	}
-
-	@Override
-	public void produceResults(Map<String, Object> res) {
-		resultMap = res;
-		getSim().publishNotification(this, WS_COLLECT_RESULTS);
-		resultMap = null;
+		if (numListener() > 0) {
+			fire(WS_DEACTIVATED);
+		}
 	}
 
 	/**
@@ -263,9 +248,11 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 		if (jobsPerBatchFamily != null)
 			addJobToBatchFamily(j);
 
-		justArrived = j;
-		getSim().publishNotification(this, WS_JOB_ARRIVAL);
-		justArrived = null;
+		if (numListener() > 0) {
+			justArrived = j;
+			fire(WS_JOB_ARRIVAL);
+			justArrived = null;
+		}
 
 		// are there jobs that could be started and at least a free
 		// machine
@@ -365,9 +352,11 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 
 		numBusy--;
 
-		justCompleted = b;
-		getSim().publishNotification(this, WS_JOB_COMPLETED);
-		justCompleted = null;
+		if (numListener() > 0) {
+			justCompleted = b;
+			fire(WS_JOB_COMPLETED);
+			justCompleted = null;
+		}
 
 		notifyJobsOfDepart(b);
 
@@ -411,9 +400,11 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 			}
 
 			// inform listener
-			justStarted = nextBatch;
-			getSim().publishNotification(this, WS_JOB_SELECTED);
-			justStarted = null;
+			if (numListener() > 0) {
+				justStarted = nextBatch;
+				fire(WS_JOB_SELECTED);
+				justStarted = null;
+			}
 
 			currMachine = null;
 		}
@@ -762,16 +753,9 @@ public class WorkStation extends SimComponentBase implements ValueStore, SimComp
 			return valueStore.remove(key);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		WorkStation ws = (WorkStation) super.clone();
-
-		if (valueStore != null) {
-			ws.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		}
-
-		return ws;
+	public WorkStation clone() throws CloneNotSupportedException {
+		throw new CloneNotSupportedException();
 	}
 
 }

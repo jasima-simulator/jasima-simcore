@@ -20,24 +20,26 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
+import java.util.Map;
+
+import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.statistics.TimeWeightedSummaryStat;
+import jasima.core.util.SilentCloneable;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
-
-import java.util.Map;
+import jasima.shopSim.core.WorkStationListenerBase;
 
 /**
  * Produces basic statistics for each workstation it is installed on (like
  * utilization, average queue length, average setup time per operation).
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
-public class MachineStatCollector extends WorkStationListenerBase {
+public class MachineStatCollector implements WorkStationListenerBase, SilentCloneable<MachineStatCollector> {
 
 	/*
 	 * Continuous statistic time average number of number of machines busy at
@@ -58,7 +60,9 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	}
 
 	@Override
-	protected void init(WorkStation m) {
+	public void init(SimComponent c) {
+		WorkStation m = (WorkStation) c;
+
 		aveMachinesBusy = new TimeWeightedSummaryStat(m.numBusy(), m.shop().simTime());
 		aniq = new TimeWeightedSummaryStat();
 		stationDelay = new SummaryStat();
@@ -69,7 +73,9 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	}
 
 	@Override
-	protected void produceResults(WorkStation m, Map<String, Object> res) {
+	public void produceResults(SimComponent c, Map<String, Object> res) {
+		WorkStation m = (WorkStation) c;
+
 		res.put(m.getName() + ".qLen", aniq);
 		res.put(m.getName() + ".util", aveMachinesBusy);
 		res.put(m.getName() + ".capUtil", capacityUtilized);
@@ -79,26 +85,28 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	}
 
 	@Override
-	protected void done(WorkStation m) {
+	public void done(SimComponent c) {
+		WorkStation m = (WorkStation) c;
+
 		// properly "close" time weighted stats
 		aniq.value(Double.NaN, m.shop().simTime());
 		aveMachinesBusy.value(Double.NaN, m.shop().simTime());
 	}
 
 	@Override
-	protected void arrival(WorkStation m, Job j) {
+	public void arrival(WorkStation m, Job j) {
 		if (!j.isFuture()) {
 			aniq.value(m.numJobsWaiting(), m.shop().simTime());
 		}
 	}
 
 	@Override
-	protected void activated(WorkStation m, IndividualMachine justActivated) {
+	public void activated(WorkStation m, IndividualMachine justActivated) {
 		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
 	}
 
 	@Override
-	protected void operationStarted(WorkStation m, PrioRuleTarget jobOrBatch, int oldSetupState, int newSetupState,
+	public void operationStarted(WorkStation m, PrioRuleTarget jobOrBatch, int oldSetupState, int newSetupState,
 			double setTime) {
 		if (jobOrBatch == null)
 			return;
@@ -124,8 +132,13 @@ public class MachineStatCollector extends WorkStationListenerBase {
 	}
 
 	@Override
-	protected void operationCompleted(WorkStation m, PrioRuleTarget justCompleted) {
+	public void operationCompleted(WorkStation m, PrioRuleTarget justCompleted) {
 		aveMachinesBusy.value(m.numBusy(), m.shop().simTime());
+	}
+
+	@Override
+	public MachineStatCollector clone() throws CloneNotSupportedException {
+		return (MachineStatCollector) super.clone();
 	}
 
 }
