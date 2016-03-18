@@ -27,16 +27,14 @@ import java.util.Random;
 import jasima.core.experiment.Experiment;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 import jasima.core.util.MersenneTwister;
+import jasima.core.util.MsgCategory;
 
 /**
- * <p>
  * This class provides functionality to create (independent) random number
  * streams. These streams are dependent on a base seed ({@link #setSeed(long)})
  * and a stream name (provided as a parameter to {@link #createInstance(String)}
  * ).
- * </p>
  * <p>
  * Behaviour of this class can be modified in two ways using system properties.
  * <ol>

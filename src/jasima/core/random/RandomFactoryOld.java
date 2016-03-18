@@ -22,7 +22,7 @@ package jasima.core.random;
 
 import java.util.Random;
 
-import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
+import jasima.core.util.MsgCategory;
 
 /**
  * Use {@link RandomFactory} instead.

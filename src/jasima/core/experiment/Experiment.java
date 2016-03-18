@@ -33,6 +33,7 @@ import jasima.core.experiment.Experiment.ExperimentMessage;
 import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
+import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
@@ -119,24 +120,17 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	}
 
 	/**
-	 * Enum for the category of a message produced by an experiment.
-	 */
-	public static enum ExpMsgCategory {
-		OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL;
-	}
-
-	/**
 	 * Class to store print messages of an experiment.
 	 */
 	public static class ExpPrintEvent extends ExperimentMessage {
 
 		public final Experiment exp;
-		public final ExpMsgCategory category;
+		public final MsgCategory category;
 		private String message;
 		private String messageFormatString;
 		private Object[] params;
 
-		public ExpPrintEvent(Experiment exp, ExpMsgCategory category, String message) {
+		public ExpPrintEvent(Experiment exp, MsgCategory category, String message) {
 			super("ExpPrintEvent");
 			if (message == null)
 				throw new NullPointerException();
@@ -145,7 +139,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 			this.message = message;
 		}
 
-		public ExpPrintEvent(Experiment exp, ExpMsgCategory category, String messageFormatString, Object... params) {
+		public ExpPrintEvent(Experiment exp, MsgCategory category, String messageFormatString, Object... params) {
 			super("ExpPrintEvent");
 			this.exp = exp;
 			this.category = category;
@@ -389,7 +383,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	 * @see #print(ExpMsgCategory, String)
 	 */
 	public void print(String message) {
-		print(ExpMsgCategory.INFO, message);
+		print(MsgCategory.INFO, message);
 	}
 
 	/**
@@ -402,7 +396,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	 *            The message to print.
 	 * @see ConsolePrinter
 	 */
-	public void print(ExpMsgCategory category, String message) {
+	public void print(MsgCategory category, String message) {
 		if (numListener() > 0)
 			fire(new ExpPrintEvent(this, category, message));
 	}
@@ -419,7 +413,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	 * @param params
 	 *            Parameters to use in the format string.
 	 */
-	public void print(ExpMsgCategory category, String messageFormat, Object... params) {
+	public void print(MsgCategory category, String messageFormat, Object... params) {
 		if (numListener() > 0)
 			fire(new ExpPrintEvent(this, category, messageFormat, params));
 	}
@@ -434,7 +428,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	 *            Parameters to use when formatting the message.
 	 */
 	public void print(String messageFormat, Object... params) {
-		print(ExpMsgCategory.INFO, messageFormat, params);
+		print(MsgCategory.INFO, messageFormat, params);
 	}
 
 	/**

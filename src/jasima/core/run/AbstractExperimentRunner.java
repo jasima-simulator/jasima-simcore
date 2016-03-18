@@ -36,11 +36,11 @@ import java.util.Map;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
-import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.experiment.ExperimentListener;
 import jasima.core.util.AbstractResultSaver;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
+import jasima.core.util.MsgCategory;
 import jasima.core.util.Pair;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
@@ -69,14 +69,14 @@ public abstract class AbstractExperimentRunner {
 	public AbstractExperimentRunner() {
 		super();
 		listeners = new HashMap<>();
-		listeners.put(ConsolePrinter.class, new ConsolePrinter(ExpMsgCategory.INFO));
+		listeners.put(ConsolePrinter.class, new ConsolePrinter(MsgCategory.INFO));
 		manualProps = new ArrayList<>();
 	}
 
 	protected void createGenericOptions(OptionParser p) {
 		p.acceptsAll(asList("h", "?", "help"), "Display this help text.").forHelp();
 
-		ExpMsgCategory[] values = ExpMsgCategory.values();
+		MsgCategory[] values = MsgCategory.values();
 		String logLevels = Arrays.toString(values).replaceAll("[\\[\\]]", "");
 		p.acceptsAll(asList("l", "log"),
 				String.format(Util.DEF_LOCALE, "Set log level to one of %s. Default: INFO.", logLevels))
@@ -134,8 +134,8 @@ public abstract class AbstractExperimentRunner {
 		if (opts.has("log")) {
 			String vs = (String) opts.valueOf("log");
 
-			ExpMsgCategory cat = Enum.valueOf(ExpMsgCategory.class, vs.toUpperCase(Locale.US));
-			if (cat == ExpMsgCategory.OFF) {
+			MsgCategory cat = Enum.valueOf(MsgCategory.class, vs.toUpperCase(Locale.US));
+			if (cat == MsgCategory.OFF) {
 				listeners.remove(ConsolePrinter.class);
 			} else {
 				listeners.put(ConsolePrinter.class, new ConsolePrinter(cat));

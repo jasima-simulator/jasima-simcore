@@ -27,6 +27,7 @@ import java.util.HashMap;
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.Simulation.SimPrintEvent;
 import jasima.core.simulation.SimulationExperiment;
+import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.batchForming.BatchForming;
@@ -152,10 +153,10 @@ public abstract class ShopExperiment extends SimulationExperiment {
 
 	protected void print(SimPrintEvent event) {
 		// translate category
-		ExpMsgCategory cat = ExpMsgCategory.values()[event.category.ordinal()];
+		MsgCategory cat = MsgCategory.values()[event.category.ordinal()];
 		assert cat.toString().equals(event.category.toString());
 
-		print(cat, "sim_message\t%f\t%s", sim.simTime(), event);
+		print(cat, "sim_message\t%s", event);
 	}
 
 	@Override

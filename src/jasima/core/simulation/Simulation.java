@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 import jasima.core.random.RandomFactory;
-import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
+import jasima.core.util.MsgCategory;
 import jasima.core.util.Util;
 
 /**
@@ -52,10 +52,6 @@ public class Simulation {
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
 
 	public static class SimPrintEvent {
-
-		public enum MsgCategory {
-			OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL
-		}
 
 		public final Simulation sim;
 		public final MsgCategory category;
@@ -118,7 +114,7 @@ public class Simulation {
 	private RandomFactory rndStreamFactory;
 	private String name = null;
 	private SimComponentContainer<SimComponent> rootComponent;
-	private MsgCategory printLevel = MsgCategory.ALL;
+	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintEvent>> printListener;
 
 	// ////////////// attributes/fields used during a simulation
@@ -145,7 +141,21 @@ public class Simulation {
 		RandomFactory randomFactory = RandomFactory.newInstance();
 		setRndStreamFactory(randomFactory);
 
-		setRootComponent(new SimComponentContainerBase<>());
+		setRootComponent(new SimComponentContainerBase<SimComponent>() {
+			@Override
+			public void beforeRun() {
+				super.beforeRun();
+
+				trace("%s\tsim_start", simTime());
+			}
+
+			@Override
+			public void afterRun() {
+				super.afterRun();
+
+				trace("%s\tsim_end", simTime());
+			}
+		});
 	}
 
 	public void addPrintListener(Consumer<SimPrintEvent> listener) {
@@ -499,8 +509,8 @@ public class Simulation {
 	 * Prints a certain {@link SimPrintEvent} by passing it to the registered
 	 * print listeners.
 	 */
-	public void print(SimPrintEvent e) {
-		printListener.forEach((l) -> l.accept(e));
+	protected void print(SimPrintEvent e) {
+		printListener.forEach(l -> l.accept(e));
 	}
 
 	public MsgCategory getPrintLevel() {
@@ -512,11 +522,15 @@ public class Simulation {
 		this.printLevel = printLevel;
 	}
 
-	public void trace(MsgCategory category, String messageFormatString, Object... params) {
-		print(new SimPrintEvent(this, MsgCategory.TRACE, messageFormatString, params));
+	public void trace(String messageFormatString, Object... params) {
+		print(MsgCategory.TRACE, messageFormatString, params);
 	}
 
-	public boolean isTrace() {
+	public void trace(String message) {
+		print(MsgCategory.TRACE, message);
+	}
+
+	public boolean isTraceEnabled() {
 		return getPrintLevel().ordinal() >= MsgCategory.TRACE.ordinal();
 	}
 

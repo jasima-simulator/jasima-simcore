@@ -30,7 +30,7 @@ import java.util.Set;
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentContainer;
 import jasima.core.simulation.SimComponentContainerBase;
-import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
+import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.NotifierListener;
@@ -106,6 +106,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 
 		j.jobFinished();
 
+		if (isTraceEnabled()) {
+			trace("%s\tleave_system\t%s", simTime(), j);
+		}
+
 		lastJobFinished = j;
 		fire(ShopMessage.JOB_FINISHED);
 	}
@@ -119,6 +123,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		}
 
 		nextJob.jobReleased();
+
+		if (isTraceEnabled()) {
+			trace("%s\tenter_system\t%s", simTime(), nextJob);
+		}
 
 		lastJobReleased = nextJob;
 		fire(ShopMessage.JOB_RELEASED);

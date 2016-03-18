@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 
 import jasima.core.experiment.Experiment;
-import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.statistics.SummaryStat;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
@@ -186,7 +185,7 @@ public class ExcelSaver extends ResultSaver {
 		File tmp = new File(getActualResultBaseName() + SER_EXTENSION);
 		File out = new File(getActualResultBaseName() + XLS_EXTENSION);
 
-		e.print(ExpMsgCategory.INFO, "writing results to Excel file '%s'...", out.getName());
+		e.print(MsgCategory.INFO, "writing results to Excel file '%s'...", out.getName());
 
 		try {
 			convertFile(tmp, out);
@@ -197,7 +196,7 @@ public class ExcelSaver extends ResultSaver {
 		if (!isKeepDataFile())
 			tmp.delete();
 
-		e.print(ExpMsgCategory.INFO, "done.");
+		e.print(MsgCategory.INFO, "done.");
 	}
 
 	@Override

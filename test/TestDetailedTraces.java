@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.util.ExperimentTest;
+import jasima.core.util.TraceFileProducer;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.BestOfFamilyBatching;
@@ -35,7 +36,6 @@ import jasima.shopSim.models.mimac.MimacExperiment.DataSet;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.weighted.WMOD;
-import jasima.shopSim.util.TraceFileProducer;
 import util.FileChecker;
 
 /**
@@ -43,7 +43,6 @@ import util.FileChecker;
  * complete details of a trace file.
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
  */
 public class TestDetailedTraces extends ExperimentTest {
 

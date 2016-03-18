@@ -30,7 +30,6 @@ import java.util.Map;
 
 import jasima.core.experiment.AbstractMultiExperiment;
 import jasima.core.experiment.Experiment;
-import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.ExperimentListener;
 import jasima.core.statistics.SummaryStat;
@@ -42,7 +41,7 @@ import jasima.core.statistics.SummaryStat;
  */
 public class ConsolePrinter implements ExperimentListener {
 
-	private ExpMsgCategory logLevel = ExpMsgCategory.INFO;
+	private MsgCategory logLevel = MsgCategory.DEBUG;
 	private Locale locale = Util.DEF_LOCALE;
 	private String logFormat = "%1$tT.%1$tL\t%4$s\t%2$s\t%3$s";
 	private PrintWriter out = null;
@@ -52,7 +51,7 @@ public class ConsolePrinter implements ExperimentListener {
 		this(null, null);
 	}
 
-	public ConsolePrinter(ExpMsgCategory logLevel) {
+	public ConsolePrinter(MsgCategory logLevel) {
 		this(logLevel, null);
 	}
 
@@ -60,7 +59,7 @@ public class ConsolePrinter implements ExperimentListener {
 		this(null, logFormat);
 	}
 
-	public ConsolePrinter(ExpMsgCategory logLevel, String logFormat) {
+	public ConsolePrinter(MsgCategory logLevel, String logFormat) {
 		super();
 		if (logLevel != null)
 			setLogLevel(logLevel);
@@ -156,11 +155,11 @@ public class ConsolePrinter implements ExperimentListener {
 
 	// getter and setter below
 
-	public ExpMsgCategory getLogLevel() {
+	public MsgCategory getLogLevel() {
 		return logLevel;
 	}
 
-	public void setLogLevel(ExpMsgCategory logLevel) {
+	public void setLogLevel(MsgCategory logLevel) {
 		this.logLevel = logLevel;
 	}
 

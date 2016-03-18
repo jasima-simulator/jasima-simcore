@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
-import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
+import jasima.core.util.MsgCategory;
 
 /**
  * An implementation of a priority queue. The two supported operations are add(T

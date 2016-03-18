@@ -26,11 +26,12 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import jasima.core.experiment.Experiment.ExpMsgCategory;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
+import jasima.core.util.MsgCategory;
+import jasima.core.util.TraceFileProducer;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
@@ -42,7 +43,6 @@ import jasima.shopSim.prioRules.gp.GPRuleBase;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 import jasima.shopSim.util.BasicJobStatCollector;
-import jasima.shopSim.util.TraceFileProducer;
 import util.ExtendedJobStatCollector;
 
 /**
@@ -190,7 +190,7 @@ public class TestGECCOContinuity {
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addShopListener(new TraceFileProducer("traceNew.txt"));
 
-		e.addListener(new ConsolePrinter(ExpMsgCategory.ALL));
+		e.addListener(new ConsolePrinter(MsgCategory.DEBUG));
 
 		GECCO2010_genSeed_2reps pr = new GECCO2010_genSeed_2reps();
 		pr.setTieBreaker(new TieBreakerFASFS());

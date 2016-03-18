@@ -34,6 +34,7 @@ import org.junit.Test;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.FileFormat;
+import jasima.core.util.TraceFileProducer;
 import jasima.core.util.XmlUtil;
 import jasima.shopSim.core.DowntimeSource;
 import jasima.shopSim.core.IndividualMachine;
@@ -42,7 +43,6 @@ import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.util.MachineStatCollector;
-import jasima.shopSim.util.TraceFileProducer;
 import util.ExtendedJobStatCollector;
 
 /**

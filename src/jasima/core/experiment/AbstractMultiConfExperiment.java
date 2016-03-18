@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 
@@ -116,8 +117,8 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 			experiments.add(exp);
 		} catch (final Exception e) {
 			String msg = e.getMessage();
-			print(ExpMsgCategory.ERROR, msg == null ? e.toString() : msg);
-			print(ExpMsgCategory.DEBUG, "%s", new Object() {
+			print(MsgCategory.ERROR, msg == null ? e.toString() : msg);
+			print(MsgCategory.DEBUG, "%s", new Object() {
 				@Override
 				public String toString() {
 					// lazy conversion to String only when message is

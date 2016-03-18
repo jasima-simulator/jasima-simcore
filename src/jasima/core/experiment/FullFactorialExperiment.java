@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import jasima.core.util.MsgCategory;
 import jasima.core.util.Util;
 
 /**
@@ -35,7 +36,6 @@ import jasima.core.util.Util;
  * and their values on a base experiment.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see RandomFractionalExperiment
  * @see OCBAExperiment
@@ -215,7 +215,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 			}
 		}
 
-		print(ExpMsgCategory.INFO, "building and validating configurations, %d theoretical combinations ...", total);
+		print(MsgCategory.INFO, "building and validating configurations, %d theoretical combinations ...", total);
 
 		// create and add experiments
 		int[] is = new int[numFactors];
@@ -228,7 +228,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 			}
 		} while (createNextCombination(is, numValuesPerFactor));
 
-		print(ExpMsgCategory.INFO, "executing %d experiments ...", experiments.size());
+		print(MsgCategory.INFO, "executing %d experiments ...", experiments.size());
 
 		factorNames = null;
 	}

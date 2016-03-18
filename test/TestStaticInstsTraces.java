@@ -25,6 +25,7 @@ import java.io.File;
 
 import org.junit.Test;
 
+import jasima.core.util.TraceFileProducer;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.prioRules.basic.EDD;
@@ -32,7 +33,6 @@ import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.basic.ODD;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
-import jasima.shopSim.util.TraceFileProducer;
 import util.FileChecker;
 
 /**

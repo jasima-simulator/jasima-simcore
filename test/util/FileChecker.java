@@ -57,13 +57,13 @@ public class FileChecker {
 			String s2 = in2.readLine();
 
 			while (s1 != null && s2 != null) {
-				assertEquals("line " + ++line, s1, s2);
+				assertEquals("line " + ++line, s2.trim(), s1.trim());
 
 				s1 = in1.readLine();
 				s2 = in2.readLine();
 			}
 
-			assertEquals("file length differ.", s1, s2); // should both be null
+			assertEquals("file length differ.", s2, s1); // should both be null
 
 			in1.close();
 			in2.close();
