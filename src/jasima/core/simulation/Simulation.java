@@ -112,36 +112,6 @@ public class Simulation {
 		void handle();
 	}
 
-	public static class SimComponentLifeCycleEvent {
-
-		private final String name;
-
-		public SimComponentLifeCycleEvent(String s) {
-			name = s;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-
-		public static final SimComponentLifeCycleEvent INIT = new SimComponentLifeCycleEvent("INIT");
-		public static final SimComponentLifeCycleEvent BEFORE_RUN = new SimComponentLifeCycleEvent("BEFORE_RUN");
-		public static final SimComponentLifeCycleEvent AFTER_RUN = new SimComponentLifeCycleEvent("AFTER_RUN");
-		public static final SimComponentLifeCycleEvent DONE = new SimComponentLifeCycleEvent("DONE");
-	}
-
-	public static class ProduceResultsEvent extends SimComponentLifeCycleEvent {
-
-		public final Map<String, Object> resultMap;
-
-		public ProduceResultsEvent(Map<String, Object> resultMap) {
-			super("ProduceResultsEvent");
-			this.resultMap = resultMap;
-		}
-
-	}
-
 	// /////////// simulation parameters
 
 	private double simulationLength = 0.0d;
@@ -533,6 +503,23 @@ public class Simulation {
 		printListener.forEach((l) -> l.accept(e));
 	}
 
+	public MsgCategory getPrintLevel() {
+		return printLevel;
+	}
+
+	public void setPrintLevel(MsgCategory printLevel) {
+		Objects.requireNonNull(printLevel);
+		this.printLevel = printLevel;
+	}
+
+	public void trace(MsgCategory category, String messageFormatString, Object... params) {
+		print(new SimPrintEvent(this, MsgCategory.TRACE, messageFormatString, params));
+	}
+
+	public boolean isTrace() {
+		return getPrintLevel().ordinal() >= MsgCategory.TRACE.ordinal();
+	}
+
 	/**
 	 * Factory method to create a new event queue.
 	 * 
@@ -595,21 +582,8 @@ public class Simulation {
 		rootComponent.setSim(this);
 	}
 
-	public MsgCategory getPrintLevel() {
-		return printLevel;
-	}
-
-	public void setPrintLevel(MsgCategory printLevel) {
-		Objects.requireNonNull(printLevel);
-		this.printLevel = printLevel;
-	}
-
-	public boolean isTrace() {
-		return getPrintLevel().ordinal() >= MsgCategory.TRACE.ordinal();
-	}
-
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	protected Simulation clone() throws CloneNotSupportedException {
 		Simulation sim = (Simulation) super.clone();
 		return sim;
 	}

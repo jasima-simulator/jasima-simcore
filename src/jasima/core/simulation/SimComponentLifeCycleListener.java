@@ -2,20 +2,20 @@ package jasima.core.simulation;
 
 import java.util.Map;
 
-import jasima.core.simulation.Simulation.ProduceResultsEvent;
-import jasima.core.simulation.Simulation.SimComponentLifeCycleEvent;
+import jasima.core.simulation.SimComponent.ProduceResultsEvent;
+import jasima.core.simulation.SimComponent.SimComponentLifeCycleMessage;
 import jasima.core.util.observer.NotifierListener;
 
 public interface SimComponentLifeCycleListener extends NotifierListener<SimComponent, Object> {
 
 	default void inform(SimComponent o, Object msg) {
-		if (msg == SimComponentLifeCycleEvent.INIT) {
+		if (msg == SimComponentLifeCycleMessage.INIT) {
 			init(o);
-		} else if (msg == SimComponentLifeCycleEvent.BEFORE_RUN) {
+		} else if (msg == SimComponentLifeCycleMessage.BEFORE_RUN) {
 			simStart(o);
-		} else if (msg == SimComponentLifeCycleEvent.AFTER_RUN) {
+		} else if (msg == SimComponentLifeCycleMessage.AFTER_RUN) {
 			simEnd(o);
-		} else if (msg == SimComponentLifeCycleEvent.DONE) {
+		} else if (msg == SimComponentLifeCycleMessage.DONE) {
 			done(o);
 		} else if (msg instanceof ProduceResultsEvent) {
 			ProduceResultsEvent pe = (ProduceResultsEvent) msg;
