@@ -20,15 +20,15 @@
  *******************************************************************************/
 package jasima.shopSim.core.batchForming;
 
+import java.util.List;
+import java.util.Map;
+
 import jasima.shopSim.core.Batch;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.core.WorkStation;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class implements the rule that the batch that uses most of the available

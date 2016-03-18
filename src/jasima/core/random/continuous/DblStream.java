@@ -20,20 +20,19 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import java.io.Serializable;
+import java.util.Random;
+
 import jasima.core.random.RandomFactory;
 import jasima.core.util.Pair;
 import jasima.shopSim.util.modelDef.streams.DblStreamDef;
-
-import java.io.Serializable;
-import java.util.Random;
 
 /**
  * A stream of double numbers, usually the sequence is produced by a pseudo
  * random number generator.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id: DblStream.java 512 2015-01-20 16:52:46Z THildebrandt@gmail.com$"
+ * @version "$Id: DblStream.java 512 2015-01-20 16:52:46Z THildebrandt@gmail.com$"
  */
 public abstract class DblStream implements Serializable, Cloneable {
 
@@ -88,8 +87,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 	@Override
 	public DblStream clone() throws CloneNotSupportedException {
 		if (rndGen != null)
-			throw new CloneNotSupportedException(
-					"Only a DblStream without a rndGen set can be cloned.");
+			throw new CloneNotSupportedException("Only a DblStream without a rndGen set can be cloned.");
 		return (DblStream) super.clone();
 	}
 

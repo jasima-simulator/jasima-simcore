@@ -20,14 +20,14 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.util.ValueStore;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import jasima.core.util.ValueStore;
 
 /**
  * Simple container for Operations.
@@ -47,8 +47,7 @@ public class Route implements ValueStore {
 	}
 
 	public void addSequentialOperation(Operation op) {
-		ArrayList<Operation> list = new ArrayList<Operation>(
-				Arrays.asList(operations));
+		ArrayList<Operation> list = new ArrayList<Operation>(Arrays.asList(operations));
 		list.add(op);
 		operations = list.toArray(new Operation[list.size()]);
 	}

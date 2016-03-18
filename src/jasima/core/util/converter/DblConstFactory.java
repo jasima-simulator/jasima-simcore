@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
+import java.util.ArrayList;
+
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.util.ArgListTokenizer;
@@ -27,12 +29,9 @@ import jasima.core.util.ArgListTokenizer.TokenType;
 import jasima.core.util.Util;
 import jasima.core.util.converter.TypeConverterDblStream.StreamFactory;
 
-import java.util.ArrayList;
-
 public class DblConstFactory implements StreamFactory {
 
-	private static final String[] PREFIXES = { "const", "dblConst",
-			DblConst.class.getName() };
+	private static final String[] PREFIXES = { "const", "dblConst", DblConst.class.getName() };
 
 	public DblConstFactory() {
 		super();
@@ -45,32 +44,29 @@ public class DblConstFactory implements StreamFactory {
 
 	@Override
 	public DblStream stringToStream(ArgListTokenizer tk) {
-		TypeToStringConverter doubleConv = TypeToStringConverter
-				.lookupConverter(Double.class);
+		TypeToStringConverter doubleConv = TypeToStringConverter.lookupConverter(Double.class);
 		assert doubleConv != null;
 
 		String prefix = tk.currTokenText();
-		
+
 		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.PARENS_OPEN);
 
 		ArrayList<Double> values = new ArrayList<Double>();
 
 		// there has to be at least one value
-		Double d = doubleConv.fromString(tk, Double.class, prefix, this
-				.getClass().getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+		Double d = doubleConv.fromString(tk, Double.class, prefix, this.getClass().getClassLoader(),
+				Util.DEF_CLASS_SEARCH_PATH);
 		values.add(d);
 
-		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.SEMICOLON,
-				TokenType.PARENS_CLOSE);
+		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
 
 		// read further values until closing parenthesis
 		while (tk.currTokenType() != TokenType.PARENS_CLOSE) {
-			Double d2 = doubleConv.fromString(tk, Double.class, prefix, this
-					.getClass().getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+			Double d2 = doubleConv.fromString(tk, Double.class, prefix, this.getClass().getClassLoader(),
+					Util.DEF_CLASS_SEARCH_PATH);
 			values.add(d2);
 
-			tk.assureTokenTypes(tk.nextTokenNoWhitespace(),
-					TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
+			tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
 		}
 
 		// convert to double[]
@@ -87,8 +83,7 @@ public class DblConstFactory implements StreamFactory {
 
 	@Override
 	public String streamToString(DblStream s) {
-		TypeToStringConverter doubleConv = TypeToStringConverter
-				.lookupConverter(Double.class);
+		TypeToStringConverter doubleConv = TypeToStringConverter.lookupConverter(Double.class);
 		assert doubleConv != null;
 
 		DblConst dblConst = (DblConst) s;

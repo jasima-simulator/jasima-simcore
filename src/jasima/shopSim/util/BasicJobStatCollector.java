@@ -25,7 +25,7 @@ import java.util.Map;
 import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.ShopListenerBase;
 
 /**
@@ -58,7 +58,7 @@ public class BasicJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	public void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(Shop shop, Job j) {
 		if (!shouldCollect(j))
 			return;
 

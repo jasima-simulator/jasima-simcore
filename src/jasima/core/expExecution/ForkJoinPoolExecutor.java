@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.core.expExecution;
 
-import jasima.core.experiment.Experiment;
-
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
@@ -29,6 +27,8 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import jasima.core.experiment.Experiment;
 
 /**
  * An implementation of {@link ExperimentExecutor} using a {@link ForkJoinPool}
@@ -38,13 +38,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * complete.
  * 
  * @author Torsten Hildebrandt, 2012-09-05
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
-	public static final String POOL_SIZE_SETTING = ForkJoinPoolExecutor.class
-			.getName() + ".numThreads";
+	public static final String POOL_SIZE_SETTING = ForkJoinPoolExecutor.class.getName() + ".numThreads";
 
 	private ForkJoinPool pool;
 
@@ -64,8 +62,7 @@ public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
 			@Override
 			public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-				ForkJoinWorkerThread t = ForkJoinPool.defaultForkJoinWorkerThreadFactory
-						.newThread(pool);
+				ForkJoinWorkerThread t = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
 				t.setName("jasimaWorker" + n.addAndGet(1));
 				t.setDaemon(true);
 				return t;
@@ -77,8 +74,7 @@ public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
 	@SuppressWarnings("serial")
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e,
-			final Experiment parent) {
+	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
 		ForkJoinTask<Map<String, Object>> task;
 		task = pool.submit(new RecursiveTask<Map<String, Object>>() {
 			@Override

@@ -31,7 +31,7 @@ import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.shopSim.core.DynamicJobSource;
-import jasima.shopSim.core.JobShopExperiment;
+import jasima.shopSim.core.ShopExperiment;
 import jasima.shopSim.util.TextFileReader;
 import jasima.shopSim.util.modelDef.ShopDef;
 
@@ -40,7 +40,7 @@ import jasima.shopSim.util.modelDef.ShopDef;
  * 
  * @author Torsten Hildebrandt, 2010-03-12
  */
-public class MimacExperiment extends JobShopExperiment {
+public class MimacExperiment extends ShopExperiment {
 
 	private static final long serialVersionUID = -1460963355772995049L;
 

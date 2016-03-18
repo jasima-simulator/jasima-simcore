@@ -20,17 +20,16 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import java.util.Arrays;
+
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
-
-import java.util.Arrays;
 
 /**
  * Creates a number stream that is the sum of a given set of base streams.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DblSumStream extends DblStream {
 
@@ -100,8 +99,7 @@ public class DblSumStream extends DblStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblSumStream(subStreams=%s)",
-				Arrays.deepToString(getSubStreams()));
+		return String.format(Util.DEF_LOCALE, "DblSumStream(subStreams=%s)", Arrays.deepToString(getSubStreams()));
 	}
 
 	// ************* getter / setter below ****************

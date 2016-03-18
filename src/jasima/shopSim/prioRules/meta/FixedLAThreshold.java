@@ -28,8 +28,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * job arriving later than a given threshold value.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class FixedLAThreshold extends LookaheadThreshold {
 
@@ -72,8 +71,7 @@ public class FixedLAThreshold extends LookaheadThreshold {
 
 	public void setMaxWait(double maxWait) {
 		if (maxWait < 0.0)
-			throw new IllegalArgumentException("maxWait " + maxWait
-					+ " can not be negative!");
+			throw new IllegalArgumentException("maxWait " + maxWait + " can not be negative!");
 
 		this.maxWait = maxWait;
 	}

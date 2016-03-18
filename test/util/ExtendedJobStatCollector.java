@@ -26,9 +26,9 @@ import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.ShopListenerBase;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
@@ -65,7 +65,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	private int numFinished;
 	private double cMax;
 
-	private JobShop shop;
+	private Shop shop;
 
 	@Override
 	public void init(SimComponent c) {
@@ -121,12 +121,12 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	public void jobReleased(JobShop shop, Job j) {
+	public void jobReleased(Shop shop, Job j) {
 		this.shop = shop;
 	}
 
 	@Override
-	public void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(Shop shop, Job j) {
 		if (!shouldCollect(j))
 			return;
 

@@ -20,21 +20,20 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * Implements a number stream with values following a <a
- * href="http://en.wikipedia.org/wiki/Beta_distribution">Beta distribution</a>.
- * A beta distribution is characterized by the two positive shape parameters
- * {@code alpha} and {@code beta}.
+ * Implements a number stream with values following a
+ * <a href="http://en.wikipedia.org/wiki/Beta_distribution">Beta
+ * distribution</a>. A beta distribution is characterized by the two positive
+ * shape parameters {@code alpha} and {@code beta}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Beta_distribution">Beta
  *      distribution (Wikipedia)</a>
@@ -64,8 +63,7 @@ public class DblBeta extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblBeta(alpha=%f;beta=%f)",
-				getAlpha(), getBeta());
+		return String.format(Util.DEF_LOCALE, "DblBeta(alpha=%f;beta=%f)", getAlpha(), getBeta());
 	}
 
 	public double getAlpha() {

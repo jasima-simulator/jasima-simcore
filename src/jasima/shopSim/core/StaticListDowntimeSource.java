@@ -27,8 +27,7 @@ public class StaticListDowntimeSource extends DowntimeSource {
 	private final Pair<Double, Double>[] data;
 	private int index;
 
-	public StaticListDowntimeSource(IndividualMachine machine,
-			Pair<Double, Double>[] data) {
+	public StaticListDowntimeSource(IndividualMachine machine, Pair<Double, Double>[] data) {
 		super(machine);
 		this.data = data;
 	}
@@ -46,12 +45,12 @@ public class StaticListDowntimeSource extends DowntimeSource {
 	}
 
 	@Override
-	protected double calcDeactivateTime(JobShop shop) {
+	protected double calcDeactivateTime(Shop shop) {
 		return Math.max(shop.simTime(), data[index].a);
 	}
 
 	@Override
-	protected double calcActivateTime(JobShop shop) {
+	protected double calcActivateTime(Shop shop) {
 		double duration = data[index].b - data[index].a;
 		assert duration >= 0.0;
 		if (duration < 1e-6)

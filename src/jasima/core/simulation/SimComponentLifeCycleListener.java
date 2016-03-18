@@ -4,9 +4,9 @@ import java.util.Map;
 
 import jasima.core.simulation.Simulation.ProduceResultsEvent;
 import jasima.core.simulation.Simulation.SimComponentLifeCycleEvent;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 
-public interface SimComponentLifeCycleListener extends Subscriber<SimComponent, Object> {
+public interface SimComponentLifeCycleListener extends NotifierListener<SimComponent, Object> {
 
 	default void inform(SimComponent o, Object msg) {
 		if (msg == SimComponentLifeCycleEvent.INIT) {

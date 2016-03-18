@@ -28,8 +28,7 @@ import jasima.core.util.Util;
  * {@link #max()} have defined values.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class TimeWeightedSummaryStat extends SummaryStat {
 
@@ -90,9 +89,8 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	@Override
 	public TimeWeightedSummaryStat value(double value, double time) {
 		if (time < lastTime())
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"negative time span (lastTime=%f, time=%f).", lastTime(),
-					time));
+			throw new IllegalArgumentException(
+					String.format(Util.DEF_LOCALE, "negative time span (lastTime=%f, time=%f).", lastTime(), time));
 		super.value(lastValue, time - lastTime());
 		lastTime = time;
 		lastValue = value;
@@ -111,8 +109,7 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 */
 	@Override
 	public TimeWeightedSummaryStat value(double v) {
-		throw new UnsupportedOperationException(
-				"Use method TimeWeightedSummaryStat.value(double,double) instead.");
+		throw new UnsupportedOperationException("Use method TimeWeightedSummaryStat.value(double,double) instead.");
 	}
 
 	/**

@@ -37,8 +37,7 @@ import org.apache.commons.math3.distribution.TDistribution;
  * ACM, 22, 9, 532-535: Updating Mean and Variance Estimates: An Improved Method
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class SummaryStat implements Serializable, Cloneable {
 
@@ -132,11 +131,9 @@ public class SummaryStat implements Serializable, Cloneable {
 	 * @throws IllegalArgumentException
 	 *             If weight was negative.
 	 */
-	public SummaryStat value(double v, double weight)
-			throws IllegalArgumentException {
+	public SummaryStat value(double v, double weight) throws IllegalArgumentException {
 		if (!(weight >= 0.0d))
-			throw new IllegalArgumentException("Weight can't be negative. "
-					+ weight);
+			throw new IllegalArgumentException("Weight can't be negative. " + weight);
 
 		lastValue = v;
 		lastWeight = weight;
@@ -218,7 +215,7 @@ public class SummaryStat implements Serializable, Cloneable {
 	 * {@link #mean()}).
 	 * 
 	 * @return The coefficient of variation.
-	 * */
+	 */
 	public double varCoeff() {
 		return stdDev() / mean();
 	}
@@ -296,8 +293,7 @@ public class SummaryStat implements Serializable, Cloneable {
 		double delta = other.meanEst - meanEst;
 
 		meanEst = (meanEst * weightSum + other.meanEst * other.weightSum) / ws;
-		varEst = varEst + other.varEst + delta * delta * weightSum
-				* other.weightSum / ws;
+		varEst = varEst + other.varEst + delta * delta * weightSum * other.weightSum / ws;
 
 		weightSum = ws;
 		numObs += other.numObs;
@@ -349,8 +345,7 @@ public class SummaryStat implements Serializable, Cloneable {
 
 		double deg = weightSum() - 1.0d;
 		TDistribution dist = new TDistribution(deg);
-		return Math.abs(dist.inverseCumulativeProbability(errorProb * 0.5d))
-				* Math.sqrt(variance() / weightSum());
+		return Math.abs(dist.inverseCumulativeProbability(errorProb * 0.5d)) * Math.sqrt(variance() / weightSum());
 	}
 
 	/**

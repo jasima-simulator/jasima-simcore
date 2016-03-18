@@ -20,28 +20,26 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import org.apache.commons.math3.exception.OutOfRangeException;
+
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
-
 /**
- * This class implements a discrete number stream following a <a
- * href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli
+ * This class implements a discrete number stream following a
+ * <a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli
  * distribution</a>. This means, it contains the value {@code 0} with a
  * probability of {@code 1-probabilityOfSuccess} and the value {@code 1} with a
  * probability of {@code probabilityOfSuccess}.
  * 
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli
  *      distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/BernoulliDistribution.html">Bernoulli
- *      distribution (MathWorld)</a>
+ * @see <a href="http://mathworld.wolfram.com/BernoulliDistribution.html">
+ *      Bernoulli distribution (MathWorld)</a>
  */
 public class IntBernoulli extends IntStream {
 	private static final long serialVersionUID = 1515307949822420310L;
@@ -74,9 +72,7 @@ public class IntBernoulli extends IntStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE,
-				"IntBernoulli(probabilityOfSuccess=%f)",
-				getProbabilityOfSuccess());
+		return String.format(Util.DEF_LOCALE, "IntBernoulli(probabilityOfSuccess=%f)", getProbabilityOfSuccess());
 	}
 
 	public double getProbabilityOfSuccess() {
@@ -92,8 +88,7 @@ public class IntBernoulli extends IntStream {
 	 *             If the supplied probability is not in the interval
 	 *             {@code [0,1]}.
 	 */
-	public void setProbabilityOfSuccess(double probOfSuccess)
-			throws OutOfRangeException {
+	public void setProbabilityOfSuccess(double probOfSuccess) throws OutOfRangeException {
 		if (probOfSuccess < 0 || probOfSuccess > 1) {
 			throw new OutOfRangeException(probOfSuccess, 0, 1);
 		}

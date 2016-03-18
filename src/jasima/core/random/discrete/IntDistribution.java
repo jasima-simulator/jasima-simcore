@@ -20,9 +20,9 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Pair;
-
 import org.apache.commons.math3.distribution.IntegerDistribution;
+
+import jasima.core.util.Pair;
 
 /**
  * Returns an arbitrarily distributed stream of integer numbers. Its
@@ -32,8 +32,7 @@ import org.apache.commons.math3.distribution.IntegerDistribution;
  * exposing their parameters as Java Bean properties.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class IntDistribution extends IntStream {
 
@@ -81,8 +80,7 @@ public class IntDistribution extends IntStream {
 			return null;
 		double min = distribution.getSupportLowerBound();
 		double max = distribution.getSupportUpperBound();
-		return new Pair<Double, Double>(min,
-				max);
+		return new Pair<Double, Double>(min, max);
 	}
 
 	@Override

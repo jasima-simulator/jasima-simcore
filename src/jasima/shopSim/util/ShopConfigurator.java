@@ -28,10 +28,10 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.shopSim.core.DynamicJobSource;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.Route;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.StaticJobSource;
 import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.core.WorkStation;
@@ -53,7 +53,7 @@ public class ShopConfigurator {
 		super();
 	}
 
-	public static void configureModel(JobShop shop, ShopDef sd) {
+	public static void configureModel(Shop shop, ShopDef sd) {
 		ShopConfigurator tfr = sd.getShopConfigurator();
 		tfr.setShopDef(sd);
 		tfr.configureMdl(shop);
@@ -64,7 +64,7 @@ public class ShopConfigurator {
 		sim.setSimulationLength(shopDef.getSimulationLength());
 	}
 
-	public void configureMdl(JobShop shop) {
+	public void configureMdl(Shop shop) {
 		shop.setEnableLookAhead(shopDef.isEnableLookAhead());
 		shop.setStopAfterNumJobs(shopDef.getStopAfterNumJobs());
 		shop.setMaxJobsInSystem(shopDef.getMaxJobsInSystem());
@@ -126,7 +126,7 @@ public class ShopConfigurator {
 
 	}
 
-	private JobSource createDynamicSource(JobShop shop, DynamicSourceDef sd) {
+	private JobSource createDynamicSource(Shop shop, DynamicSourceDef sd) {
 		int route = indexOf(sd.getRoute(), shopDef.getRoutes());
 		DblStream iats = sd.getIats().createStream();
 		DblStream dueDates = sd.getDueDates().createStream();
@@ -190,7 +190,7 @@ public class ShopConfigurator {
 		return Arrays.asList(routes).indexOf(route);
 	}
 
-	private void initOperations(JobShop shop, Route r, RouteDef rd) {
+	private void initOperations(Shop shop, Route r, RouteDef rd) {
 		int numOps = rd.getOperations().length;
 
 		for (int i = 0; i < numOps; i++) {

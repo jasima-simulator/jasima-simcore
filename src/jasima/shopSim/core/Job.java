@@ -29,7 +29,7 @@ import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 
 /**
  * Main work unit in a shop.
@@ -52,7 +52,7 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	public static final JobEvent JOB_START_OPERATION = new JobEvent();
 	public static final JobEvent JOB_END_OPERATION = new JobEvent();
 
-	private final JobShop shop;
+	private final Shop shop;
 
 	private double arriveTime; // arrival time at current machine
 	private WorkStation currMachine;
@@ -75,7 +75,7 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 
 	private Job future;
 
-	public Job(JobShop shop) {
+	public Job(Shop shop) {
 		super();
 
 		this.shop = shop;
@@ -172,18 +172,21 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	}
 
 	void jobFinished() {
-		fire(JOB_FINISHED);
+		if (numListener() > 0)
+			fire(JOB_FINISHED);
 	}
 
 	void arriveInQueue(WorkStation workStation, double arrivesAt) {
 		setCurrMachine(workStation);
 		setArriveTime(arrivesAt);
 
-		fire(JOB_ARRIVED_IN_QUEUE);
+		if (numListener() > 0)
+			fire(JOB_ARRIVED_IN_QUEUE);
 	}
 
 	void removedFromQueue() {
-		fire(JOB_REMOVED_FROM_QUEUE);
+		if (numListener() > 0)
+			fire(JOB_REMOVED_FROM_QUEUE);
 	}
 
 	void startProcessing() {
@@ -191,11 +194,13 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 		setStartTime(currMachine.shop().simTime());
 		notifyNextMachine();
 
-		fire(JOB_START_OPERATION);
+		if (numListener() > 0)
+			fire(JOB_START_OPERATION);
 	}
 
 	void endProcessing() {
-		fire(JOB_END_OPERATION);
+		if (numListener() > 0)
+			fire(JOB_END_OPERATION);
 	}
 
 	/**
@@ -245,7 +250,7 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 		return s;
 	}
 
-	public JobShop getShop() {
+	public Shop getShop() {
 		return shop;
 	}
 
@@ -510,17 +515,17 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	}
 
 	@Override
-	public void addListener(Subscriber<Job, Object> l) {
+	public void addListener(NotifierListener<Job, Object> l) {
 		adapter.addListener(l);
 	}
 
 	@Override
-	public boolean removeListener(Subscriber<Job, Object> l) {
+	public boolean removeListener(NotifierListener<Job, Object> l) {
 		return adapter.removeListener(l);
 	}
 
 	@Override
-	public Subscriber<Job, Object> getListener(int idx) {
+	public NotifierListener<Job, Object> getListener(int idx) {
 		return getListener(idx);
 	}
 

@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
-import jasima.core.util.Util;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,13 +28,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import jasima.core.util.Util;
+
 /**
  * Systematically tests all possible combinations of various discrete factors
  * and their values on a base experiment.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see RandomFractionalExperiment
  * @see OCBAExperiment
@@ -85,8 +84,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 		}
 
 		if (values.contains(value))
-			throw new IllegalArgumentException("No duplicate values allowed: '"
-					+ value + "' (factor '" + name + "')");
+			throw new IllegalArgumentException("No duplicate values allowed: '" + value + "' (factor '" + name + "')");
 
 		values.add(value);
 	}
@@ -122,8 +120,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * @param <E>
 	 *            Any enumeration type.
 	 */
-	public <E extends Enum<?>> void addFactors(String factorName,
-			Class<E> enumClass) {
+	public <E extends Enum<?>> void addFactors(String factorName, Class<E> enumClass) {
 		for (Object enumValue : enumClass.getEnumConstants()) {
 			addFactor(factorName, enumValue);
 		}
@@ -218,32 +215,25 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 			}
 		}
 
-		print(ExpMsgCategory.INFO,
-				"building and validating configurations, %d theoretical combinations ...",
-				total);
+		print(ExpMsgCategory.INFO, "building and validating configurations, %d theoretical combinations ...", total);
 
 		// create and add experiments
 		int[] is = new int[numFactors];
 		do {
 			addExperimentForConf(is);
-			if (getMaxConfigurations() > 0
-					&& experiments.size() > getMaxConfigurations()) {
-				throw new RuntimeException(
-						String.format(
-								Util.DEF_LOCALE,
-								"More than %d configurations. Consider reducing the number of factors and/or factor values or using an optimization algorithm instead.",
-								getMaxConfigurations()));
+			if (getMaxConfigurations() > 0 && experiments.size() > getMaxConfigurations()) {
+				throw new RuntimeException(String.format(Util.DEF_LOCALE,
+						"More than %d configurations. Consider reducing the number of factors and/or factor values or using an optimization algorithm instead.",
+						getMaxConfigurations()));
 			}
 		} while (createNextCombination(is, numValuesPerFactor));
 
-		print(ExpMsgCategory.INFO, "executing %d experiments ...",
-				experiments.size());
+		print(ExpMsgCategory.INFO, "executing %d experiments ...", experiments.size());
 
 		factorNames = null;
 	}
 
-	private static boolean createNextCombination(int[] is,
-			int[] numValuesPerFactor) {
+	private static boolean createNextCombination(int[] is, int[] numValuesPerFactor) {
 		assert is.length == numValuesPerFactor.length;
 		for (int i = is.length - 1; i >= 0; i--) {
 			if (++is[i] >= numValuesPerFactor[i]) {

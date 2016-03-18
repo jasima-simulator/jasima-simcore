@@ -29,18 +29,15 @@ public class TypeConverterBasicTypes extends TypeToStringConverter {
 
 	@Override
 	public Class<?>[] handledTypes() {
-		return new Class<?>[] { int.class, Integer.class, long.class,
-				Long.class, double.class, Double.class, boolean.class,
-				Boolean.class, byte.class, Byte.class, short.class,
-				Short.class, float.class, Float.class, char.class,
-				Character.class, Enum.class, String.class };
+		return new Class<?>[] { int.class, Integer.class, long.class, Long.class, double.class, Double.class,
+				boolean.class, Boolean.class, byte.class, Byte.class, short.class, Short.class, float.class,
+				Float.class, char.class, Character.class, Enum.class, String.class };
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T fromString(ArgListTokenizer tk, Class<T> klass,
-			String context, ClassLoader loader, String[] packageSearchPath)
-			throws NumberFormatException, TypeConversionException {
+	public <T> T fromString(ArgListTokenizer tk, Class<T> klass, String context, ClassLoader loader,
+			String[] packageSearchPath) throws NumberFormatException, TypeConversionException {
 		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.STRING);
 		String s = tk.currTokenText();
 
@@ -61,14 +58,11 @@ public class TypeConverterBasicTypes extends TypeToStringConverter {
 		}
 
 		if (klass == boolean.class || klass == Boolean.class) {
-			if (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("yes")
-					|| s.equalsIgnoreCase("1"))
+			if (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("1"))
 				return (T) Boolean.TRUE;
-			if (s.equalsIgnoreCase("false") || s.equalsIgnoreCase("no")
-					|| s.equalsIgnoreCase("0"))
+			if (s.equalsIgnoreCase("false") || s.equalsIgnoreCase("no") || s.equalsIgnoreCase("0"))
 				return (T) Boolean.FALSE;
-			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
-					"Can't convert '%s' to bool.", s));
+			throw new TypeConversionException(String.format(Util.DEF_LOCALE, "Can't convert '%s' to bool.", s));
 		}
 
 		if (klass.isEnum()) {

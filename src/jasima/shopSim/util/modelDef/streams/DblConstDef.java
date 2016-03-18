@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import java.util.Arrays;
+import java.util.List;
+
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.util.Util;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class DblConstDef extends DblStreamDef {
 
@@ -46,8 +46,7 @@ public class DblConstDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
-						nfe.getLocalizedMessage()));
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 
@@ -81,10 +80,8 @@ public class DblConstDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		String s = Arrays.toString(getValues()).replace("[", "")
-				.replace("]", "");
-		return String.format(Util.DEF_LOCALE, "%s(%s)",
-				FACTORY.getTypeString(), s);
+		String s = Arrays.toString(getValues()).replace("[", "").replace("]", "");
+		return String.format(Util.DEF_LOCALE, "%s(%s)", FACTORY.getTypeString(), s);
 	}
 
 	@Override

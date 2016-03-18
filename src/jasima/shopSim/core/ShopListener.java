@@ -22,6 +22,7 @@ package jasima.shopSim.core;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
+import jasima.shopSim.core.Shop.ShopEvent;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ExtendedJobStatCollector;
 
@@ -41,49 +42,21 @@ public interface ShopListener extends SimComponentLifeCycleListener {
 	 */
 	@Override
 	default void inform(SimComponent c, Object msg) {
-		if (msg == JobShopEvent.JOB_RELEASED) {
-			JobShop shop = (JobShop) c;
+		if (msg == ShopEvent.JOB_RELEASED) {
+			Shop shop = (Shop) c;
 			jobReleased(shop, shop.lastJobReleased);
-		} else if (msg == JobShopEvent.JOB_FINISHED) {
-			JobShop shop = (JobShop) c;
+		} else if (msg == ShopEvent.JOB_FINISHED) {
+			Shop shop = (Shop) c;
 			jobFinished(shop, shop.lastJobFinished);
 		} else {
 			SimComponentLifeCycleListener.super.inform(c, msg);
 		}
 	}
 
-	default void jobReleased(JobShop shop, Job j) {
+	default void jobReleased(Shop shop, Job j) {
 	}
 
-	default void jobFinished(JobShop shop, Job j) {
+	default void jobFinished(Shop shop, Job j) {
 	}
-
-	// protected boolean shouldCollect(Job j) {
-	// return (j.getShop().simTime() >= getInitialPeriod() && j.getJobNum() >=
-	// getIgnoreFirst());
-	// }
-
-	// // boring getters and setters below
-	//
-	// public double getInitialPeriod() {
-	// return initialPeriod;
-	// }
-	//
-	// public void setInitialPeriod(double initialPeriod) {
-	// this.initialPeriod = initialPeriod;
-	// }
-	//
-	// public int getIgnoreFirst() {
-	// return ignoreFirst;
-	// }
-	//
-	// public void setIgnoreFirst(int ignoreFirst) {
-	// this.ignoreFirst = ignoreFirst;
-	// }
-
-	// @Override
-	// public String toString() {
-	// return getClass().getSimpleName();
-	// }
 
 }

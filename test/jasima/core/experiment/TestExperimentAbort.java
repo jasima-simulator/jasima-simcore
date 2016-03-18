@@ -21,11 +21,12 @@
 package jasima.core.experiment;
 
 import static org.junit.Assert.assertEquals;
-import jasima.core.statistics.SummaryStat;
 
 import java.util.Map;
 
 import org.junit.Test;
+
+import jasima.core.statistics.SummaryStat;
 
 /**
  * 

@@ -37,8 +37,7 @@ public class CR extends PR {
 
 	@Override
 	public double calcPrio(PrioRuleTarget job) {
-		return -((job.getDueDate() - job.getShop().simTime()) / job
-				.remainingProcTime());
+		return -((job.getDueDate() - job.getShop().simTime()) / job.remainingProcTime());
 	}
 
 	public static class Variant1 extends PR {
@@ -52,8 +51,7 @@ public class CR extends PR {
 			if (slack > 0)
 				return -(1.0d + slack) / (1.0d + job.remainingProcTime());
 			else
-				return -(1.0d / ((1.0d - slack) * (1.0d + job
-						.remainingProcTime())));
+				return -(1.0d / ((1.0d - slack) * (1.0d + job.remainingProcTime())));
 
 		}
 
@@ -69,8 +67,7 @@ public class CR extends PR {
 
 		@Override
 		public double calcPrio(PrioRuleTarget job) {
-			return -(job.getDueDate() - job.getShop().simTime())
-					/ (1.0d + job.remainingProcTime());
+			return -(job.getDueDate() - job.getShop().simTime()) / (1.0d + job.remainingProcTime());
 		}
 
 		@Override

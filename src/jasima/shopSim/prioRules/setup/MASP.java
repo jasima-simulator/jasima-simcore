@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.prioRules.setup;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class implements the Minimum Average Setup plus Processing time rule,

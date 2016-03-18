@@ -20,17 +20,16 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Pair;
-
 import java.util.Random;
+
+import jasima.core.util.Pair;
 
 /**
  * Generates uniformly distributed integers in the interval [min,max] (including
  * both min and max).
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class IntUniformRange extends IntStream {
 
@@ -73,8 +72,7 @@ public class IntUniformRange extends IntStream {
 			throw new IllegalArgumentException("min<max " + min + " " + max);
 		long r = max - min;
 		if (r > Integer.MAX_VALUE - 1 || r < 0)
-			throw new IllegalArgumentException(
-					"range has to fit in an integer. " + min + " " + max);
+			throw new IllegalArgumentException("range has to fit in an integer. " + min + " " + max);
 
 		this.setMin(min);
 		this.setMax(max);

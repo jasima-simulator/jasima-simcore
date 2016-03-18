@@ -25,7 +25,7 @@ import java.util.Map;
 import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.Experiment.ExperimentEvent;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 
 /**
  * This class can be used as a base class for experiment listeners. It delegates
@@ -33,7 +33,7 @@ import jasima.core.util.observer.Subscriber;
  * 
  * @author Torsten Hildebrandt
  */
-public interface ExperimentListener extends Subscriber<Experiment, ExperimentEvent> {
+public interface ExperimentListener extends NotifierListener<Experiment, ExperimentEvent> {
 
 	default void inform(Experiment e, ExperimentEvent event) {
 		if (event == Experiment.EXPERIMENT_STARTING) {

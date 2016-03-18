@@ -64,7 +64,7 @@ public class DowntimeSource {
 			timeToRepair.init();
 		}
 
-		WorkStationListenerBase wsl = new WorkStationListenerBase() {
+		WorkStationListener wsl = new WorkStationListener() {
 			@Override
 			public void activated(WorkStation m, IndividualMachine justActivated) {
 				if (justActivated == machine && machine.downReason == DowntimeSource.this) {
@@ -92,7 +92,7 @@ public class DowntimeSource {
 
 	protected void onActivate() {
 		if (isSourceActive()) {
-			JobShop shop = machine.workStation.shop();
+			Shop shop = machine.workStation.shop();
 
 			// schedule next downtime
 			double nextFailure = calcDeactivateTime(shop);
@@ -110,7 +110,7 @@ public class DowntimeSource {
 	}
 
 	protected void onDeactivate() {
-		JobShop shop = machine.workStation.shop();
+		Shop shop = machine.workStation.shop();
 
 		double whenReactivated = calcActivateTime(shop);
 		machine.procFinished = whenReactivated;
@@ -124,11 +124,11 @@ public class DowntimeSource {
 		});
 	}
 
-	protected double calcDeactivateTime(JobShop shop) {
+	protected double calcDeactivateTime(Shop shop) {
 		return shop.simTime() + timeBetweenFailures.nextDbl();
 	}
 
-	protected double calcActivateTime(JobShop shop) {
+	protected double calcActivateTime(Shop shop) {
 		return shop.simTime() + timeToRepair.nextDbl();
 	}
 

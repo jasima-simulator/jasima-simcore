@@ -25,12 +25,10 @@ import org.junit.runners.Suite;
 
 /**
  * 
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.util.ArgListTokenizerTest.class,
-		jasima.core.util.ArgListParserTest.class,
+@Suite.SuiteClasses({ jasima.core.util.ArgListTokenizerTest.class, jasima.core.util.ArgListParserTest.class,
 		jasima.core.util.TypeUtilTest.class })
 public class AllTests {
 

@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.core.expExecution;
 
-import jasima.core.experiment.Experiment;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -29,6 +27,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import jasima.core.experiment.Experiment;
 
 /**
  * <p>
@@ -43,13 +43,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </p>
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ThreadPoolExecutor extends ExperimentExecutor {
 
-	public static final String POOL_SIZE_SETTING = ThreadPoolExecutor.class
-			.getName() + ".numThreads";
+	public static final String POOL_SIZE_SETTING = ThreadPoolExecutor.class.getName() + ".numThreads";
 
 	// an executor service for each nesting level
 	private Map<Integer, ExecutorService> insts = new HashMap<Integer, ExecutorService>();
@@ -59,17 +57,15 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	}
 
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e,
-			final Experiment parent) {
+	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
 		ExecutorService es = getExecutorInstance(e.nestingLevel());
-		return new FutureWrapper(e,
-				es.submit(new Callable<Map<String, Object>>() {
-					@Override
-					public Map<String, Object> call() throws Exception {
-						e.runExperiment();
-						return e.getResults();
-					}
-				}));
+		return new FutureWrapper(e, es.submit(new Callable<Map<String, Object>>() {
+			@Override
+			public Map<String, Object> call() throws Exception {
+				e.runExperiment();
+				return e.getResults();
+			}
+		}));
 	}
 
 	@Override
@@ -104,8 +100,7 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 			public Thread newThread(Runnable r) {
 				Thread t = defFactory.newThread(r);
 				t.setDaemon(true);
-				t.setName("jasimaWorker-" + nestingLevel + "-"
-						+ numCreated.addAndGet(1));
+				t.setName("jasimaWorker-" + nestingLevel + "-" + numCreated.addAndGet(1));
 				return t;
 			}
 		};

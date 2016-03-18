@@ -20,10 +20,10 @@
  *******************************************************************************/
 package jasima.core.expExecution;
 
-import jasima.core.experiment.Experiment;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import jasima.core.experiment.Experiment;
 
 /**
  * Base class for classes executing experiments. This class implements the
@@ -36,17 +36,14 @@ import java.util.Collection;
  * the number of available processors).
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * @see ThreadPoolExecutor
  * @see ForkJoinPoolExecutor
  */
 public abstract class ExperimentExecutor {
 
-	public static final String EXECUTOR_FACTORY = ExperimentExecutor.class
-			.getName();
-	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class
-			.getName();
+	public static final String EXECUTOR_FACTORY = ExperimentExecutor.class.getName();
+	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class.getName();
 
 	private static volatile ExperimentExecutor execFactoryInst = null;
 
@@ -54,8 +51,7 @@ public abstract class ExperimentExecutor {
 		if (execFactoryInst == null) {
 			synchronized (ExperimentExecutor.class) {
 				if (execFactoryInst == null) { // double check for thread safety
-					String factName = System.getProperty(EXECUTOR_FACTORY,
-							DEFAULT_FACTORY);
+					String factName = System.getProperty(EXECUTOR_FACTORY, DEFAULT_FACTORY);
 					try {
 						Class<?> c = Class.forName(factName);
 						execFactoryInst = (ExperimentExecutor) c.newInstance();
@@ -96,8 +92,7 @@ public abstract class ExperimentExecutor {
 	 * 
 	 * @return An {@link ExperimentFuture} to access experiment results.
 	 */
-	public abstract ExperimentFuture runExperiment(Experiment e,
-			Experiment parent);
+	public abstract ExperimentFuture runExperiment(Experiment e, Experiment parent);
 
 	/**
 	 * Shuts down this {@link ExperimentExecutor}.
@@ -117,10 +112,8 @@ public abstract class ExperimentExecutor {
 	 * @return A {@link Collection} of {@link ExperimentFuture}s, one for each
 	 *         submitted experiment.
 	 */
-	public Collection<ExperimentFuture> runAllExperiments(
-			Collection<? extends Experiment> es, Experiment parent) {
-		ArrayList<ExperimentFuture> res = new ArrayList<ExperimentFuture>(
-				es.size());
+	public Collection<ExperimentFuture> runAllExperiments(Collection<? extends Experiment> es, Experiment parent) {
+		ArrayList<ExperimentFuture> res = new ArrayList<ExperimentFuture>(es.size());
 
 		for (Experiment e : es) {
 			res.add(runExperiment(e, parent));

@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.shopSim.core.batchForming;
 
+import java.util.List;
+
 import jasima.shopSim.core.Batch;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.core.WorkStation;
-
-import java.util.List;
 
 /**
  * This class creates a single batch for the family with the highest priority

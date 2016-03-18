@@ -20,10 +20,10 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import java.util.Arrays;
+
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
-
-import java.util.Arrays;
 
 /**
  * Returns a constant set of integer numbers, as passed to the constructor or
@@ -32,8 +32,7 @@ import java.util.Arrays;
  * class does not use the inherited rndGen.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class IntConst extends IntStream {
 

@@ -37,7 +37,7 @@ import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 
 /**
  * <p>
@@ -70,8 +70,8 @@ import jasima.core.util.observer.Subscriber;
  * </p>
  * <p>
  * Experiments can have listeners registered (derived from
- * {@link ExperimentListener}), which are informed of various events such as
- * an experiment's start and completion and can be used by subclasses to provide
+ * {@link ExperimentListener}), which are informed of various events such as an
+ * experiment's start and completion and can be used by subclasses to provide
  * additional events.
  * </p>
  * 
@@ -482,17 +482,17 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 	}
 
 	@Override
-	public void addListener(Subscriber<Experiment, ExperimentEvent> l) {
+	public void addListener(NotifierListener<Experiment, ExperimentEvent> l) {
 		adapter.addListener(l);
 	}
 
 	@Override
-	public boolean removeListener(Subscriber<Experiment, ExperimentEvent> l) {
+	public boolean removeListener(NotifierListener<Experiment, ExperimentEvent> l) {
 		return adapter.removeListener(l);
 	}
 
 	@Override
-	public Subscriber<Experiment, ExperimentEvent> getListener(int idx) {
+	public NotifierListener<Experiment, ExperimentEvent> getListener(int idx) {
 		return adapter.getListener(idx);
 	}
 

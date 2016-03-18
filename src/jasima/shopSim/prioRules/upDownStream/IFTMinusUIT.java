@@ -20,14 +20,14 @@
  *******************************************************************************/
 package jasima.shopSim.prioRules.upDownStream;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.core.WorkStation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class implements a rule developed by Branke and Pickardt (2011) for job

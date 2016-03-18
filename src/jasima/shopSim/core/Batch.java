@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class Batch extends PrioRuleTarget {
 
-	public final JobShop shop;
+	public final Shop shop;
 
 	private static final String SEPARATOR = ",";
 
@@ -41,7 +41,7 @@ public class Batch extends PrioRuleTarget {
 
 	public Operation op;
 
-	public Batch(JobShop shop) {
+	public Batch(Shop shop) {
 		super();
 		this.shop = shop;
 		jobsInBatch = new ArrayList<Job>();
@@ -178,7 +178,7 @@ public class Batch extends PrioRuleTarget {
 	}
 
 	@Override
-	public JobShop getShop() {
+	public Shop getShop() {
 		return op.getMachine().shop();
 	}
 

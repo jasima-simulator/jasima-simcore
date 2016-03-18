@@ -20,31 +20,28 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.HypergeometricDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 
+import jasima.core.util.Util;
+
 /**
- * This class implements a discrete number stream following a <a
- * href="http://en.wikipedia.org/wiki/Hypergeometric_distribution"
- * >Hypergeometric distribution</a>. It has a three parameters: the population
+ * This class implements a discrete number stream following a
+ * <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution" >
+ * Hypergeometric distribution</a>. It has a three parameters: the population
  * size, the number of (possible) successes in the population, and the number of
  * trials/samples.
  * 
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
- * @see <a
- *      href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">Hypergeometric
- *      distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/HypergeometricDistribution.html">Hypergeometric
- *      distribution (MathWorld)</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">
+ *      Hypergeometric distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/HypergeometricDistribution.html">
+ *      Hypergeometric distribution (MathWorld)</a>
  */
 public class IntHypergeometric extends IntDistribution {
 
@@ -56,11 +53,9 @@ public class IntHypergeometric extends IntDistribution {
 		this(20, 10, 5);
 	}
 
-	public IntHypergeometric(int populationSize, int numberOfSuccesses,
-			int sampleSize) {
+	public IntHypergeometric(int populationSize, int numberOfSuccesses, int sampleSize) {
 		super();
-		setDistribution(new HypergeometricDistribution(populationSize,
-				numberOfSuccesses, sampleSize));
+		setDistribution(new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize));
 	}
 
 	@Override
@@ -71,11 +66,8 @@ public class IntHypergeometric extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String
-				.format(Util.DEF_LOCALE,
-						"IntHypergeometric(populationSize=%d;numberOfSuccesses=%d;sampleSize=%d)",
-						getPopulationSize(), getNumberOfSuccesses(),
-						getSampleSize());
+		return String.format(Util.DEF_LOCALE, "IntHypergeometric(populationSize=%d;numberOfSuccesses=%d;sampleSize=%d)",
+				getPopulationSize(), getNumberOfSuccesses(), getSampleSize());
 	}
 
 	// ************* getter / setter below ****************
@@ -92,10 +84,9 @@ public class IntHypergeometric extends IntDistribution {
 	 * @throws NotStrictlyPositiveException
 	 *             If the supplied value was {@code <=0}.
 	 */
-	public void setPopulationSize(int populationSize)
-			throws NotStrictlyPositiveException {
-		setDistribution(new HypergeometricDistribution(populationSize,
-				dist.getNumberOfSuccesses(), dist.getSampleSize()));
+	public void setPopulationSize(int populationSize) throws NotStrictlyPositiveException {
+		setDistribution(
+				new HypergeometricDistribution(populationSize, dist.getNumberOfSuccesses(), dist.getSampleSize()));
 	}
 
 	public int getNumberOfSuccesses() {
@@ -110,11 +101,9 @@ public class IntHypergeometric extends IntDistribution {
 	 * @throws NumberIsTooLargeException
 	 *             If the supplied value is larger than {@code populationSize}.
 	 */
-	public void setNumberOfSuccesses(int numberOfSuccesses)
-			throws NumberIsTooLargeException {
-		setDistribution(new HypergeometricDistribution(
-				dist.getPopulationSize(), numberOfSuccesses,
-				dist.getSampleSize()));
+	public void setNumberOfSuccesses(int numberOfSuccesses) throws NumberIsTooLargeException {
+		setDistribution(
+				new HypergeometricDistribution(dist.getPopulationSize(), numberOfSuccesses, dist.getSampleSize()));
 	}
 
 	public int getSampleSize() {
@@ -130,9 +119,8 @@ public class IntHypergeometric extends IntDistribution {
 	 *             If the supplied value is larger than {@code populationSize}.
 	 */
 	public void setSampleSize(int sampleSize) throws NumberIsTooLargeException {
-		setDistribution(new HypergeometricDistribution(
-				dist.getPopulationSize(), dist.getNumberOfSuccesses(),
-				sampleSize));
+		setDistribution(
+				new HypergeometricDistribution(dist.getPopulationSize(), dist.getNumberOfSuccesses(), sampleSize));
 	}
 
 }

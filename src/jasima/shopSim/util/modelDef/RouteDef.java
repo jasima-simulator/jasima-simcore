@@ -36,8 +36,7 @@ public class RouteDef extends PropertySupport {
 	}
 
 	public void setOperations(OperationDef[] operations) {
-		firePropertyChange(PROP_OPERATIONS, this.operations,
-				this.operations = operations);
+		firePropertyChange(PROP_OPERATIONS, this.operations, this.operations = operations);
 	}
 
 	public String getName() {

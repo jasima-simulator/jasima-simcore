@@ -20,9 +20,6 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
-import jasima.core.util.TypeUtil;
-import jasima.core.util.Util;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +27,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import jasima.core.util.TypeUtil;
+import jasima.core.util.Util;
 
 /**
  * <p>
@@ -50,8 +50,7 @@ import java.util.Map.Entry;
  * @author Robin Kreis
  * @author Torsten Hildebrandt
  */
-public abstract class AbstractMultiConfExperiment extends
-		AbstractMultiExperiment {
+public abstract class AbstractMultiConfExperiment extends AbstractMultiExperiment {
 
 	private static final long serialVersionUID = 8651960788951812186L;
 
@@ -137,8 +136,7 @@ public abstract class AbstractMultiConfExperiment extends
 					super.produceResults();
 
 					resultMap.put(Experiment.EXCEPTION_MESSAGE, e.getMessage());
-					resultMap.put(Experiment.EXCEPTION,
-							Util.exceptionToString(e));
+					resultMap.put(Experiment.EXCEPTION, Util.exceptionToString(e));
 				}
 
 				@Override
@@ -150,18 +148,15 @@ public abstract class AbstractMultiConfExperiment extends
 	}
 
 	protected Experiment createExperimentForConf(Map<String, Object> conf) {
-		Experiment e = conf.containsKey(KEY_EXPERIMENT) ? ((Experiment) conf
-				.get(KEY_EXPERIMENT)).silentClone() : getBaseExperiment()
-				.silentClone();
+		Experiment e = conf.containsKey(KEY_EXPERIMENT) ? ((Experiment) conf.get(KEY_EXPERIMENT)).silentClone()
+				: getBaseExperiment().silentClone();
 		configureRunExperiment(e);
 
-		List<Map.Entry<String, Object>> entries = new ArrayList<Map.Entry<String, Object>>(
-				conf.entrySet());
+		List<Map.Entry<String, Object>> entries = new ArrayList<Map.Entry<String, Object>>(conf.entrySet());
 		// sort by length
 		Collections.sort(entries, new Comparator<Map.Entry<String, Object>>() {
 			@Override
-			public int compare(Entry<String, Object> o1,
-					Entry<String, Object> o2) {
+			public int compare(Entry<String, Object> o1, Entry<String, Object> o2) {
 				String a = o1.getKey();
 				String b = o2.getKey();
 				if (a == b)
@@ -177,12 +172,10 @@ public abstract class AbstractMultiConfExperiment extends
 		for (Map.Entry<String, Object> p : entries) {
 			if (p.getKey().equals(KEY_EXPERIMENT))
 				continue;
-			if (p.getValue() != null
-					&& p.getValue() instanceof ComplexFactorSetter) {
+			if (p.getValue() != null && p.getValue() instanceof ComplexFactorSetter) {
 				((ComplexFactorSetter) p.getValue()).configureExperiment(e);
 			} else {
-				TypeUtil.setPropertyValue(e, p.getKey(),
-						TypeUtil.cloneIfPossible(p.getValue()));
+				TypeUtil.setPropertyValue(e, p.getKey(), TypeUtil.cloneIfPossible(p.getValue()));
 			}
 		}
 
@@ -238,16 +231,13 @@ public abstract class AbstractMultiConfExperiment extends
 	 * @param configurationValidator
 	 *            Sets the validator.
 	 */
-	public void setConfigurationValidator(
-			ConfigurationValidator configurationValidator) {
+	public void setConfigurationValidator(ConfigurationValidator configurationValidator) {
 		this.configurationValidator = configurationValidator;
 	}
 
 	@Override
-	public AbstractMultiConfExperiment clone()
-			throws CloneNotSupportedException {
-		AbstractMultiConfExperiment e = (AbstractMultiConfExperiment) super
-				.clone();
+	public AbstractMultiConfExperiment clone() throws CloneNotSupportedException {
+		AbstractMultiConfExperiment e = (AbstractMultiConfExperiment) super.clone();
 
 		if (baseExperiment != null)
 			e.baseExperiment = baseExperiment.clone();

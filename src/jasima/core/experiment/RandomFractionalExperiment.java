@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
-import jasima.core.util.MersenneTwister;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
+
+import jasima.core.util.MersenneTwister;
 
 /**
  * <p>
@@ -41,8 +41,7 @@ import java.util.Random;
  * </p>
  * 
  * @author Torsten Hildebrandt, 2012-06-08
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 
@@ -83,12 +82,10 @@ public class RandomFractionalExperiment extends FullFactorialExperiment {
 			total *= n;
 		}
 
-		int max = getMaxConfigurations() > 0 ? getMaxConfigurations()
-				: Integer.MAX_VALUE;
+		int max = getMaxConfigurations() > 0 ? getMaxConfigurations() : Integer.MAX_VALUE;
 		long numCfgsToCreate = Math.min(max, total);
 
-		print("creating %d configurations out of %d possible...",
-				numCfgsToCreate, total);
+		print("creating %d configurations out of %d possible...", numCfgsToCreate, total);
 		numConfs = 0;
 
 		sampleConfs((int) numCfgsToCreate, numValuesPerFactor);

@@ -20,28 +20,26 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.GeometricDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
+import jasima.core.util.Util;
+
 /**
- * This class implements a discrete number stream following a <a
- * href="http://en.wikipedia.org/wiki/Geometric_distribution">Geometric
+ * This class implements a discrete number stream following a
+ * <a href="http://en.wikipedia.org/wiki/Geometric_distribution">Geometric
  * distribution</a>. It has a single parameter, the probability of success in a
  * single trial.
  * 
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Geometric_distribution">Geometric
  *      distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/GeometricDistribution.html">Geometric
- *      distribution (MathWorld)</a>
+ * @see <a href="http://mathworld.wolfram.com/GeometricDistribution.html">
+ *      Geometric distribution (MathWorld)</a>
  */
 public class IntGeometric extends IntDistribution {
 
@@ -66,9 +64,7 @@ public class IntGeometric extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE,
-				"IntGeometric(probabilityOfSuccess=%f)",
-				getProbabilityOfSuccess());
+		return String.format(Util.DEF_LOCALE, "IntGeometric(probabilityOfSuccess=%f)", getProbabilityOfSuccess());
 	}
 
 	public double getProbabilityOfSuccess() {
@@ -84,8 +80,7 @@ public class IntGeometric extends IntDistribution {
 	 *             If the supplied probability if not in the interval
 	 *             {@code (0,1]}.
 	 */
-	public void setProbabilityOfSuccess(double probOfSuccess)
-			throws OutOfRangeException {
+	public void setProbabilityOfSuccess(double probOfSuccess) throws OutOfRangeException {
 		setDistribution(new GeometricDistribution(probOfSuccess));
 	}
 

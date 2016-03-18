@@ -34,11 +34,9 @@ import java.util.Map;
  * @see FullFactorialExperiment
  * @author Robin Kreis
  * @author Torsten Hildebrandt, 2013-01-08
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
-public class MultipleConfigurationExperiment extends
-		AbstractMultiConfExperiment {
+public class MultipleConfigurationExperiment extends AbstractMultiConfExperiment {
 
 	private static final long serialVersionUID = -6120299354891115684L;
 

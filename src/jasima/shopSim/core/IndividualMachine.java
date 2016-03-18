@@ -99,7 +99,7 @@ public class IndividualMachine {
 	 *            The {@link DowntimeSource} causing the shutdown.
 	 */
 	public void takeDown(final DowntimeSource downReason) {
-		final JobShop shop = workStation.shop();
+		final Shop shop = workStation.shop();
 
 		if (state != MachineState.IDLE) {
 			assert procFinished >= shop.simTime();

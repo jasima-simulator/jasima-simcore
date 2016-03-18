@@ -33,7 +33,6 @@ public class StaticSourceDef extends SourceDef {
 	}
 
 	public void setJobSpecs(JobDef[] jobSpecs) {
-		firePropertyChange(PROP_JOB_SPECS, this.jobSpecs,
-				this.jobSpecs = jobSpecs);
+		firePropertyChange(PROP_JOB_SPECS, this.jobSpecs, this.jobSpecs = jobSpecs);
 	}
 }

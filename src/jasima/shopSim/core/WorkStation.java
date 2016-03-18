@@ -50,15 +50,27 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 	/** Base class for workstation events. */
 	public static class WorkStationEvent {
+
+		private final String name;
+
+		public WorkStationEvent(String name) {
+			super();
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		// constants for default events thrown by a workstation
+
+		public static final WorkStationEvent WS_ACTIVATED = new WorkStationEvent("WS_JOB_ARRIVAL");
+		public static final WorkStationEvent WS_DEACTIVATED = new WorkStationEvent("WS_JOB_ARRIVAL");
+		public static final WorkStationEvent WS_JOB_ARRIVAL = new WorkStationEvent("WS_JOB_ARRIVAL");
+		public static final WorkStationEvent WS_JOB_SELECTED = new WorkStationEvent("WS_JOB_SELECTED");
+		public static final WorkStationEvent WS_JOB_COMPLETED = new WorkStationEvent("WS_JOB_COMPLETED");
 	}
-
-	// constants for default events thrown by a workstation
-
-	public static final WorkStationEvent WS_ACTIVATED = new WorkStationEvent();
-	public static final WorkStationEvent WS_DEACTIVATED = new WorkStationEvent();
-	public static final WorkStationEvent WS_JOB_ARRIVAL = new WorkStationEvent();
-	public static final WorkStationEvent WS_JOB_SELECTED = new WorkStationEvent();
-	public static final WorkStationEvent WS_JOB_COMPLETED = new WorkStationEvent();
 
 	public static final String DEF_SETUP_STR = "DEF_SETUP";
 	public static final int DEF_SETUP = 0;
@@ -92,7 +104,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 	private HashMap<Object, Object> valueStore;
 
-	protected JobShop shop;
+	protected Shop shop;
 	protected int index; // in shop.machines
 
 	private int numBusy;
@@ -186,7 +198,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 			selectAndStart();
 
 		if (numListener() > 0) {
-			fire(WS_ACTIVATED);
+			fire(WorkStationEvent.WS_ACTIVATED);
 		}
 	}
 
@@ -198,7 +210,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 		assert numBusy >= 0 && numBusy <= numInGroup;
 
 		if (numListener() > 0) {
-			fire(WS_DEACTIVATED);
+			fire(WorkStationEvent.WS_DEACTIVATED);
 		}
 	}
 
@@ -250,7 +262,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 		if (numListener() > 0) {
 			justArrived = j;
-			fire(WS_JOB_ARRIVAL);
+			fire(WorkStationEvent.WS_JOB_ARRIVAL);
 			justArrived = null;
 		}
 
@@ -354,7 +366,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 		if (numListener() > 0) {
 			justCompleted = b;
-			fire(WS_JOB_COMPLETED);
+			fire(WorkStationEvent.WS_JOB_COMPLETED);
 			justCompleted = null;
 		}
 
@@ -402,7 +414,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 			// inform listener
 			if (numListener() > 0) {
 				justStarted = nextBatch;
-				fire(WS_JOB_SELECTED);
+				fire(WorkStationEvent.WS_JOB_SELECTED);
 				justStarted = null;
 			}
 
@@ -615,7 +627,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 		return numInGroup;
 	}
 
-	public JobShop shop() {
+	public Shop shop() {
 		return shop;
 	}
 

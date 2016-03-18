@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -18,19 +19,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+import org.junit.Test;
+
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.prioRules.basic.FCFS;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.setup.SST;
 
-import org.junit.Test;
-
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class TestSetups {
 

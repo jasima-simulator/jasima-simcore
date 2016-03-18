@@ -25,8 +25,7 @@ package jasima.core.run;
  * 
  * @author Robin Kreis
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * @deprecated Use ConsoleRunner instead.
  */
 @Deprecated

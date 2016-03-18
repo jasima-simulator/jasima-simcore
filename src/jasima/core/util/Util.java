@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.statistics.SummaryStat;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -39,6 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
+
+import jasima.core.statistics.SummaryStat;
 
 /**
  * Some static utility methods that don't really fit anywhere else.
@@ -62,8 +62,7 @@ public class Util {
 	/**
 	 * Descriptive String showing name, current version and project URL.
 	 */
-	public static final String ID_STRING = "JASIMA, v" + VERSION
-			+ "; http://jasima.googlecode.com/";
+	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.googlecode.com/";
 
 	/**
 	 * The default locale used, e.g., to format strings.
@@ -73,8 +72,7 @@ public class Util {
 	/**
 	 * Class search path containing all packaged in jasima-main.
 	 */
-	public static final String[] DEF_CLASS_SEARCH_PATH = {
-			"jasima.core.experiment", //
+	public static final String[] DEF_CLASS_SEARCH_PATH = { "jasima.core.experiment", //
 			"jasima.core.expExecution", //
 			"jasima.core.random", //
 			"jasima.core.random.continuous", //
@@ -130,8 +128,7 @@ public class Util {
 	 * @param <T>
 	 *            The component type.
 	 */
-	public static <T> T[] initializedArray(int numElements,
-			Class<T> componentType) {
+	public static <T> T[] initializedArray(int numElements, Class<T> componentType) {
 		try {
 			@SuppressWarnings("unchecked")
 			T[] res = (T[]) Array.newInstance(componentType, numElements);
@@ -163,8 +160,7 @@ public class Util {
 	public static <T> T[] removeFromArray(T[] a, T elementToRemove) {
 		ArrayList<T> l = new ArrayList<T>(Arrays.asList(a));
 		if (l.remove(elementToRemove)) {
-			return l.toArray((T[]) Array.newInstance(a.getClass()
-					.getComponentType(), l.size()));
+			return l.toArray((T[]) Array.newInstance(a.getClass().getComponentType(), l.size()));
 		} else {
 			return a;
 		}
@@ -300,8 +296,7 @@ public class Util {
 		return res;
 	}
 
-	public static String[][] read2DimStrings(BufferedReader r, int numRows)
-			throws IOException {
+	public static String[][] read2DimStrings(BufferedReader r, int numRows) throws IOException {
 		String[][] ss = new String[numRows][];
 
 		for (int i = 0; i < numRows; i++) {
@@ -311,27 +306,23 @@ public class Util {
 		return ss;
 	}
 
-	public static double deleteArrayElement(double[] prios, int elemIdx,
-			double fillWith) {
+	public static double deleteArrayElement(double[] prios, int elemIdx, double fillWith) {
 		double res = prios[elemIdx];
-		System.arraycopy(prios, elemIdx + 1, prios, elemIdx, prios.length
-				- elemIdx - 1);
+		System.arraycopy(prios, elemIdx + 1, prios, elemIdx, prios.length - elemIdx - 1);
 		prios[prios.length - 1] = fillWith;
 		return res;
 	}
 
 	public static <T> T deleteArrayElement(T[] prios, int elemIdx, T fillWith) {
 		T res = prios[elemIdx];
-		System.arraycopy(prios, elemIdx + 1, prios, elemIdx, prios.length
-				- elemIdx - 1);
+		System.arraycopy(prios, elemIdx + 1, prios, elemIdx, prios.length - elemIdx - 1);
 		prios[prios.length - 1] = fillWith;
 		return res;
 	}
 
 	public static <T> T moveArrayElementToBack(T[] prios, int elemIdx) {
 		T res = prios[elemIdx];
-		System.arraycopy(prios, elemIdx + 1, prios, elemIdx, prios.length
-				- elemIdx - 1);
+		System.arraycopy(prios, elemIdx + 1, prios, elemIdx, prios.length - elemIdx - 1);
 		prios[prios.length - 1] = res;
 		return res;
 	}
@@ -582,8 +573,7 @@ public class Util {
 	 * @throws IllegalArgumentException
 	 *             If {@code arbitraryArray} if not an array.
 	 */
-	public static String arrayToString(Object arbitraryArray)
-			throws IllegalArgumentException {
+	public static String arrayToString(Object arbitraryArray) throws IllegalArgumentException {
 		Class<?> compType = arbitraryArray.getClass().getComponentType();
 		if (compType == null)
 			throw new IllegalArgumentException();
@@ -622,8 +612,7 @@ public class Util {
 	 * @param res
 	 *            result map where keys should be added
 	 */
-	public static void putMeanMaxVar(SummaryStat vs, String prefix,
-			Map<String, Object> res) {
+	public static void putMeanMaxVar(SummaryStat vs, String prefix, Map<String, Object> res) {
 		res.put(prefix + "Mean", vs);
 		if (vs.numObs() > 0)
 			res.put(prefix + "Max", vs.max());
@@ -655,8 +644,7 @@ public class Util {
 		String javaVmName = System.getProperty("java.vm.name");
 		// String javaRuntimeName = System.getProperty("java.runtime.name");
 
-		return String.format(DEF_LOCALE, "java: v%s, %s (%s)", javaVersion,
-				javaVmName, javaVendor);
+		return String.format(DEF_LOCALE, "java: v%s, %s (%s)", javaVersion, javaVmName, javaVendor);
 	}
 
 	/**
@@ -670,8 +658,7 @@ public class Util {
 		String osArch = System.getProperty("os.arch");
 		String osVersion = System.getProperty("os.version");
 
-		return String.format(DEF_LOCALE, "OS: %s (%s, v%s)", osName, osArch,
-				osVersion);
+		return String.format(DEF_LOCALE, "OS: %s (%s, v%s)", osName, osArch, osVersion);
 	}
 
 	// prevent instantiation

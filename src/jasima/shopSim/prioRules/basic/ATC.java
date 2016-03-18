@@ -76,8 +76,7 @@ public class ATC extends PR {
 		if (arrivesTooLate(job))
 			return PriorityQueue.MIN_PRIO;
 
-		double slack = job.getCurrentOperationDueDate()
-				- job.getShop().simTime() - job.currProcTime();
+		double slack = job.getCurrentOperationDueDate() - job.getShop().simTime() - job.currProcTime();
 		double prod1 = -Math.max(slack, 0.0d) / slackNorm;
 
 		return (job.getWeight() / job.currProcTime()) * Math.exp(prod1);

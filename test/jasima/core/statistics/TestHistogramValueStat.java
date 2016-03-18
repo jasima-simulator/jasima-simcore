@@ -22,19 +22,18 @@ package jasima.core.statistics;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
-import jasima.core.util.MersenneTwister;
 
 import java.io.PrintStream;
 
 import org.junit.Test;
 
+import jasima.core.util.MersenneTwister;
 import util.FileChecker;
 
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class TestHistogramValueStat {
 
@@ -51,8 +50,8 @@ public class TestHistogramValueStat {
 		}
 		pStr.println();
 
-		double[] vals = { 22.37, 10.15, 15.43, 38.62, 15.92, 34.60, 10.28,
-				1.47, 0.40, 0.05, 11.39, 0.27, 0.42, 0.09, 11.37 };
+		double[] vals = { 22.37, 10.15, 15.43, 38.62, 15.92, 34.60, 10.28, 1.47, 0.40, 0.05, 11.39, 0.27, 0.42, 0.09,
+				11.37 };
 		for (double d : vals) {
 			basicQE.value(d);
 			pStr.println(basicQE.getMarkers());

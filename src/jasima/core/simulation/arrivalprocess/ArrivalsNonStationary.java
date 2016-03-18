@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.simulation.arrivalprocess;
 
-import jasima.core.random.continuous.DblStream;
-
 import java.util.Random;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
+
+import jasima.core.random.continuous.DblStream;
 
 /**
  * This class can be used to create a non-stationary arrival process, i.e., if
@@ -36,8 +36,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  * create non-stationary (Poisson) processes.
  * 
  * @author Torsten Hildebrandt, 2012-08-07
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ArrivalsNonStationary extends ArrivalProcess {
 
@@ -103,8 +102,7 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 	 * 
 	 * @param inverseCumulativeExpectation
 	 */
-	public void setInverseCumulativeExpectation(
-			UnivariateFunction inverseCumulativeExpectation) {
+	public void setInverseCumulativeExpectation(UnivariateFunction inverseCumulativeExpectation) {
 		this.inverseCumulativeExpectation = inverseCumulativeExpectation;
 	}
 

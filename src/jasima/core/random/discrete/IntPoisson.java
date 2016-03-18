@@ -20,27 +20,26 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.exception.NotPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * This class implements a discrete number stream following a <a
- * href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson
+ * This class implements a discrete number stream following a
+ * <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson
  * distribution</a>. It is parameterized by its mean.
  * 
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson
  *      distribution (Wikipedia)</a>
  * @see <a href="http://mathworld.wolfram.com/PoissonDistribution.html">Poisson
  *      distribution (MathWorld)</a>
- * */
+ */
 public class IntPoisson extends IntDistribution {
 
 	private static final long serialVersionUID = -3018032705267062035L;

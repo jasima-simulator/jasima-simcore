@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import java.util.List;
+
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.continuous.DblUniformRange;
 import jasima.core.util.Util;
-
-import java.util.List;
 
 public class DblUniformDef extends DblStreamDef {
 
@@ -42,21 +42,17 @@ public class DblUniformDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblUniformDef stringToStreamDef(String params,
-				List<String> errors) {
+		public DblUniformDef stringToStreamDef(String params, List<String> errors) {
 			double[] ll;
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
-						nfe.getLocalizedMessage()));
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 2) {
-				errors.add(String
-						.format(Util.DEF_LOCALE,
-								"invalid number of parameters (2 required, min and max value): '%s'",
-								params));
+				errors.add(String.format(Util.DEF_LOCALE,
+						"invalid number of parameters (2 required, min and max value): '%s'", params));
 				return null;
 			}
 			DblUniformDef res = new DblUniformDef();
@@ -90,8 +86,7 @@ public class DblUniformDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "%s(%s,%s)",
-				FACTORY.getTypeString(), getMinValue(), getMaxValue());
+		return String.format(Util.DEF_LOCALE, "%s(%s,%s)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
 	}
 
 	@Override
@@ -104,8 +99,7 @@ public class DblUniformDef extends DblStreamDef {
 	}
 
 	public void setMinValue(double minValue) {
-		firePropertyChange(PARAM_MIN_VALUE, this.minValue,
-				this.minValue = minValue);
+		firePropertyChange(PARAM_MIN_VALUE, this.minValue, this.minValue = minValue);
 	}
 
 	public double getMaxValue() {
@@ -113,8 +107,7 @@ public class DblUniformDef extends DblStreamDef {
 	}
 
 	public void setMaxValue(double maxValue) {
-		firePropertyChange(PARAM_MAX_VALUE, this.maxValue,
-				this.maxValue = maxValue);
+		firePropertyChange(PARAM_MAX_VALUE, this.maxValue, this.maxValue = maxValue);
 	}
 
 	static {

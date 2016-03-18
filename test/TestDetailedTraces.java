@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -18,6 +19,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import jasima.core.random.RandomFactory;
 import jasima.core.util.ExperimentTest;
 import jasima.shopSim.core.PR;
@@ -32,10 +36,6 @@ import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.weighted.WMOD;
 import jasima.shopSim.util.TraceFileProducer;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import util.FileChecker;
 
 /**
@@ -49,8 +49,7 @@ public class TestDetailedTraces extends ExperimentTest {
 
 	@BeforeClass
 	public static void setUp() {
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactory.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	@Test
@@ -71,29 +70,24 @@ public class TestDetailedTraces extends ExperimentTest {
 	public void mimac4rResultsShouldBeReproducibleBestOfFamilyBatching() {
 		PR pr = new WMOD().setFinalTieBreaker(new TieBreakerFASFS());
 		BatchForming batchForming = new BestOfFamilyBatching();
-		runMimac4rAndCheck(pr, batchForming, "log_4r_BOF.txt",
-				"testInstances/traceMimac4rBestOfFamily.txt");
+		runMimac4rAndCheck(pr, batchForming, "log_4r_BOF.txt", "testInstances/traceMimac4rBestOfFamily.txt");
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleMostCompleteBatch() {
 		PR pr = new WMOD().setFinalTieBreaker(new TieBreakerFASFS());
 		BatchForming batchForming = new MostCompleteBatch();
-		runMimac4rAndCheck(pr, batchForming, "log_4r_MCB.txt",
-				"testInstances/traceMimac4rMostComplete.txt");
+		runMimac4rAndCheck(pr, batchForming, "log_4r_MCB.txt", "testInstances/traceMimac4rMostComplete.txt");
 	}
 
 	@Test
 	public void mimac4rResultsShouldBeReproducibleHighestJobBatchingMBS() {
 		PR pr = new WMOD().setFinalTieBreaker(new TieBreakerFASFS());
-		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(
-				5.0 / 8.0);
-		runMimac4rAndCheck(pr, batchForming, "log_4r_MBS.txt",
-				"testInstances/traceMimac4rMBS.txt");
+		HighestJobBatchingMBS batchForming = new HighestJobBatchingMBS(5.0 / 8.0);
+		runMimac4rAndCheck(pr, batchForming, "log_4r_MBS.txt", "testInstances/traceMimac4rMBS.txt");
 	}
 
-	private void runMimac4rAndCheck(PR pr, BatchForming batchForming,
-			String outFile, String realFile) {
+	private void runMimac4rAndCheck(PR pr, BatchForming batchForming, String outFile, String realFile) {
 		MimacExperiment e = new MimacExperiment();
 		e.setInitialSeed(42);
 		e.setScenario(DataSet.FAB4r);

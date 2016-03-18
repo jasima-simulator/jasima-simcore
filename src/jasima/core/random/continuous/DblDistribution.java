@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Pair;
-
 import java.util.Random;
 
 import org.apache.commons.math3.distribution.RealDistribution;
+
+import jasima.core.util.Pair;
 
 /**
  * Returns an arbitrarily distributed random number stream. Its distribution is
@@ -34,8 +34,7 @@ import org.apache.commons.math3.distribution.RealDistribution;
  * parameters as Java Bean properties.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DblDistribution extends DblStream {
 
@@ -59,8 +58,7 @@ public class DblDistribution extends DblStream {
 		this(null, name, distribution);
 	}
 
-	public DblDistribution(Random random, String name,
-			RealDistribution distribution) {
+	public DblDistribution(Random random, String name, RealDistribution distribution) {
 		super();
 		setRndGen(random);
 		setDistribution(distribution);
@@ -96,8 +94,7 @@ public class DblDistribution extends DblStream {
 	public Pair<Double, Double> getValueRange() {
 		if (distribution == null)
 			return null;
-		return new Pair<Double, Double>(distribution.getSupportLowerBound(),
-				distribution.getSupportUpperBound());
+		return new Pair<Double, Double>(distribution.getSupportLowerBound(), distribution.getSupportUpperBound());
 	}
 
 	@Override

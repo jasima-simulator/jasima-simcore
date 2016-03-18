@@ -25,8 +25,7 @@ import org.junit.runners.Suite;
 
 /**
  * 
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class,

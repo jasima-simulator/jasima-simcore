@@ -16,7 +16,7 @@ public class NotifierAdapter<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE
 
 	private final SUBJECT subject;
 
-	private ArrayList<Subscriber<SUBJECT, MESSAGE>> listener;
+	private ArrayList<NotifierListener<SUBJECT, MESSAGE>> listener;
 	private ArrayDeque<MESSAGE> msgs;
 	private int it;
 
@@ -34,14 +34,14 @@ public class NotifierAdapter<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE
 	}
 
 	@Override
-	public void addListener(Subscriber<SUBJECT, MESSAGE> l) {
+	public void addListener(NotifierListener<SUBJECT, MESSAGE> l) {
 		Objects.ensureNotNull(l);
 
 		listener.add(l);
 	}
 
 	@Override
-	public boolean removeListener(Subscriber<SUBJECT, MESSAGE> l) {
+	public boolean removeListener(NotifierListener<SUBJECT, MESSAGE> l) {
 		Objects.ensureNotNull(l);
 
 		int idx = listener.indexOf(l);
@@ -60,7 +60,7 @@ public class NotifierAdapter<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE
 	}
 
 	@Override
-	public Subscriber<SUBJECT, MESSAGE> getListener(int idx) {
+	public NotifierListener<SUBJECT, MESSAGE> getListener(int idx) {
 		return listener.get(idx);
 	}
 
@@ -77,7 +77,7 @@ public class NotifierAdapter<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE
 			do {
 				it = 0;
 				while (it < listener.size()) {
-					Subscriber<SUBJECT, MESSAGE> l = listener.get(it);
+					NotifierListener<SUBJECT, MESSAGE> l = listener.get(it);
 					it++;
 
 					l.inform(subject, msg);

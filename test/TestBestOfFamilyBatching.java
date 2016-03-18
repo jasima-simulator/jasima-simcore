@@ -20,6 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
+import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.junit.Before;
+import org.junit.Test;
+
 import jasima.core.experiment.MultipleReplicationExperiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblDistribution;
@@ -38,13 +45,6 @@ import jasima.shopSim.prioRules.basic.FASFS;
 import jasima.shopSim.prioRules.batch.LBF;
 import jasima.shopSim.prioRules.batch.MaxBatchSize;
 import jasima.shopSim.prioRules.setup.SST;
-
-import java.util.Map;
-
-import org.apache.commons.math3.distribution.ExponentialDistribution;
-import org.junit.Before;
-import org.junit.Test;
-
 import util.ExtendedJobStatCollector;
 
 /**

@@ -20,14 +20,6 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.TokenType;
-import jasima.core.util.TypeUtil;
-import jasima.core.util.TypeUtil.TypeConversionException;
-import jasima.core.util.FileFormat;
-import jasima.core.util.Util;
-import jasima.core.util.XmlUtil;
-
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +27,14 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import com.thoughtworks.xstream.XStreamException;
+
+import jasima.core.util.ArgListTokenizer;
+import jasima.core.util.ArgListTokenizer.TokenType;
+import jasima.core.util.FileFormat;
+import jasima.core.util.TypeUtil;
+import jasima.core.util.TypeUtil.TypeConversionException;
+import jasima.core.util.Util;
+import jasima.core.util.XmlUtil;
 
 public class TypeConverterJavaBean extends TypeToStringConverter {
 
@@ -80,9 +80,8 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	}
 
 	@Override
-	public <T> T fromString(ArgListTokenizer tk, Class<T> requiredType,
-			String context, ClassLoader loader, String[] packageSearchPath)
-			throws TypeConversionException {
+	public <T> T fromString(ArgListTokenizer tk, Class<T> requiredType, String context, ClassLoader loader,
+			String[] packageSearchPath) throws TypeConversionException {
 		// read required class name
 		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.STRING);
 		String className = tk.currTokenText();
@@ -90,47 +89,37 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 		// try to create/load main type
 		T root;
 		try {
-			root = loadClassOrXml(className, requiredType, loader,
-					packageSearchPath);
-		} catch (ReflectiveOperationException | FileReadException
-				| NoTypeFoundException e) {
+			root = loadClassOrXml(className, requiredType, loader, packageSearchPath);
+		} catch (ReflectiveOperationException | FileReadException | NoTypeFoundException e) {
 			// this can only happen for the top level object, otherwise it
 			// is already caught and wrapped in a TypeConversionException
 			throw new TypeConversionException(
-					String.format(
-							Util.DEF_LOCALE,
-							"Can't create object for value '%s' (property path: '%s'): %s",
-							className, context, exceptionMessage(e)), e);
+					String.format(Util.DEF_LOCALE, "Can't create object for value '%s' (property path: '%s'): %s",
+							className, context, exceptionMessage(e)),
+					e);
 		}
 
 		// read and set parameters of complex objects (optional parameter
 		// list in round parenthesis)
 		if (tk.nextTokenNoWhitespace() == TokenType.PARENS_OPEN) {
-			Map<String, PropertyDescriptor> beanProps = TypeUtil
-					.writableProperties(root.getClass());
+			Map<String, PropertyDescriptor> beanProps = TypeUtil.writableProperties(root.getClass());
 			while (true) {
 				// name
 				TokenType token = tk.nextTokenNoWhitespace();
-				tk.assureTokenTypes(token, TokenType.STRING,
-						TokenType.PARENS_CLOSE);
+				tk.assureTokenTypes(token, TokenType.STRING, TokenType.PARENS_CLOSE);
 				if (token == TokenType.PARENS_CLOSE)
 					break; // end of parameter list
 				String propName = tk.currTokenText();
 
 				// equals
-				tk.assureTokenTypes(tk.nextTokenNoWhitespace(),
-						TokenType.EQUALS);
+				tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.EQUALS);
 
 				// find property type
-				PropertyDescriptor prop = beanProps.get(propName
-						.toLowerCase(Util.DEF_LOCALE));
+				PropertyDescriptor prop = beanProps.get(propName.toLowerCase(Util.DEF_LOCALE));
 				if (prop == null)
 					throw new RuntimeException(
-							String.format(
-									Util.DEF_LOCALE,
-									"Can't find property '%s' in type '%s', property path: '%s'",
-									propName, root.getClass().getName(),
-									context));
+							String.format(Util.DEF_LOCALE, "Can't find property '%s' in type '%s', property path: '%s'",
+									propName, root.getClass().getName(), context));
 
 				// read and set value
 				try {
@@ -141,25 +130,19 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 						propPath = propName;
 
 					// recursively create object for property value
-					Object value = convertFromString(tk,
-							prop.getPropertyType(), propPath, loader,
-							packageSearchPath);
+					Object value = convertFromString(tk, prop.getPropertyType(), propPath, loader, packageSearchPath);
 
 					// call setter to finally check compatibility
 					prop.getWriteMethod().invoke(root, value);
 				} catch (ReflectiveOperationException | TypeConversionException e1) {
-					throw new TypeConversionException(
-							String.format(
-									Util.DEF_LOCALE,
-									"Can't set property '%s' in type %s (property path: '%s'): %s",
-									propName, root.getClass().getName(),
-									context, exceptionMessage(e1)), e1);
+					throw new TypeConversionException(String.format(Util.DEF_LOCALE,
+							"Can't set property '%s' in type %s (property path: '%s'): %s", propName,
+							root.getClass().getName(), context, exceptionMessage(e1)), e1);
 				}
 
 				// more parameters?
 				token = tk.nextTokenNoWhitespace();
-				tk.assureTokenTypes(token, TokenType.SEMICOLON,
-						TokenType.PARENS_CLOSE);
+				tk.assureTokenTypes(token, TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
 				if (token == TokenType.SEMICOLON) {
 					// nothing special, start next iteration
 				} else if (token == TokenType.PARENS_CLOSE) {
@@ -194,17 +177,14 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	 *            Type of returned object.
 	 * @return The object converted/compatible with {@code requiredType}.
 	 */
-	private static <T> T loadClassOrXml(String asString, Class<T> requiredType,
-			ClassLoader l, String[] packageSearchPath)
-			throws ReflectiveOperationException, FileReadException,
-			NoTypeFoundException {
+	private static <T> T loadClassOrXml(String asString, Class<T> requiredType, ClassLoader l,
+			String[] packageSearchPath) throws ReflectiveOperationException, FileReadException, NoTypeFoundException {
 		if (NULL.equalsIgnoreCase(asString))
 			return null;
 
 		try {
 			// try to load from class (interpret 'asString' as class name)
-			T o = requiredType.cast(searchAndInstanciateClass(asString, l,
-					packageSearchPath));
+			T o = requiredType.cast(searchAndInstanciateClass(asString, l, packageSearchPath));
 			if (o != null) {
 				return o;
 			}
@@ -219,9 +199,8 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 		}
 
 		// give up
-		throw new NoTypeFoundException(String.format(Util.DEF_LOCALE,
-				"Can't load/convert '%s', required type: %s", asString,
-				requiredType));
+		throw new NoTypeFoundException(
+				String.format(Util.DEF_LOCALE, "Can't load/convert '%s', required type: %s", asString, requiredType));
 	}
 
 	/**
@@ -238,8 +217,7 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	 * <p>
 	 * If no matching class could be found, {@code null} will be returned.
 	 */
-	private static Object searchAndInstanciateClass(String className,
-			ClassLoader l, String[] searchPath)
+	private static Object searchAndInstanciateClass(String className, ClassLoader l, String[] searchPath)
 			throws ReflectiveOperationException, IllegalAccessException {
 		Class<?> klazz = null;
 
@@ -262,8 +240,7 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 
 		if (klazz != null) {
 			if (Modifier.isAbstract(klazz.getModifiers()))
-				throw new InstantiationException(
-						"Can't instantiate an abstract class.");
+				throw new InstantiationException("Can't instantiate an abstract class.");
 			return klazz.getConstructor().newInstance();
 		} else {
 			return null;
@@ -293,8 +270,7 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 		if (o == null)
 			return NULL;
 
-		Map<String, PropertyDescriptor> props = TypeUtil.writableProperties(o
-				.getClass());
+		Map<String, PropertyDescriptor> props = TypeUtil.writableProperties(o.getClass());
 		if (!props.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(o.getClass().getName());
@@ -322,16 +298,13 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	public static String exceptionMessage(Throwable t) {
 		String msg = t.getMessage();
 		if (t instanceof InvocationTargetException) {
-			msg = String.format(Util.DEF_LOCALE,
-					"Error invoking method or constructor: %s", t.getCause()
-							.toString());
+			msg = String.format(Util.DEF_LOCALE, "Error invoking method or constructor: %s", t.getCause().toString());
 		} else if (t instanceof NoSuchMethodException) {
-			msg = String.format(Util.DEF_LOCALE,
-					"Method or constructor not found: %s", t.getMessage());
+			msg = String.format(Util.DEF_LOCALE, "Method or constructor not found: %s", t.getMessage());
 		} else if (t instanceof FileReadException) {
 			FileReadException e = (FileReadException) t;
-			msg = String.format(Util.DEF_LOCALE, "Error reading file '%s': %s",
-					e.getFileName(), e.getCause().getMessage());
+			msg = String.format(Util.DEF_LOCALE, "Error reading file '%s': %s", e.getFileName(),
+					e.getCause().getMessage());
 		}
 		return msg;
 	}

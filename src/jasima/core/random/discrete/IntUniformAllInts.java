@@ -20,9 +20,9 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Pair;
-
 import java.util.Random;
+
+import jasima.core.util.Pair;
 
 /**
  * Generates uniformly distributed integers for the complete set of integer
@@ -30,8 +30,7 @@ import java.util.Random;
  * {@link java.util.Random#nextInt()}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class IntUniformAllInts extends IntStream {
 
@@ -72,8 +71,7 @@ public class IntUniformAllInts extends IntStream {
 
 	@Override
 	public Pair<Double, Double> getValueRange() {
-		return new Pair<>((double) Integer.MIN_VALUE,
-				(double) Integer.MAX_VALUE);
+		return new Pair<>((double) Integer.MIN_VALUE, (double) Integer.MAX_VALUE);
 	}
 
 }

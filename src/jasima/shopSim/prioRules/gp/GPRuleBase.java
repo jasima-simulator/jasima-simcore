@@ -29,8 +29,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * methods for some commonly used arithmetic functions.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 @SuppressWarnings("serial")
 public abstract class GPRuleBase extends PR {
@@ -38,8 +37,7 @@ public abstract class GPRuleBase extends PR {
 	@Override
 	public abstract double calcPrio(PrioRuleTarget j);
 
-	public static final double ifte(final double cond, final double ifVal,
-			final double elseVal) {
+	public static final double ifte(final double cond, final double ifVal, final double elseVal) {
 		if (cond >= 0.0d)
 			return ifVal;
 		else

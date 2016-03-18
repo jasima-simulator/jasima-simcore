@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Pair;
-import jasima.core.util.Util;
-
 import java.util.Arrays;
 import java.util.Random;
+
+import jasima.core.util.Pair;
+import jasima.core.util.Util;
 
 /**
  * Returns an integer in the range [0,n]. The probability of each value is
@@ -32,8 +32,7 @@ import java.util.Random;
  * , and can be arbitrary positive numbers as long as they sum up to 1.0.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class IntEmpirical extends IntStream {
 
@@ -88,11 +87,10 @@ public class IntEmpirical extends IntStream {
 
 	public void setProbabilities(double[] probs, int[] values) {
 		if (probs != null && Math.abs(Util.sum(probs) - 1.0d) > 1e-6)
-			throw new IllegalArgumentException("probabilities must add to 1: "
-					+ Arrays.toString(probs) + " " + Util.sum(probs));
-		if (values != null && values.length != probs.length)
 			throw new IllegalArgumentException(
-					"There has to be a value for each probability.");
+					"probabilities must add to 1: " + Arrays.toString(probs) + " " + Util.sum(probs));
+		if (values != null && values.length != probs.length)
+			throw new IllegalArgumentException("There has to be a value for each probability.");
 
 		this.probs = probs;
 		this.vals = values;
@@ -159,18 +157,15 @@ public class IntEmpirical extends IntStream {
 		int n = probs != null ? probs.length : 0;
 		int m = vals != null ? vals.length : 0;
 		for (int i = 0; i < Math.max(n, m); i++) {
-			String v = vals != null && i < vals.length ? Integer
-					.toString(vals[i]) : "?";
-			String p = probs != null && i < probs.length ? Double
-					.toString(probs[i]) : "?";
+			String v = vals != null && i < vals.length ? Integer.toString(vals[i]) : "?";
+			String p = probs != null && i < probs.length ? Double.toString(probs[i]) : "?";
 
 			sb.append('<').append(v).append(',').append(p).append(">;");
 		}
 		if (sb.length() > 0)
 			params = sb.substring(0, sb.length() - 1);
 
-		return String.format(Util.DEF_LOCALE, "%s(%s)", this.getClass()
-				.getSimpleName(), params);
+		return String.format(Util.DEF_LOCALE, "%s(%s)", this.getClass().getSimpleName(), params);
 	}
 
 	@Override

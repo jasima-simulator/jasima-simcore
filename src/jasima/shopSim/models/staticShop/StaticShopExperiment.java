@@ -29,9 +29,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.Route;
+import jasima.shopSim.core.ShopExperiment;
 import jasima.shopSim.core.StaticJobSource;
 import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.util.TextFileReader;
@@ -41,7 +41,7 @@ import jasima.shopSim.util.modelDef.ShopDef;
  * Experiment which loads a scheduling instance from a file or URL/URI. Shop and
  * job data has to be described in this file.
  */
-public class StaticShopExperiment extends JobShopExperiment {
+public class StaticShopExperiment extends ShopExperiment {
 
 	private static final long serialVersionUID = 3907065922245526545L;
 

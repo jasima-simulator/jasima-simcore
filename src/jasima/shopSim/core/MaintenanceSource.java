@@ -35,9 +35,7 @@ package jasima.shopSim.core;
  * hour.
  * 
  * @see DowntimeSource
- * @author Torsten Hildebrandt, 2014-04-16
- * @version 
- *          "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class MaintenanceSource extends DowntimeSource {
 
@@ -54,7 +52,7 @@ public class MaintenanceSource extends DowntimeSource {
 	}
 
 	@Override
-	protected double calcDeactivateTime(JobShop shop) {
+	protected double calcDeactivateTime(Shop shop) {
 		lastDeactivate = lastDeactivate + getTimeBetweenFailures().nextDbl();
 		return lastDeactivate;
 	}

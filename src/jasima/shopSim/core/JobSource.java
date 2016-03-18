@@ -40,7 +40,7 @@ public abstract class JobSource extends SimComponentBase implements ValueStore, 
 	// WorkStation.SELECT_PRIO
 	public static final int ARRIVE_PRIO = Event.EVENT_PRIO_HIGH;
 
-	private JobShop shop;
+	private Shop shop;
 	private HashMap<Object, Object> valueStore;
 
 	public boolean stopArrivals;
@@ -106,11 +106,11 @@ public abstract class JobSource extends SimComponentBase implements ValueStore, 
 		return new Job(getShop());
 	}
 
-	public JobShop getShop() {
+	public Shop getShop() {
 		return shop;
 	}
 
-	public void setShop(JobShop shop) {
+	public void setShop(Shop shop) {
 		this.shop = shop;
 	}
 
@@ -189,7 +189,7 @@ public abstract class JobSource extends SimComponentBase implements ValueStore, 
 		if (valueStore != null) {
 			@SuppressWarnings("unchecked")
 			HashMap<Object, Object> clone = (HashMap<Object, Object>) valueStore.clone();
-			
+
 			s.valueStore = clone;
 		}
 

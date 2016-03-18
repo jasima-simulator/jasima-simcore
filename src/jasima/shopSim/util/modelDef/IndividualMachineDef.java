@@ -36,8 +36,7 @@ public class IndividualMachineDef extends PropertySupport {
 	}
 
 	public void setMachRelDate(double machRelDate) {
-		firePropertyChange("machRelDate", this.machRelDate,
-				this.machRelDate = machRelDate);
+		firePropertyChange("machRelDate", this.machRelDate, this.machRelDate = machRelDate);
 	}
 
 	public String getInitialSetup() {
@@ -45,8 +44,7 @@ public class IndividualMachineDef extends PropertySupport {
 	}
 
 	public void setInitialSetup(String initialSetup) {
-		firePropertyChange("initialSetup", this.initialSetup,
-				this.initialSetup = initialSetup);
+		firePropertyChange("initialSetup", this.initialSetup, this.initialSetup = initialSetup);
 	}
 
 	public String getName() {
@@ -62,8 +60,7 @@ public class IndividualMachineDef extends PropertySupport {
 	}
 
 	public void setWorkstation(WorkstationDef workstation) {
-		firePropertyChange("workstation", this.workstation,
-				this.workstation = workstation);
+		firePropertyChange("workstation", this.workstation, this.workstation = workstation);
 	}
 
 }

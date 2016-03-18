@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * <p>
@@ -58,8 +58,7 @@ import java.util.Arrays;
  * 
  * @see OCBAExperiment
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
@@ -91,8 +90,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	protected void createExperiments() {
 		experiments.clear();
 
-		int batchSize = isNumRunsDynamic() ? getMinReplications()
-				: getMaxReplications();
+		int batchSize = isNumRunsDynamic() ? getMinReplications() : getMaxReplications();
 
 		for (int i = 0; i < batchSize; i++) {
 			Experiment e = getBaseExperiment().silentClone();
@@ -113,12 +111,10 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		// measured by "errorProb" and "allowancePercentage".
 		for (String name : confIntervalMeasures) {
 			@SuppressWarnings("unchecked")
-			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric
-					.get(name);
+			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric.get(name);
 			SummaryStat vs = data == null ? null : data.b;
 			if (vs == null)
-				throw new RuntimeException(String.format(Util.DEF_LOCALE,
-						"No results for name '%s'.", name));
+				throw new RuntimeException(String.format(Util.DEF_LOCALE, "No results for name '%s'.", name));
 
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
 			double interv = vs.confIntRangeSingle(getErrorProb());
@@ -213,8 +209,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	public void setErrorProb(double errorProb) {
 		if (errorProb <= 0.0 || errorProb >= 1.0)
 			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"errorProb should be in the interval (0,1). invalid: %f",
-					errorProb));
+					"errorProb should be in the interval (0,1). invalid: %f", errorProb));
 		this.errorProb = errorProb;
 	}
 
@@ -248,18 +243,14 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 */
 	public void setAllowancePercentage(double allowancePercentage) {
 		if (allowancePercentage <= 0.0 || allowancePercentage >= 1.0)
-			throw new IllegalArgumentException(
-					String.format(
-							Util.DEF_LOCALE,
-							"allowancePercentage should be in the interval (0,1). invalid: %f",
-							allowancePercentage));
+			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
+					"allowancePercentage should be in the interval (0,1). invalid: %f", allowancePercentage));
 		this.allowancePercentage = allowancePercentage;
 	}
 
 	public void addConfIntervalMeasure(String name) {
 		// temporarily convert to list
-		ArrayList<String> list = new ArrayList<String>(
-				Arrays.asList(confIntervalMeasures));
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(confIntervalMeasures));
 		list.add(name);
 		// convert back to array
 		confIntervalMeasures = list.toArray(new String[list.size()]);
@@ -267,8 +258,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
 	public boolean removeConfIntervalMeasure(String name) {
 		// temporarily convert to list
-		ArrayList<String> list = new ArrayList<String>(
-				Arrays.asList(confIntervalMeasures));
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(confIntervalMeasures));
 		boolean res = list.remove(name);
 		// convert back to array
 		confIntervalMeasures = list.toArray(new String[list.size()]);
@@ -317,10 +307,8 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	@Override
-	public MultipleReplicationExperiment clone()
-			throws CloneNotSupportedException {
-		MultipleReplicationExperiment mre = (MultipleReplicationExperiment) super
-				.clone();
+	public MultipleReplicationExperiment clone() throws CloneNotSupportedException {
+		MultipleReplicationExperiment mre = (MultipleReplicationExperiment) super.clone();
 
 		if (confIntervalMeasures != null)
 			mre.confIntervalMeasures = confIntervalMeasures.clone();

@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
-import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
-import jasima.core.util.Util;
-
 import java.util.List;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
+
+import jasima.core.random.continuous.DblDistribution;
+import jasima.core.random.continuous.DblStream;
+import jasima.core.util.Util;
 
 public class DblExponentialDef extends DblStreamDef {
 
@@ -42,14 +42,12 @@ public class DblExponentialDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblExponentialDef stringToStreamDef(String params,
-				List<String> errors) {
+		public DblExponentialDef stringToStreamDef(String params, List<String> errors) {
 			double d;
 			try {
 				d = Double.parseDouble(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
-						nfe.getLocalizedMessage()));
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 
@@ -63,8 +61,7 @@ public class DblExponentialDef extends DblStreamDef {
 			if (stream instanceof DblDistribution) {
 				DblDistribution s = (DblDistribution) stream;
 				if (s.getDistribution() instanceof ExponentialDistribution) {
-					ExponentialDistribution dist = (ExponentialDistribution) s
-							.getDistribution();
+					ExponentialDistribution dist = (ExponentialDistribution) s.getDistribution();
 					DblExponentialDef def = new DblExponentialDef();
 					def.setMean(dist.getMean());
 					return def;
@@ -84,8 +81,7 @@ public class DblExponentialDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "%s(%s)",
-				FACTORY.getTypeString(), getMean());
+		return String.format(Util.DEF_LOCALE, "%s(%s)", FACTORY.getTypeString(), getMean());
 	}
 
 	@Override

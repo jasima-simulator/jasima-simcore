@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.core.statistics;
 
-import jasima.core.util.Util;
-
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Locale;
+
+import jasima.core.util.Util;
 
 /**
  * <p>
@@ -43,11 +43,9 @@ import java.util.Locale;
  * </ul>
  * 
  * @author Robin Kreis, 2012-09-07
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
-public class QuantileEstimator extends SummaryStat implements
-		Iterable<QuantileEstimator.Bar> {
+public class QuantileEstimator extends SummaryStat implements Iterable<QuantileEstimator.Bar> {
 
 	private static final long serialVersionUID = 1342062250846464757L;
 
@@ -68,8 +66,7 @@ public class QuantileEstimator extends SummaryStat implements
 	 */
 	public QuantileEstimator(String name) {
 		super(name);
-		p2_n_increment = new double[] { 0, 0.05, 0.1, 0.3, 0.5, 0.7, 0.9, 0.95,
-				1 };
+		p2_n_increment = new double[] { 0, 0.05, 0.1, 0.3, 0.5, 0.7, 0.9, 0.95, 1 };
 		initMarkers();
 	}
 
@@ -223,8 +220,7 @@ public class QuantileEstimator extends SummaryStat implements
 			for (int i = 1; i < p2_q.length - 1; ++i) {
 				double n_ = p2_n_increment[i] * obsIdx;
 				double di = n_ - p2_n[i];
-				if ((di >= 1.0 && p2_n[i + 1] - p2_n[i] > 1)
-						|| ((di <= -1.0 && p2_n[i - 1] - p2_n[i] < -1))) {
+				if ((di >= 1.0 && p2_n[i + 1] - p2_n[i] > 1) || ((di <= -1.0 && p2_n[i - 1] - p2_n[i] < -1))) {
 					int d = di < 0 ? -1 : 1;
 
 					double qi_ = quadPred(d, i);
@@ -333,8 +329,7 @@ public class QuantileEstimator extends SummaryStat implements
 	 */
 	public void formatForGnuplot(Formatter fmt) {
 		for (Bar b : this) {
-			fmt.format(Locale.US, "%6.4f %6.4f %6.4f%n", (b.minX + b.maxX) / 2,
-					b.height(), b.width());
+			fmt.format(Locale.US, "%6.4f %6.4f %6.4f%n", (b.minX + b.maxX) / 2, b.height(), b.width());
 		}
 	}
 
@@ -371,10 +366,8 @@ public class QuantileEstimator extends SummaryStat implements
 	@Override
 	public String toString() {
 		if (p2_q.length > 10) {
-			return String.format(Util.DEF_LOCALE,
-					"[10%%<%f, median: %f, 90%%<%f; %d more markers]",
-					quantile(0.1), quantile(0.5), quantile(0.9),
-					p2_q.length - 3);
+			return String.format(Util.DEF_LOCALE, "[10%%<%f, median: %f, 90%%<%f; %d more markers]", quantile(0.1),
+					quantile(0.5), quantile(0.9), p2_q.length - 3);
 		}
 		Formatter fmt = new Formatter();
 		fmt.format("[");

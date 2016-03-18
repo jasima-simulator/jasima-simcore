@@ -20,29 +20,27 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
+import jasima.core.util.Util;
+
 /**
- * This class implements a discrete number stream following a <a
- * href="http://en.wikipedia.org/wiki/Binomial_distribution">Binomial
+ * This class implements a discrete number stream following a
+ * <a href="http://en.wikipedia.org/wiki/Binomial_distribution">Binomial
  * distribution</a>. It has two parameters, the probability of success (in a
  * single trial) and the total number of trials conducted.
  * 
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Binomial_distribution">Binomial
  *      distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/BinomialDistribution.html">Binomial
- *      distribution (MathWorld)</a>
+ * @see <a href="http://mathworld.wolfram.com/BinomialDistribution.html">
+ *      Binomial distribution (MathWorld)</a>
  */
 public class IntBinomial extends IntDistribution {
 
@@ -67,8 +65,7 @@ public class IntBinomial extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE,
-				"IntBinomial(probabilityOfSuccess=%f;numTrials=%d)",
+		return String.format(Util.DEF_LOCALE, "IntBinomial(probabilityOfSuccess=%f;numTrials=%d)",
 				getProbabilityOfSuccess(), getNumTrials());
 	}
 
@@ -85,10 +82,8 @@ public class IntBinomial extends IntDistribution {
 	 *             If the supplied probability is not in the interval
 	 *             {@code [0,1]}.
 	 */
-	public void setProbabilityOfSuccess(double probOfSuccess)
-			throws OutOfRangeException {
-		setDistribution(new BinomialDistribution(dist.getNumberOfTrials(),
-				probOfSuccess));
+	public void setProbabilityOfSuccess(double probOfSuccess) throws OutOfRangeException {
+		setDistribution(new BinomialDistribution(dist.getNumberOfTrials(), probOfSuccess));
 	}
 
 	public int getNumTrials() {
@@ -104,8 +99,7 @@ public class IntBinomial extends IntDistribution {
 	 *             If the supplied value was negative.
 	 */
 	public void setNumTrials(int numTrials) throws NotPositiveException {
-		setDistribution(new BinomialDistribution(numTrials,
-				dist.getProbabilityOfSuccess()));
+		setDistribution(new BinomialDistribution(numTrials, dist.getProbabilityOfSuccess()));
 	}
 
 }

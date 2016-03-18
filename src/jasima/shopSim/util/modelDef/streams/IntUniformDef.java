@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import java.util.List;
+
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.util.Util;
-
-import java.util.List;
 
 public class IntUniformDef extends IntStreamDef {
 
@@ -42,21 +42,17 @@ public class IntUniformDef extends IntStreamDef {
 		}
 
 		@Override
-		public IntUniformDef stringToStreamDef(String params,
-				List<String> errors) {
+		public IntUniformDef stringToStreamDef(String params, List<String> errors) {
 			int[] ll;
 			try {
 				ll = Util.parseIntList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
-						nfe.getLocalizedMessage()));
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 2) {
-				errors.add(String
-						.format(Util.DEF_LOCALE,
-								"invalid number of parameters (2 required, min and max value): '%s'",
-								params));
+				errors.add(String.format(Util.DEF_LOCALE,
+						"invalid number of parameters (2 required, min and max value): '%s'", params));
 				return null;
 			}
 
@@ -91,8 +87,7 @@ public class IntUniformDef extends IntStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "%s(%d,%d)",
-				FACTORY.getTypeString(), getMinValue(), getMaxValue());
+		return String.format(Util.DEF_LOCALE, "%s(%d,%d)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
 	}
 
 	@Override
@@ -105,8 +100,7 @@ public class IntUniformDef extends IntStreamDef {
 	}
 
 	public void setMinValue(int minValue) {
-		firePropertyChange(PARAM_MIN_VALUE, this.minValue,
-				this.minValue = minValue);
+		firePropertyChange(PARAM_MIN_VALUE, this.minValue, this.minValue = minValue);
 	}
 
 	public int getMaxValue() {
@@ -114,8 +108,7 @@ public class IntUniformDef extends IntStreamDef {
 	}
 
 	public void setMaxValue(int maxValue) {
-		firePropertyChange(PARAM_MAX_VALUE, this.maxValue,
-				this.maxValue = maxValue);
+		firePropertyChange(PARAM_MAX_VALUE, this.maxValue, this.maxValue = maxValue);
 	}
 
 	static {

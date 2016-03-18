@@ -20,14 +20,14 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntEmpirical;
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
 
 public class IntEmpDef extends IntStreamDef {
 
@@ -57,8 +57,7 @@ public class IntEmpDef extends IntStreamDef {
 					l.add(new Pair<Integer, Double>(v1, p1));
 				}
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
-						nfe.getLocalizedMessage()));
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 
@@ -70,8 +69,7 @@ public class IntEmpDef extends IntStreamDef {
 				probs[i] = p.b;
 			}
 			if (Math.abs(Util.sum(probs) - 1.0) > 1e-6) {
-				errors.add(String.format(Util.DEF_LOCALE,
-						"probabilities have to sum to 1.0, current sum is %f.",
+				errors.add(String.format(Util.DEF_LOCALE, "probabilities have to sum to 1.0, current sum is %f.",
 						Util.sum(probs)));
 				return null;
 			}
@@ -121,18 +119,15 @@ public class IntEmpDef extends IntStreamDef {
 		int n = probs != null ? probs.length : 0;
 		int m = values != null ? values.length : 0;
 		for (int i = 0; i < Math.max(n, m); i++) {
-			String v = values != null && i < values.length ? Integer
-					.toString(values[i]) : "?";
-			String p = probs != null && i < probs.length ? Double
-					.toString(probs[i]) : "?";
+			String v = values != null && i < values.length ? Integer.toString(values[i]) : "?";
+			String p = probs != null && i < probs.length ? Double.toString(probs[i]) : "?";
 
 			sb.append('<').append(v).append(',').append(p).append(">;");
 		}
 		if (sb.length() > 0)
 			params = sb.substring(0, sb.length() - 1);
 
-		return String.format(Util.DEF_LOCALE, "%s(%s)",
-				FACTORY.getTypeString(), params);
+		return String.format(Util.DEF_LOCALE, "%s(%s)", FACTORY.getTypeString(), params);
 	}
 
 	@Override

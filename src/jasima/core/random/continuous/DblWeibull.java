@@ -20,21 +20,20 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * This class implements a number stream of real values following a <a
- * href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull
+ * This class implements a number stream of real values following a
+ * <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull
  * distribution</a>. A Weilbull distribution is characterized by a shape
  * parameter and a scale parameter.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull
  *      distribution (Wikipedia)</a>
@@ -64,8 +63,7 @@ public class DblWeibull extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblWeibull(shape=%f;scale=%f)",
-				getShape(), getScale());
+		return String.format(Util.DEF_LOCALE, "DblWeibull(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getShape() {

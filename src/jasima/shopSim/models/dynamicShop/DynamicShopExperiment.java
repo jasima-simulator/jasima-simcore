@@ -35,10 +35,10 @@ import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.shopSim.core.DynamicJobSource;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
-import jasima.shopSim.core.JobShopExperiment;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
+import jasima.shopSim.core.Shop;
+import jasima.shopSim.core.ShopExperiment;
 import jasima.shopSim.core.ShopListener;
 import jasima.shopSim.core.ShopListenerBase;
 import jasima.shopSim.core.WorkStation;
@@ -57,7 +57,7 @@ import jasima.shopSim.util.BasicJobStatCollector;
  * @author Torsten Hildebrandt
  * @see BasicJobStatCollector
  */
-public class DynamicShopExperiment extends JobShopExperiment {
+public class DynamicShopExperiment extends ShopExperiment {
 
 	private static final long serialVersionUID = -7289579158397939550L;
 
@@ -98,7 +98,7 @@ public class DynamicShopExperiment extends JobShopExperiment {
 			int numJobs = maxJob;
 
 			@Override
-			public void jobFinished(JobShop shop, Job j) {
+			public void jobFinished(Shop shop, Job j) {
 				// stop arrivals after the first, e.g., 2500, jobs were
 				// completed
 				if (j.getJobNum() < maxJob) {

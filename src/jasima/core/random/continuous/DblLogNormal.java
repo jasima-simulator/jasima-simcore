@@ -20,27 +20,24 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * Implements a number stream with values following a <a
- * href="http://en.wikipedia.org/wiki/Log-normal_distribution">log-normal
+ * Implements a number stream with values following a
+ * <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">log-normal
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
- * @see <a
- *      href="http://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal
- *      distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/LogNormalDistribution.html">Log-normal
- *      distribution (MathWorld)</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">Log-
+ *      normal distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/LogNormalDistribution.html">Log-
+ *      normal distribution (MathWorld)</a>
  */
 public class DblLogNormal extends DblDistribution {
 
@@ -65,8 +62,7 @@ public class DblLogNormal extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE,
-				"DblLogNormal(shape=%f;scale=%f)", getShape(), getScale());
+		return String.format(Util.DEF_LOCALE, "DblLogNormal(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getScale() {

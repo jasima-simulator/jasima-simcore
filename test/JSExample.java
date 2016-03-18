@@ -26,19 +26,19 @@ import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.WorkStation;
-import jasima.shopSim.core.WorkStationListenerBase;
+import jasima.shopSim.core.WorkStationListener;
 import jasima.shopSim.util.MachineStatCollector;
 
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
  */
-public class JSExample extends JobShop {
+public class JSExample extends Shop {
 	final Random streamService = new Random(1234234535);
 	final Random streamInterarrival = new Random(28437);
 	final Random streamJobType = new Random(3424);
@@ -92,7 +92,7 @@ public class JSExample extends JobShop {
 
 	@Override
 	public void init() {
-		installMachineListener(new WorkStationListenerBase() {
+		installMachineListener(new WorkStationListener() {
 
 			@Override
 			public void operationStarted(WorkStation m, PrioRuleTarget b, int oldSetupState, int newSetupState,

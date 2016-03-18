@@ -46,8 +46,7 @@ public class FileChecker {
 			BufferedReader in2;
 			try {
 				in2 = new BufferedReader(new InputStreamReader(
-						new GZIPInputStream(new BufferedInputStream(
-								new FileInputStream(expected + ".gz")))));
+						new GZIPInputStream(new BufferedInputStream(new FileInputStream(expected + ".gz")))));
 			} catch (FileNotFoundException e) {
 				in2 = new BufferedReader(new FileReader(expected));
 			}

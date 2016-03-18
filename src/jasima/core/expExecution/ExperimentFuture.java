@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.core.expExecution;
 
-import jasima.core.experiment.Experiment;
-
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import jasima.core.experiment.Experiment;
 
 /**
  * This class is very similar to {@link java.util.concurrent.Future}, but has no
@@ -34,8 +34,7 @@ import java.util.concurrent.TimeoutException;
  * containing the exception message and the exception in text format.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * @see FutureWrapper
  */
 public interface ExperimentFuture {
@@ -50,7 +49,6 @@ public interface ExperimentFuture {
 
 	public Map<String, Object> get() throws InterruptedException;
 
-	public Map<String, Object> get(long timeout, TimeUnit unit)
-			throws InterruptedException, TimeoutException;
+	public Map<String, Object> get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
 
 }

@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -19,6 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
+import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
 import jasima.core.random.continuous.DblDistribution;
@@ -31,13 +39,6 @@ import jasima.shopSim.models.mimac.MimacExperiment;
 import jasima.shopSim.models.mimac.MimacExperiment.DataSet;
 import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 import jasima.shopSim.prioRules.setup.ATCS;
-
-import java.util.Map;
-
-import org.apache.commons.math3.distribution.ExponentialDistribution;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import util.ExtendedJobStatCollector;
 
 /**
@@ -52,18 +53,15 @@ public class TestMIMAC {
 	@BeforeClass
 	public static void setUp() {
 		System.out.println("setting up");
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactoryOld.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
 	}
 
 	public MimacExperiment createExperiment() {
 		MimacExperiment e = new MimacExperiment();
 		e.setInitialSeed(-6437543093816807328l);
 		e.setScenario(DataSet.FAB4r);
-		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(
-				1440d / 4.5));
-		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(
-				1440d / 10.5));
+		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(1440d / 4.5));
+		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(1440d / 10.5));
 		e.setInterArrivalTimes(new DblStream[] { arrivals1, arrivals2 });
 		e.setDueDateFactors(new DblUniformRange(2.0, 5.0));
 		e.setJobWeights(new IntUniformRange(1, 10));
@@ -103,11 +101,9 @@ public class TestMIMAC {
 		check("expAborted", 0.0, 0.0001, res);
 	}
 
-	private void check(String name, double expected, double precision,
-			Map<String, Object> res) {
+	private void check(String name, double expected, double precision, Map<String, Object> res) {
 		Object o = res.get(name);
-		double d = o instanceof SummaryStat ? ((SummaryStat) o).mean()
-				: ((Number) o).doubleValue();
+		double d = o instanceof SummaryStat ? ((SummaryStat) o).mean() : ((Number) o).doubleValue();
 		assertEquals(name, expected, d, precision);
 	}
 

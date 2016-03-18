@@ -20,28 +20,25 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * Implements a stream of numbers following a <a
- * href="http://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's
+ * Implements a stream of numbers following a
+ * <a href="http://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's
  * t-distribution</a>. The distribution has a single shape parameter:
  * {@code degreesOfFreedom}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
- * @see <a
- *      href="http://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's
- *      t-distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/Studentst-Distribution.html">Student
- *      's t-Distribution (MathWorld)</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Student%27s_t-distribution">
+ *      Student's t-distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/Studentst-Distribution.html">
+ *      Student 's t-Distribution (MathWorld)</a>
  */
 public class DblTDist extends DblDistribution {
 
@@ -66,8 +63,7 @@ public class DblTDist extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblTDist(degreesOfFreedom=%f)",
-				getDegreesOfFreedom());
+		return String.format(Util.DEF_LOCALE, "DblTDist(degreesOfFreedom=%f)", getDegreesOfFreedom());
 	}
 
 	public double getDegreesOfFreedom() {
@@ -82,8 +78,7 @@ public class DblTDist extends DblDistribution {
 	 * @throws NotStrictlyPositiveException
 	 *             If the parameter value was {@code <=0.0}.
 	 */
-	public void setDegreesOfFreedom(double degreesOfFreedom)
-			throws NotStrictlyPositiveException {
+	public void setDegreesOfFreedom(double degreesOfFreedom) throws NotStrictlyPositiveException {
 		setDistribution(new TDistribution(degreesOfFreedom));
 	}
 

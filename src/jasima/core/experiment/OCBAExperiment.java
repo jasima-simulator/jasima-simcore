@@ -20,15 +20,15 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
-import jasima.core.statistics.SummaryStat;
-import jasima.core.util.Util;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
+
+import jasima.core.statistics.SummaryStat;
+import jasima.core.util.Util;
 
 /**
  * <p>
@@ -83,10 +83,8 @@ import org.apache.commons.math3.distribution.NormalDistribution;
  * ocbaExperiment.setBaseExperiment(he);
  * 
  * // define configurations to test
- * ocbaExperiment.addFactor(&quot;sequencingRule&quot;,
- * 		new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
- * ocbaExperiment.addFactor(&quot;sequencingRule&quot;,
- * 		new PTPlusWINQPlusNPT().setFinalTieBreaker(new TieBreakerFASFS()));
+ * ocbaExperiment.addFactor(&quot;sequencingRule&quot;, new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+ * ocbaExperiment.addFactor(&quot;sequencingRule&quot;, new PTPlusWINQPlusNPT().setFinalTieBreaker(new TieBreakerFASFS()));
  * 
  * // define objective function
  * ocbaExperiment.setObjective(&quot;flowMean&quot;);
@@ -121,8 +119,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
  * </p>
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see MultipleReplicationExperiment
  * @see FullFactorialExperiment
@@ -172,8 +169,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 		if (getNumTasksExecuted() == 0) {
 			super.createExperiments();
 
-			stats = Util
-					.initializedArray(experiments.size(), SummaryStat.class);
+			stats = Util.initializedArray(experiments.size(), SummaryStat.class);
 
 			configurations = new ArrayList<MultipleReplicationExperiment>();
 			for (Experiment e : experiments) {
@@ -222,8 +218,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	public void produceResults() {
 		super.produceResults();
 
-		resultMap.put("bestConfiguration", configurations.get(currBest)
-				.getBaseExperiment());
+		resultMap.put("bestConfiguration", configurations.get(currBest).getBaseExperiment());
 		resultMap.put("bestIndex", currBest);
 		resultMap.put("bestPerformance", stats[currBest].mean());
 
@@ -262,8 +257,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 			@Override
 			public int compare(Integer i1, Integer i2) {
 				return (getProblemType() == ProblemType.MAXIMIZE ? -1 : +1)
-						* Double.compare(means[i1.intValue()],
-								means[i2.intValue()]);
+						* Double.compare(means[i1.intValue()], means[i2.intValue()]);
 			}
 		});
 
@@ -279,11 +273,9 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	protected boolean hasMoreTasks() {
 		// identify currently best system
 		currBest = 0;
-		double bestMean = getProblemType() == ProblemType.MAXIMIZE ? stats[0]
-				.mean() : -stats[0].mean();
+		double bestMean = getProblemType() == ProblemType.MAXIMIZE ? stats[0].mean() : -stats[0].mean();
 		for (int i = 1; i < stats.length; i++) {
-			double v = getProblemType() == ProblemType.MAXIMIZE ? stats[i]
-					.mean() : -stats[i].mean();
+			double v = getProblemType() == ProblemType.MAXIMIZE ? stats[i].mean() : -stats[i].mean();
 			if (v > bestMean) {
 				bestMean = v;
 				currBest = i;
@@ -293,8 +285,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 		experiments.clear();
 
 		// check stopping conditions
-		if ((totalBudget > 0 && budgetUsed >= totalBudget)
-				|| (getPcsLevel() > 0.0 && calcPCS() > getPcsLevel()))
+		if ((totalBudget > 0 && budgetUsed >= totalBudget) || (getPcsLevel() > 0.0 && calcPCS() > getPcsLevel()))
 			return false;
 
 		// allocate new iterations
@@ -327,9 +318,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 
 		Object o = r.get(getObjective());
 		if (o == null)
-			throw new RuntimeException(
-					"Can't find result value for objective '" + getObjective()
-							+ "'.");
+			throw new RuntimeException("Can't find result value for objective '" + getObjective() + "'.");
 
 		budgetUsed += configurations.get(i).getMaxReplications();
 
@@ -339,8 +328,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 		} else if (o instanceof SummaryStat) {
 			vs.combine((SummaryStat) o);
 		} else
-			throw new RuntimeException("Don't know how to handle result '"
-					+ String.valueOf(o) + "'.");
+			throw new RuntimeException("Don't know how to handle result '" + String.valueOf(o) + "'.");
 	}
 
 	protected double calcPCS() {
@@ -369,8 +357,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 				continue;
 
 			SummaryStat vs = stats[i];
-			prodTerms[i] = (bestMean - vs.mean())
-					/ Math.sqrt(bestNormVariance + vs.variance() / vs.numObs());
+			prodTerms[i] = (bestMean - vs.mean()) / Math.sqrt(bestNormVariance + vs.variance() / vs.numObs());
 		}
 
 		NormalDistribution normalDist = new NormalDistribution();
@@ -441,10 +428,8 @@ public class OCBAExperiment extends FullFactorialExperiment {
 		ratio[s] = 1.0d;
 		for (int i = 0; i < nd; i++)
 			if (i != s && i != b) {
-				double temp = (t_s_mean[b] - t_s_mean[s])
-						/ (t_s_mean[b] - t_s_mean[i]);
-				ratio[i] = temp * temp * stats[i].variance()
-						/ stats[s].variance();
+				double temp = (t_s_mean[b] - t_s_mean[s]) / (t_s_mean[b] - t_s_mean[i]);
+				ratio[i] = temp * temp * stats[i].variance() / stats[s].variance();
 			} /* calculate ratio of Ni/Ns */
 
 		double temp = 0.0;
@@ -538,8 +523,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 */
 	public void setMinReplicationsPerConfiguration(int minReps) {
 		if (minReps < 3)
-			throw new IllegalArgumentException(
-					"Minimum number of replications has to be >=3.");
+			throw new IllegalArgumentException("Minimum number of replications has to be >=3.");
 		this.minReplicationsPerConfiguration = minReps;
 	}
 
@@ -571,8 +555,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 */
 	public void setPcsLevel(double pcsLevel) {
 		if (pcsLevel < 0 || pcsLevel > 1)
-			throw new IllegalArgumentException("Invalid probability: "
-					+ pcsLevel);
+			throw new IllegalArgumentException("Invalid probability: " + pcsLevel);
 		this.pcsLevel = pcsLevel;
 	}
 

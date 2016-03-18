@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.shopSim.prioRules.gp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.prioRules.basic.SLK;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A rule from

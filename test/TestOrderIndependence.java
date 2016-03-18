@@ -21,14 +21,15 @@
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import jasima.shopSim.core.PR;
-import jasima.shopSim.core.PrioRuleTarget;
-import jasima.shopSim.models.staticShop.StaticShopExperiment;
-import jasima.shopSim.prioRules.basic.SPT;
 
 import java.io.File;
 
 import org.junit.Test;
+
+import jasima.shopSim.core.PR;
+import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.models.staticShop.StaticShopExperiment;
+import jasima.shopSim.prioRules.basic.SPT;
 
 /**
  * 

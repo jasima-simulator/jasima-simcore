@@ -21,10 +21,6 @@
 package jasima.core.run;
 
 import static java.lang.System.lineSeparator;
-import jasima.core.experiment.Experiment;
-import jasima.core.util.Pair;
-import jasima.core.util.TypeUtil;
-import jasima.core.util.Util;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -32,6 +28,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import jasima.core.experiment.Experiment;
+import jasima.core.util.Pair;
+import jasima.core.util.TypeUtil;
+import jasima.core.util.Util;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
@@ -46,8 +46,7 @@ import joptsimple.OptionSet;
  * </p>
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see Experiment#main(String[])
  */
@@ -63,8 +62,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 		super();
 		this.experiment = indirectExperiment;
 		if (indirectExperiment != null)
-			this.experimentFileName = indirectExperiment.getClass()
-					.getSimpleName();
+			this.experimentFileName = indirectExperiment.getClass().getSimpleName();
 	}
 
 	@Override
@@ -76,15 +74,11 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 			for (PropertyDescriptor prop : beanProps) {
 				Class<?> type = prop.getPropertyType();
 
-				String description = type.isPrimitive() ? "" : String.format(
-						Util.DEF_LOCALE, "Property of type '%s'",
-						type.getName());
+				String description = type.isPrimitive() ? ""
+						: String.format(Util.DEF_LOCALE, "Property of type '%s'", type.getName());
 				if (type.isEnum()) {
-					String enumValues = Arrays
-							.toString(type.getEnumConstants()).replaceAll(
-									"[\\[\\]]", "");
-					description = String.format(Util.DEF_LOCALE,
-							"Possible values: %s", enumValues);
+					String enumValues = Arrays.toString(type.getEnumConstants()).replaceAll("[\\[\\]]", "");
+					description = String.format(Util.DEF_LOCALE, "Possible values: %s", enumValues);
 				}
 
 				p.accepts(prop.getName(), description).withRequiredArg()
@@ -140,12 +134,9 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	@Override
 	protected String getHelpFooterText() {
 		if (experiment != null) {
-			return "<expSpec>            Class name of an Experiment or file name "
-					+ lineSeparator()
-					+ "                     of an XML-serialized Experiment or"
-					+ lineSeparator()
-					+ "                     name of an xls file."
-					+ lineSeparator() + super.getHelpFooterText();
+			return "<expSpec>            Class name of an Experiment or file name " + lineSeparator()
+					+ "                     of an XML-serialized Experiment or" + lineSeparator()
+					+ "                     name of an xls file." + lineSeparator() + super.getHelpFooterText();
 		} else {
 			return super.getHelpFooterText();
 		}
@@ -159,13 +150,11 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 		} else if (expSpec.toLowerCase(Util.DEF_LOCALE).endsWith(".xls")) {
 			// is it an Excel experiment?
 			experimentFileName = expSpec;
-			e = new ExcelExperimentReader(new File(experimentFileName),
-					getClass().getClassLoader(), packageSearchPath)
+			e = new ExcelExperimentReader(new File(experimentFileName), getClass().getClassLoader(), packageSearchPath)
 					.createExperiment();
 		} else {
 			// normal Experiment (class name) or loaded from xml file
-			e = TypeUtil.convert(expSpec, Experiment.class, "", getClass()
-					.getClassLoader(), packageSearchPath);
+			e = TypeUtil.convert(expSpec, Experiment.class, "", getClass().getClassLoader(), packageSearchPath);
 		}
 
 		if (e == null)

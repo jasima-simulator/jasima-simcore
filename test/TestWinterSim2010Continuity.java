@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -19,6 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
+import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.junit.Before;
+import org.junit.Test;
+
 import jasima.core.experiment.MultipleReplicationExperiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
@@ -47,13 +55,6 @@ import jasima.shopSim.prioRules.weighted.LW;
 import jasima.shopSim.prioRules.weighted.WMDD;
 import jasima.shopSim.prioRules.weighted.WMOD;
 import jasima.shopSim.prioRules.weighted.WSPT;
-
-import java.util.Map;
-
-import org.apache.commons.math3.distribution.ExponentialDistribution;
-import org.junit.Before;
-import org.junit.Test;
-
 import util.ExtendedJobStatCollector;
 import util.Wintersim2010GPRules.GPRuleSize09;
 import util.Wintersim2010GPRules.GPRuleSize110;
@@ -78,25 +79,20 @@ import util.Wintersim2010GPRules.GPRuleSize99;
 public class TestWinterSim2010Continuity {
 
 	public static void main(String[] args) throws Exception {
-		org.junit.runner.JUnitCore
-				.main(new String[] { TestWinterSim2010Continuity.class
-						.getName() });
+		org.junit.runner.JUnitCore.main(new String[] { TestWinterSim2010Continuity.class.getName() });
 	}
 
 	@Before
 	public void setUp() {
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY,
-				RandomFactoryOld.class.getName());
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
 	}
 
 	public static MimacExperiment createBaseExperiment() {
 		MimacExperiment e = new MimacExperiment();
 		e.setScenario(DataSet.FAB4r);
 
-		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(
-				1440d / 4.5));
-		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(
-				1440d / 10.5));
+		DblStream arrivals1 = new DblDistribution(new ExponentialDistribution(1440d / 4.5));
+		DblStream arrivals2 = new DblDistribution(new ExponentialDistribution(1440d / 10.5));
 		e.setInterArrivalTimes(new DblStream[] { arrivals1, arrivals2 });
 
 		e.setDueDateFactors(new DblUniformRange(2.0, 5.0));
@@ -149,16 +145,14 @@ public class TestWinterSim2010Continuity {
 		return new IgnoreFutureJobs(pr);
 	}
 
-	private void check(String name, double expected, double precision,
-			Map<String, Object> res) {
+	private void check(String name, double expected, double precision, Map<String, Object> res) {
 		SummaryStat vs = (SummaryStat) res.get(name);
 		assertEquals(name, expected, vs.mean(), precision);
 	}
 
 	@Test
 	public void PR_FIFO() throws Exception {
-		Map<String, Object> res = runExp(new MostCompleteBatch(),
-				createPRStack(maxWeight(new FCFS()), true));
+		Map<String, Object> res = runExp(new MostCompleteBatch(), createPRStack(maxWeight(new FCFS()), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.4500, 0.0001, res);
@@ -178,8 +172,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void PR_SPT() throws Exception {
-		Map<String, Object> res = runExp(new MostCompleteBatch(),
-				createPRStack(maxWeight(new SPT()), true));
+		Map<String, Object> res = runExp(new MostCompleteBatch(), createPRStack(maxWeight(new SPT()), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32707.0500, 0.0001, res);
@@ -193,8 +186,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void PR_EDD() throws Exception {
-		Map<String, Object> res = runExp(new MostCompleteBatch(),
-				createPRStack(maxWeight(new EDD()), true));
+		Map<String, Object> res = runExp(new MostCompleteBatch(), createPRStack(maxWeight(new EDD()), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.5000, 0.0001, res);
@@ -208,8 +200,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void PR_ODD() throws Exception {
-		Map<String, Object> res = runExp(new MostCompleteBatch(),
-				createPRStack(maxWeight(new ODD()), true));
+		Map<String, Object> res = runExp(new MostCompleteBatch(), createPRStack(maxWeight(new ODD()), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32708.1500, 0.0001, res);
@@ -240,8 +231,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void PR_CR() throws Exception {
-		Map<String, Object> res = runExp(new MostCompleteBatch(),
-				createPRStack(maxWeight(new CR()), true));
+		Map<String, Object> res = runExp(new MostCompleteBatch(), createPRStack(maxWeight(new CR()), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.5500, 0.0001, res);
@@ -255,8 +245,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void WSPT() throws Exception {
-		Map<String, Object> res = runExp(new MostCompleteBatch(),
-				createPRStack(new WSPT(), true));
+		Map<String, Object> res = runExp(new MostCompleteBatch(), createPRStack(new WSPT(), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32706.5000, 0.0001, res);
@@ -270,8 +259,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void WMOD() throws Exception {
-		Map<String, Object> res = runExp(new HighestJobBatchingMBS(5.0 / 8.0),
-				createPRStack(new WMOD(), true));
+		Map<String, Object> res = runExp(new HighestJobBatchingMBS(5.0 / 8.0), createPRStack(new WMOD(), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32697.4500, 0.0001, res);
@@ -285,8 +273,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void WMDD() throws Exception {
-		Map<String, Object> res = runExp(new HighestJobBatchingMBS(5.0 / 8.0),
-				createPRStack(new WMDD(), true));
+		Map<String, Object> res = runExp(new HighestJobBatchingMBS(5.0 / 8.0), createPRStack(new WMDD(), true));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32692.3000, 0.0001, res);
@@ -315,8 +302,7 @@ public class TestWinterSim2010Continuity {
 
 	@Test
 	public void GPRuleSize09() throws Exception {
-		Map<String, Object> res = runExp(new HighestJobBatchingMBS(),
-				createPRStack(new GPRuleSize09(), false));
+		Map<String, Object> res = runExp(new HighestJobBatchingMBS(), createPRStack(new GPRuleSize09(), false));
 
 		check("numJobsStarted", 32812.4000, 0.0001, res);
 		check("numJobsFinished", 32709.3000, 0.0001, res);

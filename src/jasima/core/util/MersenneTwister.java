@@ -26,8 +26,7 @@ import java.io.Serializable;
  * jasima. If not, see http://www.gnu.org/licenses/.
  *******************************************************************************/
 
-public strictfp class MersenneTwister extends java.util.Random implements
-		Serializable, Cloneable {
+public strictfp class MersenneTwister extends java.util.Random implements Serializable, Cloneable {
 	// Serialization
 	private static final long serialVersionUID = -4035832775130174188L; // locked
 																		// as of
@@ -159,10 +158,10 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 * wrap-around fashion.
 	 */
 	public MersenneTwister(final int[] array) {
-		super(System.currentTimeMillis()); /*
-											 * pick something at random just in
-											 * case
-											 */
+		super(System
+				.currentTimeMillis()); /*
+										 * pick something at random just in case
+										 */
 		setSeed(array);
 	}
 
@@ -209,16 +208,15 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 */
 	synchronized public void setSeed(final int[] array) {
 		if (array.length == 0)
-			throw new IllegalArgumentException(
-					"Array length must be greater than zero");
+			throw new IllegalArgumentException("Array length must be greater than zero");
 		int i, j, k;
 		setSeed(19650218);
 		i = 1;
 		j = 0;
 		k = (N > array.length ? N : array.length);
 		for (; k != 0; k--) {
-			mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >>> 30)) * 1664525))
-					+ array[j] + j; /* non linear */
+			mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >>> 30)) * 1664525)) + array[j]
+					+ j; /* non linear */
 			mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
 			i++;
 			j++;
@@ -282,14 +280,12 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 * methods.
 	 */
 
-	private synchronized void writeObject(final ObjectOutputStream out)
-			throws IOException {
+	private synchronized void writeObject(final ObjectOutputStream out) throws IOException {
 		// just so we're synchronized.
 		out.defaultWriteObject();
 	}
 
-	private synchronized void readObject(final ObjectInputStream in)
-			throws IOException, ClassNotFoundException {
+	private synchronized void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
 		// just so we're synchronized.
 		in.defaultReadObject();
 	}
@@ -315,8 +311,7 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 */
 	public boolean nextBoolean(final float probability) {
 		if (probability < 0.0f || probability > 1.0f)
-			throw new IllegalArgumentException(
-					"probability must be between 0.0 and 1.0 inclusive.");
+			throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
 		if (probability == 0.0f)
 			return false; // fix half-open issues
 		else if (probability == 1.0f)
@@ -335,8 +330,7 @@ public strictfp class MersenneTwister extends java.util.Random implements
 	 */
 	public boolean nextBoolean(final double probability) {
 		if (probability < 0.0 || probability > 1.0)
-			throw new IllegalArgumentException(
-					"probability must be between 0.0 and 1.0 inclusive.");
+			throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
 		if (probability == 0.0)
 			return false; // fix half-open issues
 		else if (probability == 1.0)

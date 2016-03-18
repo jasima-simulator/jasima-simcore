@@ -31,7 +31,7 @@ import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.WorkStation;
-import jasima.shopSim.core.WorkStationListenerBase;
+import jasima.shopSim.core.WorkStationListener;
 
 /**
  * Produces basic statistics for each workstation it is installed on (like
@@ -39,7 +39,7 @@ import jasima.shopSim.core.WorkStationListenerBase;
  * 
  * @author Torsten Hildebrandt
  */
-public class MachineStatCollector implements WorkStationListenerBase, SilentCloneable<MachineStatCollector> {
+public class MachineStatCollector implements WorkStationListener, SilentCloneable<MachineStatCollector> {
 
 	/*
 	 * Continuous statistic time average number of number of machines busy at

@@ -20,6 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.core.batchForming;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jasima.shopSim.core.Batch;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
@@ -27,12 +33,6 @@ import jasima.shopSim.core.PR;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.core.WorkStation;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Base class for batch forming implementations.

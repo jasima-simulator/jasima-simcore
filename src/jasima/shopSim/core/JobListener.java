@@ -27,7 +27,7 @@ import static jasima.shopSim.core.Job.JOB_RELEASED;
 import static jasima.shopSim.core.Job.JOB_REMOVED_FROM_QUEUE;
 import static jasima.shopSim.core.Job.JOB_START_OPERATION;
 
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 
 /**
  * This class can be used as a base class for classes collecting results based
@@ -35,11 +35,11 @@ import jasima.core.util.observer.Subscriber;
  * 
  * @author Torsten Hildebrandt
  */
-public interface JobListenerBase extends Subscriber<Job, Object> {
+public interface JobListener extends NotifierListener<Job, Object> {
 
 	@Override
 	default void inform(Job o, Object event) {
-		final JobShop shop = o.getShop();
+		final Shop shop = o.getShop();
 		if (event == JOB_RELEASED) {
 			released(shop, o);
 		} else if (event == JOB_FINISHED) {
@@ -58,25 +58,25 @@ public interface JobListenerBase extends Subscriber<Job, Object> {
 		}
 	}
 
-	default void handleOther(JobShop shop, Job j, Object event) {
+	default void handleOther(Shop shop, Job j, Object event) {
 	}
 
-	default void endOperation(JobShop shop, Job j) {
+	default void endOperation(Shop shop, Job j) {
 	}
 
-	default void operationStarted(JobShop shop, Job j, int oldSetupState, int newSetupState, double setupTime) {
+	default void operationStarted(Shop shop, Job j, int oldSetupState, int newSetupState, double setupTime) {
 	}
 
-	default void removedFromQueue(JobShop shop, Job j) {
+	default void removedFromQueue(Shop shop, Job j) {
 	}
 
-	default void arrivedInQueue(JobShop shop, Job j) {
+	default void arrivedInQueue(Shop shop, Job j) {
 	}
 
-	default void finished(JobShop shop, Job j) {
+	default void finished(Shop shop, Job j) {
 	}
 
-	default void released(JobShop shop, Job j) {
+	default void released(Shop shop, Job j) {
 	}
 
 }

@@ -30,8 +30,7 @@ import java.util.Objects;
  * ";", "=".
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ArgListTokenizer {
 
@@ -65,8 +64,7 @@ public class ArgListTokenizer {
 
 		@Override
 		public String getMessage() {
-			return String.format(Util.DEF_LOCALE,
-					"Parse error at or before position %d: " + msg, msgParams);
+			return String.format(Util.DEF_LOCALE, "Parse error at or before position %d: " + msg, msgParams);
 		}
 	}
 
@@ -224,15 +222,13 @@ public class ArgListTokenizer {
 		}
 
 		if (escape)
-			throw new ParseException(tokenStart,
-					"Escape character at end of input.");
+			throw new ParseException(tokenStart, "Escape character at end of input.");
 
 		if (isQuoted) {
 			if (c == '"') {
 				currPos++;
 			} else {
-				throw new ParseException(tokenStart,
-						"Quoted string not closed.");
+				throw new ParseException(tokenStart, "Quoted string not closed.");
 			}
 		}
 		tokenEnd = currPos;
@@ -342,8 +338,7 @@ public class ArgListTokenizer {
 	 * @throws ParseException
 	 *             If {@code actual} if not contained in {@code expected}.
 	 */
-	public void assureTokenTypes(TokenType actual, TokenType... expected)
-			throws ParseException {
+	public void assureTokenTypes(TokenType actual, TokenType... expected) throws ParseException {
 		for (TokenType e : expected) {
 			if (actual == e)
 				return;
@@ -352,8 +347,7 @@ public class ArgListTokenizer {
 		String msg = "expected one of: %s, but found: %s, '%s'";
 		if (expected.length == 1)
 			msg = "expected %s, but found: %s, '%s'";
-		throw new ParseException(currTokenStart(), msg,
-				Arrays.deepToString(expected), actual, currTokenText());
+		throw new ParseException(currTokenStart(), msg, Arrays.deepToString(expected), actual, currTokenText());
 	}
 
 }

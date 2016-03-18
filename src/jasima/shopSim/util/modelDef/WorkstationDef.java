@@ -70,8 +70,7 @@ public class WorkstationDef extends PropertySupport {
 	}
 
 	public void setSetupStates(String[] setupStates) {
-		firePropertyChange(PROP_SETUP_STATES, this.setupStates,
-				this.setupStates = setupStates);
+		firePropertyChange(PROP_SETUP_STATES, this.setupStates, this.setupStates = setupStates);
 	}
 
 	public double[][] getSetupTimes() {
@@ -79,8 +78,7 @@ public class WorkstationDef extends PropertySupport {
 	}
 
 	public void setSetupTimes(double[][] setupTimes) {
-		firePropertyChange(PROP_SETUP_TIMES, this.setupTimes,
-				this.setupTimes = setupTimes);
+		firePropertyChange(PROP_SETUP_TIMES, this.setupTimes, this.setupTimes = setupTimes);
 	}
 
 }

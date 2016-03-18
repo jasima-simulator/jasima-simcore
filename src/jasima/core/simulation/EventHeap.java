@@ -20,17 +20,16 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
-import jasima.core.simulation.Simulation.EventQueue;
-
 import java.io.Serializable;
+
+import jasima.core.simulation.Simulation.EventQueue;
 
 /**
  * An implementation of {@link jasima.core.simulation.Simulation.EventQueue}
  * using an array-based heap.
  * 
  * @author Torsten Hildebrandt, 2012-08-30
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public final class EventHeap implements EventQueue, Serializable {
 	private static final long serialVersionUID = -7578258752027946114L;
@@ -144,8 +143,7 @@ public final class EventHeap implements EventQueue, Serializable {
 		int l;
 		while ((l = left(k)) < count) {
 			int r = right(k);
-			int child = (r >= count || nodes[l].compareTo(nodes[r]) < 0) ? l
-					: r;
+			int child = (r >= count || nodes[l].compareTo(nodes[r]) < 0) ? l : r;
 			if (x.compareTo(nodes[child]) > 0) {
 				nodes[k] = nodes[child];
 				k = child;

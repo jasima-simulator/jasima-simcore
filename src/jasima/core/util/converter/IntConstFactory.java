@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
+import java.util.ArrayList;
+
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntConst;
 import jasima.core.util.ArgListTokenizer;
@@ -27,12 +29,9 @@ import jasima.core.util.ArgListTokenizer.TokenType;
 import jasima.core.util.Util;
 import jasima.core.util.converter.TypeConverterDblStream.StreamFactory;
 
-import java.util.ArrayList;
-
 public class IntConstFactory implements StreamFactory {
 
-	private static final String[] PREFIXES = { "intConst",
-			IntConst.class.getName() };
+	private static final String[] PREFIXES = { "intConst", IntConst.class.getName() };
 
 	public IntConstFactory() {
 		super();
@@ -45,8 +44,7 @@ public class IntConstFactory implements StreamFactory {
 
 	@Override
 	public DblStream stringToStream(ArgListTokenizer tk) {
-		TypeToStringConverter intConv = TypeToStringConverter
-				.lookupConverter(int.class);
+		TypeToStringConverter intConv = TypeToStringConverter.lookupConverter(int.class);
 		assert intConv != null;
 
 		String prefix = tk.currTokenText();
@@ -56,21 +54,19 @@ public class IntConstFactory implements StreamFactory {
 		ArrayList<Integer> values = new ArrayList<Integer>();
 
 		// there has to be at least one value
-		Integer d = intConv.fromString(tk, Integer.class, prefix, this
-				.getClass().getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+		Integer d = intConv.fromString(tk, Integer.class, prefix, this.getClass().getClassLoader(),
+				Util.DEF_CLASS_SEARCH_PATH);
 		values.add(d);
 
-		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.SEMICOLON,
-				TokenType.PARENS_CLOSE);
+		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
 
 		// read further values until closing parenthesis
 		while (tk.currTokenType() != TokenType.PARENS_CLOSE) {
-			Integer i2 = intConv.fromString(tk, Integer.class, prefix, this
-					.getClass().getClassLoader(), Util.DEF_CLASS_SEARCH_PATH);
+			Integer i2 = intConv.fromString(tk, Integer.class, prefix, this.getClass().getClassLoader(),
+					Util.DEF_CLASS_SEARCH_PATH);
 			values.add(i2);
 
-			tk.assureTokenTypes(tk.nextTokenNoWhitespace(),
-					TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
+			tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
 		}
 
 		// convert to double[]
@@ -87,8 +83,7 @@ public class IntConstFactory implements StreamFactory {
 
 	@Override
 	public String streamToString(DblStream s) {
-		TypeToStringConverter doubleConv = TypeToStringConverter
-				.lookupConverter(Integer.class);
+		TypeToStringConverter doubleConv = TypeToStringConverter.lookupConverter(Integer.class);
 		assert doubleConv != null;
 
 		IntConst dblConst = (IntConst) s;

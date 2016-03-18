@@ -23,13 +23,12 @@ package jasima.core.random.continuous;
 import jasima.core.util.Pair;
 
 /**
- * Returns a random real number following a <a
- * href="http://en.wikipedia.org/wiki/Triangular_distribution">triangular
+ * Returns a random real number following a
+ * <a href="http://en.wikipedia.org/wiki/Triangular_distribution">triangular
  * distribution</a> as defined by the three parameters min, mode, and max.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DblTriangular extends DblStream {
 
@@ -79,8 +78,7 @@ public class DblTriangular extends DblStream {
 
 	@Override
 	public String toString() {
-		return "DblTriangular(min=" + min + ";mode=" + mode + ";max=" + max
-				+ ")";
+		return "DblTriangular(min=" + min + ";mode=" + mode + ";max=" + max + ")";
 	}
 
 	@Override

@@ -30,8 +30,7 @@ public class PropertySupport implements Serializable {
 
 	private static final long serialVersionUID = 4437433295143161294L;
 
-	private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
-			this);
+	private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	public PropertySupport() {
 		super();
@@ -39,25 +38,20 @@ public class PropertySupport implements Serializable {
 
 	// listener handling
 
-	public void addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
-	public void removePropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		propertyChangeSupport.removePropertyChangeListener(propertyName,
-				listener);
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
-	protected void firePropertyChange(String propertyName, Object oldVal,
-			Object newVal) {
+	protected void firePropertyChange(String propertyName, Object oldVal, Object newVal) {
 		propertyChangeSupport.firePropertyChange(propertyName, oldVal, newVal);
 	}
 
 	// deserialize transient data
-	private void readObject(ObjectInputStream in) throws IOException,
-			ClassNotFoundException {
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
 		propertyChangeSupport = new PropertyChangeSupport(this);
 	}

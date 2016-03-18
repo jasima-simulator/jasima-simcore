@@ -26,7 +26,6 @@ import java.util.HashMap;
  * Common abstract base class for {@link Job}s and {@link Batch}es.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public abstract class PrioRuleTarget {
 
@@ -75,7 +74,7 @@ public abstract class PrioRuleTarget {
 
 	public abstract WorkStation getCurrMachine();
 
-	public abstract JobShop getShop();
+	public abstract Shop getShop();
 
 	public abstract int getTaskNumber();
 

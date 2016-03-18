@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
+import java.util.HashMap;
+
 import jasima.core.util.ArgListTokenizer;
 import jasima.core.util.ArgListTokenizer.ParseException;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.TypeUtil.TypeConversionException;
 import jasima.core.util.Util;
-
-import java.util.HashMap;
 
 public abstract class TypeToStringConverter {
 

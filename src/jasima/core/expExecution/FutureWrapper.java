@@ -20,9 +20,6 @@
  *******************************************************************************/
 package jasima.core.expExecution;
 
-import jasima.core.experiment.Experiment;
-import jasima.core.util.Util;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -30,12 +27,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import jasima.core.experiment.Experiment;
+import jasima.core.util.Util;
+
 /**
  * Thin wrapper around a {@link Future}, implementing {@link ExperimentFuture}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class FutureWrapper implements ExperimentFuture {
 
@@ -75,8 +74,7 @@ public class FutureWrapper implements ExperimentFuture {
 	}
 
 	@Override
-	public Map<String, Object> get(long timeout, TimeUnit unit)
-			throws InterruptedException, TimeoutException {
+	public Map<String, Object> get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
 		return internalGet(timeout, unit);
 	}
 
@@ -93,8 +91,7 @@ public class FutureWrapper implements ExperimentFuture {
 
 			// estimate runtime by the time between creation of this future and
 			// current time
-			res.put(Experiment.RUNTIME,
-					(System.currentTimeMillis() - time) / 1000.0d);
+			res.put(Experiment.RUNTIME, (System.currentTimeMillis() - time) / 1000.0d);
 
 			// put error indications in result map
 			res.put(Experiment.EXP_ABORTED, 1);

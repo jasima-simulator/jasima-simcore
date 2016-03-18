@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import java.util.List;
+import java.util.Locale;
+
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.continuous.DblTriangular;
 import jasima.core.util.Util;
-
-import java.util.List;
-import java.util.Locale;
 
 public class DblTriangularDef extends DblStreamDef {
 
@@ -44,21 +44,17 @@ public class DblTriangularDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblTriangularDef stringToStreamDef(String params,
-				List<String> errors) {
+		public DblTriangularDef stringToStreamDef(String params, List<String> errors) {
 			double[] ll;
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s",
-						nfe.getLocalizedMessage()));
+				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 3) {
-				errors.add(String
-						.format(Util.DEF_LOCALE,
-								"invalid number of parameters (3 required, min, mode, and max value): '%s'",
-								params));
+				errors.add(String.format(Util.DEF_LOCALE,
+						"invalid number of parameters (3 required, min, mode, and max value): '%s'", params));
 				return null;
 			}
 
@@ -96,8 +92,7 @@ public class DblTriangularDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format(Locale.US, "%s(%s,%s,%s)",
-				FACTORY.getTypeString(), getMinValue(), getModeValue(),
+		return String.format(Locale.US, "%s(%s,%s,%s)", FACTORY.getTypeString(), getMinValue(), getModeValue(),
 				getMaxValue());
 	}
 
@@ -111,8 +106,7 @@ public class DblTriangularDef extends DblStreamDef {
 	}
 
 	public void setMinValue(double minValue) {
-		firePropertyChange(PARAM_MIN_VALUE, this.minValue,
-				this.minValue = minValue);
+		firePropertyChange(PARAM_MIN_VALUE, this.minValue, this.minValue = minValue);
 	}
 
 	public double getMaxValue() {
@@ -120,8 +114,7 @@ public class DblTriangularDef extends DblStreamDef {
 	}
 
 	public void setMaxValue(double maxValue) {
-		firePropertyChange(PARAM_MAX_VALUE, this.maxValue,
-				this.maxValue = maxValue);
+		firePropertyChange(PARAM_MAX_VALUE, this.maxValue, this.maxValue = maxValue);
 	}
 
 	public double getModeValue() {
@@ -129,8 +122,7 @@ public class DblTriangularDef extends DblStreamDef {
 	}
 
 	public void setModeValue(double modeValue) {
-		firePropertyChange(PARAM_MODE_VALUE, this.modeValue,
-				this.modeValue = modeValue);
+		firePropertyChange(PARAM_MODE_VALUE, this.modeValue, this.modeValue = modeValue);
 	}
 
 	static {

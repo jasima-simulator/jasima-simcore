@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
+import java.util.HashMap;
+
 import jasima.core.random.continuous.DblStream;
 import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.Util;
 import jasima.core.util.ArgListTokenizer.TokenType;
-
-import java.util.HashMap;
+import jasima.core.util.Util;
 
 public class TypeConverterDblStream extends TypeToStringConverter {
 
@@ -48,9 +48,8 @@ public class TypeConverterDblStream extends TypeToStringConverter {
 	}
 
 	@Override
-	public <T> T fromString(ArgListTokenizer tk, Class<T> requiredType,
-			String context, ClassLoader loader, String[] packageSearchPath)
-			throws ClassCastException {
+	public <T> T fromString(ArgListTokenizer tk, Class<T> requiredType, String context, ClassLoader loader,
+			String[] packageSearchPath) throws ClassCastException {
 		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.STRING);
 
 		String prefix = tk.currTokenText().trim().toLowerCase(Util.DEF_LOCALE);

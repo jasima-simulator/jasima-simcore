@@ -20,29 +20,26 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * Implements a stream of numbers following a <a
- * href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared
+ * Implements a stream of numbers following a
+ * <a href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared
  * distribution</a>. The distribution has a single shape (integer) parameter:
  * {@code degreesOfFreedom}. This distribution is a special case of a
  * {@link DblGamma Gamma distribution}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
- * @see <a
- *      href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared
- *      distribution (Wikipedia)</a>
- * @see <a
- *      href="http://mathworld.wolfram.com/Chi-SquaredDistribution.html">Chi-squared
- *      distribution (MathWorld)</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-
+ *      squared distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/Chi-SquaredDistribution.html">Chi-
+ *      squared distribution (MathWorld)</a>
  */
 public class DblChiSquared extends DblDistribution {
 
@@ -61,8 +58,7 @@ public class DblChiSquared extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE,
-				"DblChiSquared(degreesOfFreedom=%d)", getDegreesOfFreedom());
+		return String.format(Util.DEF_LOCALE, "DblChiSquared(degreesOfFreedom=%d)", getDegreesOfFreedom());
 	}
 
 	@Override
@@ -83,8 +79,7 @@ public class DblChiSquared extends DblDistribution {
 	 * @throws NotStrictlyPositiveException
 	 *             If the parameter value was {@code <=0.0}.
 	 */
-	public void setDegreesOfFreedom(int degreesOfFreedom)
-			throws NotStrictlyPositiveException {
+	public void setDegreesOfFreedom(int degreesOfFreedom) throws NotStrictlyPositiveException {
 		setDistribution(new ChiSquaredDistribution(degreesOfFreedom));
 	}
 

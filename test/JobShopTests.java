@@ -29,7 +29,6 @@ import org.junit.Test;
 import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.WorkStation;
-import jasima.shopSim.util.MachineStatCollector;
 
 /**
  * 

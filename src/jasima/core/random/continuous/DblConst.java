@@ -20,10 +20,10 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import java.util.Arrays;
+
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
-
-import java.util.Arrays;
 
 /**
  * A DblConst stream infinitely returns the numbers of {@link #getValues()} in
@@ -32,8 +32,7 @@ import java.util.Arrays;
  * {@code randomizeOrder} was set to true.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DblConst extends DblStream {
 

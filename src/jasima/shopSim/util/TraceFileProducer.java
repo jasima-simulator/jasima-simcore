@@ -32,14 +32,14 @@ import jasima.core.simulation.Simulation;
 import jasima.core.util.AbstractResultSaver;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.ShopListener;
 import jasima.shopSim.core.WorkStation;
-import jasima.shopSim.core.WorkStationListenerBase;
+import jasima.shopSim.core.WorkStationListener;
 
 /**
- * Produces a detailed trace of all events of a {@link JobShop} in a text file.
+ * Produces a detailed trace of all events of a {@link Shop} in a text file.
  * Creating this file is rather slow, so this class is mainly useful for
  * debugging purposes.
  * 
@@ -67,8 +67,8 @@ public class TraceFileProducer implements ShopListener {
 		setFileName(fileName);
 	}
 
-	protected WorkStationListenerBase createWSListener() {
-		return new WorkStationListenerBase() {
+	protected WorkStationListener createWSListener() {
+		return new WorkStationListener() {
 			@Override
 			public void arrival(WorkStation m, Job j) {
 				if (!j.isFuture()) {
@@ -122,12 +122,12 @@ public class TraceFileProducer implements ShopListener {
 	}
 
 	@Override
-	public void jobReleased(JobShop shop, Job j) {
+	public void jobReleased(Shop shop, Job j) {
 		print(shop.simTime() + "\tenter_system\t" + j);
 	}
 
 	@Override
-	public void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(Shop shop, Job j) {
 		print(shop.simTime() + "\tleave_system\t" + j);
 	}
 
@@ -148,7 +148,7 @@ public class TraceFileProducer implements ShopListener {
 	public void simStart(SimComponent shop) {
 		print(shop.getSim().simTime() + "\tsim_start");
 
-		JobShop s = (JobShop) shop;
+		Shop s = (Shop) shop;
 		s.installMachineListener(createWSListener(), false);
 	}
 

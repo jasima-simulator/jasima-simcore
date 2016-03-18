@@ -29,8 +29,7 @@ import jasima.core.random.continuous.DblStream;
  * an abstract base class.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public abstract class IntStream extends DblStream {
 

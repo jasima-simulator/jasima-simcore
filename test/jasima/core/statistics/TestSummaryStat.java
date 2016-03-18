@@ -73,8 +73,7 @@ public class TestSummaryStat {
 		// this method will fail using the numerically unstable version to
 		// compute the variance
 		SummaryStat s = new SummaryStat();
-		s.values(1e9 + 4, 1e9 + 7, 1e9 + 13, 1e9 + 16, 1e9 + 4, 1e9 + 7,
-				1e9 + 13, 1e9 + 16);
+		s.values(1e9 + 4, 1e9 + 7, 1e9 + 13, 1e9 + 16, 1e9 + 4, 1e9 + 7, 1e9 + 13, 1e9 + 16);
 
 		assertEquals(8, s.numObs());
 		assertEquals(8, s.weightSum(), 1e-6);
@@ -148,8 +147,7 @@ public class TestSummaryStat {
 		s2.value(4, 2.0);
 		s2.value(5, 1.0);
 
-		SummaryStat manualCombine = new SummaryStat().values(2, 2, 4, 5, 5, 5,
-				2, 2, 2, 4, 4, 5);
+		SummaryStat manualCombine = new SummaryStat().values(2, 2, 4, 5, 5, 5, 2, 2, 2, 4, 4, 5);
 		assertEquals(12, manualCombine.numObs());
 		assertEquals(12.0, manualCombine.weightSum(), 1e-10);
 		assertEquals(42.0, manualCombine.sum(), 1e-10);

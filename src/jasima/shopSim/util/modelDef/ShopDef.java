@@ -20,16 +20,15 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef;
 
-import jasima.shopSim.core.JobShop;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.util.ShopConfigurator;
 
 /**
  * Simple data model object to hold the parameters necessary to configure a
- * {@link JobShop}.
+ * {@link Shop}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ShopDef extends PropertySupport {
 
@@ -49,8 +48,7 @@ public class ShopDef extends PropertySupport {
 	}
 
 	public void setSimulationLength(double simulationLength) {
-		firePropertyChange("simulationLength", this.simulationLength,
-				this.simulationLength = simulationLength);
+		firePropertyChange("simulationLength", this.simulationLength, this.simulationLength = simulationLength);
 	}
 
 	public int getMaxJobsInSystem() {
@@ -58,8 +56,7 @@ public class ShopDef extends PropertySupport {
 	}
 
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
-		firePropertyChange("maxJobsInSystem", this.maxJobsInSystem,
-				this.maxJobsInSystem = maxJobsInSystem);
+		firePropertyChange("maxJobsInSystem", this.maxJobsInSystem, this.maxJobsInSystem = maxJobsInSystem);
 	}
 
 	public int getStopAfterNumJobs() {
@@ -67,8 +64,7 @@ public class ShopDef extends PropertySupport {
 	}
 
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
-		firePropertyChange("stopAfterNumJobs", this.stopAfterNumJobs,
-				this.stopAfterNumJobs = stopAfterNumJobs);
+		firePropertyChange("stopAfterNumJobs", this.stopAfterNumJobs, this.stopAfterNumJobs = stopAfterNumJobs);
 	}
 
 	public boolean isEnableLookAhead() {
@@ -76,8 +72,7 @@ public class ShopDef extends PropertySupport {
 	}
 
 	public void setEnableLookAhead(boolean enableLookAhead) {
-		firePropertyChange("enableLookAhead", this.enableLookAhead,
-				this.enableLookAhead = enableLookAhead);
+		firePropertyChange("enableLookAhead", this.enableLookAhead, this.enableLookAhead = enableLookAhead);
 	}
 
 	public WorkstationDef[] getWorkstations() {
@@ -85,8 +80,7 @@ public class ShopDef extends PropertySupport {
 	}
 
 	public void setWorkstations(WorkstationDef[] workstations) {
-		firePropertyChange("workstations", this.workstations,
-				this.workstations = workstations);
+		firePropertyChange("workstations", this.workstations, this.workstations = workstations);
 	}
 
 	public SourceDef[] getJobSources() {
@@ -131,7 +125,7 @@ public class ShopDef extends PropertySupport {
 
 	/**
 	 * Returns a {@link ShopConfigurator} that knows how to configure a
-	 * {@link JobShop} using this {@link ShopDef}.
+	 * {@link Shop} using this {@link ShopDef}.
 	 */
 	public ShopConfigurator getShopConfigurator() {
 		ShopConfigurator conf = new ShopConfigurator();

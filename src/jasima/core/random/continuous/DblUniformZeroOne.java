@@ -20,17 +20,16 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Pair;
-
 import java.util.Random;
+
+import jasima.core.util.Pair;
 
 /**
  * Generates uniformly distributed doubles in the range [0,1.0). This class just
  * delegates to the underlying method {@link java.util.Random#nextDouble()}.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DblUniformZeroOne extends DblStream {
 

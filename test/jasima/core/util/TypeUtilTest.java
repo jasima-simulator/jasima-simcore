@@ -29,9 +29,8 @@ public class TypeUtilTest {
 
 	@Test
 	public void testComputeClasses() {
-		Class<?>[] expected = new Class<?>[] { X.class, Y.class, A.class,
-				B.class, C.class, D.class, M.class, N.class, O.class,
-				Object.class };
+		Class<?>[] expected = new Class<?>[] { X.class, Y.class, A.class, B.class, C.class, D.class, M.class, N.class,
+				O.class, Object.class };
 		Class<?>[] actual = TypeUtil.computeClasses(X.class);
 
 		assertThat(actual, equalTo(expected));

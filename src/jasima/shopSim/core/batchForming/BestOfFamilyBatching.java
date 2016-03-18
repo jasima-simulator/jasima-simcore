@@ -20,14 +20,14 @@
  *******************************************************************************/
 package jasima.shopSim.core.batchForming;
 
+import java.util.List;
+import java.util.Map;
+
 import jasima.shopSim.core.Batch;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
 import jasima.shopSim.core.PriorityQueue;
 import jasima.shopSim.core.WorkStation;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -41,8 +41,7 @@ import java.util.Map;
  * are used to form the batch.
  * 
  * @author Torsten Hildebrandt, 2010-10-25
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class BestOfFamilyBatching extends BatchForming {
 
@@ -57,8 +56,7 @@ public class BestOfFamilyBatching extends BatchForming {
 		int numJobs = q.size();
 
 		// split jobs of each family
-		Map<String, List<Job>> jobsByFamily = splitFamilies(orderedJobs,
-				numJobs);
+		Map<String, List<Job>> jobsByFamily = splitFamilies(orderedJobs, numJobs);
 
 		// form two batches per family, one without future jobs
 		for (List<Job> famJobs : jobsByFamily.values()) {
@@ -71,8 +69,7 @@ public class BestOfFamilyBatching extends BatchForming {
 
 		Job j = famJobs.get(0);
 		Operation o = j.getCurrentOperation();
-		assert WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily()) ? o.getMaxBatchSize() == 1
-				: true;
+		assert WorkStation.BATCH_INCOMPATIBLE.equals(o.getBatchFamily()) ? o.getMaxBatchSize() == 1 : true;
 
 		// make batches as full as possible
 		Batch b = new Batch(getOwner().shop());

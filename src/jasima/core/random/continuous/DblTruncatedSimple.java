@@ -34,15 +34,15 @@ import jasima.core.util.Util;
  * This method is sometimes called cut-off truncation. Technically this creates
  * a new distribution with a (cumulative) distribution function with a value of
  * 0 for all values smaller than {@code minValue}, then following the
- * distribution function of {@code baseStream} for the interval [{@code minValue}
- * , {@code maxValue}], and having the value 1 for all values larger than
- * {@code maxValue}.
+ * distribution function of {@code baseStream} for the interval [
+ * {@code minValue} , {@code maxValue}], and having the value 1 for all values
+ * larger than {@code maxValue}.
  * 
  * @author Torsten Hildebrandt
  * @since 1.3
- * @see <a
- *      href="http://www.comnets.uni-bremen.de/itg/itgfg521/per_eval/p004.html"
- *      >Wolfgang Bziuk: Generating random variates from truncated
+ * @see <a href=
+ *      "http://www.comnets.uni-bremen.de/itg/itgfg521/per_eval/p004.html" >
+ *      Wolfgang Bziuk: Generating random variates from truncated
  *      distributions</a> (last accessed 2015-05-06)
  */
 public class DblTruncatedSimple extends DblStream {
@@ -113,8 +113,7 @@ public class DblTruncatedSimple extends DblStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE,
-				"DblTruncatedSimple(baseStream=%s;minValue=%f;maxValue=%f)",
+		return String.format(Util.DEF_LOCALE, "DblTruncatedSimple(baseStream=%s;minValue=%f;maxValue=%f)",
 				getBaseStream(), getMinValue(), getMaxValue());
 	}
 

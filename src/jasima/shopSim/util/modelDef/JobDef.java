@@ -64,8 +64,7 @@ public class JobDef extends PropertySupport {
 	}
 
 	public void setReleaseDate(double releaseDate) {
-		firePropertyChange("releaseDate", this.releaseDate,
-				this.releaseDate = releaseDate);
+		firePropertyChange("releaseDate", this.releaseDate, this.releaseDate = releaseDate);
 	}
 
 	public double getDueDate() {

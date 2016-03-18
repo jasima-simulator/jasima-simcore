@@ -20,14 +20,6 @@
  *******************************************************************************/
 package jasima.core.run;
 
-import jasima.core.experiment.AbstractMultiConfExperiment.ComplexFactorSetter;
-import jasima.core.experiment.Experiment;
-import jasima.core.experiment.FullFactorialExperiment;
-import jasima.core.experiment.MultipleConfigurationExperiment;
-import jasima.core.util.TypeUtil;
-import jasima.core.util.TypeUtil.TypeConversionException;
-import jasima.core.util.Util;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jasima.core.experiment.AbstractMultiConfExperiment.ComplexFactorSetter;
+import jasima.core.experiment.Experiment;
+import jasima.core.experiment.FullFactorialExperiment;
+import jasima.core.experiment.MultipleConfigurationExperiment;
+import jasima.core.util.TypeUtil;
+import jasima.core.util.TypeUtil.TypeConversionException;
+import jasima.core.util.Util;
 import jxl.BooleanCell;
 import jxl.Cell;
 import jxl.NumberCell;
@@ -51,8 +50,7 @@ import jxl.read.biff.BiffException;
  * 
  * @author Robin Kreis
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ExcelExperimentReader {
 
@@ -83,14 +81,11 @@ public class ExcelExperimentReader {
 		private final int row;
 		private final int col;
 
-		public MultValueSetter(String[] propNames, Object[] propValues,
-				String sheetName, int row, int col) {
+		public MultValueSetter(String[] propNames, Object[] propValues, String sheetName, int row, int col) {
 			super();
 			if (propNames.length != propValues.length)
 				throw new IllegalArgumentException(
-						String.format(
-								Util.DEF_LOCALE,
-								"Number of property names (%d) and values (%d) do not match.",
+						String.format(Util.DEF_LOCALE, "Number of property names (%d) and values (%d) do not match.",
 								propNames.length, propValues.length));
 
 			this.propNames = propNames;
@@ -107,21 +102,17 @@ public class ExcelExperimentReader {
 				Object value = propValues[i];
 
 				try {
-					TypeUtil.setPropertyValue(e, name, value, classLoader,
-							packageSearchPath);
+					TypeUtil.setPropertyValue(e, name, value, classLoader, packageSearchPath);
 				} catch (RuntimeException t) {
-					throw new RuntimeException(String.format(Util.DEF_LOCALE,
-							"Problem with value in cell '%s': %s",
-							position(sheetName, row, col + i), t.getMessage()),
-							t);
+					throw new RuntimeException(String.format(Util.DEF_LOCALE, "Problem with value in cell '%s': %s",
+							position(sheetName, row, col + i), t.getMessage()), t);
 				}
 			}
 		}
 
 	}
 
-	public ExcelExperimentReader(File file, ClassLoader loader,
-			String[] packageSearchPath) {
+	public ExcelExperimentReader(File file, ClassLoader loader, String[] packageSearchPath) {
 		this.classLoader = loader;
 		this.packageSearchPath = packageSearchPath;
 		jasimaSheet = cfgSheet = factSheet = null;
@@ -147,8 +138,7 @@ public class ExcelExperimentReader {
 		}
 
 		if (jasimaSheet == null) {
-			throw new IllegalArgumentException("Can't find a sheet named '"
-					+ SHEET_MAIN + "'");
+			throw new IllegalArgumentException("Can't find a sheet named '" + SHEET_MAIN + "'");
 		}
 	}
 
@@ -160,9 +150,7 @@ public class ExcelExperimentReader {
 		if (cfgSheet != null) {
 			int row = parseCfgSection(cfgSheet, -1);
 			if (row < cfgSheet.getRows())
-				throw new RuntimeException(
-						"Unknown data on sheet 'configurations' after row "
-								+ (row + 1));
+				throw new RuntimeException("Unknown data on sheet 'configurations' after row " + (row + 1));
 			cfgSheet = null;
 		}
 
@@ -170,9 +158,7 @@ public class ExcelExperimentReader {
 		if (factSheet != null) {
 			int row = parseFactSection(factSheet, -1);
 			if (row < factSheet.getRows())
-				throw new RuntimeException(
-						"Unknown data on sheet 'factors' after row "
-								+ (row + 1));
+				throw new RuntimeException("Unknown data on sheet 'factors' after row " + (row + 1));
 			factSheet = null;
 		}
 
@@ -195,18 +181,14 @@ public class ExcelExperimentReader {
 		row = readMain(row);
 		assert mainExp != null;
 
-		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet
-				.getRows()) {
+		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet.getRows()) {
 			Cell c = jasimaSheet.getCell(0, row);
-			String s = String.valueOf(getCellValue(c)).trim()
-					.toLowerCase(Util.DEF_LOCALE);
+			String s = String.valueOf(getCellValue(c)).trim().toLowerCase(Util.DEF_LOCALE);
 			if (isSectPrefix(s)) {
 				if (s.startsWith(SECT_MAIN)) {
 					if (mainExp != null) {
-						throw new RuntimeException(String.format(
-								Util.DEF_LOCALE,
-								"There can only be one section '" + SECT_MAIN
-										+ "' (cell %s).",
+						throw new RuntimeException(String.format(Util.DEF_LOCALE,
+								"There can only be one section '" + SECT_MAIN + "' (cell %s).",
 								position(jasimaSheet, c)));
 					}
 				} else if (s.startsWith(SECT_FACTORS)) {
@@ -214,8 +196,7 @@ public class ExcelExperimentReader {
 				} else if (s.startsWith(SECT_CONFIGS)) {
 					row = parseCfgSection(jasimaSheet, row);
 				} else {
-					throw new RuntimeException(String.format(
-							"Don't know how to handle section '%s'.", s));
+					throw new RuntimeException(String.format("Don't know how to handle section '%s'.", s));
 				}
 
 				// set row before start of new section
@@ -225,8 +206,7 @@ public class ExcelExperimentReader {
 		}
 
 		if (mainExp == null) {
-			throw new RuntimeException("Could not find section starting with '"
-					+ SECT_MAIN + "'.");
+			throw new RuntimeException("Could not find section starting with '" + SECT_MAIN + "'.");
 		}
 		assert row >= jasimaSheet.getRows();
 	}
@@ -237,27 +217,22 @@ public class ExcelExperimentReader {
 		Cell c = jasimaSheet.getCell(0, row);
 		String s = String.valueOf(getCellValue(c)).trim();
 		if (!"experiment".equalsIgnoreCase(s)) {
-			throw new RuntimeException(
-					String.format(
-							Util.DEF_LOCALE,
-							"First value in section '%s' has to be 'experiment' (found '%s' in cell '%s').",
-							SECT_MAIN, s, position(jasimaSheet, c)));
+			throw new RuntimeException(String.format(Util.DEF_LOCALE,
+					"First value in section '%s' has to be 'experiment' (found '%s' in cell '%s').", SECT_MAIN, s,
+					position(jasimaSheet, c)));
 		}
 
 		c = jasimaSheet.getCell(1, row);
 		Object o = getCellValue(c);
 		try {
-			mainExp = TypeUtil.convert(o, Experiment.class, "", classLoader,
-					packageSearchPath);
+			mainExp = TypeUtil.convert(o, Experiment.class, "", classLoader, packageSearchPath);
 		} catch (TypeConversionException t) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"There is a problem with cell '%s': %s",
+			throw new RuntimeException(String.format(Util.DEF_LOCALE, "There is a problem with cell '%s': %s",
 					position(jasimaSheet, c), t.getMessage()));
 		}
 
 		// are there further properties to be set?
-		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet
-				.getRows()) {
+		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet.getRows()) {
 			// read name
 			c = jasimaSheet.getCell(0, row);
 			String propName = String.valueOf(getCellValue(c)).trim();
@@ -272,11 +247,9 @@ public class ExcelExperimentReader {
 
 			// try to set property
 			try {
-				TypeUtil.setPropertyValue(mainExp, propName, propValue,
-						classLoader, packageSearchPath);
+				TypeUtil.setPropertyValue(mainExp, propName, propValue, classLoader, packageSearchPath);
 			} catch (RuntimeException t) {
-				throw new RuntimeException(String.format(Util.DEF_LOCALE,
-						"There is a problem with cell '%s': %s",
+				throw new RuntimeException(String.format(Util.DEF_LOCALE, "There is a problem with cell '%s': %s",
 						position(jasimaSheet, c), t.getMessage()));
 			}
 		}
@@ -287,16 +260,13 @@ public class ExcelExperimentReader {
 
 	private boolean isSectPrefix(String propName) {
 		propName = propName.toLowerCase(Util.DEF_LOCALE);
-		return propName.equals(SECT_MAIN) || propName.equals(SECT_CONFIGS)
-				|| propName.equals(SECT_FACTORS);
+		return propName.equals(SECT_MAIN) || propName.equals(SECT_CONFIGS) || propName.equals(SECT_FACTORS);
 	}
 
 	private int parseFactSection(Sheet sheet, int row) {
 		if (mainExp == null) {
-			throw new RuntimeException(
-					"Can't read factors without an experiment. "
-							+ "Define it first in the '" + SECT_MAIN
-							+ "'-section on sheet '" + SHEET_MAIN + "'.");
+			throw new RuntimeException("Can't read factors without an experiment. " + "Define it first in the '"
+					+ SECT_MAIN + "'-section on sheet '" + SHEET_MAIN + "'.");
 		}
 
 		// find header row
@@ -343,11 +313,8 @@ public class ExcelExperimentReader {
 						continue;
 				}
 
-				propValues.get(col).add(
-						new MultValueSetter(
-								new String[] { propNames.get(col) },
-								new Object[] { value }, sheet.getName(), row,
-								col));
+				propValues.get(col).add(new MultValueSetter(new String[] { propNames.get(col) }, new Object[] { value },
+						sheet.getName(), row, col));
 			}
 		}
 
@@ -357,10 +324,8 @@ public class ExcelExperimentReader {
 
 	private int parseCfgSection(Sheet sheet, int row) {
 		if (mainExp == null) {
-			throw new RuntimeException(
-					"Can't read configurations without an experiment. "
-							+ "Define it first in the '" + SECT_MAIN
-							+ "'-section on sheet '" + SHEET_MAIN + "'.");
+			throw new RuntimeException("Can't read configurations without an experiment. " + "Define it first in the '"
+					+ SECT_MAIN + "'-section on sheet '" + SHEET_MAIN + "'.");
 		}
 
 		if (factors == null)
@@ -382,8 +347,7 @@ public class ExcelExperimentReader {
 
 			propNameList.add(s);
 		}
-		String[] propNames = propNameList.toArray(new String[propNameList
-				.size()]);
+		String[] propNames = propNameList.toArray(new String[propNameList.size()]);
 
 		ArrayList<Object> configurations = new ArrayList<>();
 		factors.put("@Conf" + (++numConfigSections), configurations);
@@ -405,8 +369,7 @@ public class ExcelExperimentReader {
 				values.add(value);
 			}
 
-			configurations.add(new MultValueSetter(propNames, values.toArray(),
-					sheet.getName(), row, 0));
+			configurations.add(new MultValueSetter(propNames, values.toArray(), sheet.getName(), row, 0));
 		}
 
 		return row;

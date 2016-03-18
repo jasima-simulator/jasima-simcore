@@ -45,8 +45,7 @@ public class OperationDef extends PropertySupport {
 	}
 
 	public void setProcTime(double procTime) {
-		firePropertyChange(PROP_PROC_TIME, this.procTime,
-				this.procTime = procTime);
+		firePropertyChange(PROP_PROC_TIME, this.procTime, this.procTime = procTime);
 	}
 
 	public WorkstationDef getWorkstation() {
@@ -54,8 +53,7 @@ public class OperationDef extends PropertySupport {
 	}
 
 	public void setWorkstation(WorkstationDef workstation) {
-		firePropertyChange(PROP_WORKSTATION, this.workstation,
-				this.workstation = workstation);
+		firePropertyChange(PROP_WORKSTATION, this.workstation, this.workstation = workstation);
 	}
 
 	public String getSetup() {
@@ -71,8 +69,7 @@ public class OperationDef extends PropertySupport {
 	}
 
 	public void setBatchFamily(String batchFamily) {
-		firePropertyChange(PROP_BATCH_FAMILY, this.batchFamily,
-				this.batchFamily = batchFamily);
+		firePropertyChange(PROP_BATCH_FAMILY, this.batchFamily, this.batchFamily = batchFamily);
 	}
 
 	public int getMaxBatchSize() {
@@ -80,8 +77,7 @@ public class OperationDef extends PropertySupport {
 	}
 
 	public void setMaxBatchSize(int maxBatchSize) {
-		firePropertyChange(PROP_MAX_BATCH_SIZE, this.maxBatchSize,
-				this.maxBatchSize = maxBatchSize);
+		firePropertyChange(PROP_MAX_BATCH_SIZE, this.maxBatchSize, this.maxBatchSize = maxBatchSize);
 	}
 
 	public String getName() {

@@ -23,8 +23,6 @@ package jasima.core.util;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import jasima.core.util.ArgListTokenizer.ParseException;
-import jasima.core.util.ArgListTokenizer.TokenType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +31,9 @@ import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jasima.core.util.ArgListTokenizer.ParseException;
+import jasima.core.util.ArgListTokenizer.TokenType;
 
 public class ArgListTokenizerTest {
 
@@ -61,23 +62,20 @@ public class ArgListTokenizerTest {
 	@Test
 	public void testWellbehaved() {
 		List<String> actual = tokenize("ATCS(k1=2.2;k2=1.0 )");
-		List<String> expected = asList("ATCS", "(", "k1", "=", "2.2", ";",
-				"k2", "=", "1.0", " ", ")");
+		List<String> expected = asList("ATCS", "(", "k1", "=", "2.2", ";", "k2", "=", "1.0", " ", ")");
 		assertThat(actual, is(expected));
 	}
 
 	@Test
 	public void testSimpleLists() {
-		List<String> expected = asList("   ", "abc", "=", "def", " ", ";",
-				"123", ";", "rrr", ";");
+		List<String> expected = asList("   ", "abc", "=", "def", " ", ";", "123", ";", "rrr", ";");
 		List<String> actual = tokenize("   abc=def ;123;rrr;");
 		assertThat(actual, is(expected));
 	}
 
 	@Test
 	public void testSimpleQuotedLists() {
-		List<String> expected = asList("   ", "abc=def ;", "123", ";", "rrr",
-				";");
+		List<String> expected = asList("   ", "abc=def ;", "123", ";", "rrr", ";");
 		List<String> actual = tokenize("   \"abc=def ;\"123;rrr;");
 		assertThat(actual, is(expected));
 	}
@@ -110,8 +108,7 @@ public class ArgListTokenizerTest {
 
 	@Test
 	public void testEscaped() {
-		List<String> expected = asList("   ", "abc=def", " ", ";123", ";",
-				"rrr", ";");
+		List<String> expected = asList("   ", "abc=def", " ", ";123", ";", "rrr", ";");
 		List<String> actual = tokenize("   abc\\=def \\;123;rrr;");
 		assertThat(actual, is(expected));
 	}

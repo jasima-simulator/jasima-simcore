@@ -30,7 +30,7 @@ import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
@@ -61,7 +61,7 @@ public class HolthausSimpleTest {
 		e.setInitialSeed(8346);
 
 		// remove default BasicJobStatCollector
-		Subscriber[] l = e.getShopListener();
+		NotifierListener[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 

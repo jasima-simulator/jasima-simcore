@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -19,6 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+
+import org.junit.Test;
+
 import jasima.shopSim.core.PR;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.prioRules.basic.EDD;
@@ -27,18 +33,12 @@ import jasima.shopSim.prioRules.basic.ODD;
 import jasima.shopSim.prioRules.basic.SPT;
 import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
 import jasima.shopSim.util.TraceFileProducer;
-
-import java.io.File;
-
-import org.junit.Test;
-
 import util.FileChecker;
 
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class TestStaticInstsTraces {
 
@@ -57,8 +57,7 @@ public class TestStaticInstsTraces {
 		testFromFile("js20x05.txt", rules);
 	}
 
-	public static void testFromFile(String fileName, PR[] rules)
-			throws Exception {
+	public static void testFromFile(String fileName, PR[] rules) throws Exception {
 		File f = new File("testInstances/" + fileName);
 		assertTrue("file not found: " + fileName, f.exists());
 
@@ -75,8 +74,7 @@ public class TestStaticInstsTraces {
 		}
 	}
 
-	static PR[] rules = new PR[] { new IgnoreFutureJobs(new SPT()),
-			new IgnoreFutureJobs(new FCFS()), new IgnoreFutureJobs(new EDD()),
-			new IgnoreFutureJobs(new ODD()), };
+	static PR[] rules = new PR[] { new IgnoreFutureJobs(new SPT()), new IgnoreFutureJobs(new FCFS()),
+			new IgnoreFutureJobs(new EDD()), new IgnoreFutureJobs(new ODD()), };
 
 }

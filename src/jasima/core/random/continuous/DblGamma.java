@@ -20,22 +20,21 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * Implements a stream of real numbers where each value follows a <a
- * href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma
+ * Implements a stream of real numbers where each value follows a
+ * <a href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma
  * distribution</a>. The distribution is characterized by a shape and a scale
  * parameter. It is a generalization of the Exponential and Erlang
  * distributions.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma
  *      distribution (Wikipedia)</a>
@@ -65,8 +64,7 @@ public class DblGamma extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblGamma(shape=%f;scale=%f)",
-				getShape(), getScale());
+		return String.format(Util.DEF_LOCALE, "DblGamma(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getShape() {

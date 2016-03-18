@@ -22,8 +22,6 @@ package jasima.core.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.matchers.JUnitMatchers.hasItem;
-import jasima.core.experiment.Experiment;
-import jasima.core.statistics.SummaryStat;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +31,9 @@ import org.apache.commons.math3.util.Precision;
 import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
 
+import jasima.core.experiment.Experiment;
+import jasima.core.statistics.SummaryStat;
+
 /**
  * Utility class that can be used as a base class for JUnit tests which check
  * for many results of an {@link Experiment} at once. Deriving a new test class
@@ -40,8 +41,7 @@ import org.junit.rules.ErrorCollector;
  * results of an experiment can be validated with a single method call.
  * 
  * @author Torsten Hildebrandt, 2012-08-08
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class ExperimentTest {
 
@@ -50,8 +50,11 @@ public class ExperimentTest {
 
 	/**
 	 * precision in terms of ULPs (Units in the last place), so FP comparisons
-	 * work for large and small numbers; 
-	 * @see <a href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/"></a>
+	 * work for large and small numbers;
+	 * 
+	 * @see <a href=
+	 *      "https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
+	 *      </a>
 	 */
 	protected int maxUlps = 10;
 
@@ -63,8 +66,7 @@ public class ExperimentTest {
 	 * @param resExpected
 	 *            The map of expected results.
 	 */
-	protected void checkKeySets(Map<String, Object> resActual,
-			Map<String, Object> resExpected) {
+	protected void checkKeySets(Map<String, Object> resActual, Map<String, Object> resExpected) {
 		Set<String> keysAct = new HashSet<String>(resActual.keySet());
 		Set<String> keysExp = new HashSet<String>(resExpected.keySet());
 
@@ -77,10 +79,8 @@ public class ExperimentTest {
 
 		HashSet<String> onlyAct = new HashSet<String>(all);
 		onlyAct.removeAll(keysExp);
-		errorCollector.checkThat("key sets should be equal.\n"
-				+ "keys missing in actual result map: " + onlyExp + ";\n"
-				+ "keys only in actual result map: " + onlyAct, keysAct,
-				is(keysExp));
+		errorCollector.checkThat("key sets should be equal.\n" + "keys missing in actual result map: " + onlyExp + ";\n"
+				+ "keys only in actual result map: " + onlyAct, keysAct, is(keysExp));
 	}
 
 	/**
@@ -94,11 +94,9 @@ public class ExperimentTest {
 	 * @param resExpected
 	 *            The map of expected results.
 	 */
-	protected void checkResults(Map<String, Object> resActual,
-			Map<String, Object> resExpected) {
+	protected void checkResults(Map<String, Object> resActual, Map<String, Object> resExpected) {
 		for (String name : resExpected.keySet()) {
-			if (Experiment.RUNTIME.equals(name)
-					|| name.endsWith("." + Experiment.RUNTIME))
+			if (Experiment.RUNTIME.equals(name) || name.endsWith("." + Experiment.RUNTIME))
 				continue;
 			errorCollector.checkThat(name, resActual.keySet(), hasItem(name));
 
@@ -110,8 +108,7 @@ public class ExperimentTest {
 			name = "result entry '" + name + "'";
 
 			if (expected instanceof SummaryStat) {
-				checkValueStat(name, (SummaryStat) expected,
-						(SummaryStat) actual);
+				checkValueStat(name, (SummaryStat) expected, (SummaryStat) actual);
 			} else if (expected instanceof Double) {
 				Number exp = (Number) expected;
 				Number act = (Number) actual;
@@ -128,22 +125,19 @@ public class ExperimentTest {
 	protected void checkFloat(String name, float act, float exp) {
 		if (act != exp) {
 			boolean cmp = Precision.equals(act, exp, maxUlps);
-			errorCollector.checkThat(
-					name + ";  act: " + act + ";  exp: " + exp, cmp, is(true));
+			errorCollector.checkThat(name + ";  act: " + act + ";  exp: " + exp, cmp, is(true));
 		}
 	}
 
 	protected void checkDouble(String name, double act, double exp) {
 		if (Double.compare(exp, act) != 0) {
 			boolean cmp = Precision.equals(act, exp, maxUlps);
-			errorCollector.checkThat(
-					name + ";  act: " + act + ";  exp: " + exp, cmp, is(true));
+			errorCollector.checkThat(name + ";  act: " + act + ";  exp: " + exp, cmp, is(true));
 		}
 	}
 
 	protected void checkValueStat(String name, SummaryStat exp, SummaryStat act) {
-		errorCollector.checkThat(name + " (numObs)", act.numObs(),
-				is(exp.numObs()));
+		errorCollector.checkThat(name + " (numObs)", act.numObs(), is(exp.numObs()));
 		checkDouble(name + " (weightSum)", act.weightSum(), exp.weightSum());
 		checkDouble(name + " (mean)", act.mean(), exp.mean());
 		checkDouble(name + " (min)", act.min(), exp.min());

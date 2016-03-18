@@ -27,8 +27,8 @@ import java.util.Map;
 import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.core.Job;
-import jasima.shopSim.core.JobShop;
 import jasima.shopSim.core.PrioRuleTarget;
+import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.ShopListenerBase;
 import jasima.shopSim.core.WorkStation;
 
@@ -62,7 +62,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	private SummaryStat weightedConditionalTardiness;
 	private SummaryStat weightedTardinessWithWIP;
 	private double numTardyWeighted;
-	private JobShop shop;
+	private Shop shop;
 
 	public ExtendedJobStatCollector() {
 		super();
@@ -115,14 +115,14 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	@Override
-	public void jobReleased(JobShop shop, Job j) {
+	public void jobReleased(Shop shop, Job j) {
 		assert this.shop == null || this.shop == shop;
 
 		this.shop = shop;
 	}
 
 	@Override
-	public void jobFinished(JobShop shop, Job j) {
+	public void jobFinished(Shop shop, Job j) {
 		if (!shouldCollect(j))
 			return;
 

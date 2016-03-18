@@ -31,7 +31,7 @@ import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
@@ -158,7 +158,7 @@ public class TestGECCOContinuity {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 
 		// remove default BasicJobStatCollector
-		Subscriber[] l = e.getShopListener();
+		NotifierListener[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -183,13 +183,13 @@ public class TestGECCOContinuity {
 		DynamicShopExperiment e = new DynamicShopExperiment();
 
 		// remove default BasicJobStatCollector
-		Subscriber[] l = e.getShopListener();
+		NotifierListener[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
 		e.addShopListener(new ExtendedJobStatCollector());
 		e.addShopListener(new TraceFileProducer("traceNew.txt"));
-		
+
 		e.addListener(new ConsolePrinter(ExpMsgCategory.ALL));
 
 		GECCO2010_genSeed_2reps pr = new GECCO2010_genSeed_2reps();

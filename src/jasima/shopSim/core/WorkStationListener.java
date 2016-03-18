@@ -20,6 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_ACTIVATED;
+import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_DEACTIVATED;
+import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_JOB_ARRIVAL;
+import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_JOB_COMPLETED;
+import static jasima.shopSim.core.WorkStation.WorkStationEvent.WS_JOB_SELECTED;
+
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
 
@@ -30,20 +36,20 @@ import jasima.core.simulation.SimComponentLifeCycleListener;
  * 
  * @author Torsten Hildebrandt
  */
-public interface WorkStationListenerBase extends SimComponentLifeCycleListener {
+public interface WorkStationListener extends SimComponentLifeCycleListener {
 
 	default void inform(SimComponent o, Object event) {
 		WorkStation m = (WorkStation) o;
 
-		if (event == WorkStation.WS_JOB_ARRIVAL) {
+		if (event == WS_JOB_ARRIVAL) {
 			arrival(m, m.justArrived);
-		} else if (event == WorkStation.WS_JOB_SELECTED) {
+		} else if (event == WS_JOB_SELECTED) {
 			operationStarted(m, m.justStarted, m.oldSetupState, m.newSetupState, m.setupTime);
-		} else if (event == WorkStation.WS_JOB_COMPLETED) {
+		} else if (event == WS_JOB_COMPLETED) {
 			operationCompleted(m, m.justCompleted);
-		} else if (event == WorkStation.WS_ACTIVATED) {
+		} else if (event == WS_ACTIVATED) {
 			activated(m, m.currMachine);
-		} else if (event == WorkStation.WS_DEACTIVATED) {
+		} else if (event == WS_DEACTIVATED) {
 			deactivated(m, m.currMachine);
 		} else {
 			SimComponentLifeCycleListener.super.inform(o, event);

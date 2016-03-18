@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import jasima.core.util.ArgListTokenizer.ParseException;
-import jasima.core.util.ArgListTokenizer.TokenType;
-
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import jasima.core.util.ArgListTokenizer.ParseException;
+import jasima.core.util.ArgListTokenizer.TokenType;
 
 public class ArgListParser {
 
@@ -110,8 +110,7 @@ public class ArgListParser {
 			while (true) {
 				// name
 				token = tk.nextTokenNoWhitespace();
-				assureTokenTypes(token, TokenType.STRING,
-						TokenType.PARENS_CLOSE);
+				assureTokenTypes(token, TokenType.STRING, TokenType.PARENS_CLOSE);
 				if (token == TokenType.PARENS_CLOSE)
 					break; // end of parameter list
 				String paramName = tk.currTokenText();
@@ -120,8 +119,7 @@ public class ArgListParser {
 				assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.EQUALS);
 
 				// value: create sub-parser
-				ParseTree paramValue = new ArgListParser(tk)
-						.parseClassAndPropDef();
+				ParseTree paramValue = new ArgListParser(tk).parseClassAndPropDef();
 				assert paramValue != null;
 
 				// save parsed parameter
@@ -129,8 +127,7 @@ public class ArgListParser {
 
 				// more parameters?
 				token = tk.nextTokenNoWhitespace();
-				assureTokenTypes(token, TokenType.SEMICOLON,
-						TokenType.PARENS_CLOSE);
+				assureTokenTypes(token, TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
 				if (token == TokenType.SEMICOLON) {
 					// nothing special, start next iteration
 				} else if (token == TokenType.PARENS_CLOSE) {
@@ -154,8 +151,7 @@ public class ArgListParser {
 		String msg = "expected one of: %s, but found: %s, '%s'";
 		if (expected.length == 1)
 			msg = "expected %s, but found: %s, '%s'";
-		throw new ParseException(tk.currTokenStart(), msg,
-				Arrays.deepToString(expected), actual, tk.currTokenText());
+		throw new ParseException(tk.currTokenStart(), msg, Arrays.deepToString(expected), actual, tk.currTokenText());
 	}
 
 	// ************* static methods below ******************************
@@ -169,17 +165,14 @@ public class ArgListParser {
 	 *            The input string to parse.
 	 * @return The
 	 */
-	public static ParseTree parseClassAndPropDef(String input)
-			throws ParseException {
+	public static ParseTree parseClassAndPropDef(String input) throws ParseException {
 		ArgListTokenizer tk = new ArgListTokenizer(input);
 		ParseTree res = new ArgListParser(tk).parseClassAndPropDef();
 
 		// full input read?
 		if (tk.nextToken() != null) {
-			throw new ParseException(tk.currTokenStart(), String.format(
-					Util.DEF_LOCALE,
-					"There is data after the last token: '%s'.",
-					input.substring(tk.currTokenStart())));
+			throw new ParseException(tk.currTokenStart(), String.format(Util.DEF_LOCALE,
+					"There is data after the last token: '%s'.", input.substring(tk.currTokenStart())));
 		}
 
 		return res;

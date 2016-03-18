@@ -29,8 +29,7 @@ import jasima.shopSim.core.PrioRuleTarget;
  * (1989): "A Survey of Priority Rule-Based Scheduling".
  * 
  * @author Torsten Hildebrandt, 2013-08-10
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class SRPTPerSLK extends PR {
 

@@ -33,7 +33,7 @@ import jasima.core.simulation.SimComponentContainerBase;
 import jasima.core.simulation.Simulation.SimPrintEvent.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
-import jasima.core.util.observer.Subscriber;
+import jasima.core.util.observer.NotifierListener;
 
 /**
  * Implements a shop simulation. Despite its name the scenario not necessarily
@@ -41,7 +41,28 @@ import jasima.core.util.observer.Subscriber;
  * 
  * @author Torsten Hildebrandt
  */
-public class JobShop extends SimComponentContainerBase<SimComponent> implements ValueStore {
+public class Shop extends SimComponentContainerBase<SimComponent> implements ValueStore {
+
+	public static class ShopEvent {
+
+		private final String name;
+
+		public ShopEvent(String name) {
+			super();
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		// constants for default events thrown by a shop (in addition to
+		// simulation events)
+		public static final ShopEvent JOB_RELEASED = new ShopEvent("JOB_RELEASED");
+		public static final ShopEvent JOB_FINISHED = new ShopEvent("JOB_FINISHED");
+
+	}
 
 	// parameters
 	private int maxJobsInSystem = 0;
@@ -59,7 +80,7 @@ public class JobShop extends SimComponentContainerBase<SimComponent> implements 
 	public Job lastJobReleased;
 	public Job lastJobFinished;
 
-	public JobShop() {
+	public Shop() {
 		super();
 
 		sources = new SimComponentContainerBase<>();
@@ -86,7 +107,7 @@ public class JobShop extends SimComponentContainerBase<SimComponent> implements 
 		j.jobFinished();
 
 		lastJobFinished = j;
-		fire(JobShopEvent.JOB_FINISHED);
+		fire(ShopEvent.JOB_FINISHED);
 	}
 
 	public void startJob(Job nextJob) {
@@ -100,7 +121,7 @@ public class JobShop extends SimComponentContainerBase<SimComponent> implements 
 		nextJob.jobReleased();
 
 		lastJobReleased = nextJob;
-		fire(JobShopEvent.JOB_RELEASED);
+		fire(ShopEvent.JOB_RELEASED);
 
 		WorkStation mach = nextJob.getCurrentOperation().getMachine();
 		mach.enqueueOrProcess(nextJob);
@@ -124,9 +145,9 @@ public class JobShop extends SimComponentContainerBase<SimComponent> implements 
 	 *            whether to try to clone a new instance for each machine using
 	 *            {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
-	public void installMachineListener(Subscriber<SimComponent, Object> listener, boolean cloneIfPossible) {
+	public void installMachineListener(NotifierListener<SimComponent, Object> listener, boolean cloneIfPossible) {
 		for (WorkStation m : machines.getComponents()) {
-			Subscriber<SimComponent, Object> ml = listener;
+			NotifierListener<SimComponent, Object> ml = listener;
 			if (cloneIfPossible)
 				ml = TypeUtil.cloneIfPossible(ml);
 
@@ -431,8 +452,8 @@ public class JobShop extends SimComponentContainerBase<SimComponent> implements 
 	}
 
 	@Override
-	public JobShop clone() throws CloneNotSupportedException {
-		JobShop s = (JobShop) super.clone();
+	public Shop clone() throws CloneNotSupportedException {
+		Shop s = (Shop) super.clone();
 
 		if (valueStore != null) {
 			@SuppressWarnings("unchecked")

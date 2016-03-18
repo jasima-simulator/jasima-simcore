@@ -20,16 +20,15 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Pair;
-
 import java.util.Random;
+
+import jasima.core.util.Pair;
 
 /**
  * Returns a uniformly distributed real number in the range [min, max).
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  */
 public class DblUniformRange extends DblStream {
 

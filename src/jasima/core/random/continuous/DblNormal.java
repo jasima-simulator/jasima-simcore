@@ -20,20 +20,19 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Pair;
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Pair;
+import jasima.core.util.Util;
+
 /**
- * Creates a number stream with values following a <a
- * href="http://en.wikipedia.org/wiki/Normal_distribution">Normal
+ * Creates a number stream with values following a
+ * <a href="http://en.wikipedia.org/wiki/Normal_distribution">Normal
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version 
- *          "$Id$"
+ * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Normal_distribution">Normal
  *      distribution (Wikipedia)</a>
@@ -68,8 +67,7 @@ public class DblNormal extends DblStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblNormal(mean=%f;stdev=%f)",
-				getMean(), getStdev());
+		return String.format(Util.DEF_LOCALE, "DblNormal(mean=%f;stdev=%f)", getMean(), getStdev());
 	}
 
 	public double getMean() {

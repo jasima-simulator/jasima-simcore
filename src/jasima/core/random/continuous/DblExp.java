@@ -20,14 +20,14 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
-import jasima.core.util.Util;
-
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
+import jasima.core.util.Util;
+
 /**
- * A class implementing a number stream with values following the <a
- * href="http://en.wikipedia.org/wiki/Exponential_distribution">Exponential
+ * A class implementing a number stream with values following the
+ * <a href="http://en.wikipedia.org/wiki/Exponential_distribution">Exponential
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt

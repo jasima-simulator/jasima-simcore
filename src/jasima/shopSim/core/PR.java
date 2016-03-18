@@ -20,16 +20,15 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.shopSim.prioRules.meta.LookaheadThreshold;
-
 import java.io.Serializable;
+
+import jasima.shopSim.prioRules.meta.LookaheadThreshold;
 
 /**
  * Abstract base class for a priority rule to be used to sequence items in a
  * {@code PriorityQueue}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * @see PriorityQueue
  */
 public abstract class PR implements Cloneable, Serializable {
@@ -52,7 +51,7 @@ public abstract class PR implements Cloneable, Serializable {
 	 * initializations required.
 	 */
 	public void init() {
-		if (getTieBreaker()!=null)
+		if (getTieBreaker() != null)
 			getTieBreaker().init();
 	}
 
