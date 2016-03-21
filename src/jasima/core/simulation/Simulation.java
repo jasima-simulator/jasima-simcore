@@ -31,12 +31,16 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 import jasima.core.random.RandomFactory;
+import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.TraceFileProducer;
 import jasima.core.util.Util;
 
 /**
  * Base class for a discrete event simulation. This class doesn't do much, but
- * only maintains an event queue and manages simulation time.
+ * only maintains an event queue and manages simulation time. Additionally it
+ * offers a centralized place to initialize random number streams and to create
+ * status and debug messages.
  * <p>
  * The typical life cycle of a simulation would be to create it, and
  * subsequently set any parameters. Afterwards {@link #init()} has to be called
@@ -51,39 +55,70 @@ public class Simulation {
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
 
-	public static class SimPrintEvent {
+	/**
+	 * {@link SimPrintMessage}s are produced whenever {@code print()} or
+	 * {@code trace()} is called during a simulation to produce status/debug
+	 * messages. They are passed to print listeners registered with a simulation
+	 * for further processing.
+	 * 
+	 * @see ConsolePrinter
+	 * @see TraceFileProducer
+	 */
+	public static class SimPrintMessage {
 
-		public final Simulation sim;
-		public final MsgCategory category;
-		private String messageFormatString;
-		private Object[] params;
+		private static final Object[] EMPTY = new Object[0];
+
+		private final Simulation sim;
+		private final MsgCategory category;
+		private final double simTime;
+		private final Object[] params;
 		private String message;
 
-		public SimPrintEvent(Simulation sim, MsgCategory category, String message) {
-			super();
-
+		public SimPrintMessage(Simulation sim, MsgCategory category, String message) {
+			this(sim, category, message, EMPTY);
 			Objects.requireNonNull(message);
-
-			this.sim = sim;
-			this.category = category;
-			this.message = message;
 		}
 
-		public SimPrintEvent(Simulation sim, MsgCategory category, String messageFormatString, Object... params) {
+		public SimPrintMessage(Simulation sim, MsgCategory category, Object... params) {
+			this(sim, category, null, params);
+			Objects.requireNonNull(params);
+		}
+
+		protected SimPrintMessage(Simulation sim, MsgCategory category, String msg, Object... params) {
 			super();
 			this.sim = sim;
+			this.simTime = sim.simTime();
 			this.category = category;
-			this.messageFormatString = messageFormatString;
 			this.params = params;
-			this.message = null;
+
+			this.message = msg;
+		}
+
+		public Simulation getSim() {
+			return sim;
+		}
+
+		public MsgCategory getCategory() {
+			return category;
+		}
+
+		public double getSimTime() {
+			return simTime;
+		}
+
+		public Object[] getParams() {
+			return params;
 		}
 
 		public String getMessage() {
 			// lazy creation of message only when needed
 			if (message == null) {
-				message = String.format(Util.DEF_LOCALE, messageFormatString, params);
-				messageFormatString = null;
-				params = null;
+				StringBuilder sb = new StringBuilder();
+				sb.append(getSimTime());
+				for (Object o : getParams()) {
+					sb.append('\t').append(String.valueOf(o));
+				}
+				message = sb.toString();
 			}
 
 			return message;
@@ -95,6 +130,7 @@ public class Simulation {
 		}
 	}
 
+	/** Public interface of event queue implementations. */
 	public static interface EventQueue {
 		/** Insert an event in the queue. */
 		public void insert(Event e);
@@ -103,6 +139,10 @@ public class Simulation {
 		public Event extract();
 	}
 
+	/**
+	 * Functional interface for methods to be called asynchronously at some
+	 * point in simulation time.
+	 */
 	@FunctionalInterface
 	public interface SimMethod {
 		void handle();
@@ -111,11 +151,12 @@ public class Simulation {
 	// /////////// simulation parameters
 
 	private double simulationLength = 0.0d;
+	private double initialSimTime = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
 	private SimComponentContainer<SimComponent> rootComponent;
 	private MsgCategory printLevel = MsgCategory.INFO;
-	private ArrayList<Consumer<SimPrintEvent>> printListener;
+	private ArrayList<Consumer<SimPrintMessage>> printListener;
 
 	// ////////////// attributes/fields used during a simulation
 
@@ -146,23 +187,23 @@ public class Simulation {
 			public void beforeRun() {
 				super.beforeRun();
 
-				trace("%s\tsim_start", simTime());
+				trace("sim_start");
 			}
 
 			@Override
 			public void afterRun() {
 				super.afterRun();
 
-				trace("%s\tsim_end", simTime());
+				trace("sim_end");
 			}
 		});
 	}
 
-	public void addPrintListener(Consumer<SimPrintEvent> listener) {
+	public void addPrintListener(Consumer<SimPrintMessage> listener) {
 		printListener.add(listener);
 	}
 
-	public boolean removePrintListener(Consumer<SimPrintEvent> listener) {
+	public boolean removePrintListener(Consumer<SimPrintMessage> listener) {
 		return printListener.remove(listener);
 	}
 
@@ -170,7 +211,7 @@ public class Simulation {
 		return printListener.size();
 	}
 
-	public List<Consumer<SimPrintEvent>> printListener() {
+	public List<Consumer<SimPrintMessage>> printListener() {
 		return Collections.unmodifiableList(printListener);
 	}
 
@@ -192,7 +233,7 @@ public class Simulation {
 			public void handle() {
 			}
 		};
-		simTime = 0.0d; // TODO: check initialization with some parameter for t0
+		simTime = getInitialSimTime();
 		currPrio = Event.EVENT_PRIO_MAX;
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
@@ -270,8 +311,8 @@ public class Simulation {
 	protected boolean handleError(Throwable t) {
 		String errorString = Util.exceptionToString(t);
 
-		print(MsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'", currentEvent(),
-				errorString);
+		printFmt(MsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'",
+				currentEvent(), errorString);
 
 		return true;
 	}
@@ -315,10 +356,10 @@ public class Simulation {
 	 */
 	public void schedule(Event event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio)
-			print(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
+			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
 					event.getPrio(), event.toString());
 		if (event.getTime() < simTime) {
-			print(MsgCategory.ERROR,
+			printFmt(MsgCategory.ERROR,
 					"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
 					event.getTime(), event.getPrio(), event.toString());
 			end();
@@ -462,7 +503,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Triggers a print event of category "INFO".
+	 * Triggers a print event for the given message of category "INFO".
 	 * 
 	 * @param message
 	 *            The message to print.
@@ -480,58 +521,99 @@ public class Simulation {
 	 *            The message to print.
 	 */
 	public void print(MsgCategory category, String message) {
-		if (numPrintListener() > 0) {
-			print(new SimPrintEvent(this, category, message));
+		if (numPrintListener() > 0 && category.ordinal() <= getPrintLevel().ordinal()) {
+			print(new SimPrintMessage(this, category, message));
 		}
 	}
 
 	/**
 	 * Triggers a print event of the given category. If an appropriate listener
-	 * is installed, this produces a message defined by the format string
-	 * {@code messageFormatString} (used with the arguments given in
-	 * {@code params}).
+	 * is installed, this should produce an output of {@code message}.
+	 * 
+	 * @param message
+	 *            The message to print.
 	 */
-	public void print(MsgCategory category, String messageFormatString, Object... params) {
-		if (numPrintListener() > 0) {
-			print(new SimPrintEvent(this, category, messageFormatString, params));
+	public void print(MsgCategory category, Object... params) {
+		if (numPrintListener() > 0 && category.ordinal() <= getPrintLevel().ordinal()) {
+			print(new SimPrintMessage(this, category, params));
 		}
 	}
 
 	/**
-	 * Same as {@link #print(MsgCategory, String, Object...)}, but defaulting to
-	 * category {@code INFO}
-	 */
-	public void print(String messageFormatString, Object... params) {
-		print(MsgCategory.INFO, messageFormatString, params);
-	}
-
-	/**
-	 * Prints a certain {@link SimPrintEvent} by passing it to the registered
+	 * Prints a certain {@link SimPrintMessage} by passing it to the registered
 	 * print listeners.
 	 */
-	protected void print(SimPrintEvent e) {
+	protected void print(SimPrintMessage e) {
 		printListener.forEach(l -> l.accept(e));
 	}
 
+	/**
+	 * Produces a trace message (if there are any print listeners such as
+	 * {@link TraceFileProducer} are registered that do something with such
+	 * messages). A trace message consists of the simulation time and all
+	 * parameters converted to Strings (separated by tabs).
+	 * 
+	 * @param params
+	 *            The components of the trace message.
+	 */
+	public void trace(Object... params) {
+		print(MsgCategory.TRACE, params);
+	}
+
+	/**
+	 * @return Whether or not trace messages are to be produced.
+	 */
+	public boolean isTraceEnabled() {
+		return getPrintLevel().ordinal() >= MsgCategory.TRACE.ordinal();
+	}
+
+	/**
+	 * 
+	 * @return The current maximum print message category.
+	 */
 	public MsgCategory getPrintLevel() {
 		return printLevel;
 	}
 
+	/**
+	 * Sets the maximum print message category to be forwared to the print
+	 * listeners. If this is set to e.g. INFO, then only messages of the
+	 * categories ERROR, WARN and INFO are forwared to
+	 * 
+	 * @param printLevel
+	 */
 	public void setPrintLevel(MsgCategory printLevel) {
 		Objects.requireNonNull(printLevel);
 		this.printLevel = printLevel;
 	}
 
-	public void trace(String messageFormatString, Object... params) {
-		print(MsgCategory.TRACE, messageFormatString, params);
+	/**
+	 * Triggers a print event of the given category with the message produced by
+	 * a Java format String. If an appropriate listener is installed, this
+	 * produces a message defined by the format string
+	 * {@code messageFormatString} (used with the arguments given in
+	 * {@code params}).
+	 */
+	public void printFmt(MsgCategory category, String messageFormatString, Object... params) {
+		if (numPrintListener() > 0) {
+			// lazy message creation
+			Object msgProducer = new Object() {
+				@Override
+				public String toString() {
+					return String.format(Util.DEF_LOCALE, messageFormatString, params);
+				}
+			};
+
+			print(new SimPrintMessage(this, category, msgProducer));
+		}
 	}
 
-	public void trace(String message) {
-		print(MsgCategory.TRACE, message);
-	}
-
-	public boolean isTraceEnabled() {
-		return getPrintLevel().ordinal() >= MsgCategory.TRACE.ordinal();
+	/**
+	 * Same as {@link #printFmt(MsgCategory, String, Object...)}, but defaulting
+	 * to category {@code INFO}.
+	 */
+	public void printFmt(String messageFormatString, Object... params) {
+		printFmt(MsgCategory.INFO, messageFormatString, params);
 	}
 
 	/**
@@ -552,13 +634,21 @@ public class Simulation {
 
 	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
 	public void setSimulationLength(double simulationLength) {
+		if (!(simulationLength >= 0.0)) {
+			throw new IllegalArgumentException("" + simulationLength);
+		}
+
 		this.simulationLength = simulationLength;
 	}
 
+	/**
+	 * @return The maximum simulation time; a value of 0.0 means no such limit.
+	 */
 	public double getSimulationLength() {
 		return simulationLength;
 	}
 
+	/** @return The RandomFactory used to create random number streams. */
 	public RandomFactory getRndStreamFactory() {
 		return rndStreamFactory;
 	}
@@ -572,6 +662,7 @@ public class Simulation {
 		rndStreamFactory.setSim(this);
 	}
 
+	/** @return The name of this simulation. */
 	public String getName() {
 		return name;
 	}
@@ -583,10 +674,21 @@ public class Simulation {
 		this.name = name;
 	}
 
+	/**
+	 * @return The root component of all {@link SimComponent}s contained in the
+	 *         simulation.
+	 */
 	public SimComponentContainer<SimComponent> getRootComponent() {
 		return rootComponent;
 	}
 
+	/**
+	 * Sets the root component containing all permanent {@link SimComponent}s
+	 * contained in this simulation.
+	 * 
+	 * @param rootComponent
+	 *            The new root component.
+	 */
 	protected void setRootComponent(SimComponentContainer<SimComponent> rootComponent) {
 		if (this.rootComponent != null) {
 			this.rootComponent.setSim(null);
@@ -596,10 +698,18 @@ public class Simulation {
 		rootComponent.setSim(this);
 	}
 
+	public double getInitialSimTime() {
+		return initialSimTime;
+	}
+
+	/** Sets the initial value of the simulation clock. */
+	public void setInitialSimTime(double initialSimTime) {
+		this.initialSimTime = initialSimTime;
+	}
+
 	@Override
 	protected Simulation clone() throws CloneNotSupportedException {
-		Simulation sim = (Simulation) super.clone();
-		return sim;
+		throw new CloneNotSupportedException(); // not implemented yet
 	}
 
 }

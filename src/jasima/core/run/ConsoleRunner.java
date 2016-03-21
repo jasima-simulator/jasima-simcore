@@ -43,10 +43,8 @@ import joptsimple.OptionSet;
  * <p>
  * Furthermore this class is used indirectly by Experiments to configure and run
  * them.
- * </p>
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see Experiment#main(String[])
  */

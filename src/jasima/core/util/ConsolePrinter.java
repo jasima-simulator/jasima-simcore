@@ -141,7 +141,7 @@ public class ConsolePrinter implements ExperimentListener {
 		}
 	}
 
-	private String toString(Object o) {
+	private static String toString(Object o) {
 		String res;
 		if (o == null) {
 			res = "null";

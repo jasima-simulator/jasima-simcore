@@ -25,9 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import jasima.core.simulation.SimComponent;
-import jasima.core.simulation.Simulation.SimPrintEvent;
 import jasima.core.simulation.SimulationExperiment;
-import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.batchForming.BatchForming;
@@ -75,9 +73,6 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	protected void createShop() {
 		shop = doCreateShop();
 		sim.getRootComponent().addComponent(shop);
-
-		// forward simulation print events to experiment print events
-		sim.addPrintListener(this::print);
 	}
 
 	/**
@@ -149,14 +144,6 @@ public abstract class ShopExperiment extends SimulationExperiment {
 				}
 			}
 		}
-	}
-
-	protected void print(SimPrintEvent event) {
-		// translate category
-		MsgCategory cat = MsgCategory.values()[event.category.ordinal()];
-		assert cat.toString().equals(event.category.toString());
-
-		print(cat, "sim_message\t%s", event);
 	}
 
 	@Override

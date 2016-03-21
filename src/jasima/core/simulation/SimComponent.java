@@ -73,12 +73,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, SilentClon
 
 	// event tracing
 	
-	default void trace(String messageFormatString, Object... params) {
-		getSim().trace(messageFormatString, params);
-	}
-	
-	default void trace(String message) {
-		getSim().trace(message);
+	default void trace(Object... params) {
+		getSim().trace(params);
 	}
 	
 	default boolean isTraceEnabled() {

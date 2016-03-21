@@ -32,6 +32,7 @@ import jasima.core.simulation.SimComponentContainer;
 import jasima.core.simulation.SimComponentContainerBase;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
+import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.NotifierListener;
 
@@ -107,7 +108,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		j.jobFinished();
 
 		if (isTraceEnabled()) {
-			trace("%s\tleave_system\t%s", simTime(), j);
+			trace("leave_system", j);
 		}
 
 		lastJobFinished = j;
@@ -118,14 +119,15 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		nextJob.setJobNum(jobsStarted++);
 
 		if (getMaxJobsInSystem() > 0 && (jobsStarted - jobsFinished) >= getMaxJobsInSystem()) {
-			getSim().print(MsgCategory.WARN, "WIP reaches %d, aborting sim.", getMaxJobsInSystem());
+			getSim().print(MsgCategory.WARN,
+					String.format(Util.DEF_LOCALE, "WIP reaches %d, aborting sim.", getMaxJobsInSystem()));
 			getSim().end(); // abort simulation
 		}
 
 		nextJob.jobReleased();
 
 		if (isTraceEnabled()) {
-			trace("%s\tenter_system\t%s", simTime(), nextJob);
+			trace("enter_system", nextJob);
 		}
 
 		lastJobReleased = nextJob;

@@ -198,7 +198,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 			selectAndStart();
 
 		if (isTraceEnabled()) {
-			trace("%s\tbecomes_available\t%s\t%d\t%s", simTime(), currMachine, numJobsWaiting(),
+			trace("becomes_available", currMachine, numJobsWaiting(),
 					currMachine.downReason == null ? "" : currMachine.downReason);
 		}
 
@@ -215,7 +215,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 		assert numBusy >= 0 && numBusy <= numInGroup;
 
 		if (isTraceEnabled()) {
-			trace("%s\tunavailable\t", simTime(), currMachine, numJobsWaiting(),
+			trace("unavailable", currMachine, numJobsWaiting(),
 					currMachine.downReason == null ? "" : currMachine.downReason);
 		}
 
@@ -270,9 +270,8 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 		if (jobsPerBatchFamily != null)
 			addJobToBatchFamily(j);
 
-		if (!j.isFuture() && isTraceEnabled()) {
-			trace("%s\tarrives_at\t%s\t%s\t%s\t%d", simTime(), j, this, numBusy() == 0 ? "IDLE" : "PROCESSING",
-					numJobsWaiting() - 1);
+		if (isTraceEnabled() && !j.isFuture()) {
+			trace("arrives_at", j, this, numBusy() == 0 ? "IDLE" : "PROCESSING", numJobsWaiting() - 1);
 		}
 
 		if (numListener() > 0) {
@@ -381,7 +380,7 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 		if (isTraceEnabled()) {
 			for (int i = 0; i < b.numJobsInBatch(); i++)
-				trace("%s\tfinished_processing\t%s\t%s", simTime(), currMachine, b.job(i));
+				trace("finished_processing", currMachine, b.job(i));
 		}
 
 		if (numListener() > 0) {
@@ -434,14 +433,13 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 			if (isTraceEnabled()) {
 				if (nextBatch == null) {
 					// TODO nextBatch always null?
-					trace("%s\tkeeping_idle\t%s\t%s", simTime(), currMachine, nextBatch);
+					trace("keeping_idle", currMachine, nextBatch);
 				} else {
 					for (int i = 0; i < nextBatch.numJobsInBatch(); i++) {
-						trace("%s\tstart_processing\t%s\t%s\t\t%d", simTime(), currMachine, nextBatch.job(i),
-								numJobsWaiting());
+						trace("start_processing", currMachine, nextBatch.job(i), "", numJobsWaiting());
 					}
 					if (oldSetupState != newSetupState) {
-						trace("%s\tsetup\t%s\t%s\t%s\t%s", simTime(), currMachine, setupStateToString(oldSetupState),
+						trace("setup", currMachine, setupStateToString(oldSetupState),
 								setupStateToString(newSetupState), setupTime);
 					}
 				}

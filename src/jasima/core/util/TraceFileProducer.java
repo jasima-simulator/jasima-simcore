@@ -26,11 +26,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimPrintEvent;
+import jasima.core.simulation.Simulation.SimPrintMessage;
 
 /**
  * Produces a detailed log of all trace messages of a {@link Simulation} in a
@@ -60,27 +61,27 @@ public class TraceFileProducer implements SimComponentLifeCycleListener {
 		setFileName(fileName);
 	}
 
-	protected void print(SimPrintEvent msg) {
-		if (msg.category == MsgCategory.TRACE) {
+	@Override
+	public void init(SimComponent c) {
+		SimComponentLifeCycleListener.super.init(c);
+
+		install(c.getSim());
+	}
+
+	public void install(Simulation sim) {
+		createLogFile();
+
+		sim.addPrintListener(this::print);
+		sim.setPrintLevel(MsgCategory.TRACE);
+
+		// get notified when simulation finished
+		sim.getRootComponent().addListener(this);
+	}
+
+	protected void print(SimPrintMessage msg) {
+		if (msg.getCategory() == MsgCategory.TRACE) {
 			log.println(msg.getMessage());
 		}
-	}
-
-	@Override
-	public void init(SimComponent shop) {
-		SimComponentLifeCycleListener.super.init(shop);
-
-		createLogFile();
-		shop.getSim().addPrintListener(this::print);
-		shop.getSim().setPrintLevel(MsgCategory.TRACE);
-	}
-
-	@Override
-	public void done(SimComponent c) {
-		SimComponentLifeCycleListener.super.done(c);
-
-		log.close();
-		log = null;
 	}
 
 	private void createLogFile() {
@@ -95,6 +96,16 @@ public class TraceFileProducer implements SimComponentLifeCycleListener {
 			log = new PrintWriter(new BufferedWriter(new FileWriter(name)), true);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void produceResults(SimComponent c, Map<String, Object> resultMap) {
+		SimComponentLifeCycleListener.super.produceResults(c, resultMap);
+
+		if (log != null) {
+			log.close();
+			log = null;
 		}
 	}
 

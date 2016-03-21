@@ -37,11 +37,13 @@ import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListener;
+import jasima.core.simulation.SimulationExperiment;
 import jasima.core.util.AbstractResultSaver;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.Pair;
+import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.XmlSaver;
@@ -81,6 +83,9 @@ public abstract class AbstractExperimentRunner {
 		p.acceptsAll(asList("l", "log"),
 				String.format(Util.DEF_LOCALE, "Set log level to one of %s. Default: INFO.", logLevels))
 				.withRequiredArg().describedAs("level");
+
+		p.accepts("trace", "Produce a detailed event trace (only works for SimulationExperiments).").withOptionalArg()
+				.describedAs("filename");
 
 		p.accepts("xmlres", "Save results in XML format.").withOptionalArg().describedAs("filename");
 		p.accepts("xlsres", "Save results in Excel format.").withOptionalArg().describedAs("filename");
@@ -140,6 +145,27 @@ public abstract class AbstractExperimentRunner {
 			} else {
 				listeners.put(ConsolePrinter.class, new ConsolePrinter(cat));
 			}
+		}
+
+		if (opts.has("trace")) {
+			String traceFileName = (String) opts.valueOf("trace");
+			TraceFileProducer t;
+
+			if (traceFileName == null) {
+				t = new TraceFileProducer();
+			} else {
+				t = new TraceFileProducer(traceFileName);
+			}
+
+			listeners.put(TraceFileProducer.class, new ExperimentListener() {
+				@Override
+				public void beforeRun(Experiment e) {
+					ExperimentListener.super.beforeRun(e);
+
+					SimulationExperiment se = (SimulationExperiment) e;
+					t.install(se.sim());
+				}
+			});
 		}
 
 		if (opts.has("nores")) {
