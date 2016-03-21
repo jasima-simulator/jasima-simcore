@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import joptsimple.internal.Objects;
 
 /**
- * Implementation of a {@link Notifier} functionality. A NotifierAdapter handles
- * notifier functionality for some real Notifier.
+ * Example implementation of {@link Notifier} functionality. A
+ * {@code NotifierImpl} handles notifier functionality for some real
+ * {@code Notifier} (subject).
  * 
  * @author Torsten Hildebrandt
  */
-public class NotifierAdapter<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE>
-		implements Notifier<SUBJECT, MESSAGE> {
+public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> implements Notifier<SUBJECT, MESSAGE> {
 
 	private final SUBJECT subject;
 
@@ -20,12 +20,17 @@ public class NotifierAdapter<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE
 	private ArrayDeque<MESSAGE> msgs;
 	private int it;
 
-	public NotifierAdapter(SUBJECT subject) {
+	public NotifierImpl(SUBJECT subject) {
 		super();
 		this.subject = subject;
 		this.listener = new ArrayList<>();
 		this.msgs = null;
 		this.it = -1;
+	}
+
+	@Override
+	public Notifier<SUBJECT, MESSAGE> notifierImpl() {
+		return this;
 	}
 
 	@Override

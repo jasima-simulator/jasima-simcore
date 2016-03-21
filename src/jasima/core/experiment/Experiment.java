@@ -34,26 +34,23 @@ import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.SilentCloneable;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.observer.Notifier;
-import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.observer.NotifierImpl;
 
 /**
- * <p>
  * An Experiment is something that produces results depending on various
  * parameters. The usual lifecycle is to create an experiment, set parameters to
  * their proper values, execute the experiment by calling it's
  * {@code runExperiment()} method. After execution a set of results are
  * available using the {@code getResults()} method.
- * </p>
  * <p>
  * Experiments are not supposed to be executed more than once, e.g., to run
  * multiple replications of an experiment (see
  * {@link MultipleReplicationExperiment}) you have to create multiple instances.
  * Therefore experiments should be cloneable.
- * </p>
  * <p>
  * This class is intended as the base class for Experiments doing something
  * useful. Besides a name this class only has a single parameter "initialSeed"
@@ -63,22 +60,20 @@ import jasima.core.util.observer.NotifierListener;
  * having the same {@code initialSeed} and all other experiment parameters being
  * the same should behave deterministically and produce exactly the same
  * results.
- * </p>
  * <p>
  * The only results produced by this class are "runTime" (type Double; measuring
  * the real time required to execute an experiment) and "expAborted" (type
  * Integer, a value &gt;0 indicates some problems causing early termination).
- * </p>
  * <p>
  * Experiments can have listeners registered (derived from
  * {@link ExperimentListener}), which are informed of various events such as an
  * experiment's start and completion and can be used by subclasses to provide
  * additional events.
- * </p>
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class Experiment implements Notifier<Experiment, ExperimentMessage>, Cloneable, Serializable {
+public abstract class Experiment
+		implements Notifier<Experiment, ExperimentMessage>, SilentCloneable<Experiment>, Serializable {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -187,8 +182,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	private int nestingLevel = 0;
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
-
-	private NotifierAdapter<Experiment, ExperimentMessage> adapter;
+	private NotifierImpl<Experiment, ExperimentMessage> notifierAdapter;
 
 	// fields used during run
 	private long runTimeReal;
@@ -209,7 +203,7 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	public Experiment() {
 		super();
 
-		adapter = new NotifierAdapter<>(this);
+		notifierAdapter = new NotifierImpl<>(this);
 	}
 
 	/**
@@ -438,6 +432,13 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 		ConsolePrinter.printResults(this, getResults());
 	}
 
+	// event notification
+
+	@Override
+	public Notifier<Experiment, ExperimentMessage> notifierImpl() {
+		return notifierAdapter;
+	}
+
 	public String toString() {
 		return getName() == null ? super.toString() : getName();
 	}
@@ -446,54 +447,12 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentMessa
 	public Experiment clone() throws CloneNotSupportedException {
 		Experiment c = (Experiment) super.clone();
 
-		c.adapter = new NotifierAdapter<>(c);
+		c.notifierAdapter = new NotifierImpl<>(c);
 		for (int i = 0; i < numListener(); i++) {
 			c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
 		}
 
 		return c;
-	}
-
-	/**
-	 * This is the same as {@code clone()}, just without throwing the checked
-	 * exception {@code CloneNotSupportedException}. If such an exception
-	 * occurs, it is wrapped in a {@code RuntimeException}.
-	 * 
-	 * @return A clone of this experiment.
-	 */
-	public Experiment silentClone() {
-		try {
-			return clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	// event notification
-
-	@Override
-	public int numListener() {
-		return adapter.numListener();
-	}
-
-	@Override
-	public void addListener(NotifierListener<Experiment, ExperimentMessage> l) {
-		adapter.addListener(l);
-	}
-
-	@Override
-	public boolean removeListener(NotifierListener<Experiment, ExperimentMessage> l) {
-		return adapter.removeListener(l);
-	}
-
-	@Override
-	public NotifierListener<Experiment, ExperimentMessage> getListener(int idx) {
-		return adapter.getListener(idx);
-	}
-
-	@Override
-	public void fire(ExperimentMessage msg) {
-		adapter.fire(msg);
 	}
 
 	/**

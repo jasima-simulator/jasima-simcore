@@ -28,11 +28,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jasima.core.simulation.Event;
 import jasima.core.simulation.SimComponentBase;
-import jasima.core.util.ValueStore;
 import jasima.shopSim.core.IndividualMachine.MachineState;
 import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
@@ -46,7 +44,7 @@ import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
  * 
  * @author Torsten Hildebrandt
  */
-public class WorkStation extends SimComponentBase implements ValueStore {
+public class WorkStation extends SimComponentBase {
 
 	/** Base class for workstation messages. */
 	public static class WorkStationMessage {
@@ -102,8 +100,6 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 	public final PriorityQueue<Job> queue;
 
-	private HashMap<Object, Object> valueStore;
-
 	protected Shop shop;
 	protected int index; // in shop.machines
 
@@ -137,7 +133,6 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 	public WorkStation(int numInGroup) {
 		super();
-		this.valueStore = null;
 		this.numInGroup = numInGroup;
 
 		numBusy = 0;
@@ -729,74 +724,6 @@ public class WorkStation extends SimComponentBase implements ValueStore {
 
 	public PR getBatchSequencingRule() {
 		return batchSequencingRule;
-	}
-
-	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(Object)
-	 */
-	@Override
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	@Override
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
-	 * Returns the number of keys in the value store.
-	 */
-	@Override
-	public int valueStoreGetNumKeys() {
-		return (valueStore == null) ? 0 : valueStore.size();
-	}
-
-	/**
-	 * Returns a list of all keys contained in the value store.
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Object> valueStoreGetAllKeys() {
-		if (valueStore == null)
-			return Collections.EMPTY_SET;
-		else
-			return valueStore.keySet();
-	}
-
-	/**
-	 * Removes an entry from the value store.
-	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
-	 */
-	@Override
-	public Object valueStoreRemove(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.remove(key);
 	}
 
 	@Override

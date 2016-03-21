@@ -1,17 +1,23 @@
 package jasima.core.simulation;
 
 import jasima.core.util.TypeUtil;
-import jasima.core.util.observer.NotifierAdapter;
+import jasima.core.util.ValueStore;
+import jasima.core.util.ValueStoreImpl;
+import jasima.core.util.observer.NotifierImpl;
 
 public class SimComponentBase implements SimComponent {
 
 	private Simulation sim;
 	private SimComponentContainer<?> parent;
-	private NotifierAdapter<SimComponent, Object> adapter;
+	// delegate Notifier functionality
+	private NotifierImpl<SimComponent, Object> notifierAdapter;
+	// delegate ValueStore functionality
+	private ValueStoreImpl valueStore;
 
 	public SimComponentBase() {
 		super();
-		adapter = new NotifierAdapter<>(this);
+		notifierAdapter = new NotifierImpl<>(this);
+		valueStore = new ValueStoreImpl();
 	}
 
 	@Override
@@ -46,16 +52,30 @@ public class SimComponentBase implements SimComponent {
 		this.parent = parent;
 	}
 
+	// ValueStore implementation
+
 	@Override
-	public NotifierAdapter<SimComponent, Object> adapter() {
-		return adapter;
+	public ValueStore valueStoreImpl() {
+		return valueStore;
 	}
+
+	// event notification
+
+	@Override
+	public NotifierImpl<SimComponent, Object> notifierImpl() {
+		return notifierAdapter;
+	}
+
+	// cloning
 
 	@Override
 	public SimComponentBase clone() throws CloneNotSupportedException {
 		SimComponentBase c = (SimComponentBase) super.clone();
 
-		c.adapter = new NotifierAdapter<>(c);
+		// clone value store copying (but not cloning!) all of its entries
+		c.valueStore = valueStore.clone();
+
+		c.notifierAdapter = new NotifierImpl<>(c);
 		for (int i = 0; i < numListener(); i++) {
 			c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
 		}

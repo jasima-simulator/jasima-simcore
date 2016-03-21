@@ -20,16 +20,12 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
-
 import jasima.core.util.SilentCloneable;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
+import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.observer.Notifier;
-import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.NotifierListener;
+import jasima.core.util.observer.NotifierImpl;
 
 /**
  * Main work unit in a shop.
@@ -42,16 +38,16 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	/** Base class for job messages. */
 	public static class JobMessage {
 
-		private final String name;
+		private final String msgName;
 
 		public JobMessage(String name) {
 			super();
-			this.name = name;
+			this.msgName = name;
 		}
 
 		@Override
 		public String toString() {
-			return name;
+			return msgName;
 		}
 
 		// constants for events thrown by a job
@@ -65,6 +61,10 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	}
 
 	private final Shop shop;
+	// delegate Notifier functionality
+	private NotifierImpl<Job, Object> notifierAdapter;
+	// delegate ValueStore functionality
+	private ValueStoreImpl valueStore;
 
 	private double arriveTime; // arrival time at current machine
 	private WorkStation currMachine;
@@ -92,7 +92,8 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 
 		this.shop = shop;
 
-		adapter = new NotifierAdapter<Job, Object>(this);
+		notifierAdapter = new NotifierImpl<Job, Object>(this);
+		valueStore = new ValueStoreImpl();
 	}
 
 	public void setArriveTime(double fl) {
@@ -443,74 +444,9 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	//
 	//
 
-	private HashMap<Object, Object> valueStore;
-
-	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(Object)
-	 */
 	@Override
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	@Override
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
-	 * Returns the number of keys in this job's value store.
-	 */
-	@Override
-	public int valueStoreGetNumKeys() {
-		return (valueStore == null) ? 0 : valueStore.size();
-	}
-
-	/**
-	 * Returns a list of all keys contained in this job's value store.
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Object> valueStoreGetAllKeys() {
-		if (valueStore == null)
-			return Collections.EMPTY_SET;
-		else
-			return valueStore.keySet();
-	}
-
-	/**
-	 * Removes an entry from this job's value store.
-	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
-	 */
-	@Override
-	public Object valueStoreRemove(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.remove(key);
+	public ValueStore valueStoreImpl() {
+		return valueStore;
 	}
 
 	//
@@ -519,48 +455,23 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	//
 	//
 
-	private NotifierAdapter<Job, Object> adapter;
-
 	@Override
-	public int numListener() {
-		return adapter.numListener();
-	}
-
-	@Override
-	public void addListener(NotifierListener<Job, Object> l) {
-		adapter.addListener(l);
-	}
-
-	@Override
-	public boolean removeListener(NotifierListener<Job, Object> l) {
-		return adapter.removeListener(l);
-	}
-
-	@Override
-	public NotifierListener<Job, Object> getListener(int idx) {
-		return getListener(idx);
-	}
-
-	@Override
-	public void fire(Object msg) {
-		adapter.fire(msg);
+	public Notifier<Job, Object> notifierImpl() {
+		return notifierAdapter;
 	}
 
 	// cloning
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Job clone() throws CloneNotSupportedException {
 		Job j = (Job) super.clone();
 		j.future = null;
 
 		// clone value store copying (but not cloning!) all of its entries
-		if (valueStore != null) {
-			j.valueStore = (HashMap<Object, Object>) valueStore.clone();
-		}
+		j.valueStore = valueStore.clone();
 
 		// clone listeners
-		j.adapter = new NotifierAdapter<>(j);
+		j.notifierAdapter = new NotifierImpl<>(j);
 		for (int i = 0; i < numListener(); i++) {
 			j.addListener(TypeUtil.cloneIfPossible(getListener(i)));
 		}

@@ -20,27 +20,21 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
-
 import jasima.core.simulation.Event;
 import jasima.core.simulation.SimComponentBase;
-import jasima.core.util.ValueStore;
 
 /**
  * A job source is an abstract base class for classes producing {@link Job}s.
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class JobSource extends SimComponentBase implements ValueStore {
+public abstract class JobSource extends SimComponentBase {
 
 	// bigger than WorkStation.DEPART_PRIO but smaller than
 	// WorkStation.SELECT_PRIO
 	public static final int ARRIVE_PRIO = Event.EVENT_PRIO_HIGH;
 
 	private Shop shop;
-	private HashMap<Object, Object> valueStore;
 
 	public boolean stopArrivals;
 	public int jobsStarted;
@@ -113,85 +107,9 @@ public abstract class JobSource extends SimComponentBase implements ValueStore {
 		this.shop = shop;
 	}
 
-	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(Object)
-	 */
-	@Override
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	@Override
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
-	 * Returns the number of keys in the value store.
-	 */
-	@Override
-	public int valueStoreGetNumKeys() {
-		return (valueStore == null) ? 0 : valueStore.size();
-	}
-
-	/**
-	 * Returns a list of all keys contained in the value store.
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Object> valueStoreGetAllKeys() {
-		if (valueStore == null)
-			return Collections.EMPTY_SET;
-		else
-			return valueStore.keySet();
-	}
-
-	/**
-	 * Removes an entry from the value store.
-	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
-	 */
-	@Override
-	public Object valueStoreRemove(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.remove(key);
-	}
-
 	@Override
 	public JobSource clone() throws CloneNotSupportedException {
 		JobSource s = (JobSource) super.clone();
-
-		if (valueStore != null) {
-			@SuppressWarnings("unchecked")
-			HashMap<Object, Object> clone = (HashMap<Object, Object>) valueStore.clone();
-
-			s.valueStore = clone;
-		}
-
 		return s;
 	}
 

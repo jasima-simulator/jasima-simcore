@@ -69,6 +69,9 @@ public class TraceFileProducer implements SimComponentLifeCycleListener {
 	}
 
 	public void install(Simulation sim) {
+		if (log != null)
+			return; // already registered
+
 		createLogFile();
 
 		sim.addPrintListener(this::print);

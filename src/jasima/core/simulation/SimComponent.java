@@ -3,11 +3,10 @@ package jasima.core.simulation;
 import java.util.Map;
 
 import jasima.core.util.SilentCloneable;
+import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
-import jasima.core.util.observer.NotifierAdapter;
-import jasima.core.util.observer.NotifierListener;
 
-public interface SimComponent extends Notifier<SimComponent, Object>, SilentCloneable<SimComponent> {
+public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore, SilentCloneable<SimComponent> {
 
 	public static class SimComponentLifeCycleMessage {
 
@@ -72,44 +71,24 @@ public interface SimComponent extends Notifier<SimComponent, Object>, SilentClon
 	}
 
 	// event tracing
-	
+
 	default void trace(Object... params) {
 		getSim().trace(params);
 	}
-	
+
 	default boolean isTraceEnabled() {
 		return getSim().isTraceEnabled();
 	}
-	
-	
-	// event notification
 
-	NotifierAdapter<SimComponent, Object> adapter();
+	// event notification, delegate to adapter
 
 	@Override
-	default int numListener() {
-		return adapter().numListener();
-	}
+	Notifier<SimComponent, Object> notifierImpl();
+
+	// ValueStore, delegate implementation
 
 	@Override
-	default void addListener(NotifierListener<SimComponent, Object> l) {
-		adapter().addListener(l);
-	}
-
-	@Override
-	default boolean removeListener(NotifierListener<SimComponent, Object> l) {
-		return adapter().removeListener(l);
-	}
-
-	@Override
-	default NotifierListener<SimComponent, Object> getListener(int idx) {
-		return adapter().getListener(idx);
-	}
-
-	@Override
-	default void fire(Object msg) {
-		adapter().fire(msg);
-	}
+	ValueStore valueStoreImpl();
 
 	// cloning
 

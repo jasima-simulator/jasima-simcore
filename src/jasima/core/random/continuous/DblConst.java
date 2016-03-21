@@ -32,7 +32,6 @@ import jasima.core.util.Util;
  * {@code randomizeOrder} was set to true.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class DblConst extends DblStream {
 
@@ -57,6 +56,7 @@ public class DblConst extends DblStream {
 	@Override
 	public void init() {
 		super.init();
+		
 		valuesRnd = isRandomizeOrder() ? values.clone() : values;
 		nextIteration();
 	}

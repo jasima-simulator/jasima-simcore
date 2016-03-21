@@ -28,7 +28,6 @@ import java.util.Set;
  * associated with a key object, similar to a @link {@link HashMap}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public interface ValueStore {
 
@@ -42,7 +41,9 @@ public interface ValueStore {
 	 *            value to assign to {@code key}.
 	 * @see #valueStoreGet(Object)
 	 */
-	public void valueStorePut(Object key, Object value);
+	default void valueStorePut(Object key, Object value) {
+		valueStoreImpl().valueStorePut(key, value);
+	}
 
 	/**
 	 * Retrieves a value from the value store.
@@ -53,17 +54,23 @@ public interface ValueStore {
 	 * 
 	 * @see #valueStorePut(Object, Object)
 	 */
-	public Object valueStoreGet(Object key);
+	default Object valueStoreGet(Object key) {
+		return valueStoreImpl().valueStoreGet(key);
+	}
 
 	/**
 	 * Returns the number of keys in this value store.
 	 */
-	public int valueStoreGetNumKeys();
+	default int valueStoreGetNumKeys() {
+		return valueStoreImpl().valueStoreGetNumKeys();
+	}
 
 	/**
 	 * Returns a list of all keys contained in this value store.
 	 */
-	public Set<Object> valueStoreGetAllKeys();
+	default Set<Object> valueStoreGetAllKeys() {
+		return valueStoreImpl().valueStoreGetAllKeys();
+	}
 
 	/**
 	 * Removes an entry from this value store.
@@ -71,6 +78,13 @@ public interface ValueStore {
 	 * @return The value previously associated with "key", or null, if no such
 	 *         key was found.
 	 */
-	public Object valueStoreRemove(Object key);
+	default Object valueStoreRemove(Object key) {
+		return valueStoreImpl().valueStoreRemove(key);
+	}
+
+	/**
+	 * Returns the implementation to use for adding ValueStore functionality.
+	 */
+	ValueStore valueStoreImpl();
 
 }

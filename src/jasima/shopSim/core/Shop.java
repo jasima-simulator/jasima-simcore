@@ -22,10 +22,7 @@ package jasima.shopSim.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentContainer;
@@ -33,7 +30,6 @@ import jasima.core.simulation.SimComponentContainerBase;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
-import jasima.core.util.ValueStore;
 import jasima.core.util.observer.NotifierListener;
 
 /**
@@ -42,7 +38,7 @@ import jasima.core.util.observer.NotifierListener;
  * 
  * @author Torsten Hildebrandt
  */
-public class Shop extends SimComponentContainerBase<SimComponent> implements ValueStore {
+public class Shop extends SimComponentContainerBase<SimComponent> {
 
 	public static class ShopMessage {
 
@@ -385,92 +381,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> implements Val
 		}
 	}
 
-	//
-	//
-	// ValueStore implementation
-	//
-	//
-
-	private HashMap<Object, Object> valueStore;
-
-	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(Object)
-	 */
-	@Override
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	@Override
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
-	 * Returns the number of keys in this job's value store.
-	 */
-	@Override
-	public int valueStoreGetNumKeys() {
-		return (valueStore == null) ? 0 : valueStore.size();
-	}
-
-	/**
-	 * Returns a list of all keys contained in this job's value store.
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Object> valueStoreGetAllKeys() {
-		if (valueStore == null)
-			return Collections.EMPTY_SET;
-		else
-			return valueStore.keySet();
-	}
-
-	/**
-	 * Removes an entry from this job's value store.
-	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
-	 */
-	@Override
-	public Object valueStoreRemove(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.remove(key);
-	}
-
+	
 	@Override
 	public Shop clone() throws CloneNotSupportedException {
 		Shop s = (Shop) super.clone();
-
-		if (valueStore != null) {
-			@SuppressWarnings("unchecked")
-			HashMap<Object, Object> clone = (HashMap<Object, Object>) valueStore.clone();
-			s.valueStore = clone;
-		}
-
 		return s;
 	}
 

@@ -22,20 +22,14 @@ package jasima.shopSim.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
-import jasima.core.util.ValueStore;
 
 /**
  * Simple container for Operations.
  */
-public class Route implements ValueStore {
+public class Route {
 
 	private Operation[] operations;
-	private HashMap<Object, Object> valueStore;
 
 	public Route() {
 		super();
@@ -74,82 +68,11 @@ public class Route implements ValueStore {
 		operations = ops;
 	}
 
-	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
-	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
-	 * @see #valueStoreGet(Object)
-	 */
-	@Override
-	public void valueStorePut(Object key, Object value) {
-		if (valueStore == null)
-			valueStore = new HashMap<Object, Object>();
-		valueStore.put(key, value);
-	}
-
-	/**
-	 * Retrieves a value from the value store.
-	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
-	 * @return The value associated with {@code key}.
-	 * @see #valueStorePut(Object, Object)
-	 */
-	@Override
-	public Object valueStoreGet(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.get(key);
-	}
-
-	/**
-	 * Returns the number of keys in the value store.
-	 */
-	@Override
-	public int valueStoreGetNumKeys() {
-		return (valueStore == null) ? 0 : valueStore.size();
-	}
-
-	/**
-	 * Returns a list of all keys contained in the value store.
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Object> valueStoreGetAllKeys() {
-		if (valueStore == null)
-			return Collections.EMPTY_SET;
-		else
-			return valueStore.keySet();
-	}
-
-	/**
-	 * Removes an entry from the value store.
-	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
-	 */
-	@Override
-	public Object valueStoreRemove(Object key) {
-		if (valueStore == null)
-			return null;
-		else
-			return valueStore.remove(key);
-	}
-
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Route js = (Route) super.clone();
 		if (operations != null)
 			js.operations = operations.clone();
-		if (valueStore != null)
-			js.valueStore = (HashMap<Object, Object>) valueStore.clone();
 		return js;
 	}
 
