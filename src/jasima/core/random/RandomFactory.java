@@ -29,6 +29,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Simulation;
 import jasima.core.util.MersenneTwister;
 import jasima.core.util.MsgCategory;
+import joptsimple.internal.Objects;
 
 /**
  * This class provides functionality to create (independent) random number
@@ -48,11 +49,20 @@ import jasima.core.util.MsgCategory;
  * @author Torsten Hildebrandt
  */
 public class RandomFactory implements Serializable {
+
 	private static final long serialVersionUID = 4828925858942593527L;
 
 	public static final String RANDOM_FACTORY_PROP_KEY = RandomFactory.class.getName();
 	public static final String DEFAULT_FACTORY = RandomFactory.class.getName();
 
+	/**
+	 * Factory method to create a new instance of {@code RandomFactory}. The
+	 * default implementation is to return a new instance of
+	 * {@code RandomFactory}, but the class created can be customized with the
+	 * system property "jasima.core.random.RandomFactory".
+	 * 
+	 * @return A new {@code RandomFactory} instance.
+	 */
 	public static RandomFactory newInstance() {
 		String factName = System.getProperty(RANDOM_FACTORY_PROP_KEY, DEFAULT_FACTORY);
 
@@ -91,6 +101,16 @@ public class RandomFactory implements Serializable {
 		}
 	}
 
+	/**
+	 * Create a new random instance. The seed of this new instance (and hence
+	 * the stream of pseudo-random numbers) is determined by the given
+	 * {@code name} and the seed of the {@code RandomFactory}.
+	 * 
+	 * @param name
+	 *            A unique name of the Random instance (indirectly setting its
+	 *            seed).
+	 * @return The new {@link Random} instance.
+	 */
 	public Random createInstance(final String name) {
 		long seed = getSeed(name);
 		if (getSim() != null)
@@ -98,6 +118,16 @@ public class RandomFactory implements Serializable {
 		return createRandom(seed);
 	}
 
+	/**
+	 * Create a new {@link Random} instance with the given seed. The concrete
+	 * class instantiated is determined by a system property
+	 * "jasima.core.random.RandomFactory.randomClass" (default:
+	 * {@link MersenneTwister}).
+	 * 
+	 * @param seed
+	 *            The seed for the new {@link Random} instance.
+	 * @return A new {@link Random} instance initialized with the given seed.
+	 */
 	protected Random createRandom(long seed) {
 		try {
 			Random o = (Random) randomClass.newInstance();
@@ -139,6 +169,12 @@ public class RandomFactory implements Serializable {
 		return seed;
 	}
 
+	/**
+	 * Sets the seed that is used to initialize all random number streams.
+	 * 
+	 * @param seed
+	 *            The seed to use.
+	 */
 	public void setSeed(long seed) {
 		hashMask = new Random(seed).nextLong();
 		seeds.clear();
@@ -181,7 +217,8 @@ public class RandomFactory implements Serializable {
 	 *            The {@link DblStream} to configure.
 	 * @return The stream with random number generator initialized.
 	 */
-	public DblStream initNumberStream(DblStream stream) {
+	public DblStream initRndGen(DblStream stream) {
+		Objects.ensureNotNull(stream.getName());
 		return initRndGen(stream, null);
 	}
 
