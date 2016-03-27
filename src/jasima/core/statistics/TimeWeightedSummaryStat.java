@@ -28,7 +28,6 @@ import jasima.core.util.Util;
  * {@link #max()} have defined values.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class TimeWeightedSummaryStat extends SummaryStat {
 

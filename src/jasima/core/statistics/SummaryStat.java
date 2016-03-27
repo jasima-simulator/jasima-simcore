@@ -24,6 +24,8 @@ import java.io.Serializable;
 
 import org.apache.commons.math3.distribution.TDistribution;
 
+import jasima.core.util.SilentCloneable;
+
 /**
  * Class to collect the most important statistics without having to store all
  * values encountered. It can return mean, standard deviation, variance, min,
@@ -37,9 +39,8 @@ import org.apache.commons.math3.distribution.TDistribution;
  * ACM, 22, 9, 532-535: Updating Mean and Variance Estimates: An Improved Method
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
-public class SummaryStat implements Serializable, Cloneable {
+public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 
 	private static final long serialVersionUID = 817115058373461360L;
 

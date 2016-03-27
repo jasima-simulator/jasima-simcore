@@ -5,12 +5,23 @@ import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.observer.NotifierImpl;
 
+/**
+ * Potential base class for simulation components implementing the interface
+ * {@link SimComponent}. Additionally this class introduces a name attribute
+ * (that is also used in the {@link #toString()} method).
+ * 
+ * @author Torsten Hildebrandt
+ */
 public class SimComponentBase implements SimComponent {
 
 	private Simulation sim;
 	private SimComponentContainer<?> parent;
+
+	private String name;
+
 	// delegate Notifier functionality
 	private NotifierImpl<SimComponent, Object> notifierAdapter;
+
 	// delegate ValueStore functionality
 	private ValueStoreImpl valueStore;
 
@@ -50,6 +61,26 @@ public class SimComponentBase implements SimComponent {
 	@Override
 	public void setParent(SimComponentContainer<?> parent) {
 		this.parent = parent;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets a name for this component.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		if (getName() == null) {
+			return getClass().getSimpleName() + '@' + Integer.toHexString(this.hashCode());
+		} else {
+			return getName();
+		}
 	}
 
 	// ValueStore implementation

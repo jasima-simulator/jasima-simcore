@@ -138,15 +138,6 @@ public class Simulation {
 		public Event extract();
 	}
 
-	/**
-	 * Functional interface for methods to be called asynchronously at some
-	 * point in simulation time.
-	 */
-	@FunctionalInterface
-	public interface SimMethod {
-		void handle();
-	}
-
 	// /////////// simulation parameters
 
 	private double simulationLength = 0.0d;
@@ -380,7 +371,7 @@ public class Simulation {
 	 * @param method
 	 *            The method to call at the given moment.
 	 */
-	public void schedule(double time, int prio, SimMethod method) {
+	public void schedule(double time, int prio, Runnable method) {
 		Event e = new MethodCallEvent(time, prio, method);
 		schedule(e);
 	}
@@ -398,6 +389,21 @@ public class Simulation {
 					setTime(simTime() + interval);
 					schedule(this);
 				}
+			}
+		});
+	}
+
+	/**
+	 * Periodically calls a certain method until the simulation terminates.
+	 */
+	public void schedulePeriodically(double firstInvocation, double interval, int prio, Runnable method) {
+		schedule(new Event(firstInvocation, prio) {
+			@Override
+			public void handle() {
+				method.run();
+				// schedule next invocation reusing Event object
+				setTime(simTime() + interval);
+				schedule(this);
 			}
 		});
 	}
@@ -425,19 +431,19 @@ public class Simulation {
 	}
 
 	/**
-	 * This class is used internally by {@link #schedule(double,int,SimMethod)}.
+	 * This class is used internally by {@link #schedule(double,int,Runnable)}.
 	 */
 	private static final class MethodCallEvent extends Event {
-		public final SimMethod m;
+		public final Runnable m;
 
-		private MethodCallEvent(double time, int prio, SimMethod method) {
+		private MethodCallEvent(double time, int prio, Runnable method) {
 			super(time, prio);
 			m = method;
 		}
 
 		@Override
 		public void handle() {
-			m.handle();
+			m.run();
 		}
 	}
 

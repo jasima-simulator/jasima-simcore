@@ -21,7 +21,6 @@
 package jasima.core.simulation;
 
 import jasima.core.simulation.Simulation.EventQueue;
-import jasima.core.simulation.Simulation.SimMethod;
 
 /**
  * Abstract base class for all simulation events. Events are sequenced by an
@@ -30,7 +29,7 @@ import jasima.core.simulation.Simulation.SimMethod;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class Event implements Comparable<Event>, SimMethod {
+public abstract class Event implements Comparable<Event>, Runnable {
 
 	private static final int PRIO_INCREMENT = Integer.MAX_VALUE / 4;
 
@@ -57,6 +56,13 @@ public abstract class Event implements Comparable<Event>, SimMethod {
 	}
 
 	@Override
+	public final void run() {
+		handle();
+	}
+
+	/**
+	 * Implement the actual functionality.
+	 */
 	public abstract void handle();
 
 	public void setTime(double time) {
