@@ -172,6 +172,18 @@ public class Simulation {
 		RandomFactory randomFactory = RandomFactory.newInstance();
 		setRndStreamFactory(randomFactory);
 
+		events = createEventQueue();
+		// set to dummy event
+		currEvent = new Event(Double.NEGATIVE_INFINITY, Event.EVENT_PRIO_MIN) {
+			@Override
+			public void handle() {
+			}
+		};
+		currPrio = Event.EVENT_PRIO_MAX;
+		eventNum = Integer.MIN_VALUE;
+		numAppEvents = 0;
+		numEventsProcessed = 0;
+
 		setRootComponent(new SimComponentContainerBase<SimComponent>() {
 			@Override
 			public void beforeRun() {
@@ -210,24 +222,8 @@ public class Simulation {
 	 * {@link #run()}.
 	 */
 	public void init() {
-		init0();
-
-		rootComponent.init();
-	}
-
-	protected void init0() {
-		events = createEventQueue();
-		// set to dummy event
-		currEvent = new Event(Double.NEGATIVE_INFINITY, Event.EVENT_PRIO_MIN) {
-			@Override
-			public void handle() {
-			}
-		};
 		simTime = getInitialSimTime();
-		currPrio = Event.EVENT_PRIO_MAX;
-		eventNum = Integer.MIN_VALUE;
-		numAppEvents = 0;
-		numEventsProcessed = 0;
+		rootComponent.init();
 	}
 
 	/**
@@ -248,6 +244,19 @@ public class Simulation {
 		beforeRun();
 
 		continueSim = numAppEvents > 0;
+
+		// ensure time of first event is before initalSimTime, then put in event
+		// queue again
+		if (continueSim) {
+			Event e = events.extract();
+			if (e.getTime() < simTime) {
+				printFmt(MsgCategory.ERROR,
+						"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
+						e.getTime(), e.getPrio(), e.toString());
+				end();
+			}
+			events.insert(e);
+		}
 
 		do {
 			try {
