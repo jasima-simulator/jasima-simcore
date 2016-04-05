@@ -31,7 +31,7 @@ import org.junit.runners.Suite;
 		TestOrderIndependence.class, TestSetups.class, TestBatching.class, TestBestOfFamilyBatching.class,
 		TestGECCOContinuity.class, TestWinterSim2010Continuity.class, TestMIMAC.class, TestForAllResults.class,
 		TestMimacFab4Trace.class, jasima.core.experiment.AllTests.class, TestDetailedTraces.class, TestDowntimes.class,
-		jasima.core.util.AllTests.class, jasima.core.statistics.AllTests.class })
+		jasima.core.util.AllTests.class, jasima.core.statistics.AllTests.class, jasima.core.simulation.AllTests.class })
 public class AllTests {
 
 }

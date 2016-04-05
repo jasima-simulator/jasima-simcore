@@ -20,8 +20,15 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,7 +52,9 @@ import jasima.core.util.Util;
  * subsequently set any parameters. Afterwards {@link #init()} has to be called
  * before the actual simulation can be performed in {@link #run()}. After
  * completing a simulation the {@link #done()}-method should be called to
- * perform clean-up, collecting simulation results, etc.
+ * perform clean-up, collecting simulation results, etc. As a final step usually
+ * {@link #produceResults(Map)} is called to allow the simulation and all
+ * simulation components to report simulation results.
  * 
  * @author Torsten Hildebrandt
  */
@@ -148,6 +157,9 @@ public class Simulation {
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
 
+	private Instant simTimeStartInstant;
+	private long simTimeToMillisFactor;
+
 	// ////////////// attributes/fields used during a simulation
 
 	// the current simulation time.
@@ -183,6 +195,11 @@ public class Simulation {
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 		numEventsProcessed = 0;
+
+		simTimeToMillisFactor = 60 * 1000;
+		
+		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
+		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();
 
 		setRootComponent(new SimComponentContainerBase<SimComponent>() {
 			@Override
@@ -250,11 +267,12 @@ public class Simulation {
 		if (continueSim) {
 			Event e = events.extract();
 			if (e.getTime() < simTime) {
-				printFmt(MsgCategory.ERROR,
+				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
 						"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
-						e.getTime(), e.getPrio(), e.toString());
-				end();
+						e.getTime(), e.getPrio(), e.toString()));
 			}
+
+			// everything is ok, reinsert first event
 			events.insert(e);
 		}
 
@@ -348,6 +366,23 @@ public class Simulation {
 	 */
 	public void done() {
 		rootComponent.done();
+	}
+
+	/**
+	 * Convenience method calling {@link #init()}, {@link #run()},
+	 * {@link #done()} and returning the results produced by
+	 * {@link #produceResults(Map)} in a new {@code HashMap}.
+	 * 
+	 * @return The results produced by the simulation and its components.
+	 */
+	public Map<String, Object> performRun() {
+		init();
+		run();
+		done();
+
+		HashMap<String, Object> res = new HashMap<>();
+		produceResults(res);
+		return res;
 	}
 
 	/**
@@ -467,6 +502,31 @@ public class Simulation {
 	/** Returns the current simulation time. */
 	public double simTime() {
 		return simTime;
+	}
+
+	/**
+	 * Converts the current simulation time to a Java {@link Instant}.
+	 * 
+	 * @see #simTimeToInstant(double)
+	 */
+	public Instant simTimeToInstant() {
+		return simTimeToInstant(simTime());
+	}
+
+	/**
+	 * Converts the given simulation time to a Java {@link Instant} (UTC time
+	 * stamp). Conversion multiplies the time with the factor
+	 * {@link #getSimTimeToMillisFactor()} and rounds the results to the closest
+	 * integer to get the number of milliseconds since a simTime of 0. This
+	 * amount of milliseconds is then added to {@link #getSimTimeStartInstant()}
+	 * to get an absolute Java time stamp.
+	 * 
+	 * @see #setSimTimeStartInstant(Instant)
+	 * @see #setSimTimeToMillisFactor(long)
+	 */
+	public Instant simTimeToInstant(double simTime) {
+		long simTimeMillis = Math.round(simTime * simTimeToMillisFactor);
+		return getSimTimeStartInstant().plus(simTimeMillis, ChronoUnit.MILLIS);
 	}
 
 	/**
@@ -709,6 +769,46 @@ public class Simulation {
 	/** Sets the initial value of the simulation clock. */
 	public void setInitialSimTime(double initialSimTime) {
 		this.initialSimTime = initialSimTime;
+	}
+
+	/**
+	 * Returns the {@link Instant} corresponding to simulation time 0.
+	 * 
+	 * @see #setSimTimeStartInstant(Instant)
+	 */
+	public Instant getSimTimeStartInstant() {
+		return simTimeStartInstant;
+	}
+
+	/**
+	 * Sets the {@link Instant} corresponding to the a simulation time of 0. The
+	 * default setting is to use the beginning of the current year.
+	 * 
+	 * @see #simTimeToInstant(double)
+	 */
+	public void setSimTimeStartInstant(Instant simTimeStartInstant) {
+		this.simTimeStartInstant = simTimeStartInstant;
+	}
+
+	/**
+	 * Returns the factor used to convert the (double-valued) simulation time to
+	 * milli-seconds since {@link #getSimTimeStartInstant()}.
+	 * 
+	 * @see #setSimTimeToMillisFactor(long)
+	 */
+	public long getSimTimeToMillisFactor() {
+		return simTimeToMillisFactor;
+	}
+
+	/**
+	 * Sets the factor used to convert the (double-valued) simulation time to
+	 * milli-seconds since {@link #getSimTimeStartInstant()}. The default value
+	 * is 60*1000=60000, assuming simulation time to be in minutes.
+	 * 
+	 * @see #simTimeToInstant(double)
+	 */
+	public void setSimTimeToMillisFactor(long simTimeToMillisFactor) {
+		this.simTimeToMillisFactor = simTimeToMillisFactor;
 	}
 
 	@Override
