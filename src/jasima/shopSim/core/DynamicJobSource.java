@@ -74,7 +74,6 @@ public class DynamicJobSource extends JobSource {
 		if (dblStream == null)
 			return;
 		fact.initRndGen(dblStream, streamName);
-		dblStream.init();
 	}
 
 	@Override

@@ -37,6 +37,8 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 import jasima.core.random.RandomFactory;
+import jasima.core.random.continuous.DblStream;
+import jasima.core.random.discrete.IntStream;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.TraceFileProducer;
@@ -197,7 +199,7 @@ public class Simulation {
 		numEventsProcessed = 0;
 
 		simTimeToMillisFactor = 60 * 1000;
-		
+
 		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
 		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();
 
@@ -724,6 +726,24 @@ public class Simulation {
 	public void setRndStreamFactory(RandomFactory rndStreamFactory) {
 		this.rndStreamFactory = rndStreamFactory;
 		rndStreamFactory.setSim(this);
+	}
+
+	/**
+	 * Initializes the random number generator associated with the
+	 * {@link DblStream} {@code s}. This just delegates to the
+	 * {@link RandomFactory} of this simulation.
+	 */
+	public DblStream initRndGen(DblStream s, String streamName) {
+		return getRndStreamFactory().initRndGen(s, streamName);
+	}
+
+	/**
+	 * Initializes the random number generator associated with the
+	 * {@link IntStream} {@code s}. This just delegates to the
+	 * {@link RandomFactory} of this simulation.
+	 */
+	public IntStream initRndGen(IntStream s, String streamName) {
+		return (IntStream) getRndStreamFactory().initRndGen(s, streamName);
 	}
 
 	/** @return The name of this simulation. */

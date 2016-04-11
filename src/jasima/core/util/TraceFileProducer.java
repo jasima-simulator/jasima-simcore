@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
@@ -37,10 +38,16 @@ import jasima.core.simulation.Simulation.SimPrintMessage;
  * Produces a detailed log of all trace messages of a {@link Simulation} in a
  * text file. Creating this file is rather slow, so this class is mainly useful
  * for debugging purposes.
+ * <p>
+ * This class can either be added as a listener to a {@link SimComponent}
+ * (usually the root component) as it implements
+ * {@link SimComponentLifeCycleListener}. Alternatively it can be directly added
+ * as a print listener of a {@link Simulation} (it therefore implements
+ * {@code Consumer<SimPrintMessage>}).
  * 
  * @author Torsten Hildebrandt
  */
-public class TraceFileProducer implements SimComponentLifeCycleListener {
+public class TraceFileProducer implements SimComponentLifeCycleListener, Consumer<SimPrintMessage> {
 
 	// parameters
 
@@ -65,24 +72,27 @@ public class TraceFileProducer implements SimComponentLifeCycleListener {
 	public void init(SimComponent c) {
 		SimComponentLifeCycleListener.super.init(c);
 
-		install(c.getSim());
+		c.getSim().addPrintListener(this);
+		c.getSim().setPrintLevel(MsgCategory.TRACE);
 	}
 
-	public void install(Simulation sim) {
-		if (log != null)
-			return; // already registered
+	@Override
+	public void produceResults(SimComponent c, Map<String, Object> resultMap) {
+		SimComponentLifeCycleListener.super.produceResults(c, resultMap);
 
-		createLogFile();
-
-		sim.addPrintListener(this::print);
-		sim.setPrintLevel(MsgCategory.TRACE);
-
-		// get notified when simulation finished
-		sim.getRootComponent().addListener(this);
+		if (log != null) {
+			log.close();
+			log = null;
+		}
 	}
 
-	protected void print(SimPrintMessage msg) {
+	@Override
+	public void accept(SimPrintMessage msg) {
 		if (msg.getCategory() == MsgCategory.TRACE) {
+			if (log == null) {
+				createLogFile();
+			}
+
 			log.println(msg.getMessage());
 		}
 	}
@@ -99,16 +109,6 @@ public class TraceFileProducer implements SimComponentLifeCycleListener {
 			log = new PrintWriter(new BufferedWriter(new FileWriter(name)), true);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void produceResults(SimComponent c, Map<String, Object> resultMap) {
-		SimComponentLifeCycleListener.super.produceResults(c, resultMap);
-
-		if (log != null) {
-			log.close();
-			log = null;
 		}
 	}
 

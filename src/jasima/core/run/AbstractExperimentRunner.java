@@ -163,7 +163,7 @@ public abstract class AbstractExperimentRunner {
 					ExperimentListener.super.beforeRun(e);
 
 					SimulationExperiment se = (SimulationExperiment) e;
-					t.install(se.sim());
+					se.sim().getRootComponent().addListener(t);
 				}
 			});
 		}

@@ -28,20 +28,21 @@ import jasima.core.util.Util;
 /**
  * Returns a constant set of integer numbers, as passed to the constructor or
  * via {@link #setValues(int...)}. This value sequence is repeated if all values
- * are returned once. The sequence returned is not random at all, i.e. this
- * class does not use the inherited rndGen.
+ * are returned once. Optionally the order of items is permuted if
+ * {@code randomizeOrder} was set to true.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class IntConst extends IntStream {
 
 	private static final long serialVersionUID = -3297743869123820992L;
 
 	private int[] values;
-	private Double mean;
+	private boolean randomizeOrder;
 
+	private Double mean;
 	private int next;
+	private int[] valuesRnd;
 
 	public IntConst() {
 		this(null);
@@ -53,20 +54,27 @@ public class IntConst extends IntStream {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+
+		valuesRnd = isRandomizeOrder() ? values.clone() : values;
+		nextIteration();
+	}
+
+	private void nextIteration() {
+		next = 0;
+		if (isRandomizeOrder()) {
+			Util.shuffle(valuesRnd, rndGen);
+		}
+	}
+
+	@Override
 	public int nextInt() {
-		int v = values[next];
-		if (++next == values.length)
-			next = 0;
+		int v = valuesRnd[next];
+		// wrap around
+		if (++next == valuesRnd.length)
+			nextIteration();
 		return v;
-	}
-
-	public int[] getValues() {
-		return values;
-	}
-
-	public void setValues(int... vs) {
-		this.values = vs;
-		this.mean = null;
 	}
 
 	@Override
@@ -80,21 +88,6 @@ public class IntConst extends IntStream {
 		}
 
 		return mean;
-	}
-
-	@Override
-	public String toString() {
-		return "IntConst" + Arrays.toString(values);
-	}
-
-	@Override
-	public IntConst clone() throws CloneNotSupportedException {
-		IntConst c = (IntConst) super.clone();
-
-		if (values != null)
-			c.values = values.clone();
-
-		return c;
 	}
 
 	@Override
@@ -113,6 +106,52 @@ public class IntConst extends IntStream {
 		}
 
 		return new Pair<>((double) min, (double) max);
+	}
+
+	@Override
+	public String toString() {
+		return "IntConst" + Arrays.toString(values);
+	}
+
+	@Override
+	public IntConst clone() throws CloneNotSupportedException {
+		IntConst c = (IntConst) super.clone();
+
+		if (values != null)
+			c.values = values.clone();
+
+		return c;
+	}
+
+	public int[] getValues() {
+		return values;
+	}
+
+	/**
+	 * Sets the values to return as members of this number stream.
+	 * 
+	 * @param vs
+	 *            The values to use.
+	 */
+	public void setValues(int... vs) {
+		this.values = vs;
+		this.mean = null;
+	}
+
+	public boolean isRandomizeOrder() {
+		return randomizeOrder;
+	}
+
+	/**
+	 * If set to {@code true}, the elements of {@code values} will be returned
+	 * in a randomly permuted order. Otherwise the values will be returned in
+	 * exactly the same order as given in {@code values}.
+	 * 
+	 * @param randomizeOrder
+	 *            Whether or not to randomize the order.
+	 */
+	public void setRandomizeOrder(boolean randomizeOrder) {
+		this.randomizeOrder = randomizeOrder;
 	}
 
 }

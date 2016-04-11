@@ -29,6 +29,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Simulation;
 import jasima.core.util.MersenneTwister;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.Util;
 import joptsimple.internal.Objects;
 
 /**
@@ -113,8 +114,13 @@ public class RandomFactory implements Serializable {
 	 */
 	public Random createInstance(final String name) {
 		long seed = getSeed(name);
-		if (getSim() != null)
-			getSim().print(MsgCategory.DEBUG, "created random stream '%s' with initial seed %d.", name, seed);
+		if (getSim() != null) {
+			getSim().print(MsgCategory.DEBUG,
+					String.format(Util.DEF_LOCALE, "created random stream '%s' with initial seed %d.", name, seed));
+			if (getSim().isTraceEnabled()) {
+				getSim().trace("create_random_stream", name, seed);
+			}
+		}
 		return createRandom(seed);
 	}
 
@@ -158,8 +164,9 @@ public class RandomFactory implements Serializable {
 
 			if (getSim() != null)
 				getSim().print(MsgCategory.WARN,
-						"Collision for random streams named '%s' and '%s'. If possible use different stream names to avoid problems with comparability/reproducability of results.",
-						name, s);
+						String.format(Util.DEF_LOCALE,
+								"Collision for random streams named '%s' and '%s'. If possible use different stream names to avoid problems with comparability/reproducability of results.",
+								name, s));
 
 			seed = seedStream.nextLong();
 		}
@@ -204,6 +211,8 @@ public class RandomFactory implements Serializable {
 		}
 
 		stream.setRndGen(createInstance(name));
+		
+		stream.init();
 
 		return stream;
 	}

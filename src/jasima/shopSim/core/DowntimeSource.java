@@ -57,11 +57,9 @@ public class DowntimeSource {
 		RandomFactory fact = machine.workStation.getSim().getRndStreamFactory();
 		if (timeBetweenFailures != null && timeBetweenFailures.getRndGen() == null) {
 			fact.initRndGen(timeBetweenFailures, toString() + ".timeBetweenFailures");
-			timeBetweenFailures.init();
 		}
 		if (timeToRepair != null && timeToRepair.getRndGen() == null) {
 			fact.initRndGen(timeToRepair, toString() + ".timeToRepair");
-			timeToRepair.init();
 		}
 
 		WorkStationListener wsl = new WorkStationListener() {

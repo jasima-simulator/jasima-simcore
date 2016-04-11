@@ -28,7 +28,7 @@ import jasima.core.util.Util;
 /**
  * A DblConst stream infinitely returns the numbers of {@link #getValues()} in
  * exactly this order. After the last value being returned the sequence starts
- * again with the first number. Optionally the order of items is permuted is
+ * again with the first number. Optionally the order of items is permuted if
  * {@code randomizeOrder} was set to true.
  * 
  * @author Torsten Hildebrandt

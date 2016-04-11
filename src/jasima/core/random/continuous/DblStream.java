@@ -32,7 +32,6 @@ import jasima.shopSim.util.modelDef.streams.DblStreamDef;
  * random number generator.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id: DblStream.java 512 2015-01-20 16:52:46Z THildebrandt@gmail.com$"
  */
 public abstract class DblStream implements Serializable, Cloneable {
 
