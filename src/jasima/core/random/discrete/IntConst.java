@@ -50,15 +50,8 @@ public class IntConst extends IntStream {
 
 	public IntConst(int... vs) {
 		super();
+		next = Integer.MAX_VALUE;
 		setValues(vs);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-
-		valuesRnd = isRandomizeOrder() ? values.clone() : values;
-		nextIteration();
 	}
 
 	private void nextIteration() {
@@ -70,10 +63,14 @@ public class IntConst extends IntStream {
 
 	@Override
 	public int nextInt() {
-		int v = valuesRnd[next];
-		// wrap around
-		if (++next == valuesRnd.length)
+		if (next >= valuesRnd.length) {
 			nextIteration();
+		}
+
+		int v = valuesRnd[next];
+
+		next++;
+
 		return v;
 	}
 
@@ -120,6 +117,9 @@ public class IntConst extends IntStream {
 		if (values != null)
 			c.values = values.clone();
 
+		if (valuesRnd != null)
+			c.valuesRnd = valuesRnd.clone();
+
 		return c;
 	}
 
@@ -134,8 +134,15 @@ public class IntConst extends IntStream {
 	 *            The values to use.
 	 */
 	public void setValues(int... vs) {
-		this.values = vs;
 		this.mean = null;
+
+		if (vs == null) {
+			values = null;
+			valuesRnd = null;
+		} else {
+			values = vs.clone();
+			valuesRnd = vs.clone();
+		}
 	}
 
 	public boolean isRandomizeOrder() {

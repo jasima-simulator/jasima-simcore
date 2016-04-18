@@ -255,7 +255,6 @@ public class Simulation {
 	 * A simulation is terminated if either the maximum simulation length is
 	 * reached, there are no more application events in the queue, or some other
 	 * code called {@link #end()}.
-	 * <p>
 	 * 
 	 * @see jasima.core.simulation.Event#isAppEvent()
 	 */
@@ -463,11 +462,13 @@ public class Simulation {
 	 * scheduled if {@code method} returned NaN or a negative value.
 	 */
 	public void scheduleProcess(int prio, DoubleSupplier method) {
-		schedule(new Event(simTime(), prio) {
+		double firstInvocation = Math.max(simTime(), getInitialSimTime());
+		
+		schedule(new Event(firstInvocation, prio) {
 			@Override
 			public void handle() {
 				double next = method.getAsDouble();
-				if (!(next < 0.0)) {
+				if (next >= 0.0) {
 					// schedule next invocation reusing Event object
 					setTime(next);
 					schedule(this);

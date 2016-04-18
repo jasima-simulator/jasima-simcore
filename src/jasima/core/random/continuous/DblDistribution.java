@@ -34,7 +34,6 @@ import jasima.core.util.Pair;
  * parameters as Java Bean properties.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class DblDistribution extends DblStream {
 

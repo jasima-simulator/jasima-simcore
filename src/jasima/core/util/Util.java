@@ -44,7 +44,6 @@ import jasima.core.statistics.SummaryStat;
  * Some static utility methods that don't really fit anywhere else.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class Util {
 
@@ -57,7 +56,7 @@ public class Util {
 	 * Default VERSION used when no version information is available from
 	 * package (e.g., during a run from within Eclipse).
 	 */
-	public static final String DEFAULT_VERSION = "1.3.1-DEV";
+	public static final String DEFAULT_VERSION = "1.4.0-DEV";
 
 	/**
 	 * Descriptive String showing name, current version and project URL.
@@ -72,7 +71,8 @@ public class Util {
 	/**
 	 * Class search path containing all packaged in jasima-main.
 	 */
-	public static final String[] DEF_CLASS_SEARCH_PATH = { "jasima.core.experiment", //
+	public static final String[] DEF_CLASS_SEARCH_PATH = { //
+			"jasima.core.experiment", //
 			"jasima.core.expExecution", //
 			"jasima.core.random", //
 			"jasima.core.random.continuous", //

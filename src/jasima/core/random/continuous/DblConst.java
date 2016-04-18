@@ -50,15 +50,8 @@ public class DblConst extends DblStream {
 
 	public DblConst(double... vs) {
 		super();
+		next = Integer.MAX_VALUE;
 		setValues(vs);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		
-		valuesRnd = isRandomizeOrder() ? values.clone() : values;
-		nextIteration();
 	}
 
 	private void nextIteration() {
@@ -70,10 +63,14 @@ public class DblConst extends DblStream {
 
 	@Override
 	public double nextDbl() {
-		double v = valuesRnd[next];
-		// wrap around
-		if (++next == valuesRnd.length)
+		if (next >= valuesRnd.length) {
 			nextIteration();
+		}
+
+		double v = valuesRnd[next];
+
+		next++;
+
 		return v;
 	}
 
@@ -88,6 +85,9 @@ public class DblConst extends DblStream {
 
 		if (values != null)
 			c.values = values.clone();
+
+		if (valuesRnd != null)
+			c.valuesRnd = valuesRnd.clone();
 
 		return c;
 	}
@@ -135,10 +135,13 @@ public class DblConst extends DblStream {
 	 */
 	public void setValues(double... vs) {
 		this.mean = null;
-		if (vs == null)
+		if (vs == null) {
 			values = null;
-		else
+			valuesRnd = null;
+		} else {
 			values = vs.clone();
+			valuesRnd = vs.clone();
+		}
 	}
 
 	public boolean isRandomizeOrder() {

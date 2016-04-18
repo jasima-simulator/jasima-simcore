@@ -32,7 +32,6 @@ import jasima.core.util.Util;
  * , and can be arbitrary positive numbers as long as they sum up to 1.0.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class IntEmpirical extends IntStream {
 
@@ -81,8 +80,36 @@ public class IntEmpirical extends IntStream {
 		return probs;
 	}
 
+	public void setProbabilities(double[] probs) {
+		setProbabilities(probs, null);
+	}
+
 	public int[] getValues() {
 		return vals;
+	}
+
+	public void setValues(int[] vs) {
+		vals = vs;
+	}
+
+	@Override
+	public int nextInt() {
+		double prob = rndGen.nextDouble();
+
+		int n = -1;
+
+		double d = 0.0d;
+		for (int i = 0; i < probs.length; i++) {
+			d += probs[i];
+			if (d > prob) {
+				n = i;
+				break; // for
+			}
+		}
+
+		assert n >= 0; // we should always find something
+
+		return vals != null ? vals[n] : n;
 	}
 
 	public void setProbabilities(double[] probs, int[] values) {
@@ -95,28 +122,6 @@ public class IntEmpirical extends IntStream {
 		this.probs = probs;
 		this.vals = values;
 		this.mean = null;
-	}
-
-	/**
-	 * Sets only probabilities. In this case {@link #nextInt()} will produce
-	 * integers in the range {@code [0, probs.length-1]}.
-	 */
-	public void setProbabilities(double[] probs) {
-		setProbabilities(probs, null);
-	}
-
-	@Override
-	public int nextInt() {
-		double prob = rndGen.nextDouble();
-
-		double d = 0.0d;
-		for (int i = 0; i < probs.length; i++) {
-			d += probs[i];
-			if (d > prob)
-				return vals != null ? vals[i] : i;
-		}
-
-		throw new AssertionError(); // should never be reached
 	}
 
 	@Override

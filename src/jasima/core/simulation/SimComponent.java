@@ -1,6 +1,8 @@
 package jasima.core.simulation;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import jasima.core.util.SilentCloneable;
 import jasima.core.util.ValueStore;
@@ -105,6 +107,68 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 
 	default void produceResults(Map<String, Object> res) {
 		fire(new ProduceResultsMessage(res));
+	}
+
+	// schedule simulation events, delegated to the simulation
+
+	/**
+	 * Schedules a new event.
+	 * 
+	 * @see Simulation#schedule(Event)
+	 */
+	default void schedule(Event event) {
+		getSim().schedule(event);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at certain point in time.
+	 * 
+	 * @param time
+	 *            The time when to call {@code method}.
+	 * @param prio
+	 *            Priority of the event (to deterministically sequence events at
+	 *            the same time.
+	 * @param method
+	 *            The method to call at the given moment.
+	 * 
+	 * @see Simulation#schedule(double, int, Runnable)
+	 */
+	default void schedule(double time, int prio, Runnable method) {
+		getSim().schedule(time, prio, method);
+	}
+
+	/**
+	 * Periodically calls a certain method. While this method returns true, a
+	 * next invocation after the given time interval is scheduled.
+	 * 
+	 * @see Simulation#schedulePeriodically(double, double, int,
+	 *      BooleanSupplier)
+	 */
+	default void schedulePeriodically(double firstInvocation, double interval, int prio, BooleanSupplier method) {
+		getSim().schedulePeriodically(firstInvocation, interval, prio, method);
+	}
+
+	/**
+	 * Periodically calls a certain method until the simulation terminates.
+	 * 
+	 * @see Simulation#schedulePeriodically(double, double, int, Runnable)
+	 */
+	default void schedulePeriodically(double firstInvocation, double interval, int prio, Runnable method) {
+		getSim().schedulePeriodically(firstInvocation, interval, prio, method);
+	}
+
+	/**
+	 * Calls a certain method at the times returned by the method itself. The
+	 * first invocation is performed at the current time (asynchronously, i.e.,
+	 * {@code scheduleProcess()} returns before {@code method} is called for the
+	 * first time). Subsequent calls are scheduled at the absolute times
+	 * returned by the previous method invocation. No more invocations are
+	 * scheduled if {@code method} returned NaN or a negative value.
+	 * 
+	 * @see Simulation#scheduleProcess(int, DoubleSupplier)
+	 */
+	default void scheduleProcess(int prio, DoubleSupplier method) {
+		getSim().scheduleProcess(prio, method);
 	}
 
 	// event tracing
