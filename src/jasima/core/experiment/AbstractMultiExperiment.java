@@ -396,7 +396,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	 *            The names of all results for which detailed run results from
 	 *            sub-experiments should be stored.
 	 */
-	public void setKeepResults(String[] keepResults) {
+	public void setKeepResults(String... keepResults) {
 		this.keepResults = keepResults;
 	}
 

@@ -58,7 +58,6 @@ import jasima.core.util.Util;
  * 
  * @see OCBAExperiment
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
@@ -119,7 +118,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
 			double interv = vs.confIntRangeSingle(getErrorProb());
 
-			if (interv > allowance)
+			if (!(interv <= allowance))
 				return true;
 		}
 
@@ -284,7 +283,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 *            A list of all result names that should be checked when the
 	 *            number of runs is dynamic.
 	 */
-	public void setConfIntervalMeasures(String[] confIntervalMeasures) {
+	public void setConfIntervalMeasures(String... confIntervalMeasures) {
 		this.confIntervalMeasures = confIntervalMeasures;
 	}
 
