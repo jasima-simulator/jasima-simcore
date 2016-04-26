@@ -90,6 +90,14 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
+	 * Adds a new value for the factor "name". This allows putting in a Java 8
+	 * method reference or lambda expression as a factor setter.
+	 */
+	public void addFactor(String name, ComplexFactorSetter value) {
+		addFactor(name, (Object) value);
+	}
+
+	/**
 	 * <p>
 	 * Convenience method to set a factor "factorName" for all possible values
 	 * of an enumeration.

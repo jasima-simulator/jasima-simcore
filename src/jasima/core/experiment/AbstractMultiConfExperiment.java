@@ -67,6 +67,7 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	 * 
 	 * @see FullFactorialExperiment#addFactor(String, Object)
 	 */
+	@FunctionalInterface
 	public interface ComplexFactorSetter extends Serializable {
 		/**
 		 * Configures an experiment.
