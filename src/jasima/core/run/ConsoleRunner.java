@@ -161,6 +161,14 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 		return Objects.requireNonNull(e);
 	}
 
+	public static void run(Experiment e) {
+		run(e, new String[] {});
+	}
+
+	public static void run(Experiment e, String[] args) {
+		new ConsoleRunner(e).parseArgs(args).run();
+	}
+
 	public static void main(String[] args) {
 		new ConsoleRunner(null).parseArgs(args).run();
 	}

@@ -1,5 +1,7 @@
 package jasima.core.simulation;
 
+import java.util.ArrayList;
+
 import jasima.core.experiment.Experiment;
 import jasima.core.simulation.Simulation.SimPrintMessage;
 import jasima.core.util.MsgCategory;
@@ -12,6 +14,7 @@ public class SimulationExperiment extends Experiment {
 
 	private double simulationLength = 0.0d;
 	private double initalSimTime = 0.0d;
+	private ArrayList<Runnable> initActions;
 
 	// fields used during run
 
@@ -19,6 +22,8 @@ public class SimulationExperiment extends Experiment {
 
 	public SimulationExperiment() {
 		super();
+
+		initActions = new ArrayList<>();
 	}
 
 	@Override
@@ -26,6 +31,10 @@ public class SimulationExperiment extends Experiment {
 		super.init();
 
 		initSim();
+
+		for (Runnable r : initActions) {
+			r.run();
+		}
 	}
 
 	protected void initSim() {
@@ -84,6 +93,14 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	/**
+	 * Returns the current simulation time. This is the same as calling
+	 * {@code sim().simTime()} directly.
+	 */
+	protected double simTime() {
+		return sim.simTime();
+	}
+
+	/**
 	 * Sets the maximum simulation time. A value of 0.0 means no such limit.
 	 * 
 	 * @param simulationLength
@@ -106,6 +123,14 @@ public class SimulationExperiment extends Experiment {
 	 */
 	public void setInitalSimTime(double initalSimTime) {
 		this.initalSimTime = initalSimTime;
+	}
+
+	/**
+	 * Adds a {@code Runnable} that is called each after creating simulation
+	 * components to perform additional initialization tasks.
+	 */
+	public void addInitAction(Runnable action) {
+		initActions.add(action);
 	}
 
 }

@@ -91,9 +91,10 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 			throw new IllegalArgumentException(
 					String.format(Util.DEF_LOCALE, "negative time span (lastTime=%f, time=%f).", lastTime(), time));
 		super.value(lastValue, time - lastTime());
+
 		lastTime = time;
 		lastValue = value;
-
+		
 		return this;
 	}
 

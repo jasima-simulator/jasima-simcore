@@ -32,7 +32,6 @@ import jasima.core.util.Util;
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Normal_distribution">Normal
  *      distribution (Wikipedia)</a>
@@ -43,11 +42,18 @@ public class DblNormal extends DblStream {
 
 	private static final long serialVersionUID = 8266321644360710699L;
 
-	private double mean = 0.0;
-	private double stdev = 1.0;
+	private double mean;
+	private double stdev;
 
 	public DblNormal() {
+		this(0.0, 1.0);
+	}
+
+	public DblNormal(double mean, double stdev) {
 		super();
+
+		setMean(mean);
+		setStdev(stdev);
 	}
 
 	@Override

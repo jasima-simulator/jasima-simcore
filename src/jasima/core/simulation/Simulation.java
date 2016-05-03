@@ -462,8 +462,17 @@ public class Simulation {
 	 * scheduled if {@code method} returned NaN or a negative value.
 	 */
 	public void scheduleProcess(int prio, DoubleSupplier method) {
-		double firstInvocation = Math.max(simTime(), getInitialSimTime());
-		
+		scheduleProcess(Math.max(simTime(), getInitialSimTime()), prio, method);
+	}
+
+	/**
+	 * Calls a certain method at the times returned by the method itself. The
+	 * first invocation is performed at {@code firstInvocation}. Subsequent
+	 * calls are scheduled at the absolute times returned by the previous method
+	 * invocation. No more invocations are scheduled if {@code method} returned
+	 * NaN or a negative value.
+	 */
+	public void scheduleProcess(double firstInvocation, int prio, DoubleSupplier method) {
 		schedule(new Event(firstInvocation, prio) {
 			@Override
 			public void handle() {
@@ -480,7 +489,7 @@ public class Simulation {
 	/**
 	 * This class is used internally by {@link #schedule(double,int,Runnable)}.
 	 */
-	private static final class MethodCallEvent extends Event {
+	protected static final class MethodCallEvent extends Event {
 		public final Runnable m;
 
 		private MethodCallEvent(double time, int prio, Runnable method) {
