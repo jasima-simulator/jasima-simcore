@@ -28,7 +28,11 @@ import jasima.core.util.Pair;
  * distribution</a> as defined by the three parameters min, mode, and max.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
+ * 
+ * @see <a href="https://en.wikipedia.org/wiki/Triangular_distribution">
+ *      Triangular distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/TriangularDistribution.html">
+ *      Triangular distribution (MathWorld)</a>
  */
 public class DblTriangular extends DblStream {
 
@@ -40,13 +44,27 @@ public class DblTriangular extends DblStream {
 	private double max = 10.0;
 
 	// constants derived from parameters
-	private double critValue, range, minDist, maxDist;
+	private double critValue = Double.NaN, range = Double.NaN, minDist = Double.NaN, maxDist = Double.NaN;
 
 	public DblTriangular(double min, double mode, double max) {
 		super();
+
+		if (min > mode || mode > max)
+			throw new IllegalArgumentException();
+
 		setMin(min);
 		setMode(mode);
 		setMax(max);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		if (min > mode || mode > max)
+			throw new IllegalArgumentException();
+
+		calcInternalValues();
 	}
 
 	private void calcInternalValues() {
@@ -92,7 +110,6 @@ public class DblTriangular extends DblStream {
 
 	public void setMin(double min) {
 		this.min = min;
-		calcInternalValues();
 	}
 
 	public double getMode() {
@@ -101,7 +118,6 @@ public class DblTriangular extends DblStream {
 
 	public void setMode(double mode) {
 		this.mode = mode;
-		calcInternalValues();
 	}
 
 	public double getMax() {
@@ -110,7 +126,6 @@ public class DblTriangular extends DblStream {
 
 	public void setMax(double max) {
 		this.max = max;
-		calcInternalValues();
 	}
 
 }
