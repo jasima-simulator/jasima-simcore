@@ -25,11 +25,10 @@ import org.junit.runners.Suite;
 
 /**
  * 
- * @version "$Id$"
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class,
-		jasima.core.statistics.TestSummaryStat.class })
+@Suite.SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class, jasima.core.statistics.TestSummaryStat.class,
+		TestDblErlang.class })
 public class AllTests {
 
 }

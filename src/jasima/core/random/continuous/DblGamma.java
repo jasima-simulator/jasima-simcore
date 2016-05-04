@@ -34,7 +34,6 @@ import jasima.core.util.Util;
  * distributions.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma
  *      distribution (Wikipedia)</a>
