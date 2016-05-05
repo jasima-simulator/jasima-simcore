@@ -73,6 +73,11 @@ public class IntDiscretized extends IntStream {
 		return c;
 	}
 
+	@Override
+	public String toString() {
+		return "IntDiscretized(baseStream=" + String.valueOf(getBaseStream()) + ")";
+	}
+
 	// getter/setter below
 
 	public DblStream getBaseStream() {
