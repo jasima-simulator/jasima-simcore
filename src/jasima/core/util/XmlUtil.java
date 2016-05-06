@@ -163,7 +163,7 @@ public class XmlUtil {
 			xstream.setMode(XStream.NO_REFERENCES);
 		}
 
-		if (format == FileFormat.JASIMA_BEAN || format == FileFormat.RESULTS_MAP) {
+		if (format == FileFormat.JASIMA_BEAN) {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), true), -10);
 		} else if (format == FileFormat.JSON) {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);
