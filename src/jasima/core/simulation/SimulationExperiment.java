@@ -40,6 +40,7 @@ public class SimulationExperiment extends Experiment {
 	protected void initSim() {
 		sim = createSim();
 
+		sim.setPrintLevel(getLogLevel());
 		sim.setSimulationLength(getSimulationLength());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
 

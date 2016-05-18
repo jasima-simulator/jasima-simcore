@@ -182,6 +182,7 @@ public abstract class Experiment
 	private int nestingLevel = 0;
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
+	private MsgCategory logLevel = MsgCategory.INFO;
 	private NotifierImpl<Experiment, ExperimentMessage> notifierAdapter;
 
 	// fields used during run
@@ -391,7 +392,7 @@ public abstract class Experiment
 	 * @see ConsolePrinter
 	 */
 	public void print(MsgCategory category, String message) {
-		if (numListener() > 0)
+		if (numListener() > 0 && category.ordinal() <= getLogLevel().ordinal())
 			fire(new ExpPrintEvent(this, category, message));
 	}
 
@@ -408,7 +409,7 @@ public abstract class Experiment
 	 *            Parameters to use in the format string.
 	 */
 	public void print(MsgCategory category, String messageFormat, Object... params) {
-		if (numListener() > 0)
+		if (numListener() > 0 && category.ordinal() <= getLogLevel().ordinal())
 			fire(new ExpPrintEvent(this, category, messageFormat, params));
 	}
 
@@ -508,6 +509,21 @@ public abstract class Experiment
 	 */
 	public void setInitialSeed(long initialSeed) {
 		this.initialSeed = initialSeed;
+	}
+
+	public MsgCategory getLogLevel() {
+		return logLevel;
+	}
+
+	/**
+	 * Set the maximum level of logging messages that are supposed to be printed
+	 * (e.g. TRACE to produce a detailed log file). Default is INFO.
+	 * 
+	 * @param logLevel
+	 *            The maximum log level to display/forward to listeners.
+	 */
+	public void setLogLevel(MsgCategory logLevel) {
+		this.logLevel = logLevel;
 	}
 
 	// ******************* static methods ************************
