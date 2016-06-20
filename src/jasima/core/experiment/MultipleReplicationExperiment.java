@@ -23,7 +23,13 @@ package jasima.core.experiment;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.commons.math3.analysis.solvers.RiddersSolver;
+import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.exception.NoBracketingException;
+import org.apache.commons.math3.exception.TooManyEvaluationsException;
+
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.MsgCategory;
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
 
@@ -65,7 +71,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
 	private Experiment baseExperiment;
 
-	private int minReplications = 1;
+	private int minReplications = 0;
 	private int maxReplications = 10;
 
 	private String[] confIntervalMeasures = {};
@@ -89,7 +95,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	protected void createExperiments() {
 		experiments.clear();
 
-		int batchSize = isNumRunsDynamic() ? getMinReplications() : getMaxReplications();
+		int batchSize = getNumExperiments();
 
 		for (int i = 0; i < batchSize; i++) {
 			Experiment e = getBaseExperiment().silentClone();
@@ -118,11 +124,46 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
 			double interv = vs.confIntRangeSingle(getErrorProb());
 
+			print(MsgCategory.INFO,
+					"dynamic number of replications\tobjective: '%s'\tcurrent mean: %f\tconfInt: ±%f\ttarget: ±%f\testimated total replications: %d",
+					name, vs.mean(), interv, allowance, estimateNumReps(vs, allowance));
+
 			if (!(interv <= allowance))
 				return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Numerically find the number of replications required to achieve the
+	 * desired precision.
+	 */
+	private int estimateNumReps(SummaryStat vs, double allowance) {
+		if (vs.weightSum() < 2)
+			return -1;
+
+		try {
+			double c1 = errorProb * 0.5d;
+
+			double numReps = new RiddersSolver(0.5).solve( //
+					100, // max iterations
+					(v) -> {
+						TDistribution dist = new TDistribution(v - 1.0);
+						return Math.abs(dist.inverseCumulativeProbability(c1)) * Math.sqrt(vs.variance() / v)
+								- allowance;
+					}, // the function to be solved for ==zero; see
+						// SummaryStat.convIntRangeSingle()
+					2, // min value
+					1000000, // max value
+					vs.weightSum() // initial value
+			);
+
+			return (int) Math.round(numReps);
+		} catch (TooManyEvaluationsException | NoBracketingException ignore) {
+			// ignore if numerical root finding should fail
+			return -1;
+		}
 	}
 
 	@Override
@@ -132,9 +173,15 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
 	@Override
 	public int getNumExperiments() {
-		if (isNumRunsDynamic())
-			return getMinReplications();
-		else
+		if (isNumRunsDynamic()) {
+			int reps = getMinReplications();
+			if (reps <= 0) {
+				reps = Runtime.getRuntime().availableProcessors();
+			}
+			if (reps > getMaxReplications())
+				reps = getMaxReplications();
+			return reps;
+		} else
 			return getMaxReplications();
 	}
 
@@ -147,20 +194,18 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
-	 * <p>
 	 * Sets the minimum number of replications to perform if the total number of
 	 * replications is dynamic (i.e., if at least 1 result name is given in
 	 * {@code confIntervalMeasure}).
-	 * </p>
 	 * <p>
-	 * If the number of runs is not dynamic, this setting has no effect.
-	 * </p>
+	 * If the number of runs is not dynamic, this setting has no effect. A value
+	 * of 0 uses the number of available cpu cores.
 	 * 
 	 * @param minReplications
 	 *            Minimum number of replications.
 	 */
 	public void setMinReplications(int minReplications) {
-		if (minReplications <= 0)
+		if (minReplications < 0)
 			throw new IllegalArgumentException("" + minReplications);
 		this.minReplications = minReplications;
 	}
@@ -217,12 +262,10 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
-	 * <p>
 	 * Sets the desired target quality of results as a percentage of the mean
 	 * across all replications performed so far. Its default value is 0.01,
 	 * i.e., 1%. This setting has no effect if the total number of runs is
 	 * static.
-	 * </p>
 	 * <p>
 	 * Let's say after 5 replications the observed mean of a result in
 	 * {@code confIntervalMeasure} is 987.6 with some standard deviation (SD).
@@ -234,7 +277,6 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 * as the observed uncertainty is not smaller than the target value (20.4
 	 * &gt; 9.876). Therefore further replications would be performed to further
 	 * reduce the uncertainty of results.
-	 * </p>
 	 * 
 	 * @param allowancePercentage
 	 *            The desired maximum result uncertainty as a percentage of the

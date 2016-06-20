@@ -341,7 +341,7 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 
 	// TODO: confidence interval calculation should be factored out
 	public double confIntRangeSingle(double errorProb) {
-		if (numObs <= 2)
+		if (numObs < 2)
 			return Double.NaN;
 
 		double deg = weightSum() - 1.0d;
