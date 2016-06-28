@@ -12,7 +12,7 @@ public class SimulationExperiment extends Experiment {
 
 	// parameters
 
-	private double simulationLength = 0.0d;
+	private double simulationLength = Double.NaN;
 	private double initalSimTime = 0.0d;
 	private ArrayList<Runnable> initActions;
 
@@ -41,7 +41,6 @@ public class SimulationExperiment extends Experiment {
 		sim = createSim();
 
 		sim.setPrintLevel(getLogLevel());
-		sim.setSimulationLength(getSimulationLength());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
 
 		// forward simulation print events to experiment print events
@@ -66,6 +65,10 @@ public class SimulationExperiment extends Experiment {
 
 	@Override
 	protected void beforeRun() {
+		if (getSimulationLength() >= 0.0) {
+			sim.setSimulationLength(getSimulationLength());
+		}
+
 		sim.init();
 	}
 

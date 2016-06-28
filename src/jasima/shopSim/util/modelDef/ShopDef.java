@@ -28,14 +28,13 @@ import jasima.shopSim.util.ShopConfigurator;
  * {@link Shop}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class ShopDef extends PropertySupport {
 
 	private static final long serialVersionUID = -8471081132120093539L;
 
 	private String name = null;
-	private double simulationLength = 0.0d;
+	private double simulationLength = Double.NaN;
 	private int maxJobsInSystem = 0;
 	private int stopAfterNumJobs = 0;
 	private boolean enableLookAhead = false;

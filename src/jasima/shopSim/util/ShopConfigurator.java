@@ -61,7 +61,9 @@ public class ShopConfigurator {
 
 	public void configureSimulation(Simulation sim) {
 		sim.setName(shopDef.getName());
-		sim.setSimulationLength(shopDef.getSimulationLength());
+		
+		if (shopDef.getSimulationLength() >= 0.0)
+			sim.setSimulationLength(shopDef.getSimulationLength());
 	}
 
 	public void configureMdl(Shop shop) {
