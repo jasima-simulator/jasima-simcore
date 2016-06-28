@@ -17,7 +17,7 @@ public class TestMultipleReplicationExperiment {
 		mre.setBaseExperiment(new DynamicShopExperiment());
 		mre.addConfIntervalMeasure("flowtime");
 		mre.setAllowancePercentage(0.02);
-//		mre.setMinReplications(0);
+		mre.setMinReplications(1);
 		mre.setMaxReplications(300);
 		mre.setInitialSeed(23);
 
