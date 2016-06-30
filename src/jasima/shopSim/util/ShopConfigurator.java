@@ -36,7 +36,6 @@ import jasima.shopSim.core.StaticJobSource;
 import jasima.shopSim.core.StaticJobSource.JobSpec;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.util.modelDef.DynamicSourceDef;
-import jasima.shopSim.util.modelDef.IndividualMachineDef;
 import jasima.shopSim.util.modelDef.JobDef;
 import jasima.shopSim.util.modelDef.OperationDef;
 import jasima.shopSim.util.modelDef.RouteDef;
@@ -61,7 +60,7 @@ public class ShopConfigurator {
 
 	public void configureSimulation(Simulation sim) {
 		sim.setName(shopDef.getName());
-		
+
 		if (shopDef.getSimulationLength() >= 0.0)
 			sim.setSimulationLength(shopDef.getSimulationLength());
 	}
@@ -73,10 +72,9 @@ public class ShopConfigurator {
 
 		// create all machines
 		for (WorkstationDef wd : shopDef.getWorkstations()) {
-			int groupSize = 1;
-			if (wd.getMachines() != null && wd.getMachines().length > 0) {
-				groupSize = wd.getMachines().length;
-			}
+			int groupSize = wd.getNumInGroup();
+			double[] rel = wd.getMachReleaseDates();
+			String[] initialSetups = wd.getInitialSetups();
 
 			WorkStation m = new WorkStation(groupSize);
 			m.setName(wd.getName());
@@ -95,11 +93,12 @@ public class ShopConfigurator {
 
 			for (int i = 0; i < groupSize; i++) {
 				IndividualMachine im = m.machDat()[i];
-				IndividualMachineDef imd = wd.getMachines() != null ? wd.getMachines()[i] : new IndividualMachineDef();
 
-				im.relDate = imd.getMachRelDate();
-				im.initialSetup = m.translateSetupState(imd.getInitialSetup());
-				im.name = imd.getName();
+				if (rel != null)
+					im.relDate = rel[i];
+
+				String setup = initialSetups != null ? initialSetups[i] : WorkStation.DEF_SETUP_STR;
+				im.initialSetup = m.translateSetupState(setup);
 			}
 		}
 

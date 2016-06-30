@@ -33,7 +33,6 @@ import jasima.shopSim.core.Shop;
 import jasima.shopSim.core.WorkStation;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.util.modelDef.DynamicSourceDef;
-import jasima.shopSim.util.modelDef.IndividualMachineDef;
 import jasima.shopSim.util.modelDef.JobDef;
 import jasima.shopSim.util.modelDef.OperationDef;
 import jasima.shopSim.util.modelDef.RouteDef;
@@ -354,15 +353,18 @@ public class TextFileReader {
 				ms.setName(name);
 			} else if (NUM_IN_GROUP_MARKER.equals(sm)) {
 				int inGroup = Integer.parseInt(Util.nextNonEmptyLine(r));
-				IndividualMachineDef[] im = Util.initializedArray(inGroup, IndividualMachineDef.class);
-				ms.setMachines(im);
+				ms.setNumInGroup(inGroup);
 			} else if (MACHINE_RELEASE_MARKER.equals(sm)) {
 				String[] ss = Util.nextNonEmptyLine(r).trim().split("\\s+");
-				IndividualMachineDef[] im = ms.getMachines();
-
-				for (int i = 0; i < ss.length; i++) {
-					im[i].setMachRelDate(Double.parseDouble(ss[i]));
+				if (ss.length != ms.getNumInGroup()) {
+					throw new IllegalArgumentException();
 				}
+
+				double[] rel = new double[ms.getNumInGroup()];
+				for (int i = 0; i < ss.length; i++) {
+					rel[i] = Double.parseDouble(ss[i]);
+				}
+				ms.setMachReleaseDates(rel);
 			} else {
 				int m = getMachIdx(sm.trim());
 				ms = data.getWorkstations()[m];

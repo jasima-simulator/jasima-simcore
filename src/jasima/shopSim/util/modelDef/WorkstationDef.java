@@ -26,19 +26,22 @@ public class WorkstationDef extends PropertySupport {
 
 	private static final long serialVersionUID = -3259382268320160215L;
 
-	public static final String PROP_MACHINES = "machines";
 	public static final String PROP_NAME = "name";
+	public static final String PROP_NUM_IN_GROUP = "numInGroup";
+	public static final String PROP_INITIAL_SETUPS = "initialSetups";
+	public static final String PROP_MACH_RELEASE_DATES = "machReleaseDates";
 	public static final String PROP_SETUP_STATES = "setupStates";
 	public static final String PROP_SETUP_TIMES = "setupTimes";
 
 	private String name;
-	private IndividualMachineDef[] machines;;
+	private int numInGroup = 1;
+	private String[] initialSetups = null;
+	private double[] machReleaseDates = null;
 	private String[] setupStates = { WorkStation.DEF_SETUP_STR };
 	private double[][] setupTimes = { { 0.0 } };
 
 	public WorkstationDef() {
 		super();
-		setMachines(new IndividualMachineDef[] { new IndividualMachineDef() });
 	}
 
 	public String getName() {
@@ -49,20 +52,28 @@ public class WorkstationDef extends PropertySupport {
 		firePropertyChange(PROP_NAME, this.name, this.name = name);
 	}
 
-	public IndividualMachineDef[] getMachines() {
-		return machines;
+	public int getNumInGroup() {
+		return numInGroup;
 	}
 
-	public void setMachines(IndividualMachineDef[] ms) {
-		if (ms != null)
-			for (IndividualMachineDef m : ms) {
-				m.setWorkstation(this);
-			}
-		if (machines != null)
-			for (IndividualMachineDef m : machines) {
-				m.setWorkstation(null);
-			}
-		firePropertyChange(PROP_MACHINES, this.machines, this.machines = ms);
+	public void setNumInGroup(int numInGroup) {
+		firePropertyChange(PROP_NUM_IN_GROUP, this.numInGroup, this.numInGroup = numInGroup);
+	}
+
+	public String[] getInitialSetups() {
+		return initialSetups;
+	}
+
+	public void setInitialSetups(String[] initialSetups) {
+		firePropertyChange(PROP_INITIAL_SETUPS, this.initialSetups, this.initialSetups = initialSetups);
+	}
+
+	public double[] getMachReleaseDates() {
+		return machReleaseDates;
+	}
+
+	public void setMachReleaseDates(double[] machReleaseDates) {
+		firePropertyChange(PROP_MACH_RELEASE_DATES, this.machReleaseDates, this.machReleaseDates = machReleaseDates);
 	}
 
 	public String[] getSetupStates() {
