@@ -173,9 +173,9 @@ public class TypeUtil {
 		// do we have an array access?
 		int arrayElement = -1;
 		if (currSegment.contains("[")) {
-			int i1 = propPath.indexOf('[');
-			int i2 = propPath.indexOf(']');
-			arrayElement = Integer.parseInt(propPath.substring(i1 + 1, i2));
+			int i1 = currSegment.indexOf('[');
+			int i2 = currSegment.indexOf(']');
+			arrayElement = Integer.parseInt(currSegment.substring(i1 + 1, i2));
 			if (arrayElement < 0)
 				throw new IllegalArgumentException("invalid array/list access");
 
