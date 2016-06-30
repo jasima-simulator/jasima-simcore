@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,8 +52,12 @@ public class HolthausSimpleTest {
 
 	@Before
 	public void setUp() {
-		System.out.println("setting up");
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
+	}
+
+	@After
+	public void tearDown() {
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	@Test

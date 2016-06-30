@@ -23,6 +23,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,15 +53,18 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: TestMimacFab4Trace.java 550 2015-01-23 15:07:23Z
- *          thildebrandt@gmail.com $
  */
 @SuppressWarnings("deprecation")
 public class TestMimacFab4Trace {
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
+	}
+
+	@After
+	public void tearDown() {
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	private static final double PREC = 1e-6;

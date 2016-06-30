@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,16 +46,18 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: TestMIMAC.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com
- *          $
  */
 @SuppressWarnings("deprecation")
 public class TestMIMAC {
 
-	@BeforeClass
-	public static void setUp() {
-		System.out.println("setting up");
+	@Before
+	public void setUp() {
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
+	}
+
+	@After
+	public void tearDown() {
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	public MimacExperiment createExperiment() {

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,8 +73,6 @@ import util.Wintersim2010GPRules.GPRuleSize99;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: TestWinterSim2010Continuity.java 550 2015-01-23 15:07:23Z
- *          thildebrandt@gmail.com $
  */
 @SuppressWarnings("deprecation")
 public class TestWinterSim2010Continuity {
@@ -85,6 +84,11 @@ public class TestWinterSim2010Continuity {
 	@Before
 	public void setUp() {
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
+	}
+
+	@After
+	public void tearDown() {
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	public static MimacExperiment createBaseExperiment() {

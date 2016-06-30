@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,8 +55,12 @@ public class TestGECCOContinuity {
 
 	@Before
 	public void setUp() {
-		System.out.println("setting up");
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
+	}
+
+	@After
+	public void tearDown() {
+		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
 	}
 
 	private static final double GEN_SEED_FLOW_MEAN = 703.0405961677559d;
