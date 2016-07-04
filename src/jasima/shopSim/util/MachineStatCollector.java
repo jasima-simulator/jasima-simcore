@@ -141,4 +141,9 @@ public class MachineStatCollector implements WorkStationListener, SilentCloneabl
 		return (MachineStatCollector) super.clone();
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
+
 }

@@ -37,6 +37,8 @@ import jasima.core.util.MsgCategory;
 import jasima.core.util.SilentCloneable;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
+import jasima.core.util.ValueStore;
+import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierImpl;
 
@@ -73,7 +75,7 @@ import jasima.core.util.observer.NotifierImpl;
  * @author Torsten Hildebrandt
  */
 public abstract class Experiment
-		implements Notifier<Experiment, ExperimentMessage>, SilentCloneable<Experiment>, Serializable {
+		implements Notifier<Experiment, ExperimentMessage>, SilentCloneable<Experiment>, Serializable, ValueStore {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -184,6 +186,7 @@ public abstract class Experiment
 	private long initialSeed = DEFAULT_SEED;
 	private MsgCategory logLevel = MsgCategory.INFO;
 	private NotifierImpl<Experiment, ExperimentMessage> notifierAdapter;
+	private ValueStoreImpl valueStore;
 
 	// fields used during run
 	private long runTimeReal;
@@ -205,6 +208,7 @@ public abstract class Experiment
 		super();
 
 		notifierAdapter = new NotifierImpl<>(this);
+		valueStore = new ValueStoreImpl();
 	}
 
 	/**
@@ -453,6 +457,11 @@ public abstract class Experiment
 			c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
 		}
 
+		// clone value store copying (but not cloning!) all of its entries
+		if (valueStore != null) {
+			c.valueStore = valueStore.clone();
+		}
+
 		return c;
 	}
 
@@ -524,6 +533,17 @@ public abstract class Experiment
 	 */
 	public void setLogLevel(MsgCategory logLevel) {
 		this.logLevel = logLevel;
+	}
+
+	//
+	//
+	// ValueStore implementation
+	//
+	//
+
+	@Override
+	public ValueStore valueStoreImpl() {
+		return valueStore;
 	}
 
 	// ******************* static methods ************************

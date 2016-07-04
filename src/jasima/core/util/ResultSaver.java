@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import jasima.core.experiment.AbstractMultiConfExperiment;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleReplicationExperiment;
@@ -209,6 +211,23 @@ public class ResultSaver extends AbstractResultSaver {
 		String cn = prefix + "className";
 		int cnIdx = getColumnIndex(cn, isParam);
 		addCell(cnIdx, e.getClass().getName());
+
+		// write factor values used
+		@SuppressWarnings("unchecked")
+		List<String> factors = (List<String>) e.valueStoreGet(AbstractMultiConfExperiment.FACTORS);
+		if (factors != null) {
+			for (int i = 0; i < factors.size(); i++) {
+				String f = factors.get(i);
+				int idx = f.indexOf('=');
+				assert idx >= 0;
+
+				String name = f.substring(0, idx);
+				String value = f.substring(idx + 1);
+
+				int factIdx = getColumnIndex(prefix + AbstractMultiConfExperiment.FACTORS + "." + name, isParam);
+				addCell(factIdx, value);
+			}
+		}
 
 		// write all properties
 		Map<String, Object> ps = e.getPropsWithValues();

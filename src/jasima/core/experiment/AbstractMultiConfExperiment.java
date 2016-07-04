@@ -46,7 +46,6 @@ import jasima.core.util.Util;
  * {@link #KEY_EXPERIMENT}, which is regarded has having a length of -2.
  * {@link #KEY_EXPERIMENT} can be present in any number of configurations. If it
  * is present in all configurations, baseExperiment need not be set.
- * </p>
  * 
  * @author Robin Kreis
  * @author Torsten Hildebrandt
@@ -56,6 +55,7 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	private static final long serialVersionUID = 8651960788951812186L;
 
 	public static final String KEY_EXPERIMENT = "@";
+	public static final String FACTORS = "@factors";
 
 	/**
 	 * Allows finer control of the way a base experiment is configured than the
@@ -179,6 +179,15 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 			} else {
 				TypeUtil.setPropertyValue(e, p.getKey(), TypeUtil.cloneIfPossible(p.getValue()));
 			}
+
+			// remember the factor values used
+			@SuppressWarnings("unchecked")
+			List<String> fs = (List<String>) e.valueStoreGet(FACTORS);
+			if (fs == null) {
+				fs = new ArrayList<String>();
+				e.valueStorePut(FACTORS, fs);
+			}
+			fs.add(p.getKey() + "=" + p.getValue());
 		}
 
 		return e;
