@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef;
 
+import jasima.core.util.TypeUtil;
+
 public class StaticSourceDef extends SourceDef {
 
 	private static final long serialVersionUID = -8115921805433488275L;
@@ -35,4 +37,14 @@ public class StaticSourceDef extends SourceDef {
 	public void setJobSpecs(JobDef[] jobSpecs) {
 		firePropertyChange(PROP_JOB_SPECS, this.jobSpecs, this.jobSpecs = jobSpecs);
 	}
+
+	@Override
+	public StaticSourceDef clone() throws CloneNotSupportedException {
+		StaticSourceDef c = (StaticSourceDef) super.clone();
+
+		c.jobSpecs = TypeUtil.deepCloneArrayIfPossible(jobSpecs);
+
+		return c;
+	}
+
 }

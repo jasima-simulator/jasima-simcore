@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef;
 
+import jasima.core.util.TypeUtil;
+
 public class RouteDef extends PropertySupport {
 
 	private static final long serialVersionUID = -6956187506442015147L;
@@ -53,6 +55,15 @@ public class RouteDef extends PropertySupport {
 
 	public void setShop(ShopDef shop) {
 		firePropertyChange("shop", this.shop, this.shop = shop);
+	}
+
+	@Override
+	public RouteDef clone() throws CloneNotSupportedException {
+		RouteDef c = (RouteDef) super.clone();
+
+		c.operations = TypeUtil.deepCloneArrayIfPossible(operations);
+
+		return c;
 	}
 
 }

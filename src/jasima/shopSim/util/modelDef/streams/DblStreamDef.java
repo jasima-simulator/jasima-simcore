@@ -29,7 +29,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.util.Util;
 import jasima.shopSim.util.modelDef.PropertySupport;
 
-public abstract class DblStreamDef extends PropertySupport implements Cloneable {
+public abstract class DblStreamDef extends PropertySupport {
 
 	private static final long serialVersionUID = -3013662965159027666L;
 

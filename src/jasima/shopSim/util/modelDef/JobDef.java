@@ -25,7 +25,7 @@ public class JobDef extends PropertySupport {
 	private static final long serialVersionUID = 1889942721418427369L;
 
 	private String name;
-	private RouteDef route;
+	private int route;
 	private double releaseDate;
 	private double dueDate;
 	private double weight = 1.0;
@@ -34,7 +34,7 @@ public class JobDef extends PropertySupport {
 		super();
 	}
 
-	public JobDef(RouteDef rd, double rel, double due, double w, String n) {
+	public JobDef(int rd, double rel, double due, double w, String n) {
 		this();
 		route = rd;
 		releaseDate = rel;
@@ -51,11 +51,11 @@ public class JobDef extends PropertySupport {
 		firePropertyChange("name", this.name, this.name = name);
 	}
 
-	public RouteDef getRoute() {
+	public int getRoute() {
 		return route;
 	}
 
-	public void setRoute(RouteDef route) {
+	public void setRoute(int route) {
 		firePropertyChange("route", this.route, this.route = route);
 	}
 

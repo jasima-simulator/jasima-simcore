@@ -35,7 +35,7 @@ public class OperationDef extends PropertySupport {
 
 	private String name;
 	private double procTime;
-	private WorkstationDef workstation;
+	private int workstation;
 	private String setup = WorkStation.DEF_SETUP_STR;
 	private String batchFamily = WorkStation.BATCH_INCOMPATIBLE;
 	private int maxBatchSize = 1;
@@ -48,11 +48,11 @@ public class OperationDef extends PropertySupport {
 		firePropertyChange(PROP_PROC_TIME, this.procTime, this.procTime = procTime);
 	}
 
-	public WorkstationDef getWorkstation() {
+	public int getWorkstation() {
 		return workstation;
 	}
 
-	public void setWorkstation(WorkstationDef workstation) {
+	public void setWorkstation(int workstation) {
 		firePropertyChange(PROP_WORKSTATION, this.workstation, this.workstation = workstation);
 	}
 

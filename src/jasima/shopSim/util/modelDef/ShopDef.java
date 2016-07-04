@@ -20,6 +20,7 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef;
 
+import jasima.core.util.TypeUtil;
 import jasima.shopSim.core.Shop;
 import jasima.shopSim.util.ShopConfigurator;
 
@@ -87,14 +88,6 @@ public class ShopDef extends PropertySupport {
 	}
 
 	public void setJobSources(SourceDef[] js) {
-		if (js != null)
-			for (SourceDef m : js) {
-				m.setShop(this);
-			}
-		if (jobSources != null)
-			for (SourceDef m : jobSources) {
-				m.setShop(null);
-			}
 		firePropertyChange("jobSources", this.jobSources, this.jobSources = js);
 	}
 
@@ -130,6 +123,25 @@ public class ShopDef extends PropertySupport {
 		ShopConfigurator conf = new ShopConfigurator();
 		conf.setShopDef(this);
 		return conf;
+	}
+
+	@Override
+	public ShopDef clone() throws CloneNotSupportedException {
+		ShopDef c = (ShopDef) super.clone();
+
+		if (workstations != null) {
+			c.workstations = TypeUtil.deepCloneArrayIfPossible(workstations);
+		}
+
+		if (jobSources != null) {
+			c.jobSources = TypeUtil.deepCloneArrayIfPossible(jobSources);
+		}
+
+		if (routes != null) {
+			c.routes = TypeUtil.deepCloneArrayIfPossible(routes);
+		}
+
+		return c;
 	}
 
 }

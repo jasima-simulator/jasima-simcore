@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import java.util.Arrays;
-
 import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
@@ -128,7 +126,7 @@ public class ShopConfigurator {
 	}
 
 	private JobSource createDynamicSource(Shop shop, DynamicSourceDef sd) {
-		int route = indexOf(sd.getRoute(), shopDef.getRoutes());
+		int route = sd.getRoute();
 		DblStream iats = sd.getIats().createStream();
 		DblStream dueDates = sd.getDueDates().createStream();
 		DblStream weights = sd.getWeights().createStream();
@@ -179,16 +177,11 @@ public class ShopConfigurator {
 		JobSpec[] jss = new JobSpec[jobDefs.length];
 		for (int i = 0; i < jobDefs.length; i++) {
 			JobDef jd = jobDefs[i];
-			JobSpec js = new JobSpec(indexOf(jd.getRoute(), shopDef.getRoutes()), jd.getReleaseDate(), jd.getDueDate(),
-					jd.getWeight(), jd.getName());
+			JobSpec js = new JobSpec(jd.getRoute(), jd.getReleaseDate(), jd.getDueDate(), jd.getWeight(), jd.getName());
 			jss[i] = js;
 		}
 		s.jobs = jss;
 		return s;
-	}
-
-	private int indexOf(Object route, Object[] routes) {
-		return Arrays.asList(routes).indexOf(route);
 	}
 
 	private void initOperations(Shop shop, Route r, RouteDef rd) {
@@ -199,7 +192,7 @@ public class ShopConfigurator {
 			Operation o = new Operation();
 
 			// TODO: od.getName()
-			o.setMachine(shop.machines().getComponent(indexOf(od.getWorkstation(), shopDef.getWorkstations())));
+			o.setMachine(shop.machines().getComponent(od.getWorkstation()));
 			o.setProcTime(od.getProcTime());
 			// TODO: od.procTimeReal
 

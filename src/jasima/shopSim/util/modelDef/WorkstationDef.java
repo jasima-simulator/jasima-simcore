@@ -20,6 +20,7 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef;
 
+import jasima.core.util.TypeUtil;
 import jasima.shopSim.core.WorkStation;
 
 public class WorkstationDef extends PropertySupport {
@@ -90,6 +91,27 @@ public class WorkstationDef extends PropertySupport {
 
 	public void setSetupTimes(double[][] setupTimes) {
 		firePropertyChange(PROP_SETUP_TIMES, this.setupTimes, this.setupTimes = setupTimes);
+	}
+
+	@Override
+	public WorkstationDef clone() throws CloneNotSupportedException {
+		WorkstationDef c = (WorkstationDef) super.clone();
+
+		if (initialSetups != null) {
+			c.initialSetups = initialSetups.clone();
+		}
+
+		if (machReleaseDates != null) {
+			c.machReleaseDates = machReleaseDates.clone();
+		}
+
+		if (setupStates != null) {
+			c.setupStates = setupStates.clone();
+		}
+
+		c.setupTimes = TypeUtil.deepCloneArrayIfPossible(setupTimes);
+
+		return c;
 	}
 
 }

@@ -22,21 +22,11 @@ package jasima.shopSim.util.modelDef;
 
 public class SourceDef extends PropertySupport {
 
-	private static final long serialVersionUID = 195407206864268714L;
+	private static final long serialVersionUID = 195407206864268715L;
 
-	public static final String PROP_SHOP = "shop";
 	public static final String PROP_NAME = "name";
 
 	private String name;
-	private ShopDef shop;
-
-	public ShopDef getShop() {
-		return shop;
-	}
-
-	public void setShop(ShopDef shop) {
-		firePropertyChange(PROP_SHOP, this.shop, this.shop = shop);
-	}
 
 	public String getName() {
 		return name;

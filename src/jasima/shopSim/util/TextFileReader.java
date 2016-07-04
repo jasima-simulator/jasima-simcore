@@ -50,7 +50,6 @@ import jasima.shopSim.util.modelDef.streams.DblStreamDef;
  * jasima.shopSim.models.mimac.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class TextFileReader {
 
@@ -155,7 +154,7 @@ public class TextFileReader {
 
 				String machId = dat[0];
 				int idx = getMachIdx(machId);
-				od.setWorkstation(data.getWorkstations()[idx]);
+				od.setWorkstation(idx);
 			}
 		}
 	}
@@ -234,9 +233,10 @@ public class TextFileReader {
 			double w = Double.parseDouble(i[3]);
 			String name = i.length >= 5 ? i[4] : null;
 
+			@SuppressWarnings("unused")
 			RouteDef rd = data.getRoutes()[route];
 
-			jobs[n] = new JobDef(rd, rel, due, w, name);
+			jobs[n] = new JobDef(route, rel, due, w, name);
 		}
 
 		StaticSourceDef sd = new StaticSourceDef();
@@ -253,7 +253,6 @@ public class TextFileReader {
 		if (s == null)
 			return s;
 
-		RouteDef route = null;
 		DblStreamDef iats = null;
 		DblStreamDef dueDates = null;
 		DblStreamDef weights = null;
@@ -268,7 +267,8 @@ public class TextFileReader {
 		if (rt < 1 || rt > data.getRoutes().length)
 			throw new RuntimeException("Invalid route number " + rt);
 		rt--;// adjust to zero-based route index
-		route = data.getRoutes()[rt];
+		@SuppressWarnings("unused")
+		RouteDef route = data.getRoutes()[rt];
 
 		s = Util.nextNonEmptyLine(r);
 		if (!"arrivals".equalsIgnoreCase(s))
@@ -309,7 +309,7 @@ public class TextFileReader {
 		sd.setIats(iats);
 		sd.setDueDates(dueDates);
 		sd.setWeights(weights);
-		sd.setRoute(route);
+		sd.setRoute(rt);
 		if (numJobs >= 0)
 			sd.setNumJobs(numJobs);
 

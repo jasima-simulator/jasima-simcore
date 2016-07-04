@@ -60,6 +60,10 @@ public class StaticShopExperiment extends ShopExperiment {
 	public StaticShopExperiment clone() throws CloneNotSupportedException {
 		StaticShopExperiment c = (StaticShopExperiment) super.clone();
 
+		if (shopDef!=null) {
+			c.shopDef = shopDef.clone();
+		}
+		
 		return c;
 	}
 

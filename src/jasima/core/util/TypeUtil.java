@@ -613,10 +613,33 @@ public class TypeUtil {
 			return null;
 
 		// array or normal class?
-		if (o.getClass().getComponentType() == null) {
+		Class<?> ct = o.getClass().getComponentType();
+		if (ct == null) {
 			// normal class
 			o = callClone(o);
+		} else if (ct.isPrimitive()) {
+			// array of primitive type
+			if (ct == Integer.TYPE) {
+				o = (T) deepCloneArrayIfPossible((int[]) o);
+			} else if (ct == Double.TYPE) {
+				o = (T) deepCloneArrayIfPossible((double[]) o);
+			} else if (ct == Long.TYPE) {
+				o = (T) deepCloneArrayIfPossible((long[]) o);
+			} else if (ct == Boolean.TYPE) {
+				o = (T) deepCloneArrayIfPossible((boolean[]) o);
+			} else if (ct == Character.TYPE) {
+				o = (T) deepCloneArrayIfPossible((char[]) o);
+			} else if (ct == Float.TYPE) {
+				o = (T) deepCloneArrayIfPossible((float[]) o);
+			} else if (ct == Byte.TYPE) {
+				o = (T) deepCloneArrayIfPossible((byte[]) o);
+			} else if (ct == Short.TYPE) {
+				o = (T) deepCloneArrayIfPossible((short[]) o);
+			} else {
+				throw new AssertionError(); // can't occur
+			}
 		} else {
+			// array containing Objects
 			o = (T) deepCloneArrayIfPossible((Object[]) o);
 		}
 
@@ -658,6 +681,62 @@ public class TypeUtil {
 		}
 
 		return clone;
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static int[] deepCloneArrayIfPossible(int[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static long[] deepCloneArrayIfPossible(long[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static byte[] deepCloneArrayIfPossible(byte[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static short[] deepCloneArrayIfPossible(short[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static char[] deepCloneArrayIfPossible(char[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static boolean[] deepCloneArrayIfPossible(boolean[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static float[] deepCloneArrayIfPossible(float[] array) {
+		return array.clone();
+	}
+
+	/**
+	 * @see #deepCloneArrayIfPossible(Object[])
+	 */
+	public static double[] deepCloneArrayIfPossible(double[] array) {
+		return array.clone();
 	}
 
 	private static final String PROP_JASIMA_EXPERIMENT = "jasima.experiment";
