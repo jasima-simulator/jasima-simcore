@@ -41,7 +41,7 @@ import joptsimple.internal.Objects;
  * Behaviour of this class can be modified in two ways using system properties.
  * <ol>
  * <li>A property {@link #RANDOM_FACTORY_PROP_KEY} can be used to change the
- * class returned by the static method {@link #newInstance(Simulation)}.
+ * class returned by the static method {@link #newInstance()}.
  * <li>If just a different implementation of {@link java.util.Random} is desired
  * (default is {@link MersenneTwister}), use the system property
  * {@link #RANDOM_CLASS_PROP_KEY}.
@@ -88,7 +88,7 @@ public class RandomFactory implements Serializable {
 
 	/**
 	 * Don't use this constructor, use static method
-	 * {@link #newInstance(Simulation)} instead.
+	 * {@link #newInstance()} instead.
 	 */
 	protected RandomFactory() {
 		super();

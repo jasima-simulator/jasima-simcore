@@ -32,7 +32,7 @@ import jasima.core.simulation.SimComponentLifeCycleListener;
 /**
  * Possible base class for workstation listeners. Delegates all events to
  * seperate methods. Additional events can be processed by overriding
- * {@link #handleOther(WorkStation, WorkStation.WorkStationMessage)}.
+ * {@link #handleOther(SimComponent, Object)}.
  * 
  * @author Torsten Hildebrandt
  */

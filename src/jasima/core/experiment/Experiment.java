@@ -242,8 +242,8 @@ public abstract class Experiment
 
 	/**
 	 * Populates the result map {@link #resultMap} with values produced during
-	 * {@link #results} experiment execution. The implementation in Experiment
-	 * adds the two results {@value #RUNTIME} and {@value EXP_ABORTED}.
+	 * experiment execution. The implementation in Experiment adds the two
+	 * results {@value #RUNTIME} and {@value EXP_ABORTED}.
 	 */
 	protected void produceResults() {
 		resultMap.put(RUNTIME, runTimeReal());
@@ -379,7 +379,7 @@ public abstract class Experiment
 	 * 
 	 * @param message
 	 *            The message to print.
-	 * @see #print(ExpMsgCategory, String)
+	 * @see #print(MsgCategory, String)
 	 */
 	public void print(String message) {
 		print(MsgCategory.INFO, message);
@@ -418,7 +418,7 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Same as {@link #print(ExpMsgCategory, String, Object...)}, just
+	 * Same as {@link #print(MsgCategory, String, Object...)}, just
 	 * defaulting to the category {@code INFO}.
 	 * 
 	 * @param messageFormat

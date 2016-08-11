@@ -605,9 +605,6 @@ public class Simulation {
 	/**
 	 * Triggers a print event of the given category. If an appropriate listener
 	 * is installed, this should produce an output of {@code message}.
-	 * 
-	 * @param message
-	 *            The message to print.
 	 */
 	public void print(MsgCategory category, Object... params) {
 		if (numPrintListener() > 0 && category.ordinal() <= getPrintLevel().ordinal()) {
