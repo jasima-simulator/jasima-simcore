@@ -42,6 +42,10 @@ public abstract class AbstractResultSaver implements ExperimentListener {
 		this.resultFileNameHint = resultFileNameHint;
 	}
 
+	public String getFileNameHint() {
+		return this.resultFileNameHint;
+	}
+
 	public void setResultFileName(String resultFileName) {
 		resultFileName = resultFileName.trim();
 		this.resultFileName = resultFileName.isEmpty() ? null : resultFileName;
@@ -84,13 +88,26 @@ public abstract class AbstractResultSaver implements ExperimentListener {
 
 	public String getActualResultBaseName() {
 		if (actualResultFileName == null) {
+			String filename;
 			if (resultFileName == null) {
-				actualResultFileName = findFreeFile(resultFileNameHint.replaceFirst("\\..*?$", "")
-						+ new SimpleDateFormat("_yyyyMMdd_HHmm").format(new Date()));
+				filename = removeFileExtension(resultFileNameHint)
+						+ new SimpleDateFormat("_yyyyMMdd_HHmm").format(new Date());
 			} else {
-				actualResultFileName = findFreeFile(resultFileName.replaceFirst("\\..*?$", ""));
+				filename = removeFileExtension(resultFileName);
 			}
+			actualResultFileName = findFreeFile(filename);
 		}
 		return actualResultFileName;
+	}
+
+	private static String removeFileExtension(String filename) {
+		final File f = new File(filename);
+
+		int dotPos = f.getName().lastIndexOf('.');
+		if (dotPos <= 0) {
+			return filename;
+		}
+
+		return new File(f.getParent(), f.getName().substring(0, dotPos)).getPath();
 	}
 }
