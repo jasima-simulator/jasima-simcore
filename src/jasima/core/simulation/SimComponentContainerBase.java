@@ -2,6 +2,7 @@ package jasima.core.simulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class SimComponentContainerBase<SUB extends SimComponent> extends SimComponentBase
@@ -24,6 +25,11 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	@Override
 	public List<SUB> getComponents() {
 		return Collections.unmodifiableList(components);
+	}
+
+	@Override
+	public Iterator<SUB> iterator() {
+		return components.iterator();
 	}
 
 	@Override

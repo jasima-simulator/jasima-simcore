@@ -222,15 +222,21 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	/**
-	 * Gets the list of job sources in this shop. Do not modify the returned
-	 * array, before manually creating a clone of it.
+	 * Gets the job sources in this shop as an array.
 	 * 
-	 * @return The array of job sources.
+	 * @return An array of job sources.
+	 * @see #sources
 	 */
 	public JobSource[] getSources() {
 		return sources.getComponents().toArray(new JobSource[0]);
 	}
 
+	/**
+	 * Returns the {@link SimComponentContainer} containing all
+	 * {@link JobSource}s of this shop.
+	 * 
+	 * @return The container object.
+	 */
 	public SimComponentContainer<JobSource> sources() {
 		return sources;
 	}
@@ -268,15 +274,22 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	/**
-	 * Gets the list of workstations in this shop. This returns method returns
-	 * the internal array, so do not modify it externally.
+	 * Gets an array of the workstations contained in this shop.
 	 * 
 	 * @return An array of all workstations of this shop.
+	 * 
+	 * @see #machines()
 	 */
 	public WorkStation[] getMachines() {
-		return machines.getComponents().toArray(new WorkStation[0]);
+		return machines.getComponents().toArray(new WorkStation[machines.numComponents()]);
 	}
 
+	/**
+	 * Returns the {@link SimComponentContainer} containing all
+	 * {@link WorkStation}s of this shop.
+	 * 
+	 * @return The container object.
+	 */
 	public SimComponentContainer<WorkStation> machines() {
 		return machines;
 	}
@@ -381,7 +394,6 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 		}
 	}
 
-	
 	@Override
 	public Shop clone() throws CloneNotSupportedException {
 		Shop s = (Shop) super.clone();

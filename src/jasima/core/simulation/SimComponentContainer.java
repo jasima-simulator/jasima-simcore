@@ -3,7 +3,7 @@ package jasima.core.simulation;
 import java.util.List;
 import java.util.Map;
 
-public interface SimComponentContainer<SUB extends SimComponent> extends SimComponent {
+public interface SimComponentContainer<SUB extends SimComponent> extends SimComponent, Iterable<SUB> {
 
 	List<SUB> getComponents();
 
@@ -51,5 +51,4 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 
 		getComponents().forEach(c -> c.produceResults(res));
 	}
-
 }
