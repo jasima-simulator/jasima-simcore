@@ -9,9 +9,9 @@
 		<version>7</version>
 	</parent>
 
-	<groupId>com.googlecode.jasima</groupId>
+	<groupId>net.jasima</groupId>
 	<artifactId>jasima-main</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jasima</name>
@@ -19,8 +19,8 @@
 	<url>http://jasima.net/</url>
 	<inceptionYear>2011</inceptionYear>
 	<organization>
-		<name>jasima solutions UG</name>
-		<url>http://jasimasolutions.de/</url>
+		<name>SimPlan AG</name>
+		<url>http://simplan.de/</url>
 	</organization>
 	<licenses>
 		<license>
@@ -33,7 +33,7 @@
 		<developer>
 			<id>hil</id>
 			<name>Torsten Hildebrandt</name>
-			<email>jasima@thildebrandt.de</email>
+			<email>torsten@jasima.net</email>
 		</developer>
 	</developers>
 	<dependencies>
