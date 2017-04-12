@@ -46,6 +46,10 @@ public abstract class PR implements Cloneable, Serializable {
 	private LookaheadThreshold firstLookaheadRule = null;
 	private boolean lookaheadRuleValid = false;
 
+	public PR() {
+		super();
+	}
+
 	/**
 	 * This method is called upon start of a simulation to perform any
 	 * initializations required.
@@ -90,7 +94,10 @@ public abstract class PR implements Cloneable, Serializable {
 	}
 
 	public String getName() {
-		return getClass().getSimpleName();
+		String res = getClass().getSimpleName();
+		if (res.isEmpty())
+			res = getClass().getName();
+		return res;
 	}
 
 	@Override

@@ -100,8 +100,8 @@ public class HolthausSimpleTest {
 
 		Map<String, Object> res = e.getResults();
 
-		assertEquals("numJobsFinished", 40553, res.get("numJobsFinished"));
 		assertEquals("numJobsStarted", 40553, res.get("numJobsStarted"));
+		assertEquals("numJobsFinished", 40553, res.get("numJobsFinished"));
 
 		SummaryStat flow = (SummaryStat) res.get("flowMean");
 		assertEquals("flowMean", 2643.4588, flow.mean(), 0.0001);

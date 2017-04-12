@@ -30,7 +30,6 @@ import jasima.shopSim.core.WorkStation;
  * Processing Time first becomes Longest Processing Time first etc.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class Inverse extends PR {
 
