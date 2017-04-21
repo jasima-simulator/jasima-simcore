@@ -38,9 +38,11 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	}
 
 	@Override
-	public void addComponent(SUB sc) {
+	public SimComponentContainerBase<SUB> addComponent(SUB sc) {
 		components.add(sc);
 		sc.setParent(this);
+
+		return this;
 	}
 
 	@Override

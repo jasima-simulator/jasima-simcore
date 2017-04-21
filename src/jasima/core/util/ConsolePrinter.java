@@ -251,7 +251,9 @@ public class ConsolePrinter implements ExperimentListener {
 	 */
 	public static void printResults(PrintWriter out, Experiment e, Map<String, Object> res) {
 		out.println();
-		out.println(getDescription(e));
+		if (e != null) {
+			out.println(getDescription(e));
+		}
 
 		ArrayList<String> valStatNames = new ArrayList<String>();
 		ArrayList<String> otherNames = new ArrayList<String>();

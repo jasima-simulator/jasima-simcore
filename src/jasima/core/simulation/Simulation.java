@@ -427,11 +427,13 @@ public class Simulation {
 	 */
 	public void schedulePeriodically(double firstInvocation, double interval, int prio, BooleanSupplier method) {
 		schedule(new Event(firstInvocation, prio) {
+			private int n = 0;
+
 			@Override
 			public void handle() {
 				if (method.getAsBoolean()) {
 					// schedule next invocation reusing Event object
-					setTime(simTime() + interval);
+					setTime(firstInvocation + (++n) * interval);
 					schedule(this);
 				}
 			}
@@ -443,11 +445,13 @@ public class Simulation {
 	 */
 	public void schedulePeriodically(double firstInvocation, double interval, int prio, Runnable method) {
 		schedule(new Event(firstInvocation, prio) {
+			private int n = 0;
+
 			@Override
 			public void handle() {
 				method.run();
 				// schedule next invocation reusing Event object
-				setTime(simTime() + interval);
+				setTime(firstInvocation + (++n) * interval);
 				schedule(this);
 			}
 		});

@@ -2,12 +2,14 @@ package jasima.core.simulation;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public interface SimComponentContainer<SUB extends SimComponent> extends SimComponent, Iterable<SUB> {
 
 	List<SUB> getComponents();
 
-	void addComponent(SUB sc);
+	SimComponentContainer<SUB> addComponent(SUB sc);
 
 	boolean removeComponent(SUB sc);
 
@@ -51,4 +53,16 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 
 		getComponents().forEach(c -> c.produceResults(res));
 	}
+	
+
+	default <T extends SUB> void componentSetHelper(T newValue, Supplier<T> getter, Consumer<T> setter) {
+		T oldValue = getter.get();
+		if (oldValue != null) {
+			removeComponent(oldValue);
+		}
+
+		setter.accept(newValue);
+		addComponent(newValue);
+	}
+
 }

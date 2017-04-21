@@ -34,7 +34,6 @@ import java.io.Serializable;
  * @param <B>
  *            Type of the second element.
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class Pair<A, B> implements Cloneable, Serializable {
 
@@ -55,6 +54,14 @@ public class Pair<A, B> implements Cloneable, Serializable {
 		this(p.a, p.b);
 	}
 
+	public A first() {
+		return a;
+	}
+
+	public B second() {
+		return b;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		Pair<?, ?> p2 = (Pair<?, ?>) obj;
@@ -73,7 +80,7 @@ public class Pair<A, B> implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Returns a String containing a and b seperated by comma and enclosed in
+	 * Returns a String containing a and b separated by comma and enclosed in
 	 * arrow brackets.
 	 */
 	@Override
@@ -87,4 +94,11 @@ public class Pair<A, B> implements Cloneable, Serializable {
 		return (Pair<A, B>) super.clone();
 	}
 
+	/**
+	 * Convenient factory method calling the constructor
+	 * {@link #Pair(Object, Object)}.
+	 */
+	public static <A, B> Pair<A, B> of(A a, B b) {
+		return new Pair<>(a, b);
+	}
 }

@@ -191,6 +191,22 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 		return getSim().isTraceEnabled();
 	}
 
+	/**
+	 * Returns a base name for random streams consisting of the String
+	 * representation of the parent ({@link #getParent()}) if it exists and the
+	 * (simple) name of the components class.
+	 */
+	default String getStreamBaseName() {
+		StringBuilder sb = new StringBuilder();
+		SimComponentContainer<?> p = getParent();
+		if (p != null) {
+			sb.append(p.getStreamBaseName()).append('.');
+		}
+		sb.append(this.toString());
+
+		return sb.toString();
+	}
+
 	// event notification, delegate to adapter
 
 	/**

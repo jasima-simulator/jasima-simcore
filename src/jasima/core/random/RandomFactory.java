@@ -87,8 +87,8 @@ public class RandomFactory implements Serializable {
 	private Simulation sim;
 
 	/**
-	 * Don't use this constructor, use static method
-	 * {@link #newInstance()} instead.
+	 * Don't use this constructor, use static method {@link #newInstance()}
+	 * instead.
 	 */
 	protected RandomFactory() {
 		super();
@@ -211,7 +211,7 @@ public class RandomFactory implements Serializable {
 		}
 
 		stream.setRndGen(createInstance(name));
-		
+
 		stream.init();
 
 		return stream;
@@ -219,7 +219,7 @@ public class RandomFactory implements Serializable {
 
 	/**
 	 * Initializes the random number generator of a DblStream if it is not
-	 * already set using the streams name. This method is the same as
+	 * already set using the stream's name. This method is the same as
 	 * {@link #initRndGen(DblStream, String)}, just without a default name.
 	 * 
 	 * @param stream
