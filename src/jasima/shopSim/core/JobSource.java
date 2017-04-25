@@ -20,7 +20,6 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.random.discrete.IntEmpirical;
 import jasima.core.simulation.Event;
 import jasima.core.simulation.SimComponentBase;
 
@@ -49,7 +48,7 @@ public abstract class JobSource extends SimComponentBase {
 	public void init() {
 		super.init();
 
-		stopArrivals = false;new IntEmpirical();
+		stopArrivals = false;
 		jobsStarted = 0;
 
 		Event arriveEvent = new Event(0.0d, ARRIVE_PRIO) {
