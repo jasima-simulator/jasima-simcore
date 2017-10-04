@@ -18,6 +18,7 @@ public class SimComponentBase implements SimComponent {
 	private SimComponentContainer<?> parent;
 
 	private String name;
+	private transient String hierarchicalName;
 
 	// delegate Notifier functionality
 	private NotifierImpl<SimComponent, Object> notifierAdapter;
@@ -60,7 +61,23 @@ public class SimComponentBase implements SimComponent {
 
 	@Override
 	public void setParent(SimComponentContainer<?> parent) {
+		hierarchicalName = null;
 		this.parent = parent;
+	}
+
+	@Override
+	public String getHierarchicalName() {
+		if (hierarchicalName == null) {
+			StringBuilder sb = new StringBuilder();
+			SimComponentContainer<?> p = getParent();
+			if (p != null && p != getSim().getRootComponent()) {
+				sb.append(p.getHierarchicalName()).append('.');
+			}
+			sb.append(this.toString());
+			hierarchicalName = sb.toString();
+		}
+
+		return hierarchicalName;
 	}
 
 	public String getName() {

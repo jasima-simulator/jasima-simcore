@@ -6,6 +6,7 @@ package jasima.core.util.observer;
  * 
  * @author Torsten Hildebrandt
  */
+@FunctionalInterface
 public interface NotifierListener<SUBJECT, MESSAGE> {
 	void inform(SUBJECT publisher, MESSAGE event);
 }

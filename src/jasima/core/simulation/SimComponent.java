@@ -192,20 +192,11 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Returns a base name for random streams consisting of the String
+	 * Returns a base name for a SimConponent consisting of the hierarchical 
 	 * representation of the parent ({@link #getParent()}) if it exists and the
-	 * (simple) name of the components class.
+	 * (simple) name of the component's class.
 	 */
-	default String getStreamBaseName() {
-		StringBuilder sb = new StringBuilder();
-		SimComponentContainer<?> p = getParent();
-		if (p != null) {
-			sb.append(p.getStreamBaseName()).append('.');
-		}
-		sb.append(this.toString());
-
-		return sb.toString();
-	}
+	String getHierarchicalName();
 
 	// event notification, delegate to adapter
 
