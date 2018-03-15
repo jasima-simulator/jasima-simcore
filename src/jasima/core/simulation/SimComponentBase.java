@@ -80,6 +80,7 @@ public class SimComponentBase implements SimComponent {
 		return hierarchicalName;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -87,7 +88,16 @@ public class SimComponentBase implements SimComponent {
 	/**
 	 * Sets a name for this component.
 	 */
+	@Override
 	public void setName(String name) {
+		if(!isValidName(name)) {
+			throw new IllegalArgumentException(String.format("Component name '%s' is not valid.", name));
+		}
+		
+		if (this.name != null) {
+			throw new IllegalStateException("'name' can only be set once.");
+		}
+
 		this.name = name;
 	}
 

@@ -198,7 +198,7 @@ public class Simulation {
 		numAppEvents = 0;
 		numEventsProcessed = 0;
 
-		simTimeToMillisFactor = 60 * 1000;
+		simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 
 		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
 		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();

@@ -19,6 +19,8 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 
 	int numComponents();
 
+	SUB getComponentByName(String name);
+
 	@Override
 	default void init() {
 		SimComponent.super.init();

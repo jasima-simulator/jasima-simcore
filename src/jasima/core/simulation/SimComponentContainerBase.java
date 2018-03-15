@@ -2,6 +2,7 @@ package jasima.core.simulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,10 +10,12 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 		implements SimComponentContainer<SUB> {
 
 	private ArrayList<SUB> components;
+	private HashMap<String, SUB> componentsByName;
 
 	public SimComponentContainerBase() {
 		super();
 		components = new ArrayList<>();
+		componentsByName = new HashMap<>();
 	}
 
 	@Override
@@ -38,9 +41,22 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	}
 
 	@Override
+	public SUB getComponentByName(String name) {
+		return componentsByName.get(name);
+	}
+
+	@Override
 	public SimComponentContainerBase<SUB> addComponent(SUB sc) {
+		// name has to be unique
+		if (getComponentByName(sc.getName()) != null) {
+			throw new IllegalArgumentException(String.format("Container '%s' already contains a component '%s'.",
+					getHierarchicalName(), sc.getName()));
+		}
+
 		components.add(sc);
 		sc.setParent(this);
+
+		componentsByName.put(sc.getName(), sc);
 
 		return this;
 	}

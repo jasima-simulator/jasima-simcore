@@ -87,6 +87,16 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 */
 	void setParent(SimComponentContainer<?> p);
 
+	/**
+	 * Gets the name of this component (must not be changed once set).
+	 */
+	String getName();
+	void setName(String name);
+	
+	default boolean isValidName(String name) {
+		return name!=null && name.length()>0 && name.indexOf('.')<0;
+	}
+
 	// default implementations of lifecycle messages/events
 
 	default void init() {
@@ -192,7 +202,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Returns a base name for a SimConponent consisting of the hierarchical 
+	 * Returns a base name for a SimConponent consisting of the hierarchical
 	 * representation of the parent ({@link #getParent()}) if it exists and the
 	 * (simple) name of the component's class.
 	 */
