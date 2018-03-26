@@ -59,7 +59,9 @@ public abstract class DblStream implements Serializable, Cloneable {
 	/**
 	 * Returns the arithmetic mean of the values returned by {@link #nextDbl()}.
 	 */
-	public abstract double getNumericalMean();
+	public double getNumericalMean() {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * This method computes the minimum and maximum support values (range of
@@ -67,12 +69,34 @@ public abstract class DblStream implements Serializable, Cloneable {
 	 * 
 	 * @return A {@link Pair} containing the minimum and maximum support values.
 	 */
-	public abstract Pair<Double, Double> getValueRange();
+	public Pair<Double, Double> getValueRange() {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Returns the minimum value to be produced by this object.
+	 * 
+	 * @return Returns the minimum value to be produced by this object.
+	 * @see #getValueRange()
+	 */
+	public double min() {
+		return getValueRange().a;
+	}
+
+	/**
+	 * Returns the maximum value to be produced by this object.
+	 * 
+	 * @return Returns the maximum value to be produced by this object.
+	 * @see #getValueRange()
+	 */
+	public double max() {
+		return getValueRange().b;
+	}
 
 	/**
 	 * Creates a {@link DblStreamDef} object from this stream. This method only
-	 * delegates to {@link DblStreamDef#createStreamDefFromStream(DblStream)}
-	 * and therefore is final.
+	 * delegates to {@link DblStreamDef#createStreamDefFromStream(DblStream)} and
+	 * therefore is final.
 	 */
 	public final DblStreamDef createStreamDefFromStream() {
 		return DblStreamDef.createStreamDefFromStream(this);
@@ -91,8 +115,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Returns the random number generator currently associated with this
-	 * stream.
+	 * Returns the random number generator currently associated with this stream.
 	 */
 	public Random getRndGen() {
 		return rndGen;
