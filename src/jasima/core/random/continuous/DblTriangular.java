@@ -57,6 +57,37 @@ public class DblTriangular extends DblStream {
 		setMax(max);
 	}
 
+	/**
+	 * Factory method to create a DblStream given the distribution's mode value.
+	 * 
+	 * @param min
+	 *            The distribution's minimum value.
+	 * @param mode
+	 *            The distribution's mode (most frequent) value.
+	 * @param max
+	 *            The distribution's maximum value.
+	 * @return A new DblTriangular object.
+	 */
+	public static DblTriangular fromMinModeMax(double min, double mode, double max) {
+		return new DblTriangular(min, mode, max);
+	}
+
+	/**
+	 * Factory method to create a DblStream given the distribution's mean value.
+	 * 
+	 * @param min
+	 *            The distribution's minimum value.
+	 * @param mean
+	 *            The distribution's mean value.
+	 * @param max
+	 *            The distribution's maximum value.
+	 * @return A new DblTriangular object.
+	 */
+	public static DblTriangular fromMinMeanMax(double min, double mean, double max) {
+		double mode = mean * 3.0 - min - max;
+		return new DblTriangular(min, mode, max);
+	}
+
 	@Override
 	public void init() {
 		super.init();
