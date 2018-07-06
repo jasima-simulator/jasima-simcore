@@ -1,6 +1,7 @@
 package jasima.core.simulation;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.simulation.Simulation.SimPrintMessage;
@@ -14,7 +15,7 @@ public class SimulationExperiment extends Experiment {
 
 	private double simulationLength = Double.NaN;
 	private double initalSimTime = 0.0d;
-	private ArrayList<Runnable> initActions;
+	private ArrayList<Consumer<Simulation>> initActions;
 
 	// fields used during run
 
@@ -32,9 +33,8 @@ public class SimulationExperiment extends Experiment {
 
 		initSim();
 
-		for (Runnable r : initActions) {
-			r.run();
-		}
+		// call initActions
+		initActions.forEach(a -> a.accept(sim));
 	}
 
 	protected void initSim() {
@@ -97,8 +97,7 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	/**
-	 * Returns the current simulation time. This is the same as calling
-	 * {@code sim().simTime()} directly.
+	 * Returns the current simulation time. This is the same as calling {@code sim().simTime()} directly.
 	 */
 	protected double simTime() {
 		return sim.simTime();
@@ -130,10 +129,10 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	/**
-	 * Adds a {@code Runnable} that is called each after creating simulation
-	 * components to perform additional initialization tasks.
+	 * Adds a {@code Consumer<Simulation>} that is called after creating the simulation components to perform additional initialization
+	 * tasks.
 	 */
-	public void addInitAction(Runnable action) {
+	public void addInitAction(Consumer<Simulation> action) {
 		initActions.add(action);
 	}
 
