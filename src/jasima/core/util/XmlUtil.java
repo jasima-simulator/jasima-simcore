@@ -37,11 +37,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import jasima.core.experiment.Experiment.UniqueNamesCheckingHashMap;
 
 /**
- * Provides utility methods to read and write arbitrary Java objects as xml
- * (xml-Serialization using the xstream library).
+ * Provides utility methods to read and write arbitrary Java objects as xml (xml-Serialization using the xstream library).
  * 
  * @author Torsten Hildebrandt, 2012-07-13
- * @version "$Id$"
  */
 public class XmlUtil {
 
@@ -61,6 +59,19 @@ public class XmlUtil {
 	}
 
 	/**
+	 * Loads an object from a String containing xml. Format is assumed to be the XML bean format produced by jasima gui.
+	 * 
+	 * @param xmlString
+	 *            A String containing xml data.
+	 * @see #loadXML(FileFormat,String)
+	 * 
+	 * @return The object contained in {@code xmlString}.
+	 */
+	public static Object loadXML(String xmlString) {
+		return loadXML(FileFormat.JASIMA_BEAN, xmlString);
+	}
+
+	/**
 	 * Loads an object from a file.
 	 * 
 	 * @param f
@@ -74,6 +85,17 @@ public class XmlUtil {
 	}
 
 	/**
+	 * Loads an object from a file. Format is assumed to be the XML bean format produced by jasima gui.
+	 * 
+	 * @param f
+	 *            The file to load.
+	 * @return The object contained in {@code f}.
+	 */
+	public static Object loadXML(File f) {
+		return loadXML(FileFormat.JASIMA_BEAN, f);
+	}
+
+	/**
 	 * Loads an object from a {@link Reader}.
 	 * 
 	 * @param r
@@ -84,6 +106,17 @@ public class XmlUtil {
 		XStream xstream = getXStream(format);
 		Object o = xstream.fromXML(r);
 		return o;
+	}
+
+	/**
+	 * Loads an object from a {@link Reader}. Format is assumed to be the XML bean format produced by jasima gui.
+	 * 
+	 * @param r
+	 *            Source of the xml.
+	 * @return The object contained in {@code r}.
+	 */
+	public static Object loadXML(Reader r) {
+		return loadXML(FileFormat.JASIMA_BEAN, r);
 	}
 
 	/**
@@ -117,8 +150,7 @@ public class XmlUtil {
 	 * @param o
 	 *            The object to convert.
 	 * @param f
-	 *            The output file. This file is overwritten if it already
-	 *            exists.
+	 *            The output file. This file is overwritten if it already exists.
 	 */
 	public static void saveXML(FileFormat format, Object o, File f) {
 		XStream xstream = getXStream(format);

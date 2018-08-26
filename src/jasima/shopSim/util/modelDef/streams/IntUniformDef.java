@@ -85,6 +85,13 @@ public class IntUniformDef extends IntStreamDef {
 		super();
 	}
 
+	public IntUniformDef(int min, int max) {
+		this();
+		
+		setMinValue(min);
+		setMaxValue(max);
+	}
+
 	@Override
 	public String toString() {
 		return String.format(Util.DEF_LOCALE, "%s(%d,%d)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
