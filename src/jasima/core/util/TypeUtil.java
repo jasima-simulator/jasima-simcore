@@ -273,7 +273,7 @@ public class TypeUtil {
 
 			if (getPart.length() > 0)
 				getPart += '.';
-			getPart = getPart + setPart.substring(0, i1);
+			getPart = propPath.substring(0, i1);
 			setPart = null;
 		}
 
