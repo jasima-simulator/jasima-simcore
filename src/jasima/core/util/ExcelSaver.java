@@ -176,6 +176,12 @@ public class ExcelSaver extends ResultSaver {
 		intFormat = new WritableCellFormat(NumberFormats.INTEGER);
 		floatFormat = new WritableCellFormat(NumberFormats.FLOAT);
 	}
+	
+	public ExcelSaver(String fileNameHint) {
+		this();
+		
+		setFileNameHint(fileNameHint);
+	}
 
 	@Override
 	public void finished(Experiment e, Map<String, Object> results) {
