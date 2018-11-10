@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class SimComponentContainerBase<SUB extends SimComponent> extends SimComponentBase
-		implements SimComponentContainer<SUB> {
+public class SimComponentContainerBase<SUB extends SimComponent> extends SimComponentBase implements SimComponentContainer<SUB> {
 
 	private ArrayList<SUB> components;
 	private HashMap<String, SUB> componentsByName;
@@ -42,15 +41,15 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 
 	@Override
 	public SUB getComponentByName(String name) {
-		return componentsByName.get(name);
+		return name == null ? null : componentsByName.get(name);
 	}
 
 	@Override
 	public SimComponentContainerBase<SUB> addComponent(SUB sc) {
 		// name has to be unique
 		if (getComponentByName(sc.getName()) != null) {
-			throw new IllegalArgumentException(String.format("Container '%s' already contains a component '%s'.",
-					getHierarchicalName(), sc.getName()));
+			throw new IllegalArgumentException(
+					String.format("Container '%s' already contains a component '%s'.", getHierarchicalName(), sc.getName()));
 		}
 
 		components.add(sc);
