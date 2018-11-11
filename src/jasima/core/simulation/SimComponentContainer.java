@@ -36,6 +36,13 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 	}
 
 	@Override
+	default void resetStats() {
+		SimComponent.super.resetStats();
+
+		getComponents().forEach(c -> c.resetStats());
+	}
+
+	@Override
 	default void afterRun() {
 		SimComponent.super.afterRun();
 

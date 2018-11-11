@@ -38,6 +38,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 
 		public static final SimComponentLifeCycleMessage INIT = new SimComponentLifeCycleMessage("INIT");
 		public static final SimComponentLifeCycleMessage BEFORE_RUN = new SimComponentLifeCycleMessage("BEFORE_RUN");
+		public static final SimComponentLifeCycleMessage RESET_STATS = new SimComponentLifeCycleMessage("RESET_STATS");
 		public static final SimComponentLifeCycleMessage AFTER_RUN = new SimComponentLifeCycleMessage("AFTER_RUN");
 		public static final SimComponentLifeCycleMessage DONE = new SimComponentLifeCycleMessage("DONE");
 	}
@@ -105,6 +106,10 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 
 	default void beforeRun() {
 		fire(SimComponentLifeCycleMessage.BEFORE_RUN);
+	}
+
+	default void resetStats() {
+		fire(SimComponentLifeCycleMessage.RESET_STATS);
 	}
 
 	default void afterRun() {

@@ -15,6 +15,7 @@ public class SimulationExperiment extends Experiment {
 
 	private double simulationLength = Double.NaN;
 	private double initalSimTime = 0.0d;
+	private double statsResetTime = 0.0d;
 	private ArrayList<Consumer<Simulation>> initActions;
 
 	// fields used during run
@@ -40,6 +41,7 @@ public class SimulationExperiment extends Experiment {
 	protected void initSim() {
 		sim = createSim();
 
+		sim.setInitialSimTime(getInitalSimTime());
 		sim.setPrintLevel(getLogLevel());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
 
@@ -115,6 +117,21 @@ public class SimulationExperiment extends Experiment {
 
 	public double getSimulationLength() {
 		return simulationLength;
+	}
+
+	/**
+	 * Sets the statistics reset time. When this time is reached then the {@code resetStats()} methods of all components will be called.
+	 * Statistics reset methods will also be executed once before the simulation starts (independently from this setting).
+	 * 
+	 * @param statsResetTime
+	 *            The time when to call all statics reset methods.
+	 */
+	public void setStatsResetTime(double statsResetTime) {
+		this.statsResetTime = statsResetTime;
+	}
+
+	public double getStatsResetTime() {
+		return statsResetTime;
 	}
 
 	public double getInitalSimTime() {

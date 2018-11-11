@@ -45,18 +45,13 @@ import jasima.core.util.TraceFileProducer;
 import jasima.core.util.Util;
 
 /**
- * Base class for a discrete event simulation. This class doesn't do much, but
- * only maintains an event queue and manages simulation time. Additionally it
- * offers a centralized place to initialize random number streams and to create
- * status and debug messages.
+ * Base class for a discrete event simulation. This class doesn't do much, but only maintains an event queue and manages simulation time.
+ * Additionally it offers a centralized place to initialize random number streams and to create status and debug messages.
  * <p>
- * The typical life cycle of a simulation would be to create it, and
- * subsequently set any parameters. Afterwards {@link #init()} has to be called
- * before the actual simulation can be performed in {@link #run()}. After
- * completing a simulation the {@link #done()}-method should be called to
- * perform clean-up, collecting simulation results, etc. As a final step usually
- * {@link #produceResults(Map)} is called to allow the simulation and all
- * simulation components to report simulation results.
+ * The typical life cycle of a simulation would be to create it, and subsequently set any parameters. Afterwards {@link #init()} has to be
+ * called before the actual simulation can be performed in {@link #run()}. After completing a simulation the {@link #done()}-method should
+ * be called to perform clean-up, collecting simulation results, etc. As a final step usually {@link #produceResults(Map)} is called to
+ * allow the simulation and all simulation components to report simulation results.
  * 
  * @author Torsten Hildebrandt
  */
@@ -66,10 +61,8 @@ public class Simulation {
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
 
 	/**
-	 * {@link SimPrintMessage}s are produced whenever {@code print()} or
-	 * {@code trace()} is called during a simulation to produce status/debug
-	 * messages. They are passed to print listeners registered with a simulation
-	 * for further processing.
+	 * {@link SimPrintMessage}s are produced whenever {@code print()} or {@code trace()} is called during a simulation to produce
+	 * status/debug messages. They are passed to print listeners registered with a simulation for further processing.
 	 * 
 	 * @see ConsolePrinter
 	 * @see TraceFileProducer
@@ -153,6 +146,7 @@ public class Simulation {
 
 	private double simulationLength = 0.0d;
 	private double initialSimTime = 0.0d;
+	private double statsResetTime = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
 	private SimComponentContainer<SimComponent> rootComponent;
@@ -237,8 +231,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Performs all initializations required for a successful simulation
-	 * {@link #run()}.
+	 * Performs all initializations required for a successful simulation {@link #run()}.
 	 */
 	public void init() {
 		simTime = getInitialSimTime();
@@ -252,14 +245,15 @@ public class Simulation {
 	 * <li>advancing simulation time, and
 	 * <li>triggering event processing.
 	 * </ol>
-	 * A simulation is terminated if either the maximum simulation length is
-	 * reached, there are no more application events in the queue, or some other
-	 * code called {@link #end()}.
+	 * A simulation is terminated if either the maximum simulation length is reached, there are no more application events in the queue, or
+	 * some other code called {@link #end()}.
 	 * 
 	 * @see jasima.core.simulation.Event#isAppEvent()
 	 */
 	public void run() {
 		beforeRun();
+
+		resetStats();
 
 		continueSim = numAppEvents > 0;
 
@@ -269,8 +263,8 @@ public class Simulation {
 			Event e = events.extract();
 			if (e.getTime() < simTime) {
 				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-						"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
-						e.getTime(), e.getPrio(), e.toString()));
+						"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).", e.getTime(), e.getPrio(),
+						e.toString()));
 			}
 
 			// everything is ok, reinsert first event
@@ -317,28 +311,24 @@ public class Simulation {
 	}
 
 	/**
-	 * This method is called if an unhandled exception occurs during the main of
-	 * a simulation run. The implementation here just prints an appropriate
-	 * message and then rethrows the Exception, terminating the simulation run.
+	 * This method is called if an unhandled exception occurs during the main of a simulation run. The implementation here just prints an
+	 * appropriate message and then rethrows the Exception, terminating the simulation run.
 	 * 
 	 * @param t
-	 *            The Error or RuntimeException that was triggered somewhere in
-	 *            simulation code.
+	 *            The Error or RuntimeException that was triggered somewhere in simulation code.
 	 * @return Whether or not to rethrow the Exception after processing.
 	 */
 	protected boolean handleError(Throwable t) {
 		String errorString = Util.exceptionToString(t);
 
-		printFmt(MsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'",
-				currentEvent(), errorString);
+		printFmt(MsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'", currentEvent(), errorString);
 
 		return true;
 	}
 
 	/**
-	 * Override this method to perform initializations after {@link #init()},
-	 * but before running the simulation. This method is usually used to
-	 * schedule initial events.
+	 * Override this method to perform initializations after {@link #init()}, but before running the simulation. This method is usually used
+	 * to schedule initial events.
 	 */
 	protected void beforeRun() {
 		// schedule simulation end
@@ -354,24 +344,37 @@ public class Simulation {
 	}
 
 	/**
-	 * Override this method to perform some action after running the simulation,
-	 * but before {@link #done()} is called.
+	 * This method is called once after {@link #beforeRun()} and immediately before the main simulation loop starts. It is called a second
+	 * time if the simulation has a a value for statsResetTime() set.
+	 * <p>
+	 * It should contain code to initialize statistics variables.
+	 */
+	protected void resetStats() {
+		// schedule statistics reset
+		if (getStatsResetTime() > getInitialSimTime()) {
+			schedule(getStatsResetTime(), Event.EVENT_PRIO_LOWEST, rootComponent::resetStats);
+		}
+		
+		// call once for each run
+		rootComponent.resetStats();
+	}
+
+	/**
+	 * Override this method to perform some action after running the simulation, but before {@link #done()} is called.
 	 */
 	protected void afterRun() {
 		rootComponent.afterRun();
 	}
 
 	/**
-	 * Performs clean-up etc., after a simulation's {@link #run()} method
-	 * finished.
+	 * Performs clean-up etc., after a simulation's {@link #run()} method finished.
 	 */
 	public void done() {
 		rootComponent.done();
 	}
 
 	/**
-	 * Convenience method calling {@link #init()}, {@link #run()},
-	 * {@link #done()} and returning the results produced by
+	 * Convenience method calling {@link #init()}, {@link #run()}, {@link #done()} and returning the results produced by
 	 * {@link #produceResults(Map)} in a new {@code HashMap}.
 	 * 
 	 * @return The results produced by the simulation and its components.
@@ -391,11 +394,10 @@ public class Simulation {
 	 */
 	public void schedule(Event event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio)
-			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
-					event.getPrio(), event.toString());
+			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio, event.getPrio(),
+					event.toString());
 		if (event.getTime() < simTime) {
-			printFmt(MsgCategory.ERROR,
-					"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
+			printFmt(MsgCategory.ERROR, "Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
 					event.getTime(), event.getPrio(), event.toString());
 			end();
 		}
@@ -411,8 +413,7 @@ public class Simulation {
 	 * @param time
 	 *            The time when to call {@code method}.
 	 * @param prio
-	 *            Priority of the event (to deterministically sequence events at
-	 *            the same time.
+	 *            Priority of the event (to deterministically sequence events at the same time.
 	 * @param method
 	 *            The method to call at the given moment.
 	 */
@@ -422,8 +423,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Periodically calls a certain method. While this method returns true, a
-	 * next invocation after the given time interval is scheduled.
+	 * Periodically calls a certain method. While this method returns true, a next invocation after the given time interval is scheduled.
 	 */
 	public void schedulePeriodically(double firstInvocation, double interval, int prio, BooleanSupplier method) {
 		schedule(new Event(firstInvocation, prio) {
@@ -458,23 +458,19 @@ public class Simulation {
 	}
 
 	/**
-	 * Calls a certain method at the times returned by the method itself. The
-	 * first invocation is performed at the current time (asynchronously, i.e.,
-	 * {@code scheduleProcess()} returns before {@code method} is called for the
-	 * first time). Subsequent calls are scheduled at the absolute times
-	 * returned by the previous method invocation. No more invocations are
-	 * scheduled if {@code method} returned NaN or a negative value.
+	 * Calls a certain method at the times returned by the method itself. The first invocation is performed at the current time
+	 * (asynchronously, i.e., {@code scheduleProcess()} returns before {@code method} is called for the first time). Subsequent calls are
+	 * scheduled at the absolute times returned by the previous method invocation. No more invocations are scheduled if {@code method}
+	 * returned NaN or a negative value.
 	 */
 	public void scheduleProcess(int prio, DoubleSupplier method) {
 		scheduleProcess(Math.max(simTime(), getInitialSimTime()), prio, method);
 	}
 
 	/**
-	 * Calls a certain method at the times returned by the method itself. The
-	 * first invocation is performed at {@code firstInvocation}. Subsequent
-	 * calls are scheduled at the absolute times returned by the previous method
-	 * invocation. No more invocations are scheduled if {@code method} returned
-	 * NaN or a negative value.
+	 * Calls a certain method at the times returned by the method itself. The first invocation is performed at {@code firstInvocation}.
+	 * Subsequent calls are scheduled at the absolute times returned by the previous method invocation. No more invocations are scheduled if
+	 * {@code method} returned NaN or a negative value.
 	 */
 	public void scheduleProcess(double firstInvocation, int prio, DoubleSupplier method) {
 		schedule(new Event(firstInvocation, prio) {
@@ -508,8 +504,7 @@ public class Simulation {
 	}
 
 	/**
-	 * After calling end() the simulation is terminated (after handling the
-	 * current event).
+	 * After calling end() the simulation is terminated (after handling the current event).
 	 */
 	public void end() {
 		continueSim = false;
@@ -530,12 +525,9 @@ public class Simulation {
 	}
 
 	/**
-	 * Converts the given simulation time to a Java {@link Instant} (UTC time
-	 * stamp). Conversion multiplies the time with the factor
-	 * {@link #getSimTimeToMillisFactor()} and rounds the results to the closest
-	 * integer to get the number of milliseconds since a simTime of 0. This
-	 * amount of milliseconds is then added to {@link #getSimTimeStartInstant()}
-	 * to get an absolute Java time stamp.
+	 * Converts the given simulation time to a Java {@link Instant} (UTC time stamp). Conversion multiplies the time with the factor
+	 * {@link #getSimTimeToMillisFactor()} and rounds the results to the closest integer to get the number of milliseconds since a simTime
+	 * of 0. This amount of milliseconds is then added to {@link #getSimTimeStartInstant()} to get an absolute Java time stamp.
 	 * 
 	 * @see #setSimTimeStartInstant(Instant)
 	 * @see #setSimTimeToMillisFactor(long)
@@ -575,8 +567,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Convenience method to add a new component to the root component of this
-	 * simulation.
+	 * Convenience method to add a new component to the root component of this simulation.
 	 */
 	public void addComponent(SimComponent sc) {
 		getRootComponent().addComponent(sc);
@@ -594,8 +585,8 @@ public class Simulation {
 	}
 
 	/**
-	 * Triggers a print event of the given category. If an appropriate listener
-	 * is installed, this should produce an output of {@code message}.
+	 * Triggers a print event of the given category. If an appropriate listener is installed, this should produce an output of
+	 * {@code message}.
 	 * 
 	 * @param message
 	 *            The message to print.
@@ -607,8 +598,8 @@ public class Simulation {
 	}
 
 	/**
-	 * Triggers a print event of the given category. If an appropriate listener
-	 * is installed, this should produce an output of {@code message}.
+	 * Triggers a print event of the given category. If an appropriate listener is installed, this should produce an output of
+	 * {@code message}.
 	 */
 	public void print(MsgCategory category, Object... params) {
 		if (numPrintListener() > 0 && category.ordinal() <= getPrintLevel().ordinal()) {
@@ -617,18 +608,15 @@ public class Simulation {
 	}
 
 	/**
-	 * Prints a certain {@link SimPrintMessage} by passing it to the registered
-	 * print listeners.
+	 * Prints a certain {@link SimPrintMessage} by passing it to the registered print listeners.
 	 */
 	protected void print(SimPrintMessage e) {
 		printListener.forEach(l -> l.accept(e));
 	}
 
 	/**
-	 * Produces a trace message (if there are any print listeners such as
-	 * {@link TraceFileProducer} are registered that do something with such
-	 * messages). A trace message consists of the simulation time and all
-	 * parameters converted to Strings (separated by tabs).
+	 * Produces a trace message (if there are any print listeners such as {@link TraceFileProducer} are registered that do something with
+	 * such messages). A trace message consists of the simulation time and all parameters converted to Strings (separated by tabs).
 	 * 
 	 * @param params
 	 *            The components of the trace message.
@@ -653,8 +641,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Sets the maximum print message category to be forwared to the print
-	 * listeners. If this is set to e.g. INFO, then only messages of the
+	 * Sets the maximum print message category to be forwared to the print listeners. If this is set to e.g. INFO, then only messages of the
 	 * categories ERROR, WARN and INFO are forwared to
 	 * 
 	 * @param printLevel
@@ -665,10 +652,8 @@ public class Simulation {
 	}
 
 	/**
-	 * Triggers a print event of the given category with the message produced by
-	 * a Java format String. If an appropriate listener is installed, this
-	 * produces a message defined by the format string
-	 * {@code messageFormatString} (used with the arguments given in
+	 * Triggers a print event of the given category with the message produced by a Java format String. If an appropriate listener is
+	 * installed, this produces a message defined by the format string {@code messageFormatString} (used with the arguments given in
 	 * {@code params}).
 	 */
 	public void printFmt(MsgCategory category, String messageFormatString, Object... params) {
@@ -686,8 +671,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Same as {@link #printFmt(MsgCategory, String, Object...)}, but defaulting
-	 * to category {@code INFO}.
+	 * Same as {@link #printFmt(MsgCategory, String, Object...)}, but defaulting to category {@code INFO}.
 	 */
 	public void printFmt(String messageFormatString, Object... params) {
 		printFmt(MsgCategory.INFO, messageFormatString, params);
@@ -731,8 +715,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Sets the random factory to use to create random number streams for
-	 * stochastic simulations.
+	 * Sets the random factory to use to create random number streams for stochastic simulations.
 	 */
 	public void setRndStreamFactory(RandomFactory rndStreamFactory) {
 		this.rndStreamFactory = rndStreamFactory;
@@ -740,8 +723,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Initializes the random number generator associated with the
-	 * {@link DblStream} {@code s}. This just delegates to the
+	 * Initializes the random number generator associated with the {@link DblStream} {@code s}. This just delegates to the
 	 * {@link RandomFactory} of this simulation.
 	 */
 	public DblStream initRndGen(DblStream s, String streamName) {
@@ -749,8 +731,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Initializes the random number generator associated with the
-	 * {@link IntStream} {@code s}. This just delegates to the
+	 * Initializes the random number generator associated with the {@link IntStream} {@code s}. This just delegates to the
 	 * {@link RandomFactory} of this simulation.
 	 */
 	public IntStream initRndGen(IntStream s, String streamName) {
@@ -770,16 +751,14 @@ public class Simulation {
 	}
 
 	/**
-	 * @return The root component of all {@link SimComponent}s contained in the
-	 *         simulation.
+	 * @return The root component of all {@link SimComponent}s contained in the simulation.
 	 */
 	public SimComponentContainer<SimComponent> getRootComponent() {
 		return rootComponent;
 	}
 
 	/**
-	 * Sets the root component containing all permanent {@link SimComponent}s
-	 * contained in this simulation.
+	 * Sets the root component containing all permanent {@link SimComponent}s contained in this simulation.
 	 * 
 	 * @param rootComponent
 	 *            The new root component.
@@ -812,8 +791,8 @@ public class Simulation {
 	}
 
 	/**
-	 * Sets the {@link Instant} corresponding to the a simulation time of 0. The
-	 * default setting is to use the beginning of the current year.
+	 * Sets the {@link Instant} corresponding to the a simulation time of 0. The default setting is to use the beginning of the current
+	 * year.
 	 * 
 	 * @see #simTimeToInstant(double)
 	 */
@@ -822,8 +801,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Returns the factor used to convert the (double-valued) simulation time to
-	 * milli-seconds since {@link #getSimTimeStartInstant()}.
+	 * Returns the factor used to convert the (double-valued) simulation time to milli-seconds since {@link #getSimTimeStartInstant()}.
 	 * 
 	 * @see #setSimTimeToMillisFactor(long)
 	 */
@@ -832,9 +810,25 @@ public class Simulation {
 	}
 
 	/**
-	 * Sets the factor used to convert the (double-valued) simulation time to
-	 * milli-seconds since {@link #getSimTimeStartInstant()}. The default value
-	 * is 60*1000=60000, assuming simulation time to be in minutes.
+	 * Returns the statistics reset time.
+	 */
+	public double getStatsResetTime() {
+		return statsResetTime;
+	}
+
+	/**
+	 * Sets the time when to perform a statistics reset. The value set here will only have an effect before the simulation is started.
+	 * 
+	 * @param statsResetTime
+	 *            The new statistics reset time.
+	 */
+	public void setStatsResetTime(double statsResetTime) {
+		this.statsResetTime = statsResetTime;
+	}
+
+	/**
+	 * Sets the factor used to convert the (double-valued) simulation time to milli-seconds since {@link #getSimTimeStartInstant()}. The
+	 * default value is 60*1000=60000, assuming simulation time to be in minutes.
 	 * 
 	 * @see #simTimeToInstant(double)
 	 */
