@@ -54,8 +54,8 @@
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
-			<artifactId>junit-dep</artifactId>
-			<version>4.10</version>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>hamcrest-core</artifactId>
@@ -67,17 +67,17 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.8</version>
+			<version>1.4.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
-			<version>3.3</version>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jopt-simple</groupId>
 			<artifactId>jopt-simple</artifactId>
-			<version>4.8</version>
+			<version>5.0.4</version>
 		</dependency>
 	</dependencies>
 	<properties>

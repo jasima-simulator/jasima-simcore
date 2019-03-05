@@ -2,12 +2,10 @@ package jasima.core.util.observer;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-
-import joptsimple.internal.Objects;
+import java.util.Objects;
 
 /**
- * Example implementation of {@link Notifier} functionality. A
- * {@code NotifierImpl} handles notifier functionality for some real
+ * Example implementation of {@link Notifier} functionality. A {@code NotifierImpl} handles notifier functionality for some real
  * {@code Notifier} (subject).
  * 
  * @author Torsten Hildebrandt
@@ -40,14 +38,14 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 
 	@Override
 	public void addListener(NotifierListener<SUBJECT, MESSAGE> l) {
-		Objects.ensureNotNull(l);
+		Objects.requireNonNull(l);
 
 		listener.add(l);
 	}
 
 	@Override
 	public boolean removeListener(NotifierListener<SUBJECT, MESSAGE> l) {
-		Objects.ensureNotNull(l);
+		Objects.requireNonNull(l);
 
 		int idx = listener.indexOf(l);
 		if (idx < 0)

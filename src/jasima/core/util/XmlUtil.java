@@ -33,6 +33,8 @@ import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.AnyTypePermission;
+import com.thoughtworks.xstream.security.NoTypePermission;
 
 import jasima.core.experiment.Experiment.UniqueNamesCheckingHashMap;
 
@@ -200,6 +202,13 @@ public class XmlUtil {
 		} else if (format == FileFormat.JSON) {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);
 		}
+
+		// clear out existing permissions and set own ones; this prevent the warning message but is not really secure!
+		//TODO: revise when xstream 1.5 is out
+		xstream.addPermission(NoTypePermission.NONE);
+		xstream.addPermission(AnyTypePermission.ANY);
+		xstream.denyTypeHierarchy(ProcessBuilder.class);
+
 		return xstream;
 	}
 }
