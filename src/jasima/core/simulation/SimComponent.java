@@ -1,9 +1,13 @@
 package jasima.core.simulation;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import jasima.core.random.RandomFactory;
+import jasima.core.random.continuous.DblStream;
+import jasima.core.random.discrete.IntStream;
 import jasima.core.util.SilentCloneable;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
@@ -204,6 +208,36 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 */
 	default boolean isTraceEnabled() {
 		return getSim().isTraceEnabled();
+	}
+
+	/**
+	 * Initializes the random number generator associated with the {@link DblStream} {@code s}. This just delegates to the
+	 * {@link RandomFactory} of a simulation.
+	 *
+	 * @see Simulation#initRndGen(DblStream, String)
+	 */
+	default DblStream initRndGen(DblStream s, String streamName) {
+		return getSim().initRndGen(s, streamName);
+	}
+
+	/**
+	 * Initializes the random number generator associated with the {@link IntStream} {@code s}. This just delegates to the
+	 * {@link RandomFactory} of a simulation.
+	 *
+	 * @see Simulation#initRndGen(IntStream, String)
+	 */
+	default IntStream initRndGen(IntStream s, String streamName) {
+		return getSim().initRndGen(s, streamName);
+	}
+
+	/**
+	 * Creates an instance of Java's {@code Random} class initialized with a seed derived from the parameter {@code streamName}. This just delegates to the method
+	 * {@link RandomFactory#createInstance(String)} of a simulation.
+	 *
+	 * @see Simulation#initRndGen(String)
+	 */
+	default Random initRndGen(String streamName) {
+		return getSim().initRndGen(streamName);
 	}
 
 	/**

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -736,6 +737,14 @@ public class Simulation {
 	 */
 	public IntStream initRndGen(IntStream s, String streamName) {
 		return (IntStream) getRndStreamFactory().initRndGen(s, streamName);
+	}
+
+	/**
+	 * Creates an instance of Java's {@code Random} class initialized with a seed derived from the parameter {@code streamName}. This just delegates to the method
+	 * {@link RandomFactory#createInstance(String)} of this simulation.
+	 */
+	public Random initRndGen(String streamName) {
+		return getRndStreamFactory().createInstance(streamName);
 	}
 
 	/** @return The name of this simulation. */
