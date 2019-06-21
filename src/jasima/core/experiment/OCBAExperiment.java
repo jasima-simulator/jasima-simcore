@@ -43,10 +43,9 @@ import jasima.core.util.Util;
  * </p>
  * <p>
  * Implements the OCBA method as described in Chen2000: Chen, C. H., J. Lin, E.
- * Yücesan, and S. E. Chick,
- * "Simulation Budget Allocation for Further Enhancing the Efficiency of Ordinal Optimization,"
- * Journal of Discrete Event Dynamic Systems: Theory and Applications, Vol. 10,
- * pp. 251-270, July 2000.
+ * Yücesan, and S. E. Chick, "Simulation Budget Allocation for Further Enhancing
+ * the Efficiency of Ordinal Optimization," Journal of Discrete Event Dynamic
+ * Systems: Theory and Applications, Vol. 10, pp. 251-270, July 2000.
  * </p>
  * <p>
  * First minReplicationsPerConfiguration replications (default: 5) are performed
@@ -119,7 +118,6 @@ import jasima.core.util.Util;
  * </p>
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see MultipleReplicationExperiment
  * @see FullFactorialExperiment
@@ -138,7 +136,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 
 	private String objective;
 	private ProblemType problemType = ProblemType.MINIMIZE;
-	private int minReplicationsPerConfiguration = 5;
+	private int minReplicationsPerConfiguration = -1;
 	private int numReplications = 10;
 	private double pcsLevel = 0.0;
 	private boolean detailedResults = true;
@@ -174,7 +172,10 @@ public class OCBAExperiment extends FullFactorialExperiment {
 			configurations = new ArrayList<MultipleReplicationExperiment>();
 			for (Experiment e : experiments) {
 				MultipleReplicationExperiment mre = (MultipleReplicationExperiment) e;
-				mre.setMaxReplications(getMinReplicationsPerConfiguration());
+				int numIterations = getMinReplicationsPerConfiguration() == -1
+						? Math.max(3, Runtime.getRuntime().availableProcessors())
+						: getMinReplicationsPerConfiguration();
+				mre.setMaxReplications(numIterations);
 				configurations.add(mre);
 			}
 
@@ -182,13 +183,17 @@ public class OCBAExperiment extends FullFactorialExperiment {
 
 			// set iteration budget based on total number of configurations
 			iterationBudget = Math.round(0.1f * configurations.size());
+
 			// min. replications for a configuration
-			if (iterationBudget < getMinReplicationsPerConfiguration())
+			if (iterationBudget < getMinReplicationsPerConfiguration()) {
 				iterationBudget = getMinReplicationsPerConfiguration();
-			// always enough to utilize all local processors
-			int numProc = Runtime.getRuntime().availableProcessors();
-			if (iterationBudget < numProc)
-				iterationBudget = numProc;
+			}
+
+			if (getMinReplicationsPerConfiguration() == -1) {
+				// always enough to utilize all local processors
+				int numProc = Runtime.getRuntime().availableProcessors();
+				iterationBudget = Math.max(iterationBudget, Math.max(3, numProc));
+			}
 
 			budgetUsed = 0;
 		}
@@ -375,15 +380,14 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	}
 
 	/**
-	 * This subroutine implements the optimal computation budget allocation
-	 * (OCBA) algorithm presented in Chen et al. (2000) in the J of DEDS. It
-	 * determines how many additional runs each design should have for the next
-	 * iteration of simulation.
+	 * This subroutine implements the optimal computation budget allocation (OCBA)
+	 * algorithm presented in Chen et al. (2000) in the J of DEDS. It determines how
+	 * many additional runs each design should have for the next iteration of
+	 * simulation.
 	 * 
 	 * 
-	 * @param add_budget
-	 *            The total number of additional replications that can be
-	 *            performed.
+	 * @param add_budget The total number of additional replications that can be
+	 *                   performed.
 	 * 
 	 * @return additional number of simulation replication assigned to design i,
 	 *         i=0,1,..,ND-1
@@ -487,14 +491,12 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	}
 
 	/**
-	 * This function determines the second best design based on current
-	 * simulation results.
+	 * This function determines the second best design based on current simulation
+	 * results.
 	 * 
-	 * @param t_s_mean
-	 *            [i]: temporary array for sample mean of design i,
-	 *            i=0,1,..,ND-1
-	 * @param b
-	 *            : current best design design determined by function best()
+	 * @param t_s_mean [i]: temporary array for sample mean of design i,
+	 *                 i=0,1,..,ND-1
+	 * @param b        : current best design design determined by function best()
 	 */
 	private static int second_best(final double t_s_mean[], int b) {
 		int second_index = (b == 0) ? 1 : 0;
@@ -516,14 +518,13 @@ public class OCBAExperiment extends FullFactorialExperiment {
 
 	/**
 	 * Sets the minimum number of replications performed for each configuration.
-	 * This has to be &gt;=3.
+	 * This has to be &gt;=3 or -1 to use the number of available processor cores.
 	 * 
-	 * @param minReps
-	 *            The minimum number of replications per configuration.
+	 * @param minReps The minimum number of replications per configuration.
 	 */
 	public void setMinReplicationsPerConfiguration(int minReps) {
 		if (minReps < 3)
-			throw new IllegalArgumentException("Minimum number of replications has to be >=3.");
+			throw new IllegalArgumentException("Minimum number of replications has to be >=3 or -1.");
 		this.minReplicationsPerConfiguration = minReps;
 	}
 
@@ -532,11 +533,10 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	}
 
 	/**
-	 * Sets the name of the objective which defines "best". This has to be the
-	 * name of a result produced by the base experiment.
+	 * Sets the name of the objective which defines "best". This has to be the name
+	 * of a result produced by the base experiment.
 	 * 
-	 * @param objective
-	 *            Result name to use as the objective function.
+	 * @param objective Result name to use as the objective function.
 	 */
 	public void setObjective(String objective) {
 		this.objective = objective;
@@ -550,8 +550,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 * Stop using more replications if this level of the probablity of correct
 	 * selection is reached. This defines a dynamic stopping criterion.
 	 * 
-	 * @param pcsLevel
-	 *            The desired confidence in the results (between 0 and 1).
+	 * @param pcsLevel The desired confidence in the results (between 0 and 1).
 	 */
 	public void setPcsLevel(double pcsLevel) {
 		if (pcsLevel < 0 || pcsLevel > 1)
@@ -567,8 +566,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 * Whether to produce detailed results or just basic information of the best
 	 * configuration.
 	 * 
-	 * @param detailedResults
-	 *            Produce detailed results or not.
+	 * @param detailedResults Produce detailed results or not.
 	 */
 	public void setDetailedResults(boolean detailedResults) {
 		this.detailedResults = detailedResults;
@@ -581,8 +579,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	/**
 	 * Sets the total budget for each configuration.
 	 * 
-	 * @param numReplications
-	 *            The number of replications to use.
+	 * @param numReplications The number of replications to use.
 	 */
 	public void setNumReplications(int numReplications) {
 		this.numReplications = numReplications;
@@ -599,8 +596,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	/**
 	 * Sets whether a minimization or maximization experiment should be solved.
 	 * 
-	 * @param problemType
-	 *            Whether minimization or maximization are required.
+	 * @param problemType Whether minimization or maximization are required.
 	 */
 	public void setProblemType(ProblemType problemType) {
 		this.problemType = problemType;
