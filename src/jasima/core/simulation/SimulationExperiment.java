@@ -24,10 +24,11 @@ public class SimulationExperiment extends Experiment {
 	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
 	private ArrayList<Consumer<Simulation>> initActions = null;
+	private SimComponent rootComponent = null; 
 
 	// fields used during run
 
-	protected Simulation sim;
+	protected transient Simulation sim;
 
 	public SimulationExperiment() {
 		super();
@@ -62,6 +63,10 @@ public class SimulationExperiment extends Experiment {
 			sim.setSimTimeStartInstant(yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant());
 		}
 		sim.setSimTimeToMillisFactor(getSimTimeToMillisFactor());
+		
+		if (getRootComponent()!=null) {
+			sim.addComponent(getRootComponent());
+		}
 
 		// forward simulation print events to experiment print events
 		sim.addPrintListener(this::print);
@@ -198,6 +203,14 @@ public class SimulationExperiment extends Experiment {
 		}
 
 		return c;
+	}
+
+	public SimComponent getRootComponent() {
+		return rootComponent;
+	}
+
+	public void setRootComponent(SimComponent rootComponent) {
+		this.rootComponent = rootComponent;
 	}
 
 }

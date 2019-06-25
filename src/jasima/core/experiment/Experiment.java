@@ -159,8 +159,7 @@ public abstract class Experiment
 		/**
 		 * Returns this message formatted using the given {@link Locale}.
 		 * 
-		 * @param locale
-		 *            The {@link Locale} to use when formatting the message.
+		 * @param locale The {@link Locale} to use when formatting the message.
 		 * @return The formatted message.
 		 */
 		public String getMessage(Locale locale) {
@@ -181,7 +180,6 @@ public abstract class Experiment
 	}
 
 	// fields to store parameters
-	private int nestingLevel = 0;
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
 	private MsgCategory logLevel = MsgCategory.INFO;
@@ -189,8 +187,9 @@ public abstract class Experiment
 	private ValueStoreImpl valueStore;
 
 	// fields used during run
-	private long runTimeReal;
-	protected int aborted;
+	private transient int nestingLevel = 0;
+	private transient long runTimeReal;
+	protected transient int aborted;
 	protected Map<String, Object> resultMap;
 
 	public static class UniqueNamesCheckingHashMap extends LinkedHashMap<String, Object> {
@@ -206,9 +205,6 @@ public abstract class Experiment
 
 	public Experiment() {
 		super();
-
-		notifierAdapter = new NotifierImpl<>(this);
-		valueStore = new ValueStoreImpl();
 	}
 
 	/**
@@ -227,8 +223,8 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Contains the code to actually do something useful. This is the only
-	 * abstract method that sub-classes are required to implement.
+	 * Contains the code to actually do something useful. This is the only abstract
+	 * method that sub-classes are required to implement.
 	 */
 	protected abstract void performRun();
 
@@ -242,8 +238,8 @@ public abstract class Experiment
 
 	/**
 	 * Populates the result map {@link #resultMap} with values produced during
-	 * experiment execution. The implementation in Experiment adds the two
-	 * results {@value #RUNTIME} and {@value EXP_ABORTED}.
+	 * experiment execution. The implementation in Experiment adds the two results
+	 * {@value #RUNTIME} and {@value EXP_ABORTED}.
 	 */
 	protected void produceResults() {
 		resultMap.put(RUNTIME, runTimeReal());
@@ -251,8 +247,8 @@ public abstract class Experiment
 	}
 
 	/**
-	 * This method gives experiments and listeners a chance to view/modify
-	 * results. It is called after {@link #produceResults()}.
+	 * This method gives experiments and listeners a chance to view/modify results.
+	 * It is called after {@link #produceResults()}.
 	 */
 	protected void finish() {
 	}
@@ -262,8 +258,7 @@ public abstract class Experiment
 	 * experiment. Sub-classes normally don't have to overwrite this method but
 	 * create customized behavior by overriding on of the methods like
 	 * {@link #init()}, {@link #beforeRun()}, {@link #performRun()} (this one is
-	 * required), {@link #done()}, {@link #produceResults()} or
-	 * {@link #finish()}.
+	 * required), {@link #done()}, {@link #produceResults()} or {@link #finish()}.
 	 * 
 	 * @return The results of experiment execution.
 	 */
@@ -333,19 +328,17 @@ public abstract class Experiment
 	 * only valid after calling {@link #runExperiment()} and measures the time
 	 * between calling {@link #init()} and the completion of {@link #done()}.
 	 * 
-	 * @return The real time (wall time in seconds) it took to run the
-	 *         experiment.
+	 * @return The real time (wall time in seconds) it took to run the experiment.
 	 */
 	protected double runTimeReal() {
 		return (runTimeReal / 1000.0d);
 	}
 
 	/**
-	 * This is a convenience method to run a sub experiment without having to
-	 * worry about {@code ExperimentExecutor} and {@code nestingLevel}.
+	 * This is a convenience method to run a sub experiment without having to worry
+	 * about {@code ExperimentExecutor} and {@code nestingLevel}.
 	 * 
-	 * @param sub
-	 *            The sub-experiment to run.
+	 * @param sub The sub-experiment to run.
 	 * @return An {@link ExperimentFuture} to access results.
 	 */
 	protected ExperimentFuture executeSubExperiment(Experiment sub) {
@@ -377,8 +370,7 @@ public abstract class Experiment
 	/**
 	 * Triggers a print event of category "info".
 	 * 
-	 * @param message
-	 *            The message to print.
+	 * @param message The message to print.
 	 * @see #print(MsgCategory, String)
 	 */
 	public void print(String message) {
@@ -386,13 +378,11 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Triggers a print event of the given category. If an appropriate listener
-	 * is installed, this should produce an output of {@code message}.
+	 * Triggers a print event of the given category. If an appropriate listener is
+	 * installed, this should produce an output of {@code message}.
 	 * 
-	 * @param category
-	 *            Category of the message.
-	 * @param message
-	 *            The message to print.
+	 * @param category Category of the message.
+	 * @param message  The message to print.
 	 * @see ConsolePrinter
 	 */
 	public void print(MsgCategory category, String message) {
@@ -401,16 +391,13 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Triggers a print event of the given category. If an appropriate listener
-	 * is installed, this should produce a message created by the given format
-	 * string and parameters.
+	 * Triggers a print event of the given category. If an appropriate listener is
+	 * installed, this should produce a message created by the given format string
+	 * and parameters.
 	 * 
-	 * @param category
-	 *            Category of the message.
-	 * @param messageFormat
-	 *            Format string for the message to produce.
-	 * @param params
-	 *            Parameters to use in the format string.
+	 * @param category      Category of the message.
+	 * @param messageFormat Format string for the message to produce.
+	 * @param params        Parameters to use in the format string.
 	 */
 	public void print(MsgCategory category, String messageFormat, Object... params) {
 		if (numListener() > 0 && category.ordinal() <= getLogLevel().ordinal())
@@ -418,13 +405,11 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Same as {@link #print(MsgCategory, String, Object...)}, just
-	 * defaulting to the category {@code INFO}.
+	 * Same as {@link #print(MsgCategory, String, Object...)}, just defaulting to
+	 * the category {@code INFO}.
 	 * 
-	 * @param messageFormat
-	 *            The format String to use.
-	 * @param params
-	 *            Parameters to use when formatting the message.
+	 * @param messageFormat The format String to use.
+	 * @param params        Parameters to use when formatting the message.
 	 */
 	public void print(String messageFormat, Object... params) {
 		print(MsgCategory.INFO, messageFormat, params);
@@ -437,49 +422,19 @@ public abstract class Experiment
 		ConsolePrinter.printResults(this, getResults());
 	}
 
-	// event notification
-
-	@Override
-	public Notifier<Experiment, ExperimentMessage> notifierImpl() {
-		return notifierAdapter;
-	}
-
-	public String toString() {
-		return getName() == null ? super.toString() : getName();
-	}
-
-	@Override
-	public Experiment clone() throws CloneNotSupportedException {
-		Experiment c = (Experiment) super.clone();
-
-		c.notifierAdapter = new NotifierImpl<>(c);
-		for (int i = 0; i < numListener(); i++) {
-			c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
-		}
-
-		// clone value store copying (but not cloning!) all of its entries
-		if (valueStore != null) {
-			c.valueStore = valueStore.clone();
-		}
-
-		return c;
-	}
-
 	/**
 	 * Sets the nesting level. This method is only for internal purposes.
 	 * 
-	 * @param nestingLevel
-	 *            The nesting level for this experiment.
+	 * @param nestingLevel The nesting level for this experiment.
 	 */
 	public void nestingLevel(int nestingLevel) {
 		this.nestingLevel = nestingLevel;
 	}
 
 	/**
-	 * The level in the call hierarchy this experiment is executed in.
-	 * Experiments that spawn new sub-experiments (like
-	 * {@link MultipleReplicationExperiment}) are required to increase their
-	 * children's nestingLevel by 1. If
+	 * The level in the call hierarchy this experiment is executed in. Experiments
+	 * that spawn new sub-experiments (like {@link MultipleReplicationExperiment})
+	 * are required to increase their children's nestingLevel by 1. If
 	 * {@link #executeSubExperiment(Experiment)} is used, then this is set
 	 * automatically to the correct value.
 	 * 
@@ -492,8 +447,7 @@ public abstract class Experiment
 	/**
 	 * Set some descriptive name for this experiment.
 	 * 
-	 * @param name
-	 *            The name of the experiment.
+	 * @param name The name of the experiment.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -513,8 +467,7 @@ public abstract class Experiment
 	 * 
 	 * @see RandomFactory
 	 * 
-	 * @param initialSeed
-	 *            The initial seed to use.
+	 * @param initialSeed The initial seed to use.
 	 */
 	public void setInitialSeed(long initialSeed) {
 		this.initialSeed = initialSeed;
@@ -528,8 +481,7 @@ public abstract class Experiment
 	 * Set the maximum level of logging messages that are supposed to be printed
 	 * (e.g. TRACE to produce a detailed log file). Default is INFO.
 	 * 
-	 * @param logLevel
-	 *            The maximum log level to display/forward to listeners.
+	 * @param logLevel The maximum log level to display/forward to listeners.
 	 */
 	public void setLogLevel(MsgCategory logLevel) {
 		this.logLevel = logLevel;
@@ -543,7 +495,53 @@ public abstract class Experiment
 
 	@Override
 	public ValueStore valueStoreImpl() {
+		if (valueStore == null) {
+			valueStore = new ValueStoreImpl();
+		}
 		return valueStore;
+	}
+
+	//
+	//
+	// event notification
+	//
+	//
+
+	@Override
+	public NotifierImpl<Experiment, ExperimentMessage> notifierImpl() {
+		if (notifierAdapter == null) {
+			notifierAdapter = new NotifierImpl<>(this);
+		}
+		return notifierAdapter;
+	}
+
+	//
+	//
+	// cloning
+	//
+	//
+
+	@Override
+	public Experiment clone() throws CloneNotSupportedException {
+		Experiment c = (Experiment) super.clone();
+
+		if (notifierAdapter != null) {
+			c.notifierAdapter = new NotifierImpl<>(c);
+			for (int i = 0; i < numListener(); i++) {
+				c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+			}
+		}
+
+		// clone value store copying (but not cloning!) all of its entries
+		if (valueStore != null) {
+			c.valueStore = valueStore.clone();
+		}
+
+		return c;
+	}
+
+	public String toString() {
+		return getName() == null ? super.toString() : getName();
 	}
 
 	// ******************* static methods ************************
