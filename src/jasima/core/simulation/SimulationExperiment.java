@@ -1,5 +1,10 @@
 package jasima.core.simulation;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -16,7 +21,9 @@ public class SimulationExperiment extends Experiment {
 	private double simulationLength = Double.NaN;
 	private double initalSimTime = 0.0d;
 	private double statsResetTime = 0.0d;
-	private ArrayList<Consumer<Simulation>> initActions;
+	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
+	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
+	private ArrayList<Consumer<Simulation>> initActions = null;
 
 	// fields used during run
 
@@ -24,31 +31,40 @@ public class SimulationExperiment extends Experiment {
 
 	public SimulationExperiment() {
 		super();
-
-		initActions = new ArrayList<>();
 	}
 
 	@Override
 	protected void init() {
 		super.init();
 
+		sim = createSim();
+
 		initSim();
 
+		createSimComponents();
+
 		// call initActions
-		initActions.forEach(a -> a.accept(sim));
+		if (initActions != null) {
+			initActions.forEach(a -> a.accept(sim));
+		}
 	}
 
 	protected void initSim() {
-		sim = createSim();
-
 		sim.setInitialSimTime(getInitalSimTime());
 		sim.setPrintLevel(getLogLevel());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
 
+		if (getSimTimeStartInstant() != null) {
+			sim.setSimTimeStartInstant(getSimTimeStartInstant());
+		} else {
+			// nothing set, use beginning of current year
+			LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
+			sim.setSimTimeStartInstant(yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant());
+		}
+		sim.setSimTimeToMillisFactor(getSimTimeToMillisFactor());
+
 		// forward simulation print events to experiment print events
 		sim.addPrintListener(this::print);
-
-		createSimComponents();
 	}
 
 	protected Simulation createSim() {
@@ -99,7 +115,8 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	/**
-	 * Returns the current simulation time. This is the same as calling {@code sim().simTime()} directly.
+	 * Returns the current simulation time. This is the same as calling
+	 * {@code sim().simTime()} directly.
 	 */
 	protected double simTime() {
 		return sim.simTime();
@@ -108,8 +125,7 @@ public class SimulationExperiment extends Experiment {
 	/**
 	 * Sets the maximum simulation time. A value of 0.0 means no such limit.
 	 * 
-	 * @param simulationLength
-	 *            Stop simulation at this point in time.
+	 * @param simulationLength Stop simulation at this point in time.
 	 */
 	public void setSimulationLength(double simulationLength) {
 		this.simulationLength = simulationLength;
@@ -120,11 +136,12 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	/**
-	 * Sets the statistics reset time. When this time is reached then the {@code resetStats()} methods of all components will be called.
-	 * Statistics reset methods will also be executed once before the simulation starts (independently from this setting).
+	 * Sets the statistics reset time. When this time is reached then the
+	 * {@code resetStats()} methods of all components will be called. Statistics
+	 * reset methods will also be executed once before the simulation starts
+	 * (independently from this setting).
 	 * 
-	 * @param statsResetTime
-	 *            The time when to call all statics reset methods.
+	 * @param statsResetTime The time when to call all statics reset methods.
 	 */
 	public void setStatsResetTime(double statsResetTime) {
 		this.statsResetTime = statsResetTime;
@@ -146,11 +163,41 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	/**
-	 * Adds a {@code Consumer<Simulation>} that is called after creating the simulation components to perform additional initialization
-	 * tasks.
+	 * Adds a {@code Consumer<Simulation>} that is called after creating the
+	 * simulation components to perform additional initialization tasks.
 	 */
 	public void addInitAction(Consumer<Simulation> action) {
+		if (initActions == null) {
+			initActions = new ArrayList<>();
+		}
 		initActions.add(action);
+	}
+
+	public Instant getSimTimeStartInstant() {
+		return simTimeStartInstant;
+	}
+
+	public void setSimTimeStartInstant(Instant simTimeStartInstant) {
+		this.simTimeStartInstant = simTimeStartInstant;
+	}
+
+	public long getSimTimeToMillisFactor() {
+		return simTimeToMillisFactor;
+	}
+
+	public void setSimTimeToMillisFactor(long simTimeToMillisFactor) {
+		this.simTimeToMillisFactor = simTimeToMillisFactor;
+	}
+
+	@Override
+	public SimulationExperiment clone() throws CloneNotSupportedException {
+		SimulationExperiment c = (SimulationExperiment) super.clone();
+
+		if (initActions != null) {
+			c.initActions = new ArrayList<>(initActions);
+		}
+
+		return c;
 	}
 
 }

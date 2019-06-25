@@ -157,12 +157,13 @@ public class Simulation {
 	private double statsResetTime = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
+	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
+	private Instant simTimeStartInstant;
+
 	private SimComponentContainer<SimComponent> rootComponent;
+	
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
-
-	private Instant simTimeStartInstant;
-	private long simTimeToMillisFactor;
 
 	// ////////////// attributes/fields used during a simulation
 
@@ -199,8 +200,6 @@ public class Simulation {
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 		numEventsProcessed = 0;
-
-		simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 
 		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
 		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();
