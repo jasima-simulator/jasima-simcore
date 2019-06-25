@@ -37,13 +37,14 @@ import jasima.core.util.Util;
  * distribution function of {@code baseStream} for the interval [
  * {@code minValue} , {@code maxValue}], and having the value 1 for all values
  * larger than {@code maxValue}.
+ * <p>
+ * See also <a href=
+ * "http://www.comnets.uni-bremen.de/itg/itgfg521/per_eval/p004.html">Wolfgang
+ * Bziuk: Generating random variates from truncated distributions</a> (last
+ * accessed 2015-05-06).
  * 
  * @author Torsten Hildebrandt
  * @since 1.3
- * @see <a href=
- *      "http://www.comnets.uni-bremen.de/itg/itgfg521/per_eval/p004.html" >
- *      Wolfgang Bziuk: Generating random variates from truncated
- *      distributions</a> (last accessed 2015-05-06)
  */
 public class DblTruncatedSimple extends DblStream {
 
@@ -126,8 +127,7 @@ public class DblTruncatedSimple extends DblStream {
 	/**
 	 * Sets the stream to be truncated.
 	 * 
-	 * @param baseStream
-	 *            The stream to truncate.
+	 * @param baseStream The stream to truncate.
 	 */
 	public void setBaseStream(DblStream baseStream) {
 		this.baseStream = baseStream;
@@ -140,8 +140,7 @@ public class DblTruncatedSimple extends DblStream {
 	/**
 	 * Sets the minimum value.
 	 * 
-	 * @param minValue
-	 *            The lower bound of allowed values.
+	 * @param minValue The lower bound of allowed values.
 	 */
 	public void setMinValue(double minValue) {
 		this.minValue = minValue;
@@ -154,8 +153,7 @@ public class DblTruncatedSimple extends DblStream {
 	/**
 	 * Sets the maximum allowed value.
 	 * 
-	 * @param maxValue
-	 *            The upper bound of allowed values.
+	 * @param maxValue The upper bound of allowed values.
 	 */
 	public void setMaxValue(double maxValue) {
 		this.maxValue = maxValue;

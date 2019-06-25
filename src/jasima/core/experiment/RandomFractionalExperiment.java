@@ -37,11 +37,10 @@ import jasima.core.util.MersenneTwister;
  * <p>
  * The implementation of this class ensures, that each value of a factor occurs
  * equally often (there are no guarantees about value combinations, however, or
- * if a {@link ConfigurationValidator} is used).
+ * if a {@link AbstractMultiConfExperiment.ConfigurationValidator} is used).
  * </p>
  * 
  * @author Torsten Hildebrandt, 2012-06-08
- * @version "$Id$"
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 
