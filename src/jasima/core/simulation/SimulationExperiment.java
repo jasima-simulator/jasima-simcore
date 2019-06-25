@@ -194,23 +194,29 @@ public class SimulationExperiment extends Experiment {
 		this.simTimeToMillisFactor = simTimeToMillisFactor;
 	}
 
-	@Override
-	public SimulationExperiment clone() throws CloneNotSupportedException {
-		SimulationExperiment c = (SimulationExperiment) super.clone();
-
-		if (initActions != null) {
-			c.initActions = new ArrayList<>(initActions);
-		}
-
-		return c;
-	}
-
 	public SimComponent getRootComponent() {
 		return rootComponent;
 	}
 
 	public void setRootComponent(SimComponent rootComponent) {
 		this.rootComponent = rootComponent;
+	}
+
+	@Override
+	public SimulationExperiment clone() throws CloneNotSupportedException {
+		SimulationExperiment c = (SimulationExperiment) super.clone();
+
+		if (initActions != null) {
+			// shallow clone
+			c.initActions = new ArrayList<>(initActions);
+		}
+		
+		if (rootComponent!=null) {
+			// attempts a deep clone of rootComponent
+			c.rootComponent = rootComponent.clone();
+		}
+
+		return c;
 	}
 
 }
