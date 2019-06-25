@@ -9,12 +9,12 @@ import java.util.List;
 public class SimComponentContainerBase<SUB extends SimComponent> extends SimComponentBase implements SimComponentContainer<SUB> {
 
 	private ArrayList<SUB> components;
-	private HashMap<String, SUB> componentsByName;
+	private transient HashMap<String, SUB> componentsByName;
 
 	public SimComponentContainerBase() {
 		super();
 		components = new ArrayList<>();
-		componentsByName = new HashMap<>();
+		componentsByName = null; // lazy initialization in getComponentByName()
 	}
 
 	@Override
@@ -41,6 +41,11 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 
 	@Override
 	public SUB getComponentByName(String name) {
+		if (componentsByName==null) {
+			componentsByName = new HashMap<>();
+			components.forEach(c -> componentsByName.put(c.getName(), c));
+		}
+		
 		return name == null ? null : componentsByName.get(name);
 	}
 
@@ -54,7 +59,9 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 
 		components.add(sc);
 		sc.setParent(this);
+		sc.setSim(getSim());
 
+		// map was initalized by calling getComponentByName 
 		componentsByName.put(sc.getName(), sc);
 
 		return this;
@@ -85,12 +92,14 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	public SimComponentContainerBase<SUB> clone() throws CloneNotSupportedException {
 		SimComponentContainerBase<SUB> clone = (SimComponentContainerBase<SUB>) super.clone();
 
+		clone.componentsByName = null;
+
 		clone.components = new ArrayList<>();
 		for (int i = 0; i < numComponents(); i++) {
 			SUB c = getComponent(i);
 			clone.addComponent((SUB) c.clone());
 		}
-
+		
 		return clone;
 	}
 
