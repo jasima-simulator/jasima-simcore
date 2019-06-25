@@ -46,7 +46,7 @@ import java.util.jar.JarFile;
 import jasima.core.util.converter.TypeToStringConverter;
 
 /**
- * This class contains a collection of methods concernde with
+ * This class contains a collection of methods concerned with
  * reading/writing/creating/converting Bean properties.
  * 
  * @author Torsten Hildebrandt

@@ -19,7 +19,7 @@ public class SimulationExperiment extends Experiment {
 	// parameters
 
 	private double simulationLength = Double.NaN;
-	private double initalSimTime = 0.0d;
+	private double initialSimTime = 0.0d;
 	private double statsResetTime = 0.0d;
 	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
@@ -51,7 +51,7 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	protected void initSim() {
-		sim.setInitialSimTime(getInitalSimTime());
+		sim.setInitialSimTime(getInitialSimTime());
 		sim.setPrintLevel(getLogLevel());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
 
@@ -156,15 +156,15 @@ public class SimulationExperiment extends Experiment {
 		return statsResetTime;
 	}
 
-	public double getInitalSimTime() {
-		return initalSimTime;
+	public double getInitialSimTime() {
+		return initialSimTime;
 	}
 
 	/**
 	 * Sets the starting time for the simulation clock.
 	 */
-	public void setInitalSimTime(double initalSimTime) {
-		this.initalSimTime = initalSimTime;
+	public void setInitialSimTime(double initialSimTime) {
+		this.initialSimTime = initialSimTime;
 	}
 
 	/**
