@@ -161,7 +161,7 @@ public class Simulation {
 	private Instant simTimeStartInstant;
 
 	private SimComponentContainer<SimComponent> rootComponent;
-	
+
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
 
@@ -444,7 +444,7 @@ public class Simulation {
 	}
 
 	/**
-	 * Schedules a call to {@code method} at certain point in time.
+	 * Schedules a call to {@code method} at a certain point in time.
 	 * 
 	 * @param time   The time when to call {@code method}.
 	 * @param prio   Priority of the event (to deterministically sequence events at
@@ -615,6 +615,14 @@ public class Simulation {
 	 */
 	public void addComponent(SimComponent sc) {
 		getRootComponent().addComponent(sc);
+	}
+
+	/**
+	 * Convenience method to get a component by its name given a fully qualified
+	 * name such as "container1.sub1.myMachine".
+	 */
+	public SimComponent getComponentByHierarchicalName(String hierarchicalName) {
+		return getRootComponent().getComponentByHierarchicalName(hierarchicalName);
 	}
 
 	/**

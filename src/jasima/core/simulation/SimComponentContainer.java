@@ -21,6 +21,22 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 
 	SUB getComponentByName(String name);
 
+	default SimComponent getComponentByHierarchicalName(String hierarchicalName) {
+		int dotPos = hierarchicalName.indexOf('.');
+		if (dotPos < 0) {
+			// leaf level?
+			return getComponentByName(hierarchicalName);
+		} else {
+			// get component for current level and then recurse
+			String currName = hierarchicalName.substring(0, dotPos);
+
+			SimComponent comp = getComponentByName(currName);
+			SimComponentContainer<?> asContainer = (SimComponentContainer<?>) comp;
+
+			return asContainer.getComponentByHierarchicalName(hierarchicalName.substring(dotPos + 1));
+		}
+	}
+
 	@Override
 	default void init() {
 		SimComponent.super.init();
@@ -62,7 +78,6 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 
 		getComponents().forEach(c -> c.produceResults(res));
 	}
-	
 
 	default <T extends SUB> void componentSetHelper(T newValue, Supplier<T> getter, Consumer<T> setter) {
 		T oldValue = getter.get();
