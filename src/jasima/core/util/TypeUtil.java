@@ -424,7 +424,7 @@ public class TypeUtil {
 
 	/**
 	 * Finds (bean) properties of {@code c} which have both getter and setter
-	 * methods. If an {@link IntrospectionException} is raised during when
+	 * methods. If an {@link IntrospectionException} is raised when
 	 * executing the method, then this exception is raised again as an unchecked
 	 * exception (wrapped in a {@link RuntimeException}).
 	 * 
