@@ -44,6 +44,9 @@ public class SimulationExperiment extends Experiment {
 
 		createSimComponents();
 
+		// prepare simulation and all components for run
+		sim.init();
+
 		// call initActions
 		if (initActions != null) {
 			initActions.forEach(a -> a.accept(sim));
@@ -54,6 +57,10 @@ public class SimulationExperiment extends Experiment {
 		sim.setInitialSimTime(getInitialSimTime());
 		sim.setPrintLevel(getLogLevel());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
+
+		if (getSimulationLength() >= 0.0) {
+			sim.setSimulationLength(getSimulationLength());
+		}
 
 		if (getSimTimeStartInstant() != null) {
 			sim.setSimTimeStartInstant(getSimTimeStartInstant());
@@ -88,11 +95,6 @@ public class SimulationExperiment extends Experiment {
 
 	@Override
 	protected void beforeRun() {
-		if (getSimulationLength() >= 0.0) {
-			sim.setSimulationLength(getSimulationLength());
-		}
-
-		sim.init();
 	}
 
 	@Override
