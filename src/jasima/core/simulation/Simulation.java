@@ -711,7 +711,7 @@ public class Simulation {
 	 * the arguments given in {@code params}).
 	 */
 	public void printFmt(MsgCategory category, String messageFormatString, Object... params) {
-		if (numPrintListener() > 0) {
+		if (numPrintListener() > 0 && category.ordinal() <= getPrintLevel().ordinal()) {
 			// lazy message creation
 			Object msgProducer = new Object() {
 				@Override
