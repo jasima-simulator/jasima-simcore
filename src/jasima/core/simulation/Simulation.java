@@ -448,12 +448,24 @@ public class Simulation {
 	 * 
 	 * @param time   The time when to call {@code method}.
 	 * @param prio   Priority of the event (to deterministically sequence events at
-	 *               the same time.
+	 *               the same time).
 	 * @param method The method to call at the given moment.
 	 */
 	public void schedule(double time, int prio, Runnable method) {
 		Event e = new MethodCallEvent(time, prio, method);
 		schedule(e);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at a certain point in time given as a Java Instant.
+	 * 
+	 * @param time   The time when to call {@code method}.
+	 * @param prio   Priority of the event (to deterministically sequence events at
+	 *               the same time).
+	 * @param method The method to call at the given moment.
+	 */
+	public void schedule(Instant time, int prio, Runnable method) {
+		schedule(instantToSimTime(time), prio, method);
 	}
 
 	/**

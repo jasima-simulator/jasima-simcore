@@ -1,5 +1,6 @@
 package jasima.core.simulation;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
@@ -153,6 +154,23 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * @see Simulation#schedule(double, int, Runnable)
 	 */
 	default void schedule(double time, int prio, Runnable method) {
+		getSim().schedule(time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at certain point in time.
+	 * 
+	 * @param time
+	 *            The time when to call {@code method}.
+	 * @param prio
+	 *            Priority of the event (to deterministically sequence events at
+	 *            the same time.
+	 * @param method
+	 *            The method to call at the given moment.
+	 * 
+	 * @see Simulation#schedule(Instant, int, Runnable)
+	 */
+	default void schedule(Instant time, int prio, Runnable method) {
 		getSim().schedule(time, prio, method);
 	}
 
