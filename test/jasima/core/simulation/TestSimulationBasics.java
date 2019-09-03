@@ -18,7 +18,7 @@ public class TestSimulationBasics {
 	public void testInitialSimTime() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
-		sim.schedule(0.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::handleEvent);
+		sim.schedule(0.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 		sim.setInitialSimTime(100);
 		try {
 			Map<String, Object> res = sim.performRun();
@@ -33,7 +33,7 @@ public class TestSimulationBasics {
 	public void testTimeConversion() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::handleEvent);
+		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 
 		Map<String, Object> res = sim.performRun();
 		System.out.println(res.toString());
@@ -55,7 +55,7 @@ public class TestSimulationBasics {
 	public void testTimeConversionShouldUseInitialSimTime() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::handleEvent);
+		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 		sim.setInitialSimTime(120.0);
 
 		Map<String, Object> res = sim.performRun();
@@ -71,7 +71,48 @@ public class TestSimulationBasics {
 		assertEquals(exp.atOffset(ZoneOffset.UTC).toInstant(), instant);
 	}
 
-	public static void handleEvent() {
+	@Test
+	public void testInstantToSimTime() {
+		Simulation sim = new Simulation();
+		sim.setSimTimeStartInstant(Instant.parse("2019-01-01T00:00:00.00Z"));
+		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+
+		Map<String, Object> res = sim.performRun();
+		System.out.println(res.toString());
+
+		Instant instant = Instant.parse("2019-01-01T06:00:00.00Z");
+		assertEquals(360.0, sim.instantToSimTime(instant), 1e-6);
+	}
+
+	@Test
+	public void testInstantToSimTimeShouldUseInitialSimTime() {
+		Simulation sim = new Simulation();
+		sim.setSimTimeStartInstant(Instant.parse("2019-01-01T00:00:00.00Z"));
+		sim.setInitialSimTime(120.0);
+		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+
+		Map<String, Object> res = sim.performRun();
+		System.out.println(res.toString());
+
+		Instant instant = Instant.parse("2019-01-01T04:00:00.00Z");
+		assertEquals(360.0, sim.instantToSimTime(instant), 1e-6);
+	}
+
+	@Test
+	public void testInstantToSimTimeShouldUseTimeToMillisFactor() {
+		Simulation sim = new Simulation();
+		sim.setSimTimeStartInstant(Instant.parse("2019-01-01T00:00:00.00Z"));
+		sim.setSimTimeToMillisFactor(60 * 60 * 1000); // simTime in hours
+		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+
+		Map<String, Object> res = sim.performRun();
+		System.out.println(res.toString());
+
+		Instant instant = Instant.parse("2019-01-16T00:00:00.00Z");
+		assertEquals(360.0, sim.instantToSimTime(instant), 1e-6);
+	}
+
+	public static void dummyHandler() {
 		// dummy method, does nothing
 	}
 

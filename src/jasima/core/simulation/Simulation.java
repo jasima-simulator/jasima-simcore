@@ -576,8 +576,20 @@ public class Simulation {
 	 * @see #setSimTimeToMillisFactor(long)
 	 */
 	public Instant simTimeToInstant(double simTime) {
-		long simTimeMillis = Math.round((simTime-getInitialSimTime()) * simTimeToMillisFactor);
+		long simTimeMillis = Math.round((simTime - getInitialSimTime()) * simTimeToMillisFactor);
 		return getSimTimeStartInstant().plus(simTimeMillis, ChronoUnit.MILLIS);
+	}
+
+	/**
+	 * Converts a given Java {@link Instant} (UTC time stamp) to the simulation time
+	 * it corresponds to.
+	 * 
+	 * @param instant The instant to be converted to simulation time.
+	 * @return The instant converter to simulation time.
+	 */
+	public double instantToSimTime(Instant instant) {
+		long durationMillis = instant.toEpochMilli() - getSimTimeStartInstant().toEpochMilli();
+		return durationMillis / simTimeToMillisFactor + getInitialSimTime();
 	}
 
 	/**
