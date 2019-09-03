@@ -93,6 +93,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Returns the given simulation time as an Instant.
 	 * 
 	 * @see Simulation#simTimeToInstant(double)
@@ -102,6 +103,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
+=======
+>>>>>>> branch 'master' of https://THildebrandt@bitbucket.org/jasimaSolutions/jasima.git
 	 * Returns the container this component is contained in.
 	 */
 	SimComponentContainer<?> getParent();
