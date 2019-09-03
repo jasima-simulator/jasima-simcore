@@ -84,6 +84,15 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
+	 * Returns the current simulation time as an Instant.
+	 * 
+	 * @see Simulation#simTimeToInstant()
+	 */
+	default Instant simTimeToInstant() {
+		return getSim().simTimeToInstant();
+	}
+
+	/**
 	 * Returns the container this component is contained in.
 	 */
 	SimComponentContainer<?> getParent();
