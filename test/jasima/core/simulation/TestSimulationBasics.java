@@ -51,6 +51,26 @@ public class TestSimulationBasics {
 		assertEquals(e2.atOffset(ZoneOffset.UTC).toInstant(), i2);
 	}
 
+	@Test
+	public void testTimeConversionShouldUseInitialSimTime() {
+		Simulation sim = new Simulation();
+		sim.addPrintListener(System.out::println);
+		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::handleEvent);
+		sim.setInitialSimTime(120.0);
+
+		Map<String, Object> res = sim.performRun();
+		System.out.println(res.toString());
+
+		// default is to assume time to be in minutes, i.e. simtime is at 360.0
+		// minutes
+		assertEquals("simTime at end", 360.0, sim.simTime(), 1e-6);
+		assertEquals("default simTimeToMillisFactor", 60 * 1000, sim.getSimTimeToMillisFactor());
+		
+		Instant instant = sim.simTimeToInstant();
+		LocalDateTime exp = LocalDateTime.of(Year.now(Clock.systemUTC()).getValue(), 1, 1, 4, 0);
+		assertEquals(exp.atOffset(ZoneOffset.UTC).toInstant(), instant);
+	}
+
 	public static void handleEvent() {
 		// dummy method, does nothing
 	}

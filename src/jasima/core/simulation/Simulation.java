@@ -576,7 +576,7 @@ public class Simulation {
 	 * @see #setSimTimeToMillisFactor(long)
 	 */
 	public Instant simTimeToInstant(double simTime) {
-		long simTimeMillis = Math.round(simTime * simTimeToMillisFactor);
+		long simTimeMillis = Math.round((simTime-getInitialSimTime()) * simTimeToMillisFactor);
 		return getSimTimeStartInstant().plus(simTimeMillis, ChronoUnit.MILLIS);
 	}
 
