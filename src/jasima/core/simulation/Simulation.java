@@ -63,6 +63,12 @@ import jasima.core.util.Util;
  */
 public class Simulation {
 
+	// constants for simTimeToMillisFactor used to convert simTime to an Instant
+	public static final long MILLIS_PER_MINUTE = 60 * 1000;
+	public static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
+	public static final long MILLIS_PER_DAY = 24 * MILLIS_PER_HOUR;
+	public static final long MILLIS_PER_WEEK = 7 * MILLIS_PER_DAY;
+	
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
 
@@ -157,7 +163,7 @@ public class Simulation {
 	private double statsResetTime = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
-	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
+	private long simTimeToMillisFactor = MILLIS_PER_MINUTE; // simulation time in minutes
 	private Instant simTimeStartInstant;
 
 	private SimComponentContainer<SimComponent> rootComponent;
