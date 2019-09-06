@@ -176,6 +176,20 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time instead of an absolute one.
+	 * 
+	 * @param time   The time when to call {@code method}.
+	 * @param prio   Priority of the event (to deterministically sequence events at
+	 *               the same time).
+	 * @param method The method to call at the given moment.
+	 */
+	default void scheduleIn(double time, int prio, Runnable method) {
+		getSim().scheduleIn(time, prio, method);
+	}
+
+	/**
 	 * Schedules a call to {@code method} at certain point in time.
 	 * 
 	 * @param time

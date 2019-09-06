@@ -68,7 +68,7 @@ public class Simulation {
 	public static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
 	public static final long MILLIS_PER_DAY = 24 * MILLIS_PER_HOUR;
 	public static final long MILLIS_PER_WEEK = 7 * MILLIS_PER_DAY;
-	
+
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
 
@@ -463,7 +463,22 @@ public class Simulation {
 	}
 
 	/**
-	 * Schedules a call to {@code method} at a certain point in time given as a Java Instant.
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time instead of an absolute one.
+	 * 
+	 * @param time   The time when to call {@code method}.
+	 * @param prio   Priority of the event (to deterministically sequence events at
+	 *               the same time).
+	 * @param method The method to call at the given moment.
+	 */
+	public void scheduleIn(double time, int prio, Runnable method) {
+		schedule(simTime() + time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at a certain point in time given as a Java
+	 * Instant.
 	 * 
 	 * @param time   The time when to call {@code method}.
 	 * @param prio   Priority of the event (to deterministically sequence events at
