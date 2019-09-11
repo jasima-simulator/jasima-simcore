@@ -436,6 +436,8 @@ public class Simulation {
 
 	/**
 	 * Schedules a new event.
+	 * 
+	 * @param event Some future event to be executed by the main event loop.
 	 */
 	public void schedule(Event event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio) {
@@ -454,7 +456,10 @@ public class Simulation {
 	}
 
 	/**
-	 * Schedules a call to {@code method} at a certain point in time.
+	 * Schedules a call to {@code method} at a certain point in time. Instead of
+	 * calling this method it is usually better to use
+	 * {@link #schedule(String, double, int, Runnable)} instead, as the additional
+	 * description parameter usually makes debugging easier.
 	 * 
 	 * @param time   The time when to call {@code method}.
 	 * @param prio   Priority of the event (to deterministically sequence events at
@@ -462,27 +467,28 @@ public class Simulation {
 	 * @param method The method to call at the given moment.
 	 */
 	public void schedule(double time, int prio, Runnable method) {
-		Event e = new MethodCallEvent(time, prio, method);
+		schedule(null, time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at a certain point in time.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param time        The time when to call {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time).
+	 * @param method      The method to call at the given moment.
+	 */
+	public void schedule(String description, double time, int prio, Runnable method) {
+		Event e = new MethodCallEvent(time, prio, method, description);
 		schedule(e);
 	}
 
 	/**
-	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
-	 * time instead of an absolute one.
-	 * 
-	 * @param time   The time when to call {@code method}.
-	 * @param prio   Priority of the event (to deterministically sequence events at
-	 *               the same time).
-	 * @param method The method to call at the given moment.
-	 */
-	public void scheduleIn(double time, int prio, Runnable method) {
-		schedule(simTime() + time, prio, method);
-	}
-
-	/**
 	 * Schedules a call to {@code method} at a certain point in time given as a Java
-	 * Instant.
+	 * Instant. Usually using {@link #schedule(String, Instant, int, Runnable)}
+	 * should be preferred.
 	 * 
 	 * @param time   The time when to call {@code method}.
 	 * @param prio   Priority of the event (to deterministically sequence events at
@@ -490,7 +496,55 @@ public class Simulation {
 	 * @param method The method to call at the given moment.
 	 */
 	public void schedule(Instant time, int prio, Runnable method) {
-		schedule(instantToSimTime(time), prio, method);
+		schedule(null, time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at a certain point in time given as a Java
+	 * Instant.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param time        The time when to call {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time).
+	 * @param method      The method to call at the given moment.
+	 */
+	public void schedule(String description, Instant time, int prio, Runnable method) {
+		schedule(description, instantToSimTime(time), prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time instead of an absolute one.
+	 * <p>
+	 * Usually using {@link #scheduleIn(String, double, int, Runnable)} should be
+	 * preferred.
+	 * 
+	 * @param time   The time when to call {@code method}.
+	 * @param prio   Priority of the event (to deterministically sequence events at
+	 *               the same time).
+	 * @param method The method to call at the given moment.
+	 */
+	public void scheduleIn(double time, int prio, Runnable method) {
+		scheduleIn(null, time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time instead of an absolute one.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param time        The time when to call {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time).
+	 * @param method      The method to call at the given moment.
+	 */
+	public void scheduleIn(String description, double time, int prio, Runnable method) {
+		schedule(description, simTime() + time, prio, method);
 	}
 
 	/**
@@ -568,14 +622,19 @@ public class Simulation {
 	protected static final class MethodCallEvent extends Event {
 		public final Runnable m;
 
-		private MethodCallEvent(double time, int prio, Runnable method) {
-			super(time, prio);
+		private MethodCallEvent(double time, int prio, Runnable method, String description) {
+			super(time, prio, description);
 			m = method;
 		}
 
 		@Override
 		public void handle() {
 			m.run();
+		}
+
+		@Override
+		public String toString() {
+			return getDescription()!=null ? getDescription() : String.format("MethodCallEvent(%s)", m.toString());
 		}
 	}
 

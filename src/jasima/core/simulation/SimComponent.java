@@ -115,10 +115,11 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * Gets the name of this component (must not be changed once set).
 	 */
 	String getName();
+
 	void setName(String name);
-	
+
 	default boolean isValidName(String name) {
-		return name!=null && name.length()>0 && name.indexOf('.')<0;
+		return name != null && name.length() > 0 && name.indexOf('.') < 0;
 	}
 
 	// default implementations of lifecycle messages/events
@@ -161,18 +162,31 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	/**
 	 * Schedules a call to {@code method} at certain point in time.
 	 * 
-	 * @param time
-	 *            The time when to call {@code method}.
-	 * @param prio
-	 *            Priority of the event (to deterministically sequence events at
-	 *            the same time.
-	 * @param method
-	 *            The method to call at the given moment.
+	 * @param time   The time when to call {@code method}.
+	 * @param prio   Priority of the event (to deterministically sequence events at
+	 *               the same time.
+	 * @param method The method to call at the given moment.
 	 * 
 	 * @see Simulation#schedule(double, int, Runnable)
 	 */
 	default void schedule(double time, int prio, Runnable method) {
 		getSim().schedule(time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} at certain point in time.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param time        The time when to call {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time.
+	 * @param method      The method to call at the given moment.
+	 * 
+	 * @see Simulation#schedule(double, int, Runnable)
+	 */
+	default void schedule(String description, double time, int prio, Runnable method) {
+		getSim().schedule(description, time, prio, method);
 	}
 
 	/**
@@ -190,15 +204,28 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time instead of an absolute one.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param time        The time when to call {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time).
+	 * @param method      The method to call at the given moment.
+	 */
+	default void scheduleIn(String description, double time, int prio, Runnable method) {
+		getSim().scheduleIn(description, time, prio, method);
+	}
+
+	/**
 	 * Schedules a call to {@code method} at certain point in time.
 	 * 
-	 * @param time
-	 *            The time when to call {@code method}.
-	 * @param prio
-	 *            Priority of the event (to deterministically sequence events at
-	 *            the same time.
-	 * @param method
-	 *            The method to call at the given moment.
+	 * @param time   The time when to call {@code method}.
+	 * @param prio   Priority of the event (to deterministically sequence events at
+	 *               the same time.
+	 * @param method The method to call at the given moment.
 	 * 
 	 * @see Simulation#schedule(Instant, int, Runnable)
 	 */
@@ -207,11 +234,26 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Periodically calls a certain method. While this method returns true, a
-	 * next invocation after the given time interval is scheduled.
+	 * Schedules a call to {@code method} at certain point in time.
 	 * 
-	 * @see Simulation#schedulePeriodically(double, double, int,
-	 *      BooleanSupplier)
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param time        The time when to call {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time.
+	 * @param method      The method to call at the given moment.
+	 * 
+	 * @see Simulation#schedule(Instant, int, Runnable)
+	 */
+	default void schedule(String description, Instant time, int prio, Runnable method) {
+		getSim().schedule(description, time, prio, method);
+	}
+
+	/**
+	 * Periodically calls a certain method. While this method returns true, a next
+	 * invocation after the given time interval is scheduled.
+	 * 
+	 * @see Simulation#schedulePeriodically(double, double, int, BooleanSupplier)
 	 */
 	default void schedulePeriodically(double firstInvocation, double interval, int prio, BooleanSupplier method) {
 		getSim().schedulePeriodically(firstInvocation, interval, prio, method);
@@ -227,12 +269,12 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Calls a certain method at the times returned by the method itself. The
-	 * first invocation is performed at the current time (asynchronously, i.e.,
+	 * Calls a certain method at the times returned by the method itself. The first
+	 * invocation is performed at the current time (asynchronously, i.e.,
 	 * {@code scheduleProcess()} returns before {@code method} is called for the
-	 * first time). Subsequent calls are scheduled at the absolute times
-	 * returned by the previous method invocation. No more invocations are
-	 * scheduled if {@code method} returned NaN or a negative value.
+	 * first time). Subsequent calls are scheduled at the absolute times returned by
+	 * the previous method invocation. No more invocations are scheduled if
+	 * {@code method} returned NaN or a negative value.
 	 * 
 	 * @see Simulation#scheduleProcess(int, DoubleSupplier)
 	 */
@@ -261,8 +303,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Initializes the random number generator associated with the {@link DblStream} {@code s}. This just delegates to the
-	 * {@link RandomFactory} of a simulation.
+	 * Initializes the random number generator associated with the {@link DblStream}
+	 * {@code s}. This just delegates to the {@link RandomFactory} of a simulation.
 	 *
 	 * @see Simulation#initRndGen(DblStream, String)
 	 */
@@ -271,8 +313,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Initializes the random number generator associated with the {@link IntStream} {@code s}. This just delegates to the
-	 * {@link RandomFactory} of a simulation.
+	 * Initializes the random number generator associated with the {@link IntStream}
+	 * {@code s}. This just delegates to the {@link RandomFactory} of a simulation.
 	 *
 	 * @see Simulation#initRndGen(IntStream, String)
 	 */
@@ -281,8 +323,9 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Creates an instance of Java's {@code Random} class initialized with a seed derived from the parameter {@code streamName}. This just delegates to the method
-	 * {@link RandomFactory#createInstance(String)} of a simulation.
+	 * Creates an instance of Java's {@code Random} class initialized with a seed
+	 * derived from the parameter {@code streamName}. This just delegates to the
+	 * method {@link RandomFactory#createInstance(String)} of a simulation.
 	 *
 	 * @see Simulation#initRndGen(String)
 	 */
@@ -301,9 +344,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 
 	/**
 	 * {@code SimComponent}s can notify registered listeners of certain
-	 * events/messages occurring. The default implementation of
-	 * {@link SimComponent} informs listeners of lifecycle events such as INIT,
-	 * DONE, etc.
+	 * events/messages occurring. The default implementation of {@link SimComponent}
+	 * informs listeners of lifecycle events such as INIT, DONE, etc.
 	 */
 	@Override
 	Notifier<SimComponent, Object> notifierImpl();
@@ -312,8 +354,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 
 	/**
 	 * {@code SimComponent}s provide a {@link ValueStore} to attach arbitrary
-	 * key/value-pairs with them. This can be used as a simple extension
-	 * mechanism without having to use inheritance.
+	 * key/value-pairs with them. This can be used as a simple extension mechanism
+	 * without having to use inheritance.
 	 */
 	@Override
 	ValueStore valueStoreImpl();

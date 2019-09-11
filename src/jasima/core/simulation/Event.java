@@ -47,12 +47,18 @@ public abstract class Event implements Comparable<Event>, Runnable {
 
 	private double time;
 	private final int prio;
+	private final String description;
 	int eventNum;
 
 	public Event(double time, int prio) {
+		this(time, prio, null);
+	}
+
+	public Event(double time, int prio, String description) {
 		super();
 		this.time = time;
 		this.prio = prio;
+		this.description = description;
 	}
 
 	@Override
@@ -102,13 +108,22 @@ public abstract class Event implements Comparable<Event>, Runnable {
 		return prio;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
 	/**
-	 * An application event is the usual event type in a simulation. A
-	 * simulation is terminated if the event queue is empty or does not contain
-	 * any application events (i.e. isAppEvent() of all events in the queue
-	 * returns false).
+	 * An application event is the usual event type in a simulation. A simulation is
+	 * terminated if the event queue is empty or does not contain any application
+	 * events (i.e. isAppEvent() of all events in the queue returns false).
 	 */
 	public boolean isAppEvent() {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		String descr = getDescription();
+		return descr != null ? descr : super.toString();
 	}
 }
