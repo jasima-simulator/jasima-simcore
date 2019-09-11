@@ -1,7 +1,6 @@
 package jasima.core.simulation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -14,19 +13,39 @@ import org.junit.Test;
 
 public class TestSimulationBasics {
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testInitialSimTime() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
 		sim.schedule(0.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 		sim.setInitialSimTime(100);
-		try {
-			Map<String, Object> res = sim.performRun();
-			System.out.println(res.toString());
-			fail("No exception raised.");
-		} catch (IllegalArgumentException e) {
-			// do nothing, Exception is expected
-		}
+
+		// method under test
+		sim.performRun();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testOldEventInInit() {
+		Simulation sim = new Simulation();
+		sim.addPrintListener(System.out::println);
+		sim.setInitialSimTime(-100);
+
+		sim.init();
+
+		// should raise exception
+		sim.schedule(-101.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+	}
+
+	@Test
+	public void testSimtimeInPast() {
+		Simulation sim = new Simulation();
+		sim.addPrintListener(System.out::println);
+		sim.setInitialSimTime(-100);
+
+		sim.init();
+
+		// this should work
+		sim.schedule(-100.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 	}
 
 	@Test
@@ -65,7 +84,7 @@ public class TestSimulationBasics {
 		// minutes
 		assertEquals("simTime at end", 360.0, sim.simTime(), 1e-6);
 		assertEquals("default simTimeToMillisFactor", 60 * 1000, sim.getSimTimeToMillisFactor());
-		
+
 		Instant instant = sim.simTimeToInstant();
 		LocalDateTime exp = LocalDateTime.of(Year.now(Clock.systemUTC()).getValue(), 1, 1, 4, 0);
 		assertEquals(exp.atOffset(ZoneOffset.UTC).toInstant(), instant);

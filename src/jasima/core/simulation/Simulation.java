@@ -297,9 +297,7 @@ public class Simulation {
 		if (continueSim) {
 			Event e = events.extract();
 			if (e.getTime() < simTime) {
-				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-						"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
-						e.getTime(), e.getPrio(), e.toString()));
+				throw new IllegalArgumentException(createErrorMsgEventInPast(e));
 			}
 
 			// everything is ok, reinsert first event
@@ -361,6 +359,12 @@ public class Simulation {
 				currentEvent(), errorString);
 
 		return true;
+	}
+
+	private String createErrorMsgEventInPast(Event e) {
+		return String.format(Util.DEF_LOCALE,
+				"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).", e.getTime(),
+				e.getPrio(), e.toString());
 	}
 
 	/**
@@ -434,14 +438,14 @@ public class Simulation {
 	 * Schedules a new event.
 	 */
 	public void schedule(Event event) {
-		if (event.getTime() == simTime && event.getPrio() <= currPrio)
+		if (event.getTime() == simTime && event.getPrio() <= currPrio) {
 			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
 					event.getPrio(), event.toString());
+		}
 		if (event.getTime() < simTime) {
-			printFmt(MsgCategory.ERROR,
-					"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
-					event.getTime(), event.getPrio(), event.toString());
-			end();
+			String msg = createErrorMsgEventInPast(event);
+			printFmt(MsgCategory.ERROR, msg);
+			throw new IllegalArgumentException(msg);
 		}
 		event.eventNum = eventNum++;
 		if (event.isAppEvent())
