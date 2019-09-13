@@ -20,25 +20,23 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * This interface provides a simple get/put-mechanism to store a value
- * associated with a key object, similar to a @link {@link HashMap}.
+ * associated with a key object, similar to a @link {@link Map}.
  * 
  * @author Torsten Hildebrandt
  */
 public interface ValueStore {
 
 	/**
-	 * Puts a value in the value store, potentially overwriting an existing
-	 * value associated with the same key.
+	 * Puts a value in the value store, potentially overwriting an existing value
+	 * associated with the same key.
 	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
+	 * @param key   The key name.
+	 * @param value value to assign to {@code key}.
 	 * @see #valueStoreGet(Object)
 	 */
 	default void valueStorePut(Object key, Object value) {
@@ -48,14 +46,40 @@ public interface ValueStore {
 	/**
 	 * Retrieves a value from the value store.
 	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
+	 * @param key The entry to return, e.g., identified by a name.
 	 * @return The value associated with {@code key}.
 	 * 
 	 * @see #valueStorePut(Object, Object)
 	 */
 	default Object valueStoreGet(Object key) {
 		return valueStoreImpl().valueStoreGet(key);
+	}
+
+	/**
+	 * Retrieves a value from the value store. If no such value is contained in the
+	 * valueStore or the value null is associated with {@code key}, the default
+	 * value is returned.
+	 * 
+	 * @param key          The entry to return, e.g., identified by a name.
+	 * @param defaultValue The default value to use.
+	 * @return The value associated with {@code key} or {@code defaultValue} if no
+	 *         value was associated.
+	 * 
+	 * @see #valueStorePut(Object, Object)
+	 */
+	default Object valueStoreGet(Object key, Object defaultValue) {
+		Object value = valueStoreGet(key);
+		return value != null ? value : defaultValue;
+	}
+
+	/**
+	 * Check for the existence of a certain key.
+	 * 
+	 * @param key The key, usually identified by a name.
+	 * @return Returns true, if a non-null value is associated with {@code key}.
+	 */
+	default boolean valueStoreContains(Object key) {
+		return valueStoreGet(key) != null;
 	}
 
 	/**
@@ -75,8 +99,8 @@ public interface ValueStore {
 	/**
 	 * Removes an entry from this value store.
 	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
+	 * @return The value previously associated with "key", or null, if no such key
+	 *         was found.
 	 */
 	default Object valueStoreRemove(Object key) {
 		return valueStoreImpl().valueStoreRemove(key);
