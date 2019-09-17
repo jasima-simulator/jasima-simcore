@@ -64,7 +64,9 @@ public class JobShopTests {
 		s.addComponent(js);
 
 		s.init();
+		s.beforeRun();
 		s.run();
+		s.afterRun();
 		s.done();
 
 		js.report();
@@ -134,7 +136,9 @@ public class JobShopTests {
 		s.addComponent(js);
 
 		s.init();
+		s.beforeRun();
 		s.run();
+		s.afterRun();
 		s.done();
 
 		js.report();

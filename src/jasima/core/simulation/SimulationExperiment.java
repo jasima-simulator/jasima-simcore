@@ -95,11 +95,17 @@ public class SimulationExperiment extends Experiment {
 
 	@Override
 	protected void beforeRun() {
+		sim.beforeRun();
 	}
 
 	@Override
 	protected void performRun() {
 		sim.run();
+	}
+
+	@Override
+	protected void afterRun() {
+		sim.afterRun();
 	}
 
 	@Override

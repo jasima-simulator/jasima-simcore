@@ -80,7 +80,9 @@ public class JSExample extends Shop {
 				{ ws[1], ws[4], ws[0], ws[3], ws[2] } };
 
 		s.init();
+		s.beforeRun();
 		s.run();
+		s.afterRun();
 		s.done();
 		js.report();
 	} // End of main

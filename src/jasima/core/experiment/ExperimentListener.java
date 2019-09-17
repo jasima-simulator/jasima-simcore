@@ -42,11 +42,13 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 			initialized((Experiment) e);
 		} else if (event == ExperimentMessage.EXPERIMENT_BEFORE_RUN) {
 			beforeRun((Experiment) e);
+		} else if (event == ExperimentMessage.EXPERIMENT_RUN_PERFORMED) {
+			runPerformed((Experiment) e);
 		} else if (event == ExperimentMessage.EXPERIMENT_AFTER_RUN) {
 			afterRun((Experiment) e);
 		} else if (event == ExperimentMessage.EXPERIMENT_DONE) {
 			done((Experiment) e);
-		} else if (event == ExperimentMessage.EXPERIMENT_COLLECT_RESULTS) {
+		} else if (event == ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS) {
 			Experiment exp = (Experiment) e;
 			produceResults(exp, exp.resultMap);
 		} else if (event == ExperimentMessage.EXPERIMENT_FINISHING) {
@@ -78,6 +80,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	}
 
 	default void beforeRun(Experiment e) {
+	}
+
+	default void runPerformed(Experiment e) {
 	}
 
 	default void afterRun(Experiment e) {

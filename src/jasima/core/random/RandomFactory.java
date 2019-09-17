@@ -69,6 +69,7 @@ public class RandomFactory implements Serializable {
 		try {
 			Class<?> factClass = Class.forName(factName);
 			RandomFactory f = (RandomFactory) factClass.newInstance();
+			f.setSeed(Experiment.DEFAULT_SEED);
 			return f;
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException(e);
@@ -90,8 +91,6 @@ public class RandomFactory implements Serializable {
 	 */
 	public RandomFactory() {
 		super();
-
-		setSeed(Experiment.DEFAULT_SEED);
 
 		// which Random implementation to use?
 		String rndClassName = System.getProperty(RANDOM_CLASS_PROP_KEY, DEFAULT_RANDOM_CLASS);

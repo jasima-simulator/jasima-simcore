@@ -108,10 +108,12 @@ public abstract class Experiment
 		public static final ExperimentMessage EXPERIMENT_STARTING = new ExperimentMessage("EXPERIMENT_STARTING");
 		public static final ExperimentMessage EXPERIMENT_INITIALIZED = new ExperimentMessage("EXPERIMENT_INITIALIZED");
 		public static final ExperimentMessage EXPERIMENT_BEFORE_RUN = new ExperimentMessage("EXPERIMENT_BEFORE_RUN");
+		public static final ExperimentMessage EXPERIMENT_RUN_PERFORMED = new ExperimentMessage(
+				"EXPERIMENT_RUN_PERFORMED");
 		public static final ExperimentMessage EXPERIMENT_AFTER_RUN = new ExperimentMessage("EXPERIMENT_AFTER_RUN");
 		public static final ExperimentMessage EXPERIMENT_DONE = new ExperimentMessage("EXPERIMENT_DONE");
-		public static final ExperimentMessage EXPERIMENT_COLLECT_RESULTS = new ExperimentMessage(
-				"EXPERIMENT_COLLECT_RESULTS");
+		public static final ExperimentMessage EXPERIMENT_COLLECTING_RESULTS = new ExperimentMessage(
+				"EXPERIMENT_COLLECTING_RESULTS");
 		public static final ExperimentMessage EXPERIMENT_FINISHING = new ExperimentMessage("EXPERIMENT_FINISHING");
 		public static final ExperimentMessage EXPERIMENT_FINISHED = new ExperimentMessage("EXPERIMENT_FINISHED");
 	}
@@ -194,12 +196,22 @@ public abstract class Experiment
 
 	public static class UniqueNamesCheckingHashMap extends LinkedHashMap<String, Object> {
 		private static final long serialVersionUID = -6783419937586790463L;
+		private boolean disableCheck;
 
 		@Override
 		public Object put(String key, Object value) {
-			if (containsKey(key))
+			if (!isDisableCheck() && containsKey(key)) {
 				throw new RuntimeException("Map already contains value '" + key + "'.");
+			}
 			return super.put(key.intern(), value);
+		}
+
+		public boolean isDisableCheck() {
+			return disableCheck;
+		}
+
+		public void setDisableCheck(boolean disableCheck) {
+			this.disableCheck = disableCheck;
 		}
 	}
 
@@ -229,8 +241,15 @@ public abstract class Experiment
 	protected abstract void performRun();
 
 	/**
+	 * This method is called immediately after {@link #performRun()}, but before
+	 * {@link #done()}.
+	 */
+	protected void afterRun() {
+	}
+
+	/**
 	 * This method can be overridden to perform any required clean-up. It is
-	 * executed immediately after {@link #performRun()}, but before
+	 * executed immediately after {@link #afterRun()}, but before
 	 * {@link #produceResults()} and {@link #finish()}.
 	 */
 	protected void done() {
@@ -279,12 +298,14 @@ public abstract class Experiment
 				fire(ExperimentMessage.EXPERIMENT_BEFORE_RUN);
 
 			performRun();
+			if (numListener() > 0)
+				fire(ExperimentMessage.EXPERIMENT_RUN_PERFORMED);
 
+			afterRun();
 			if (numListener() > 0)
 				fire(ExperimentMessage.EXPERIMENT_AFTER_RUN);
 
 			done();
-
 			if (numListener() > 0)
 				fire(ExperimentMessage.EXPERIMENT_DONE);
 		} finally {
@@ -292,23 +313,27 @@ public abstract class Experiment
 		}
 
 		// build result map
-		resultMap = new UniqueNamesCheckingHashMap();
+		UniqueNamesCheckingHashMap map = new UniqueNamesCheckingHashMap();
+		resultMap = map;
+
+		if (numListener() > 0)
+			fire(ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS);
 
 		produceResults();
 
-		if (numListener() > 0)
-			fire(ExperimentMessage.EXPERIMENT_COLLECT_RESULTS);
-
 		// give experiments and listener a chance to view/modify results
-		finish();
-
+		map.setDisableCheck(true);
+		
 		if (numListener() > 0)
 			fire(ExperimentMessage.EXPERIMENT_FINISHING);
 
-		// we are done, don't change results any more
-		resultMap = Collections.unmodifiableMap(resultMap);
+		finish();
+
 		if (numListener() > 0)
 			fire(ExperimentMessage.EXPERIMENT_FINISHED);
+
+		// we are done, don't change results any more
+		resultMap = Collections.unmodifiableMap(resultMap);
 
 		// return results
 		return getResults();

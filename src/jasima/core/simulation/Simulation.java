@@ -286,8 +286,6 @@ public class Simulation {
 	 * @see jasima.core.simulation.Event#isAppEvent()
 	 */
 	public void run() {
-		beforeRun();
-
 		resetStats();
 
 		continueSim = numAppEvents > 0;
@@ -339,8 +337,6 @@ public class Simulation {
 				}
 			}
 		} while (continueSim);
-
-		afterRun();
 	}
 
 	/**
@@ -370,9 +366,10 @@ public class Simulation {
 	/**
 	 * Override this method to perform initializations after {@link #init()}, but
 	 * before running the simulation. This method is usually used to schedule
-	 * initial events.
+	 * initial events. It is executed automatically at the beginning of the
+	 * {@link #run()} method.
 	 */
-	protected void beforeRun() {
+	public void beforeRun() {
 		// schedule simulation end
 		if (getSimulationLength() > 0.0)
 			schedule(new Event(getSimulationLength(), Event.EVENT_PRIO_LOWEST) {
@@ -404,9 +401,10 @@ public class Simulation {
 
 	/**
 	 * Override this method to perform some action after running the simulation, but
-	 * before {@link #done()} is called.
+	 * before {@link #done()} is called. It is executed automatically at the end of
+	 * the {@link #run()} method.
 	 */
-	protected void afterRun() {
+	public void afterRun() {
 		rootComponent.afterRun();
 	}
 
@@ -418,15 +416,17 @@ public class Simulation {
 	}
 
 	/**
-	 * Convenience method calling {@link #init()}, {@link #run()}, {@link #done()}
-	 * and returning the results produced by {@link #produceResults(Map)} in a new
-	 * {@code HashMap}.
+	 * Convenience method calling {@link #init()}, {@link #beforeRun()},
+	 * {@link #run()}, {@link #afterRun()}, {@link #done()} and returning the
+	 * results produced by {@link #produceResults(Map)} in a new {@code HashMap}.
 	 * 
 	 * @return The results produced by the simulation and its components.
 	 */
 	public Map<String, Object> performRun() {
 		init();
+		beforeRun();
 		run();
+		afterRun();
 		done();
 
 		HashMap<String, Object> res = new HashMap<>();
@@ -634,7 +634,7 @@ public class Simulation {
 
 		@Override
 		public String toString() {
-			return getDescription()!=null ? getDescription() : String.format("MethodCallEvent(%s)", m.toString());
+			return getDescription() != null ? getDescription() : String.format("MethodCallEvent(%s)", m.toString());
 		}
 	}
 
