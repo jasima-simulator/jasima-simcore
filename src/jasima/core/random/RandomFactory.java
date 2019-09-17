@@ -33,14 +33,18 @@ import jasima.core.util.MsgCategory;
 import jasima.core.util.Util;
 
 /**
- * This class provides functionality to create (independent) random number streams. These streams are dependent on a base seed
- * ({@link #setSeed(long)}) and a stream name (provided as a parameter to {@link #createInstance(String)} ).
+ * This class provides functionality to create (independent) random number
+ * streams. These streams are dependent on a base seed ({@link #setSeed(long)})
+ * and a stream name (provided as a parameter to {@link #createInstance(String)}
+ * ).
  * <p>
  * Behaviour of this class can be modified in two ways using system properties.
  * <ol>
- * <li>A property {@link #RANDOM_FACTORY_PROP_KEY} can be used to change the class returned by the static method {@link #newInstance()}.
- * <li>If just a different implementation of {@link java.util.Random} is desired (default is {@link MersenneTwister}), use the system
- * property {@link #RANDOM_CLASS_PROP_KEY}.
+ * <li>A property {@link #RANDOM_FACTORY_PROP_KEY} can be used to change the
+ * class returned by the static method {@link #newInstance()}.
+ * <li>If just a different implementation of {@link java.util.Random} is desired
+ * (default is {@link MersenneTwister}), use the system property
+ * {@link #RANDOM_CLASS_PROP_KEY}.
  * </ol>
  * 
  * @author Torsten Hildebrandt
@@ -53,20 +57,20 @@ public class RandomFactory implements Serializable {
 	public static final String DEFAULT_FACTORY = RandomFactory.class.getName();
 
 	/**
-	 * Factory method to create a new instance of {@code RandomFactory}. The default implementation is to return a new instance of
-	 * {@code RandomFactory}, but the class created can be customized with the system property "jasima.core.random.RandomFactory".
+	 * Factory method to create a new instance of {@code RandomFactory}. The default
+	 * implementation is to return a new instance of {@code RandomFactory}, but the
+	 * class created can be customized with the system property
+	 * "jasima.core.random.RandomFactory".
 	 * 
 	 * @return A new {@code RandomFactory} instance.
 	 */
 	public static RandomFactory newInstance() {
 		String factName = System.getProperty(RANDOM_FACTORY_PROP_KEY, DEFAULT_FACTORY);
-
 		try {
 			Class<?> factClass = Class.forName(factName);
-			RandomFactory o = (RandomFactory) factClass.newInstance();
-			o.setSeed(Experiment.DEFAULT_SEED);
-			return o;
-		} catch (Exception e) {
+			RandomFactory f = (RandomFactory) factClass.newInstance();
+			return f;
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -81,10 +85,13 @@ public class RandomFactory implements Serializable {
 	private Simulation sim;
 
 	/**
-	 * Don't use this constructor, use static method {@link #newInstance()} instead.
+	 * This constructor is usually not used directly, use static method
+	 * {@link #newInstance()} instead.
 	 */
-	protected RandomFactory() {
+	public RandomFactory() {
 		super();
+
+		setSeed(Experiment.DEFAULT_SEED);
 
 		// which Random implementation to use?
 		String rndClassName = System.getProperty(RANDOM_CLASS_PROP_KEY, DEFAULT_RANDOM_CLASS);
@@ -96,11 +103,12 @@ public class RandomFactory implements Serializable {
 	}
 
 	/**
-	 * Create a new random instance. The seed of this new instance (and hence the stream of pseudo-random numbers) is determined by the
-	 * given {@code name} and the seed of the {@code RandomFactory}.
+	 * Create a new random instance. The seed of this new instance (and hence the
+	 * stream of pseudo-random numbers) is determined by the given {@code name} and
+	 * the seed of the {@code RandomFactory}.
 	 * 
-	 * @param name
-	 *            A unique name of the Random instance (indirectly setting its seed).
+	 * @param name A unique name of the Random instance (indirectly setting its
+	 *             seed).
 	 * @return The new {@link Random} instance.
 	 */
 	public Random createInstance(final String name) {
@@ -116,11 +124,12 @@ public class RandomFactory implements Serializable {
 	}
 
 	/**
-	 * Create a new {@link Random} instance with the given seed. The concrete class instantiated is determined by a system property
-	 * "jasima.core.random.RandomFactory.randomClass" (default: {@link MersenneTwister}).
+	 * Create a new {@link Random} instance with the given seed. The concrete class
+	 * instantiated is determined by a system property
+	 * "jasima.core.random.RandomFactory.randomClass" (default:
+	 * {@link MersenneTwister}).
 	 * 
-	 * @param seed
-	 *            The seed for the new {@link Random} instance.
+	 * @param seed The seed for the new {@link Random} instance.
 	 * @return A new {@link Random} instance initialized with the given seed.
 	 */
 	protected Random createRandom(long seed) {
@@ -134,7 +143,8 @@ public class RandomFactory implements Serializable {
 	}
 
 	/**
-	 * Compute a (hopefully unique) seed which only depends on 'name' and this RandomFactory's seed.
+	 * Compute a (hopefully unique) seed which only depends on 'name' and this
+	 * RandomFactory's seed.
 	 */
 	protected long getSeed(final String name) {
 		int hashCode = name.hashCode();
@@ -166,8 +176,7 @@ public class RandomFactory implements Serializable {
 	/**
 	 * Sets the seed that is used to initialize all random number streams.
 	 * 
-	 * @param seed
-	 *            The seed to use.
+	 * @param seed The seed to use.
 	 */
 	public void setSeed(long seed) {
 		hashMask = new Random(seed).nextLong();
@@ -175,13 +184,13 @@ public class RandomFactory implements Serializable {
 	}
 
 	/**
-	 * Initializes the random number generator of a DblStream if it is not already set. As name of the stream {@link DblStream#getName()} is
-	 * used. If it is {@code null}, {@code defaultName} is used instead.
+	 * Initializes the random number generator of a DblStream if it is not already
+	 * set. As name of the stream {@link DblStream#getName()} is used. If it is
+	 * {@code null}, {@code defaultName} is used instead.
 	 * 
-	 * @param stream
-	 *            The stream to initialize.
-	 * @param defaultName
-	 *            Default name if {@code stream} provides no useful information.
+	 * @param stream      The stream to initialize.
+	 * @param defaultName Default name if {@code stream} provides no useful
+	 *                    information.
 	 * @return The same as {@code stream}.
 	 */
 	public DblStream initRndGen(DblStream stream, String defaultName) {
@@ -204,11 +213,11 @@ public class RandomFactory implements Serializable {
 	}
 
 	/**
-	 * Initializes the random number generator of a DblStream if it is not already set using the stream's name. This method is the same as
+	 * Initializes the random number generator of a DblStream if it is not already
+	 * set using the stream's name. This method is the same as
 	 * {@link #initRndGen(DblStream, String)}, just without a default name.
 	 * 
-	 * @param stream
-	 *            The {@link DblStream} to configure.
+	 * @param stream The {@link DblStream} to configure.
 	 * @return The stream with random number generator initialized.
 	 */
 	public DblStream initRndGen(DblStream stream) {
