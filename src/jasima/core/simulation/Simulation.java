@@ -21,6 +21,7 @@
 package jasima.core.simulation;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
@@ -548,6 +549,41 @@ public class Simulation {
 	}
 
 	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time specified by a {@link Duration} instead of an absolute one.
+	 * <p>
+	 * Usually using {@link #scheduleIn(String, Duration, int, Runnable)} should be
+	 * preferred.
+	 * 
+	 * @param duration The duration from the current simulation time when to call
+	 *                 {@code method}.
+	 * @param prio     Priority of the event (to deterministically sequence events
+	 *                 at the same time).
+	 * @param method   The method to call at the given moment.
+	 */
+	public void scheduleIn(Duration duration, int prio, Runnable method) {
+		scheduleIn(null, duration, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time specified by a {@link Duration} instead of an absolute one.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param duration    The duration from the current simulation time when to call
+	 *                    {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time).
+	 * @param method      The method to call at the given moment.
+	 */
+	public void scheduleIn(String description, Duration duration, int prio, Runnable method) {
+		schedule(description, simTime() + durationToSimTime(duration), prio, method);
+	}
+
+	/**
 	 * Periodically calls a certain method. While this method returns true, a next
 	 * invocation after the given time interval is scheduled.
 	 */
@@ -681,11 +717,22 @@ public class Simulation {
 	 * it corresponds to.
 	 * 
 	 * @param instant The instant to be converted to simulation time.
-	 * @return The instant converter to simulation time.
+	 * @return The instant converted to simulation time.
 	 */
 	public double instantToSimTime(Instant instant) {
 		long durationMillis = instant.toEpochMilli() - getSimTimeStartInstant().toEpochMilli();
 		return durationMillis / simTimeToMillisFactor + getInitialSimTime();
+	}
+
+	/**
+	 * Converts a given Java {@link Duration} to the corresponding simulation time.
+	 * 
+	 * @param d The duration to be converted to simulation time.
+	 * @return The amount of simulation time.
+	 */
+	public double durationToSimTime(Duration d) {
+		double millis = d.toMillis();
+		return millis / simTimeToMillisFactor;
 	}
 
 	/**

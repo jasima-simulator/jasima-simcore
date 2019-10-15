@@ -1,5 +1,6 @@
 package jasima.core.simulation;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Random;
@@ -217,6 +218,41 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 */
 	default void scheduleIn(String description, double time, int prio, Runnable method) {
 		getSim().scheduleIn(description, time, prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time specified by a {@link Duration} instead of an absolute one.
+	 * <p>
+	 * Usually using {@link #scheduleIn(String, Duration, int, Runnable)} should be
+	 * preferred.
+	 * 
+	 * @param duration The duration from the current simulation time when to call
+	 *                 {@code method}.
+	 * @param prio     Priority of the event (to deterministically sequence events
+	 *                 at the same time).
+	 * @param method   The method to call at the given moment.
+	 */
+	default void scheduleIn(Duration duration, int prio, Runnable method) {
+		getSim().scheduleIn(duration,  prio, method);
+	}
+
+	/**
+	 * Schedules a call to {@code method} in a certain amount of time. In contrast
+	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * time specified by a {@link Duration} instead of an absolute one.
+	 * 
+	 * @param description Some description that is added as an additional parameter
+	 *                    to the Event object (makes debugging easier).
+	 * @param duration    The duration from the current simulation time when to call
+	 *                    {@code method}.
+	 * @param prio        Priority of the event (to deterministically sequence
+	 *                    events at the same time).
+	 * @param method      The method to call at the given moment.
+	 */
+	default void scheduleIn(String description, Duration duration, int prio, Runnable method) {
+		getSim().scheduleIn(description, duration,  prio, method);
 	}
 
 	/**
