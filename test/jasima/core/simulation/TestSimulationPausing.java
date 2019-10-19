@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
 import org.junit.Before;
@@ -17,7 +16,9 @@ import jasima.core.util.ConsolePrinter;
 public class TestSimulationPausing {
 
 	private static final int REAL_TIME_ALLOWANCE = 100;
-	private static long tBefore;
+
+	static long tBefore;
+
 	Simulation sim;
 
 	public static void sleepOneSecond() {
@@ -55,12 +56,12 @@ public class TestSimulationPausing {
 	public void testDefaultBehaviour() {
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
-		
+		Future<Map<String, Object>> future = sim.performRunAsync();
+
 		sleep(500);
 		assertEquals("simTime", 2.0, sim.simTime(), 1e-6);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
-		
+
 		Map<String, Object> res = getFutureResult(future);
 
 		t = System.currentTimeMillis() - t;
@@ -79,7 +80,7 @@ public class TestSimulationPausing {
 	public void testPausing() {
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
+		Future<Map<String, Object>> future = sim.performRunAsync();
 
 		sleep(500);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
@@ -108,7 +109,7 @@ public class TestSimulationPausing {
 
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
+		Future<Map<String, Object>> future = sim.performRunAsync();
 
 		sleep(500);
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
@@ -133,7 +134,7 @@ public class TestSimulationPausing {
 
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
+		Future<Map<String, Object>> future = sim.performRunAsync();
 
 		sleep(500);
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
@@ -169,7 +170,7 @@ public class TestSimulationPausing {
 
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
+		Future<Map<String, Object>> future = sim.performRunAsync();
 
 		sleep(500);
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
@@ -197,7 +198,7 @@ public class TestSimulationPausing {
 	public void testPausedSimulationCanBeEnded() {
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
+		Future<Map<String, Object>> future = sim.performRunAsync();
 
 		sleep(500);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
@@ -227,7 +228,7 @@ public class TestSimulationPausing {
 	public void testRunningSimulationCanBeEnded() {
 		long t = System.currentTimeMillis();
 
-		Future<Map<String, Object>> future = execAsync(sim);
+		Future<Map<String, Object>> future = sim.performRunAsync();
 
 		sleep(1500);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
@@ -254,11 +255,6 @@ public class TestSimulationPausing {
 		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private Future<Map<String, Object>> execAsync(Simulation sim) {
-		// start execution in a different thread
-		return ForkJoinPool.commonPool().submit(sim::performRun);
 	}
 
 }

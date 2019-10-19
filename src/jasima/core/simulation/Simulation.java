@@ -34,6 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BooleanSupplier;
@@ -318,8 +321,8 @@ public class Simulation {
 			do {
 				// make current thread block until simulation is unpaused.
 				if (pauseRequests.get() > 0) {
-					state =  SimExecState.PAUSED;
-					
+					state = SimExecState.PAUSED;
+
 					if (blockWhilePaused()) {
 						return; // Simulation Threat was interrupted while paused
 					}
@@ -352,7 +355,7 @@ public class Simulation {
 					}
 				}
 			} while (pauseRequests.get() > 0);
-			
+
 			state = SimExecState.FINISHED;
 		} finally {
 			simThread = null;
@@ -505,6 +508,30 @@ public class Simulation {
 		HashMap<String, Object> res = new HashMap<>();
 		produceResults(res);
 		return res;
+	}
+
+	/**
+	 * Call the {@link #performRun()} method in an asynchronous way.
+	 * 
+	 * @param pool The {@link ExecutorService} to use.
+	 * @return A {@link Future} to obtain the simulation results.
+	 * @see #performRun()
+	 * @see #performRunAsync()
+	 */
+	public Future<Map<String, Object>> performRunAsync(ExecutorService pool) {
+		return pool.submit(this::performRun);
+	}
+
+	/**
+	 * Trigger asynchronous execution of the simulation in Java's default
+	 * {@link ForkJoinPool}.
+	 * 
+	 * @return A {@link Future} to obtain the simulation results.
+	 * @see #performRun()
+	 * @see #performRunAsync(ExecutorService)
+	 */
+	public Future<Map<String, Object>> performRunAsync() {
+		return performRunAsync(ForkJoinPool.commonPool());
 	}
 
 	/**
