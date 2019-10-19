@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -157,6 +159,10 @@ public class Simulation {
 		public Event extract();
 	}
 
+	public static enum SimExecState {
+		INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED, FINISHED, ERROR
+	}
+
 	// /////////// simulation parameters
 
 	private double simulationLength = 0.0d;
@@ -188,8 +194,19 @@ public class Simulation {
 	private boolean continueSim;
 	private int numAppEvents;
 
+	private SimExecState state;
+
+	private Semaphore pauseHelper;
+	private AtomicInteger pauseRequests;
+	private Thread simThread;
+
 	public Simulation() {
 		super();
+
+		pauseHelper = new Semaphore(1, true);
+		pauseRequests = new AtomicInteger(0);
+
+		state = SimExecState.INITIAL;
 
 		printListener = new ArrayList<>();
 
@@ -249,6 +266,10 @@ public class Simulation {
 	 * {@link #run()}.
 	 */
 	public void init() {
+		checkState("initialize", state(), SimExecState.INITIAL);
+
+		state = SimExecState.INIT;
+
 		simTime = getInitialSimTime();
 
 		initComponentTree(null, rootComponent);
@@ -287,12 +308,92 @@ public class Simulation {
 	 * @see jasima.core.simulation.Event#isAppEvent()
 	 */
 	public void run() {
+		checkState("run", state(), SimExecState.BEFORE_RUN);
+
+		state = SimExecState.RUNNING;
 		resetStats();
 
-		continueSim = numAppEvents > 0;
+		simThread = Thread.currentThread();
+		try {
+			do {
+				// make current thread block until simulation is unpaused.
+				if (pauseRequests.get() > 0) {
+					state =  SimExecState.PAUSED;
+					
+					if (blockWhilePaused()) {
+						return; // Simulation Threat was interrupted while paused
+					}
+				}
 
+				state = SimExecState.RUNNING;
+				continueSim = numAppEvents > 0;
+
+				checkInitialEventTime();
+
+				while (continueSim) { // outer loop so we can recover from errors
+					try {
+						runMainLoop();
+					} catch (Throwable t) {
+						boolean rethrow = handleError(t);
+
+						if (rethrow) {
+							state = SimExecState.ERROR;
+
+							if (t instanceof RuntimeException) {
+								throw (RuntimeException) t;
+							} else if (t instanceof Error) {
+								throw (Error) t;
+							} else
+								// can't occur
+								throw new AssertionError();
+						} else {
+							// do nothing
+						}
+					}
+				}
+			} while (pauseRequests.get() > 0);
+			
+			state = SimExecState.FINISHED;
+		} finally {
+			simThread = null;
+		}
+	}
+
+	protected void runMainLoop() {
+		// main event loop
+		while (continueSim) {
+			currEvent = events.extract();
+
+			// Advance clock to time of next event
+			simTime = currEvent.getTime();
+			currPrio = currEvent.getPrio();
+
+			currEvent.handle();
+
+			if (currEvent.isAppEvent()) {
+				if (--numAppEvents == 0)
+					continueSim = false;
+			}
+
+			numEventsProcessed++;
+		}
+	}
+
+	private boolean blockWhilePaused() {
+		try {
+			pauseHelper.acquire();
+		} catch (InterruptedException e) {
+			assert state == SimExecState.PAUSED;
+			return true;
+		}
+		pauseHelper.release();
+
+		return false;
+	}
+
+	private void checkInitialEventTime() {
 		// ensure time of first event is before initalSimTime, then put in event
-		// queue again
+		// queue again; this is done just once to move the check outside the main loop.
 		if (continueSim) {
 			Event e = events.extract();
 			if (e.getTime() < simTime) {
@@ -302,42 +403,6 @@ public class Simulation {
 			// everything is ok, reinsert first event
 			events.insert(e);
 		}
-
-		do {
-			try {
-				// main event loop
-				while (continueSim) {
-					currEvent = events.extract();
-
-					// Advance clock to time of next event
-					simTime = currEvent.getTime();
-					currPrio = currEvent.getPrio();
-
-					currEvent.handle();
-
-					if (currEvent.isAppEvent()) {
-						if (--numAppEvents == 0)
-							continueSim = false;
-					}
-
-					numEventsProcessed++;
-				}
-			} catch (Throwable t) {
-				boolean rethrow = handleError(t);
-
-				if (rethrow) {
-					if (t instanceof RuntimeException) {
-						throw (RuntimeException) t;
-					} else if (t instanceof Error) {
-						throw (Error) t;
-					} else
-						// can't occur
-						throw new AssertionError();
-				} else {
-					// do nothing
-				}
-			}
-		} while (continueSim);
 	}
 
 	/**
@@ -371,14 +436,19 @@ public class Simulation {
 	 * {@link #run()} method.
 	 */
 	public void beforeRun() {
+		checkState("call beforeRun() of a", state(), SimExecState.INIT);
+
+		state = SimExecState.BEFORE_RUN;
+
 		// schedule simulation end
-		if (getSimulationLength() > 0.0)
+		if (getSimulationLength() > 0.0) {
 			schedule(new Event(getSimulationLength(), Event.EVENT_PRIO_LOWEST) {
 				@Override
 				public void handle() {
 					end();
 				}
 			});
+		}
 
 		rootComponent.beforeRun();
 	}
@@ -391,6 +461,8 @@ public class Simulation {
 	 * It should contain code to initialize statistics variables.
 	 */
 	protected void resetStats() {
+		checkState("resetStats", state(), SimExecState.RUNNING);
+
 		// schedule statistics reset
 		if (getStatsResetTime() > getInitialSimTime()) {
 			schedule(getStatsResetTime(), Event.EVENT_PRIO_LOWEST, rootComponent::resetStats);
@@ -680,6 +752,47 @@ public class Simulation {
 	 */
 	public void end() {
 		continueSim = false;
+
+		if (pauseRequests.get() > 0) {
+			simThread.interrupt();
+		}
+	}
+
+	/**
+	 * After calling {@link #pause()} the simulation is paused. This means, the
+	 * {@link #run()} method returns after handling the current event.
+	 */
+	public void pause() {
+		if (pauseRequests.incrementAndGet() == 1) {
+			boolean acquired = pauseHelper.tryAcquire();
+			assert acquired;
+		}
+		continueSim = false;
+	}
+
+	/**
+	 * After calling {@link #pause()} the simulation is paused. This means, the
+	 * {@link #run()} method returns after handling the current event.
+	 */
+	public void unpause() {
+		if (pauseRequests.decrementAndGet() == 0) {
+			pauseHelper.release();
+		}
+	}
+
+	/**
+	 * Throws an {@link IllegalArgumentException} if the actual state does not match
+	 * the expected one.
+	 * 
+	 * @param operationName Some description of the action that was attempted.
+	 * @param actual        The current simulation state.
+	 * @param expected      The expected simulation state.
+	 */
+	protected static void checkState(String operationName, SimExecState actual, SimExecState expected) {
+		if (!Objects.equals(actual, expected)) {
+			throw new IllegalStateException(String.format("Can only %s simulation in state %s, current state is %s.",
+					operationName, expected, actual));
+		}
 	}
 
 	/** Returns the current simulation time. */
@@ -747,6 +860,13 @@ public class Simulation {
 	 */
 	public Event currentEvent() {
 		return currEvent;
+	}
+
+	/**
+	 * Returns the current simulation execution state.
+	 */
+	public SimExecState state() {
+		return state;
 	}
 
 	/**
