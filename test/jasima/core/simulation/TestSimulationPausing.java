@@ -194,6 +194,79 @@ public class TestSimulationPausing {
 		assertTrue("realTimeMax, diff=" + timeDiff, timeDiff < REAL_TIME_ALLOWANCE); // at most 100ms more
 	}
 
+	@Test(timeout = 4000)
+	public void testUnpauseWhileWaitingForPause1() {
+		long t = System.currentTimeMillis();
+
+		Future<Map<String, Object>> future = sim.performRunAsync();
+		
+		sleep(300);
+		assertEquals("simState", SimExecState.RUNNING, sim.state());
+		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
+		sim.pause();
+		
+		sleep(300);
+		// simulation should still be busy with first event
+		assertEquals("simState", SimExecState.RUNNING, sim.state());
+		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
+		
+		sim.unpause(); // "cancel" pause
+
+		Map<String, Object> res = getFutureResult(future); // wait for completion
+		assertEquals("simState", SimExecState.FINISHED, sim.state());
+		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
+
+		t = System.currentTimeMillis() - t;
+
+		ConsolePrinter.printResults(null, res);
+
+		long timeDiff = t - (3000);
+		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
+		assertTrue("realTimeMax, diff=" + timeDiff, timeDiff < REAL_TIME_ALLOWANCE); // at most 100ms more
+	}
+
+	@Test(timeout = 4000)
+	public void testUnpauseWhileWaitingForPause2() {
+		long t = System.currentTimeMillis();
+
+		Future<Map<String, Object>> future = sim.performRunAsync();
+		
+		sleep(300);
+		assertEquals("simState", SimExecState.RUNNING, sim.state());
+		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
+		sim.pause();
+		
+		sleep(300);
+		// simulation should still be busy with first event
+		assertEquals("simState", SimExecState.RUNNING, sim.state());
+		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
+		sim.unpause(); // "cancel" pause
+
+		sleep(200);
+		// pause again while still processing first event
+		assertEquals("simState", SimExecState.RUNNING, sim.state());
+		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
+		sim.pause();
+		
+		sleep(500);
+		// simulation should now be paused
+		assertEquals("simState", SimExecState.PAUSED, sim.state());
+		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
+		sim.unpause();
+		
+		Map<String, Object> res = getFutureResult(future); // wait for completion
+		assertEquals("simState", SimExecState.FINISHED, sim.state());
+		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
+
+		t = System.currentTimeMillis() - t;
+
+		ConsolePrinter.printResults(null, res);
+
+		long timeDiff = t - (300+3000);
+		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
+		assertTrue("realTimeMax, diff=" + timeDiff, timeDiff < REAL_TIME_ALLOWANCE); // at most 100ms more
+	}
+
 	@Test(timeout = 2000)
 	public void testPausedSimulationCanBeEnded() {
 		long t = System.currentTimeMillis();

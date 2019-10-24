@@ -791,10 +791,11 @@ public class Simulation {
 	 */
 	public void pause() {
 		if (pauseRequests.incrementAndGet() == 1) {
+			continueSim = false;
+
 			boolean acquired = pauseHelper.tryAcquire();
 			assert acquired;
 		}
-		continueSim = false;
 	}
 
 	/**
@@ -803,6 +804,8 @@ public class Simulation {
 	 */
 	public void unpause() {
 		if (pauseRequests.decrementAndGet() == 0) {
+			continueSim = true;
+
 			pauseHelper.release();
 		}
 	}
