@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.expExecution.ExperimentFuture;
@@ -323,7 +326,7 @@ public abstract class Experiment
 
 		// give experiments and listener a chance to view/modify results
 		map.setDisableCheck(true);
-		
+
 		if (numListener() > 0)
 			fire(ExperimentMessage.EXPERIMENT_FINISHING);
 
@@ -337,6 +340,30 @@ public abstract class Experiment
 
 		// return results
 		return getResults();
+	}
+
+	/**
+	 * Call the {@link #runExperiment()} method in an asynchronous way.
+	 * 
+	 * @param pool The {@link ExecutorService} to use.
+	 * @return A {@link Future} to obtain experiment results.
+	 * @see #runExperiment()
+	 * @see #runExperimentAsync()
+	 */
+	public Future<Map<String, Object>> runExperimentAsync(ExecutorService pool) {
+		return pool.submit(this::runExperiment);
+	}
+
+	/**
+	 * Trigger asynchronous execution of the experiment in Java's default
+	 * {@link ForkJoinPool}.
+	 * 
+	 * @return A {@link Future} to obtain experiment results.
+	 * @see #runExperiment()
+	 * @see #runExperimentAsync(ExecutorService)
+	 */
+	public Future<Map<String, Object>> runExperimentAsync() {
+		return runExperimentAsync(ForkJoinPool.commonPool());
 	}
 
 	/**
