@@ -154,9 +154,9 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	/**
 	 * Schedules a new event.
 	 * 
-	 * @see Simulation#schedule(Event)
+	 * @see Simulation#schedule(SimEvent)
 	 */
-	default void schedule(Event event) {
+	default void schedule(SimEvent event) {
 		getSim().schedule(event);
 	}
 

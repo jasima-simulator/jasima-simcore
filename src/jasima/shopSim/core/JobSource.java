@@ -20,7 +20,7 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.simulation.Event;
+import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.SimComponentBase;
 
 /**
@@ -32,7 +32,7 @@ public abstract class JobSource extends SimComponentBase {
 
 	// bigger than WorkStation.DEPART_PRIO but smaller than
 	// WorkStation.SELECT_PRIO
-	public static final int ARRIVE_PRIO = Event.EVENT_PRIO_HIGH;
+	public static final int ARRIVE_PRIO = SimEvent.EVENT_PRIO_HIGH;
 
 	private Shop shop;
 
@@ -51,7 +51,7 @@ public abstract class JobSource extends SimComponentBase {
 		stopArrivals = false;
 		jobsStarted = 0;
 
-		Event arriveEvent = new Event(0.0d, ARRIVE_PRIO) {
+		SimEvent arriveEvent = new SimEvent(0.0d, ARRIVE_PRIO) {
 
 			private Job nextJob; // next job to be released
 

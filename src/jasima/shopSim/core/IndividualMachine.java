@@ -23,7 +23,7 @@ package jasima.shopSim.core;
 import java.util.Collections;
 import java.util.List;
 
-import jasima.core.simulation.Event;
+import jasima.core.simulation.SimEvent;
 
 /**
  * This class represents a single machine, which is part of a
@@ -66,7 +66,7 @@ public class IndividualMachine {
 	}
 
 	// called whenever an operation is finished
-	Event onDepart = new Event(0.0d, WorkStation.DEPART_PRIO) {
+	SimEvent onDepart = new SimEvent(0.0d, WorkStation.DEPART_PRIO) {
 		@Override
 		public void handle() {
 			workStation.currMachine = IndividualMachine.this;

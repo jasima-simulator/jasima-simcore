@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jasima.core.simulation.Event;
+import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.SimComponentBase;
 import jasima.shopSim.core.IndividualMachine.MachineState;
 import jasima.shopSim.core.batchForming.BatchForming;
@@ -82,9 +82,9 @@ public class WorkStation extends SimComponentBase {
 	// constants to deterministically sequence concurrent events
 
 	// lookahead-arrivals after selections
-	public static final int LOOKAHEAD_PRIO = Event.EVENT_PRIO_LOW;
-	public static final int SELECT_PRIO = Event.EVENT_PRIO_NORMAL;
-	public static final int DEPART_PRIO = Event.EVENT_PRIO_HIGHER;
+	public static final int LOOKAHEAD_PRIO = SimEvent.EVENT_PRIO_LOW;
+	public static final int SELECT_PRIO = SimEvent.EVENT_PRIO_NORMAL;
+	public static final int DEPART_PRIO = SimEvent.EVENT_PRIO_HIGHER;
 	public static final int TAKE_DOWN_PRIO = DEPART_PRIO + 1000; // after depart
 	public static final int ACTIVATE_PRIO = DEPART_PRIO - 1000; // before depart
 

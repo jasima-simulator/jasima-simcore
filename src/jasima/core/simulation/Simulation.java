@@ -156,10 +156,10 @@ public class Simulation {
 	/** Public interface of event queue implementations. */
 	public static interface EventQueue {
 		/** Insert an event in the queue. */
-		public void insert(Event e);
+		public void insert(SimEvent e);
 
 		/** Extract the (chronologically) next event from the queue. */
-		public Event extract();
+		public SimEvent extract();
 	}
 
 	public static enum SimExecState {
@@ -186,7 +186,7 @@ public class Simulation {
 	// the current simulation time.
 	private double simTime;
 	private int currPrio;
-	private Event currEvent;
+	private SimEvent currEvent;
 	private long numEventsProcessed;
 
 	// event queue
@@ -218,12 +218,12 @@ public class Simulation {
 
 		events = createEventQueue();
 		// set to dummy event
-		currEvent = new Event(Double.NEGATIVE_INFINITY, Event.EVENT_PRIO_MIN) {
+		currEvent = new SimEvent(Double.NEGATIVE_INFINITY, SimEvent.EVENT_PRIO_MIN) {
 			@Override
 			public void handle() {
 			}
 		};
-		currPrio = Event.EVENT_PRIO_MAX;
+		currPrio = SimEvent.EVENT_PRIO_MAX;
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 		numEventsProcessed = 0;
@@ -308,7 +308,7 @@ public class Simulation {
 	 * reached, there are no more application events in the queue, or some other
 	 * code called {@link #end()}.
 	 * 
-	 * @see jasima.core.simulation.Event#isAppEvent()
+	 * @see jasima.core.simulation.SimEvent#isAppEvent()
 	 */
 	public void run() {
 		checkState("run", state(), SimExecState.BEFORE_RUN);
@@ -398,7 +398,7 @@ public class Simulation {
 		// ensure time of first event is before initalSimTime, then put in event
 		// queue again; this is done just once to move the check outside the main loop.
 		if (continueSim) {
-			Event e = events.extract();
+			SimEvent e = events.extract();
 			if (e.getTime() < simTime) {
 				throw new IllegalArgumentException(createErrorMsgEventInPast(e));
 			}
@@ -426,7 +426,7 @@ public class Simulation {
 		return true;
 	}
 
-	private String createErrorMsgEventInPast(Event e) {
+	private String createErrorMsgEventInPast(SimEvent e) {
 		return String.format(Util.DEF_LOCALE,
 				"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).", e.getTime(),
 				e.getPrio(), e.toString());
@@ -445,7 +445,7 @@ public class Simulation {
 
 		// schedule simulation end
 		if (getSimulationLength() > 0.0) {
-			schedule(new Event(getSimulationLength(), Event.EVENT_PRIO_LOWEST) {
+			schedule(new SimEvent(getSimulationLength(), SimEvent.EVENT_PRIO_LOWEST) {
 				@Override
 				public void handle() {
 					end();
@@ -468,7 +468,7 @@ public class Simulation {
 
 		// schedule statistics reset
 		if (getStatsResetTime() > getInitialSimTime()) {
-			schedule(getStatsResetTime(), Event.EVENT_PRIO_LOWEST, rootComponent::resetStats);
+			schedule(getStatsResetTime(), SimEvent.EVENT_PRIO_LOWEST, rootComponent::resetStats);
 		}
 
 		// call once for each run
@@ -539,7 +539,7 @@ public class Simulation {
 	 * 
 	 * @param event Some future event to be executed by the main event loop.
 	 */
-	public void schedule(Event event) {
+	public void schedule(SimEvent event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio) {
 			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
 					event.getPrio(), event.toString());
@@ -581,7 +581,7 @@ public class Simulation {
 	 * @param method      The method to call at the given moment.
 	 */
 	public void schedule(String description, double time, int prio, Runnable method) {
-		Event e = new MethodCallEvent(time, prio, method, description);
+		SimEvent e = new MethodCallEvent(time, prio, method, description);
 		schedule(e);
 	}
 
@@ -687,7 +687,7 @@ public class Simulation {
 	 * invocation after the given time interval is scheduled.
 	 */
 	public void schedulePeriodically(double firstInvocation, double interval, int prio, BooleanSupplier method) {
-		schedule(new Event(firstInvocation, prio) {
+		schedule(new SimEvent(firstInvocation, prio) {
 			private int n = 0;
 
 			@Override
@@ -705,7 +705,7 @@ public class Simulation {
 	 * Periodically calls a certain method until the simulation terminates.
 	 */
 	public void schedulePeriodically(double firstInvocation, double interval, int prio, Runnable method) {
-		schedule(new Event(firstInvocation, prio) {
+		schedule(new SimEvent(firstInvocation, prio) {
 			private int n = 0;
 
 			@Override
@@ -738,7 +738,7 @@ public class Simulation {
 	 * negative value.
 	 */
 	public void scheduleProcess(double firstInvocation, int prio, DoubleSupplier method) {
-		schedule(new Event(firstInvocation, prio) {
+		schedule(new SimEvent(firstInvocation, prio) {
 			@Override
 			public void handle() {
 				double next = method.getAsDouble();
@@ -754,7 +754,7 @@ public class Simulation {
 	/**
 	 * This class is used internally by {@link #schedule(double,int,Runnable)}.
 	 */
-	protected static final class MethodCallEvent extends Event {
+	protected static final class MethodCallEvent extends SimEvent {
 		public final Runnable m;
 
 		private MethodCallEvent(double time, int prio, Runnable method, String description) {
@@ -886,9 +886,9 @@ public class Simulation {
 	}
 
 	/**
-	 * Returns the {@link Event} object that is currently processed.
+	 * Returns the {@link SimEvent} object that is currently processed.
 	 */
-	public Event currentEvent() {
+	public SimEvent currentEvent() {
 		return currEvent;
 	}
 

@@ -17,7 +17,7 @@ public class TestSimulationBasics {
 	public void testInitialSimTime() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
-		sim.schedule(0.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(0.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 		sim.setInitialSimTime(100);
 
 		// method under test
@@ -33,7 +33,7 @@ public class TestSimulationBasics {
 		sim.init();
 
 		// should raise exception
-		sim.schedule(-101.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(-101.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 	}
 
 	@Test
@@ -45,14 +45,14 @@ public class TestSimulationBasics {
 		sim.init();
 
 		// this should work
-		sim.schedule(-100.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(-100.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 	}
 
 	@Test
 	public void testTimeConversion() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(360.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 
 		Map<String, Object> res = sim.performRun();
 		System.out.println(res.toString());
@@ -74,7 +74,7 @@ public class TestSimulationBasics {
 	public void testTimeConversionShouldUseInitialSimTime() {
 		Simulation sim = new Simulation();
 		sim.addPrintListener(System.out::println);
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(360.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 		sim.setInitialSimTime(120.0);
 
 		Map<String, Object> res = sim.performRun();
@@ -94,7 +94,7 @@ public class TestSimulationBasics {
 	public void testInstantToSimTime() {
 		Simulation sim = new Simulation();
 		sim.setSimTimeStartInstant(Instant.parse("2019-01-01T00:00:00.00Z"));
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(360.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 
 		Map<String, Object> res = sim.performRun();
 		System.out.println(res.toString());
@@ -108,7 +108,7 @@ public class TestSimulationBasics {
 		Simulation sim = new Simulation();
 		sim.setSimTimeStartInstant(Instant.parse("2019-01-01T00:00:00.00Z"));
 		sim.setInitialSimTime(120.0);
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(360.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 
 		Map<String, Object> res = sim.performRun();
 		System.out.println(res.toString());
@@ -122,7 +122,7 @@ public class TestSimulationBasics {
 		Simulation sim = new Simulation();
 		sim.setSimTimeStartInstant(Instant.parse("2019-01-01T00:00:00.00Z"));
 		sim.setSimTimeToMillisFactor(60 * 60 * 1000); // simTime in hours
-		sim.schedule(360.0, Event.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
+		sim.schedule(360.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationBasics::dummyHandler);
 
 		Map<String, Object> res = sim.performRun();
 		System.out.println(res.toString());

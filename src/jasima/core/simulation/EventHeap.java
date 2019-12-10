@@ -34,7 +34,7 @@ import jasima.core.simulation.Simulation.EventQueue;
 public final class EventHeap implements EventQueue, Serializable {
 	private static final long serialVersionUID = -7578258752027946114L;
 
-	private Event[] nodes; // the tree nodes, packed into an array
+	private SimEvent[] nodes; // the tree nodes, packed into an array
 	private int count = 0; // number of used slots
 	private boolean invalidRoot = false;
 
@@ -54,7 +54,7 @@ public final class EventHeap implements EventQueue, Serializable {
 	public EventHeap(int capacity) throws IllegalArgumentException {
 		if (capacity <= 0)
 			throw new IllegalArgumentException();
-		nodes = new Event[capacity];
+		nodes = new SimEvent[capacity];
 	}
 
 	// indexes of heap parents and children
@@ -77,12 +77,12 @@ public final class EventHeap implements EventQueue, Serializable {
 	 * insert an element, resize if necessary
 	 */
 	@Override
-	public void insert(Event x) {
+	public void insert(SimEvent x) {
 		if (count >= nodes.length) {
 			setCapacity(3 * nodes.length / 2 + 1);
 		}
 
-		final Event[] nodes = this.nodes;
+		final SimEvent[] nodes = this.nodes;
 
 		if (invalidRoot) {
 			// move new element to root
@@ -111,8 +111,8 @@ public final class EventHeap implements EventQueue, Serializable {
 	 * Return and remove least element, or null if empty.
 	 */
 	@Override
-	public Event extract() {
-		final Event[] nodes = this.nodes;
+	public SimEvent extract() {
+		final SimEvent[] nodes = this.nodes;
 
 		// extract() called more than once in succession?
 		if (invalidRoot) {
@@ -123,7 +123,7 @@ public final class EventHeap implements EventQueue, Serializable {
 			sinkRoot();
 		}
 
-		Event least = nodes[0];
+		SimEvent least = nodes[0];
 		nodes[0] = null;
 
 		--count;
@@ -135,11 +135,11 @@ public final class EventHeap implements EventQueue, Serializable {
 
 	private void sinkRoot() {
 		final int count = this.count;
-		final Event[] nodes = this.nodes;
+		final SimEvent[] nodes = this.nodes;
 		invalidRoot = false;
 
 		int k = 0;
-		Event x = nodes[k];
+		SimEvent x = nodes[k];
 		int l;
 		while ((l = left(k)) < count) {
 			int r = right(k);
@@ -154,7 +154,7 @@ public final class EventHeap implements EventQueue, Serializable {
 	}
 
 	/** Return least element without removing it, or null if empty * */
-	public Event peek() {
+	public SimEvent peek() {
 		if (count > 0)
 			return nodes[0];
 		else
@@ -178,7 +178,7 @@ public final class EventHeap implements EventQueue, Serializable {
 	}
 
 	public void setCapacity(int newCap) {
-		Event[] newnodes = new Event[newCap];
+		SimEvent[] newnodes = new SimEvent[newCap];
 		System.arraycopy(nodes, 0, newnodes, 0, count);
 		nodes = newnodes;
 	}

@@ -29,7 +29,7 @@ import jasima.core.simulation.Simulation.EventQueue;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class Event implements Comparable<Event>, Runnable {
+public abstract class SimEvent implements Comparable<SimEvent>, Runnable {
 
 	private static final int PRIO_INCREMENT = Integer.MAX_VALUE / 4;
 
@@ -46,15 +46,15 @@ public abstract class Event implements Comparable<Event>, Runnable {
 	public static final int EVENT_PRIO_MIN = Integer.MAX_VALUE;
 
 	private double time;
-	private final int prio;
-	private final String description;
+	private int prio;
+	private String description;
 	int eventNum;
 
-	public Event(double time, int prio) {
+	public SimEvent(double time, int prio) {
 		this(time, prio, null);
 	}
 
-	public Event(double time, int prio, String description) {
+	public SimEvent(double time, int prio, String description) {
 		super();
 		this.time = time;
 		this.prio = prio;
@@ -67,7 +67,7 @@ public abstract class Event implements Comparable<Event>, Runnable {
 	}
 
 	/**
-	 * Implement the actual functionality.
+	 * Override this method to implement the actual functionality.
 	 */
 	public abstract void handle();
 
@@ -79,8 +79,36 @@ public abstract class Event implements Comparable<Event>, Runnable {
 		return time;
 	}
 
+	
+	public int getPrio() {
+		return prio;
+	}
+
+	public void setPrio(int newPrio) {
+		this.prio = newPrio;
+	}
+
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String newDescription) {
+		this.description = newDescription;
+	}
+
+	
+	/**
+	 * An application event is the usual event type in a simulation. A simulation is
+	 * terminated if the event queue is empty or does not contain any application
+	 * events (i.e. isAppEvent() of all events in the queue returns false).
+	 */
+	public boolean isAppEvent() {
+		return true;
+	}
+
 	@Override
-	public final int compareTo(Event o) {
+	public final int compareTo(SimEvent o) {
 		if (time < o.time)
 			return -1;
 		else if (time > o.time)
@@ -94,31 +122,9 @@ public abstract class Event implements Comparable<Event>, Runnable {
 			else {
 				// eventNum is ternary criterion to enforce FIFO processing
 				// should both time and prio should be the same.
-				if (eventNum < o.eventNum)
-					return -1;
-				else if (eventNum > o.eventNum)
-					return +1;
-				else
-					return 0;
+				return (eventNum < o.eventNum) ? -1 : ((eventNum > o.eventNum) ? +1 : 0);
 			}
 		}
-	}
-
-	public int getPrio() {
-		return prio;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * An application event is the usual event type in a simulation. A simulation is
-	 * terminated if the event queue is empty or does not contain any application
-	 * events (i.e. isAppEvent() of all events in the queue returns false).
-	 */
-	public boolean isAppEvent() {
-		return true;
 	}
 
 	@Override
