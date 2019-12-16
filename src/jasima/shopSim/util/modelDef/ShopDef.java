@@ -30,7 +30,7 @@ import jasima.shopSim.util.ShopConfigurator;
  * 
  * @author Torsten Hildebrandt
  */
-public class ShopDef extends PropertySupport {
+public class ShopDef extends PropertySupport implements Cloneable {
 
 	private static final long serialVersionUID = -8471081132120093539L;
 
@@ -126,7 +126,7 @@ public class ShopDef extends PropertySupport {
 	}
 
 	@Override
-	public ShopDef clone() throws CloneNotSupportedException {
+	public ShopDef clone() {
 		ShopDef c = (ShopDef) super.clone();
 
 		if (workstations != null) {

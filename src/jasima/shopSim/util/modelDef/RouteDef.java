@@ -58,7 +58,7 @@ public class RouteDef extends PropertySupport {
 	}
 
 	@Override
-	public RouteDef clone() throws CloneNotSupportedException {
+	public RouteDef clone() {
 		RouteDef c = (RouteDef) super.clone();
 
 		c.operations = TypeUtil.deepCloneArrayIfPossible(operations);

@@ -62,10 +62,11 @@ public class Inverse extends PR {
 	}
 
 	@Override
-	public PR clone() throws CloneNotSupportedException {
+	public PR clone() {
 		Inverse c = (Inverse) super.clone();
+
 		if (getBaseRule() != null)
-			c.setBaseRule(getBaseRule().silentClone());
+			c.setBaseRule(getBaseRule().clone());
 		return c;
 	}
 

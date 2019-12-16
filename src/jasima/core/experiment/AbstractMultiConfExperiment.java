@@ -61,9 +61,9 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	 * Allows finer control of the way a base experiment is configured than the
 	 * usual mechanism using JavaBean properties. If an object implementing
 	 * ComplexFactorSetter is passed as a value when calling
-	 * {@link FullFactorialExperiment#addFactor(String, Object)
-	 * addFactor(String, Object)} then instead of setting a bean property the
-	 * method {@link #configureExperiment(Experiment)} is called.
+	 * {@link FullFactorialExperiment#addFactor(String, Object) addFactor(String,
+	 * Object)} then instead of setting a bean property the method
+	 * {@link #configureExperiment(Experiment)} is called.
 	 * 
 	 * @see FullFactorialExperiment#addFactor(String, Object)
 	 */
@@ -72,15 +72,14 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 		/**
 		 * Configures an experiment.
 		 * 
-		 * @param e
-		 *            The experiment to configure.
+		 * @param e The experiment to configure.
 		 */
 		void configureExperiment(final Experiment e);
 	}
 
 	/**
-	 * An (optional) way to veto certain configurations, because some
-	 * combinations of factors and their values might not make sense.
+	 * An (optional) way to veto certain configurations, because some combinations
+	 * of factors and their values might not make sense.
 	 * 
 	 * @see FullFactorialExperiment#setConfigurationValidator(ConfigurationValidator)
 	 */
@@ -150,8 +149,8 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	}
 
 	protected Experiment createExperimentForConf(Map<String, Object> conf) {
-		Experiment e = conf.containsKey(KEY_EXPERIMENT) ? ((Experiment) conf.get(KEY_EXPERIMENT)).silentClone()
-				: getBaseExperiment().silentClone();
+		Experiment e = conf.containsKey(KEY_EXPERIMENT) ? ((Experiment) conf.get(KEY_EXPERIMENT)).clone()
+				: getBaseExperiment().clone();
 		configureRunExperiment(e);
 
 		List<Map.Entry<String, Object>> entries = new ArrayList<Map.Entry<String, Object>>(conf.entrySet());
@@ -220,12 +219,10 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	/**
 	 * Sets the base experiment that is executed multiple times in various
 	 * configurations. Before experiment execution, a copy (clone) of
-	 * {@code baseExperiment} is created and run. Therefore the specific
-	 * experiment instance passed as the {@code baseExperiment} is never
-	 * actually executed.
+	 * {@code baseExperiment} is created and run. Therefore the specific experiment
+	 * instance passed as the {@code baseExperiment} is never actually executed.
 	 * 
-	 * @param baseExperiment
-	 *            The base experiment to use.
+	 * @param baseExperiment The base experiment to use.
 	 */
 	public void setBaseExperiment(Experiment baseExperiment) {
 		this.baseExperiment = baseExperiment;
@@ -239,15 +236,14 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	 * Sets a {@link ConfigurationValidator}, which is used to veto certain
 	 * impossible factor combinations.
 	 * 
-	 * @param configurationValidator
-	 *            Sets the validator.
+	 * @param configurationValidator Sets the validator.
 	 */
 	public void setConfigurationValidator(ConfigurationValidator configurationValidator) {
 		this.configurationValidator = configurationValidator;
 	}
 
 	@Override
-	public AbstractMultiConfExperiment clone() throws CloneNotSupportedException {
+	public AbstractMultiConfExperiment clone() {
 		AbstractMultiConfExperiment e = (AbstractMultiConfExperiment) super.clone();
 
 		if (baseExperiment != null)

@@ -20,7 +20,6 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.util.SilentCloneable;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ExtendedJobStatCollector;
 
@@ -33,7 +32,7 @@ import jasima.shopSim.util.ExtendedJobStatCollector;
  * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
  */
-public abstract class ShopListenerBase implements ShopListener, SilentCloneable<ShopListenerBase> {
+public abstract class ShopListenerBase implements ShopListener, Cloneable {
 
 	private double initialPeriod = 0;
 	private int ignoreFirst = 0;
@@ -47,8 +46,12 @@ public abstract class ShopListenerBase implements ShopListener, SilentCloneable<
 	}
 
 	@Override
-	public ShopListenerBase clone() throws CloneNotSupportedException {
-		return (ShopListenerBase) super.clone();
+	public ShopListenerBase clone() {
+		try {
+			return (ShopListenerBase) super.clone();
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
+		}
 	}
 
 	// boring getters and setters below

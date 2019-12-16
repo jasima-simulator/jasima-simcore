@@ -98,7 +98,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 		int batchSize = getNumExperiments();
 
 		for (int i = 0; i < batchSize; i++) {
-			Experiment e = getBaseExperiment().silentClone();
+			Experiment e = getBaseExperiment().clone();
 			configureRunExperiment(e);
 			experiments.add(e);
 		}
@@ -136,8 +136,8 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
-	 * Numerically find the number of replications required to achieve the
-	 * desired precision.
+	 * Numerically find the number of replications required to achieve the desired
+	 * precision.
 	 */
 	private int estimateNumReps(SummaryStat vs, double allowance) {
 		if (vs.weightSum() < 2)
@@ -198,11 +198,10 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 * replications is dynamic (i.e., if at least 1 result name is given in
 	 * {@code confIntervalMeasure}).
 	 * <p>
-	 * If the number of runs is not dynamic, this setting has no effect. A value
-	 * of 0 uses the number of available cpu cores.
+	 * If the number of runs is not dynamic, this setting has no effect. A value of
+	 * 0 uses the number of available cpu cores.
 	 * 
-	 * @param minReplications
-	 *            Minimum number of replications.
+	 * @param minReplications Minimum number of replications.
 	 */
 	public void setMinReplications(int minReplications) {
 		if (minReplications < 0)
@@ -215,14 +214,13 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
-	 * Sets the maximum number of replications to perform. If the number of runs
-	 * is not dynamic, this sets the total number of replications to perform. If
-	 * the total number of replications is dynamic (i.e., if at least 1 result
-	 * name is given in {@code confIntervalMeasures}), this sets the maximum
-	 * number of replications to perform.
+	 * Sets the maximum number of replications to perform. If the number of runs is
+	 * not dynamic, this sets the total number of replications to perform. If the
+	 * total number of replications is dynamic (i.e., if at least 1 result name is
+	 * given in {@code confIntervalMeasures}), this sets the maximum number of
+	 * replications to perform.
 	 * 
-	 * @param maxReplications
-	 *            The number of replications to perform.
+	 * @param maxReplications The number of replications to perform.
 	 */
 	public void setMaxReplications(int maxReplications) {
 		if (maxReplications <= 0 || maxReplications < getMinReplications())
@@ -236,19 +234,17 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 
 	/**
 	 * <p>
-	 * Sets the error probability used when computing the width of the
-	 * confidence interval of {@code confIntervalMeasures}. The closer this
-	 * setting is to 0, the more replications will be performed (with less
-	 * uncertain results).
+	 * Sets the error probability used when computing the width of the confidence
+	 * interval of {@code confIntervalMeasures}. The closer this setting is to 0,
+	 * the more replications will be performed (with less uncertain results).
 	 * </p>
 	 * <p>
-	 * This setting only has an effect if the total number of runs is dynamic.
-	 * Its default value is 0.05.
+	 * This setting only has an effect if the total number of runs is dynamic. Its
+	 * default value is 0.05.
 	 * </p>
 	 * 
-	 * @param errorProb
-	 *            Desired maximum error probability for computing the confidence
-	 *            intervals.
+	 * @param errorProb Desired maximum error probability for computing the
+	 *                  confidence intervals.
 	 */
 	public void setErrorProb(double errorProb) {
 		if (errorProb <= 0.0 || errorProb >= 1.0)
@@ -262,25 +258,22 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	}
 
 	/**
-	 * Sets the desired target quality of results as a percentage of the mean
-	 * across all replications performed so far. Its default value is 0.01,
-	 * i.e., 1%. This setting has no effect if the total number of runs is
-	 * static.
+	 * Sets the desired target quality of results as a percentage of the mean across
+	 * all replications performed so far. Its default value is 0.01, i.e., 1%. This
+	 * setting has no effect if the total number of runs is static.
 	 * <p>
 	 * Let's say after 5 replications the observed mean of a result in
-	 * {@code confIntervalMeasure} is 987.6 with some standard deviation (SD).
-	 * Say this SD together with a certain {@code errorProb} leads to a
-	 * confidence interval of &plusmn;10.2. No further replications are
-	 * performed, if the total width of this interval (2*10.2=20.4) is smaller
-	 * than the observed mean multiplied by {@code allowancePercentage}
-	 * (987.6*0.01=9.876). In the example, the result is not yet precise enough,
-	 * as the observed uncertainty is not smaller than the target value (20.4
-	 * &gt; 9.876). Therefore further replications would be performed to further
-	 * reduce the uncertainty of results.
+	 * {@code confIntervalMeasure} is 987.6 with some standard deviation (SD). Say
+	 * this SD together with a certain {@code errorProb} leads to a confidence
+	 * interval of &plusmn;10.2. No further replications are performed, if the total
+	 * width of this interval (2*10.2=20.4) is smaller than the observed mean
+	 * multiplied by {@code allowancePercentage} (987.6*0.01=9.876). In the example,
+	 * the result is not yet precise enough, as the observed uncertainty is not
+	 * smaller than the target value (20.4 &gt; 9.876). Therefore further
+	 * replications would be performed to further reduce the uncertainty of results.
 	 * 
-	 * @param allowancePercentage
-	 *            The desired maximum result uncertainty as a percentage of the
-	 *            mean value.
+	 * @param allowancePercentage The desired maximum result uncertainty as a
+	 *                            percentage of the mean value.
 	 */
 	public void setAllowancePercentage(double allowancePercentage) {
 		if (allowancePercentage <= 0.0 || allowancePercentage >= 1.0)
@@ -315,15 +308,13 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 * Sets the list of results that will be used when the total number of
 	 * replications to perform is dynamic. If any result name is given here as a
 	 * {@code confIntervalMeasure}, then at least {@code minReplication}
-	 * replications are performed. After this, additional replications are
-	 * performed until all {@code confIntervalMeasure}s are precise enough or a
-	 * total of {@code maxReplications} was performed. The meaning of
-	 * "precise enough" is determined by the settings
-	 * {@code allowancePercentage} and {@code errorProb}.
+	 * replications are performed. After this, additional replications are performed
+	 * until all {@code confIntervalMeasure}s are precise enough or a total of
+	 * {@code maxReplications} was performed. The meaning of "precise enough" is
+	 * determined by the settings {@code allowancePercentage} and {@code errorProb}.
 	 * 
-	 * @param confIntervalMeasures
-	 *            A list of all result names that should be checked when the
-	 *            number of runs is dynamic.
+	 * @param confIntervalMeasures A list of all result names that should be checked
+	 *                             when the number of runs is dynamic.
 	 */
 	public void setConfIntervalMeasures(String... confIntervalMeasures) {
 		this.confIntervalMeasures = confIntervalMeasures;
@@ -336,19 +327,17 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	/**
 	 * Sets the base experiment that is executed multiple times in various
 	 * configurations. Before experiment execution, a copy (clone) of
-	 * {@code baseExperiment} is created and run. Therefore the specific
-	 * experiment instance passed as the {@code baseExperiment} is never
-	 * actually executed.
+	 * {@code baseExperiment} is created and run. Therefore the specific experiment
+	 * instance passed as the {@code baseExperiment} is never actually executed.
 	 * 
-	 * @param baseExperiment
-	 *            The base experiment to use.
+	 * @param baseExperiment The base experiment to use.
 	 */
 	public void setBaseExperiment(Experiment baseExperiment) {
 		this.baseExperiment = baseExperiment;
 	}
 
 	@Override
-	public MultipleReplicationExperiment clone() throws CloneNotSupportedException {
+	public MultipleReplicationExperiment clone() {
 		MultipleReplicationExperiment mre = (MultipleReplicationExperiment) super.clone();
 
 		if (confIntervalMeasures != null)

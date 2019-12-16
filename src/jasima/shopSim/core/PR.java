@@ -60,11 +60,10 @@ public abstract class PR implements Cloneable, Serializable {
 	}
 
 	/**
-	 * This method is called by a queue before evaluating it's elements. Use it
-	 * to do some initialization prior to calcPrio().
+	 * This method is called by a queue before evaluating it's elements. Use it to
+	 * do some initialization prior to calcPrio().
 	 * 
-	 * @param q
-	 *            The current queue.
+	 * @param q The current queue.
 	 */
 	public void beforeCalc(PriorityQueue<? extends PrioRuleTarget> q) {
 	}
@@ -76,9 +75,8 @@ public abstract class PR implements Cloneable, Serializable {
 	public abstract double calcPrio(PrioRuleTarget entry);
 
 	/**
-	 * If this method returns true, the machine is kept idle. This method is
-	 * called after beforeCalc(PriorityQueue) but before
-	 * calcPrio(PrioRuleTarget).
+	 * If this method returns true, the machine is kept idle. This method is called
+	 * after beforeCalc(PriorityQueue) but before calcPrio(PrioRuleTarget).
 	 */
 	public boolean keepIdle() {
 		return false;
@@ -101,29 +99,21 @@ public abstract class PR implements Cloneable, Serializable {
 	}
 
 	@Override
-	public PR clone() throws CloneNotSupportedException {
-		PR clone = (PR) super.clone();
-
-		clone.firstLookaheadRule = null;
-		clone.lookaheadRuleValid = false;
-
-		if (getTieBreaker() != null) {
-			clone.tieBreaker = null;
-			clone.setTieBreaker(getTieBreaker().clone());
-		}
-
-		return clone;
-	}
-
-	/**
-	 * This method simply calls {@link #clone()}, but hides the checked
-	 * exception {@link CloneNotSupportedException}.
-	 */
-	public PR silentClone() {
+	public PR clone() {
 		try {
-			return clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			PR clone = (PR) super.clone();
+
+			clone.firstLookaheadRule = null;
+			clone.lookaheadRuleValid = false;
+
+			if (getTieBreaker() != null) {
+				clone.tieBreaker = null;
+				clone.setTieBreaker(getTieBreaker().clone());
+			}
+
+			return clone;
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
 		}
 	}
 
@@ -143,8 +133,7 @@ public abstract class PR implements Cloneable, Serializable {
 	/**
 	 * Sets the tie breaker rule to use.
 	 * 
-	 * @param tieBreaker
-	 *            The tie-breaker to use.
+	 * @param tieBreaker The tie-breaker to use.
 	 */
 	public void setTieBreaker(PR tieBreaker) {
 		if (this.tieBreaker != null) {
@@ -160,12 +149,11 @@ public abstract class PR implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Convenience method to set the last tie breaker rule in a chain. The chain
-	 * of rules is traversed until a rule without a tie breaker is found. The
-	 * tie breaker of this rule is set to <code>tieBreaker</code>.
+	 * Convenience method to set the last tie breaker rule in a chain. The chain of
+	 * rules is traversed until a rule without a tie breaker is found. The tie
+	 * breaker of this rule is set to <code>tieBreaker</code>.
 	 * 
-	 * @param tieBreaker
-	 *            The tie-breaker to use.
+	 * @param tieBreaker The tie-breaker to use.
 	 * @return The main rule, i.e., <code>this</code>.
 	 * @see #setTieBreaker(PR)
 	 */
@@ -183,8 +171,8 @@ public abstract class PR implements Cloneable, Serializable {
 	}
 
 	/**
-	 * If this rule is used as a tie-breaker for another rule, PrimaryRule
-	 * points to the rule this rule is the tieBreaker for, i.e.
+	 * If this rule is used as a tie-breaker for another rule, PrimaryRule points to
+	 * the rule this rule is the tieBreaker for, i.e.
 	 * <code>this.primaryRule().getTieBreaker()==this</code>.
 	 */
 	public PR primaryRule() {

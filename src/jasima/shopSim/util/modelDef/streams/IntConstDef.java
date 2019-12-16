@@ -91,7 +91,7 @@ public class IntConstDef extends IntStreamDef {
 	}
 
 	@Override
-	public IntConstDef clone() throws CloneNotSupportedException {
+	public IntConstDef clone() {
 		IntConstDef c = (IntConstDef) super.clone();
 
 		if (values != null)

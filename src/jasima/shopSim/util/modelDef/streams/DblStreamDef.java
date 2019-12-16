@@ -84,7 +84,7 @@ public abstract class DblStreamDef extends PropertySupport {
 	}
 
 	@Override
-	public DblStreamDef clone() throws CloneNotSupportedException {
+	public DblStreamDef clone() {
 		return (DblStreamDef) super.clone();
 	}
 

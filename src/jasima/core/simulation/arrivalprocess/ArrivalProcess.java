@@ -27,7 +27,6 @@ import jasima.core.util.Pair;
  * Base class for arrival processes, i.e., calculating absolute arrival times.
  * 
  * @author Torsten Hildebrandt, 2012-08-07
- * @version "$Id$"
  */
 public abstract class ArrivalProcess extends DblStream {
 

@@ -353,7 +353,7 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	}
 
 	@Override
-	public AbstractMultiExperiment clone() throws CloneNotSupportedException {
+	public AbstractMultiExperiment clone() {
 		AbstractMultiExperiment mre = (AbstractMultiExperiment) super.clone();
 
 		if (keepResults != null)

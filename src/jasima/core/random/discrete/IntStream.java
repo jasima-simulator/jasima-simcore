@@ -46,7 +46,7 @@ public abstract class IntStream extends DblStream {
 	}
 
 	@Override
-	public IntStream clone() throws CloneNotSupportedException {
+	public IntStream clone() {
 		return (IntStream) super.clone();
 	}
 

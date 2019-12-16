@@ -85,7 +85,7 @@ public class DblConstDef extends DblStreamDef {
 	}
 
 	@Override
-	public DblConstDef clone() throws CloneNotSupportedException {
+	public DblConstDef clone() {
 		DblConstDef c = (DblConstDef) super.clone();
 
 		if (values != null)

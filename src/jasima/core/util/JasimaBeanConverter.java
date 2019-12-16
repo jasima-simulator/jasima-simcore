@@ -39,6 +39,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
  * 
  * @author Robin Kreis
  */
+@SuppressWarnings("deprecation")
 public class JasimaBeanConverter extends JavaBeanConverter {
 	protected static final String NULL_ATTRIBUTE_NAME = "is-null";
 	protected static final String NULL_ATTRIBUTE_VALUE = "yes";

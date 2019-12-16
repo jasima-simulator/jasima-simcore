@@ -35,7 +35,7 @@ import jasima.shopSim.util.ExtendedJobStatCollector;
  * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
  */
-public interface ShopListener extends SimComponentLifeCycleListener {
+public interface ShopListener extends SimComponentLifeCycleListener, Cloneable {
 
 	/**
 	 * Inform method to be notified of shop events.
@@ -58,5 +58,7 @@ public interface ShopListener extends SimComponentLifeCycleListener {
 
 	default void jobFinished(Shop shop, Job j) {
 	}
+	
+	ShopListener clone();
 
 }

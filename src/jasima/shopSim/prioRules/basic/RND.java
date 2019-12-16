@@ -40,7 +40,7 @@ public class RND extends PR {
 	private long seedModify = 1l;
 
 	@Override
-	public PR clone() throws CloneNotSupportedException {
+	public PR clone() {
 		RND res = (RND) super.clone();
 		res.rnd = null;
 		return res;
@@ -73,12 +73,12 @@ public class RND extends PR {
 	}
 
 	/**
-	 * Allows to modify the random number stream used. This allows to switch to
-	 * a different seed independently from the base seed used for an experiment.
+	 * Allows to modify the random number stream used. This allows to switch to a
+	 * different seed independently from the base seed used for an experiment.
 	 * Therefore this attribute allows to test different random decisions for a
-	 * single base seed, which can be useful if the base seed determines a
-	 * certain scenario and the aim is to quantify the performance of RND for
-	 * exactly this scenario by averaging over many random decisions.
+	 * single base seed, which can be useful if the base seed determines a certain
+	 * scenario and the aim is to quantify the performance of RND for exactly this
+	 * scenario by averaging over many random decisions.
 	 */
 	public void setSeedModify(long seedModify) {
 		this.seedModify = seedModify;

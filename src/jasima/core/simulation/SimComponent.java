@@ -10,7 +10,6 @@ import java.util.function.DoubleSupplier;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
-import jasima.core.util.SilentCloneable;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 
@@ -20,7 +19,7 @@ import jasima.core.util.observer.Notifier;
  * @author Torsten Hildebrandt
  * @see Simulation
  */
-public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore, SilentCloneable<SimComponent> {
+public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore, Cloneable {
 
 	/**
 	 * Base class for messages send by a {@link SimComponent} to registered
@@ -235,7 +234,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * @param method   The method to call at the given moment.
 	 */
 	default void scheduleIn(Duration duration, int prio, Runnable method) {
-		getSim().scheduleIn(duration,  prio, method);
+		getSim().scheduleIn(duration, prio, method);
 	}
 
 	/**
@@ -252,7 +251,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * @param method      The method to call at the given moment.
 	 */
 	default void scheduleIn(String description, Duration duration, int prio, Runnable method) {
-		getSim().scheduleIn(description, duration,  prio, method);
+		getSim().scheduleIn(description, duration, prio, method);
 	}
 
 	/**
@@ -400,9 +399,9 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 
 	/**
 	 * Public clone method. Implementing classes should implement a suitable
-	 * functionality or throw a {@link CloneNotSupportedException}.
+	 * functionality or throw a {@link CloneNotSupportedException} wrapped in a
+	 * {@link RuntimeException}.
 	 */
-	@Override
-	SimComponent clone() throws CloneNotSupportedException;
+	SimComponent clone();
 
 }

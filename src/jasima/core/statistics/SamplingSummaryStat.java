@@ -47,7 +47,6 @@ import java.util.Random;
  * {@link Math#random()} is used.
  * 
  * @author Torsten Hildebrandt, 2012-07-06
- * @version "$Id$"
  */
 public class SamplingSummaryStat extends SummaryStat {
 
@@ -156,6 +155,11 @@ public class SamplingSummaryStat extends SummaryStat {
 
 	public int getNumSamples() {
 		return numSamples;
+	}
+
+	@Override
+	public SummaryStat clone() {
+		throw new UnsupportedOperationException("clone()");
 	}
 
 	/**

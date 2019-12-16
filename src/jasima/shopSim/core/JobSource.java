@@ -108,7 +108,7 @@ public abstract class JobSource extends SimComponentBase {
 	}
 
 	@Override
-	public JobSource clone() throws CloneNotSupportedException {
+	public JobSource clone() {
 		JobSource s = (JobSource) super.clone();
 		return s;
 	}

@@ -43,7 +43,6 @@ import jasima.core.util.Util;
  * </ul>
  * 
  * @author Robin Kreis, 2012-09-07
- * @version "$Id$"
  */
 public class QuantileEstimator extends SummaryStat implements Iterable<QuantileEstimator.Bar> {
 
@@ -153,7 +152,12 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 
 	@Override
 	public SummaryStat combine(SummaryStat other) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("combine(SummaryStat)");
+	}
+
+	@Override
+	public QuantileEstimator clone() {
+		throw new UnsupportedOperationException("clone()");
 	}
 
 	@Override
@@ -385,7 +389,7 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	/**
 	 * Represents one bar of a histogram.
 	 */
-	public class Bar {
+	public static class Bar {
 		public double minX;
 		public double maxX;
 

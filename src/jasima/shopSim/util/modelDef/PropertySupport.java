@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import jasima.core.util.SilentCloneable;
-
-public class PropertySupport implements Serializable, SilentCloneable<PropertySupport> {
+public class PropertySupport implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 4437433295143161294L;
 
@@ -64,8 +62,12 @@ public class PropertySupport implements Serializable, SilentCloneable<PropertySu
 	}
 
 	@Override
-	public PropertySupport clone() throws CloneNotSupportedException {
-		return (PropertySupport) super.clone();
+	public PropertySupport clone() {
+		try {
+			return (PropertySupport) super.clone();
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
+		}
 	}
 
 }

@@ -31,7 +31,6 @@ import jasima.core.util.Util;
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public final class DblExp extends DblDistribution {
 
@@ -57,11 +56,10 @@ public final class DblExp extends DblDistribution {
 	/**
 	 * Sets the mean of the exponential distribution.
 	 * 
-	 * @param mean
-	 *            The exponential distribution's mean. This value has to be
-	 *            {@code >0}.
-	 * @throws NotStrictlyPositiveException
-	 *             If the supplied mean value was not positive.
+	 * @param mean The exponential distribution's mean. This value has to be
+	 *             {@code >0}.
+	 * @throws NotStrictlyPositiveException If the supplied mean value was not
+	 *                                      positive.
 	 */
 	public void setMean(double mean) throws NotStrictlyPositiveException {
 		dist = new ExponentialDistribution(mean);
@@ -74,7 +72,7 @@ public final class DblExp extends DblDistribution {
 	}
 
 	@Override
-	public DblStream clone() throws CloneNotSupportedException {
+	public DblStream clone() {
 		// default cloning behaviour is ok as 'dist' is immutable
 		return super.clone();
 	}

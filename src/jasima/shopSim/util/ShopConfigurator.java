@@ -155,17 +155,13 @@ public class ShopConfigurator {
 		};
 		ds.setRoute(shop.getRoutes()[route]);
 
-		try {
-			ArrivalsStationary arrivals = new ArrivalsStationary();
-			arrivals.setArrivalAtTimeZero(false);
-			arrivals.setInterArrivalTimes(iats.clone());
+		ArrivalsStationary arrivals = new ArrivalsStationary();
+		arrivals.setArrivalAtTimeZero(false);
+		arrivals.setInterArrivalTimes(iats.clone());
 
-			ds.setArrivalProcess(arrivals);
-			ds.setDueDateFactors(dueDates.clone());
-			ds.setJobWeights(weights.clone());
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
+		ds.setArrivalProcess(arrivals);
+		ds.setDueDateFactors(dueDates.clone());
+		ds.setJobWeights(weights.clone());
 
 		return ds;
 	}

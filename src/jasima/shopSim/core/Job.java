@@ -20,7 +20,6 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
-import jasima.core.util.SilentCloneable;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
@@ -33,7 +32,7 @@ import jasima.core.util.observer.NotifierImpl;
  * @author Torsten Hildebrandt
  */
 // TODO: PrioRuleTarget should be an interface
-public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueStore, Notifier<Job, Object> {
+public class Job extends PrioRuleTarget implements Cloneable, ValueStore, Notifier<Job, Object> {
 
 	/** Base class for job messages. */
 	public static class JobMessage {
@@ -218,8 +217,8 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 
 	/**
 	 * Notify next machine of future arrival. This mehod is called whenever an
-	 * operation is started. This method assumes isFinished to be set to the
-	 * correct value before this method is called.
+	 * operation is started. This method assumes isFinished to be set to the correct
+	 * value before this method is called.
 	 */
 	public void notifyNextMachine() {
 		if (!isLastOperation() && shop.isEnableLookAhead()) {
@@ -236,7 +235,7 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	 */
 	public Job getMyFuture() {
 		if (future == null) {
-			future = silentClone();
+			future = clone();
 			future.setFuture(true);
 		}
 		future.setTaskNumber(taskNumber + 1);
@@ -312,8 +311,7 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	 * Sets the completion time of the current operation. This is called by a
 	 * machine whenever processing starts.
 	 * 
-	 * @param finishTime
-	 *            The finish time of the current {@link Operation}.
+	 * @param finishTime The finish time of the current {@link Operation}.
 	 */
 	public void setFinishTime(double finishTime) {
 		this.finishTime = finishTime;
@@ -331,8 +329,7 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	 * Sets the start time of the current operation. This is used internally and
 	 * called by a machine whenever processing starts.
 	 * 
-	 * @param startTime
-	 *            The start time of the current operation.
+	 * @param startTime The start time of the current operation.
 	 */
 	public void setStartTime(double startTime) {
 		this.startTime = startTime;
@@ -380,10 +377,8 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	 * Computes operational due dates based on the total work content method, /*
 	 * i.e., proportional to an operation's processing time.
 	 * 
-	 * @param j
-	 *            The job for which to compute operation due dates.
-	 * @param ff
-	 *            The due date factor to use.
+	 * @param j  The job for which to compute operation due dates.
+	 * @param ff The due date factor to use.
 	 * @return An array containing operation due dates for each operation of
 	 *         {@code j}.
 	 */
@@ -427,12 +422,11 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	}
 
 	/**
-	 * Sets the {@link Route} this object is following. This might be
-	 * {@code null}, as not every job has to be created using a {@code Route}
-	 * (e.g. in a dynamic job shop where each {@code Job} has its unique rule).
+	 * Sets the {@link Route} this object is following. This might be {@code null},
+	 * as not every job has to be created using a {@code Route} (e.g. in a dynamic
+	 * job shop where each {@code Job} has its unique rule).
 	 * 
-	 * @param route
-	 *            The route this Job is following.
+	 * @param route The route this Job is following.
 	 */
 	public void setRoute(Route route) {
 		this.route = route;
@@ -463,20 +457,24 @@ public class Job extends PrioRuleTarget implements SilentCloneable<Job>, ValueSt
 	// cloning
 
 	@Override
-	public Job clone() throws CloneNotSupportedException {
-		Job j = (Job) super.clone();
-		j.future = null;
+	public Job clone() {
+		try {
+			Job j = (Job) super.clone();
+			j.future = null;
 
-		// clone value store copying (but not cloning!) all of its entries
-		j.valueStore = valueStore.clone();
+			// clone value store copying (but not cloning!) all of its entries
+			j.valueStore = valueStore.clone();
 
-		// clone listeners
-		j.notifierAdapter = new NotifierImpl<>(j);
-		for (int i = 0; i < numListener(); i++) {
-			j.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+			// clone listeners
+			j.notifierAdapter = new NotifierImpl<>(j);
+			for (int i = 0; i < numListener(); i++) {
+				j.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+			}
+
+			return j;
+		} catch (CloneNotSupportedException shouldNeverOccur) {
+			throw new AssertionError(shouldNeverOccur);
 		}
-
-		return j;
 	}
 
 }

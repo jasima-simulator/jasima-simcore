@@ -6,15 +6,16 @@ import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.observer.NotifierImpl;
 
 /**
- * Potential base class for simulation components implementing the interface {@link SimComponent}. Additionally this class introduces a name
- * attribute (that is also used in the {@link #toString()} method).
+ * Potential base class for simulation components implementing the interface
+ * {@link SimComponent}. Additionally this class introduces a name attribute
+ * (that is also used in the {@link #toString()} method).
  * 
  * @author Torsten Hildebrandt
  */
 public class SimComponentBase implements SimComponent {
 
 	public static final char NAME_SEPARATOR = '.';
-	
+
 	private transient SimComponentContainer<?> parent;
 	private transient String hierarchicalName;
 	private transient Simulation sim;
@@ -120,22 +121,26 @@ public class SimComponentBase implements SimComponent {
 	// cloning
 
 	@Override
-	public SimComponentBase clone() throws CloneNotSupportedException {
-		SimComponentBase c = (SimComponentBase) super.clone();
+	public SimComponentBase clone() {
+		try {
+			SimComponentBase c = (SimComponentBase) super.clone();
 
-		// clone value store copying (but not cloning!) all of its entries
-		if (valueStore != null) {
-			c.valueStore = valueStore.clone();
-		}
-
-		if (notifierAdapter != null) {
-			c.notifierAdapter = new NotifierImpl<>(c);
-			for (int i = 0; i < numListener(); i++) {
-				c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+			// clone value store copying (but not cloning!) all of its entries
+			if (valueStore != null) {
+				c.valueStore = valueStore.clone();
 			}
-		}
 
-		return c;
+			if (notifierAdapter != null) {
+				c.notifierAdapter = new NotifierImpl<>(c);
+				for (int i = 0; i < numListener(); i++) {
+					c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+				}
+			}
+
+			return c;
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

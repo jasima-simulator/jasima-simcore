@@ -111,7 +111,7 @@ public class IntConst extends IntStream {
 	}
 
 	@Override
-	public IntConst clone() throws CloneNotSupportedException {
+	public IntConst clone() {
 		IntConst c = (IntConst) super.clone();
 
 		if (values != null)
@@ -130,8 +130,7 @@ public class IntConst extends IntStream {
 	/**
 	 * Sets the values to return as members of this number stream.
 	 * 
-	 * @param vs
-	 *            The values to use.
+	 * @param vs The values to use.
 	 */
 	public void setValues(int... vs) {
 		this.mean = null;
@@ -150,12 +149,11 @@ public class IntConst extends IntStream {
 	}
 
 	/**
-	 * If set to {@code true}, the elements of {@code values} will be returned
-	 * in a randomly permuted order. Otherwise the values will be returned in
-	 * exactly the same order as given in {@code values}.
+	 * If set to {@code true}, the elements of {@code values} will be returned in a
+	 * randomly permuted order. Otherwise the values will be returned in exactly the
+	 * same order as given in {@code values}.
 	 * 
-	 * @param randomizeOrder
-	 *            Whether or not to randomize the order.
+	 * @param randomizeOrder Whether or not to randomize the order.
 	 */
 	public void setRandomizeOrder(boolean randomizeOrder) {
 		this.randomizeOrder = randomizeOrder;

@@ -33,8 +33,8 @@ import jasima.core.util.Util;
 import jasima.core.util.observer.NotifierListener;
 
 /**
- * Implements a shop simulation. Despite its name the scenario not necessarily
- * has to be a job shop.
+ * Implements a shop simulation. The scenarios covered are usually job shops and
+ * flow shops.
  * 
  * @author Torsten Hildebrandt
  */
@@ -145,11 +145,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	/**
 	 * Adds a listener to all {@link WorkStation}s in the shop.
 	 * 
-	 * @param listener
-	 *            The machine listener to add.
-	 * @param cloneIfPossible
-	 *            whether to try to clone a new instance for each machine using
-	 *            {@link TypeUtil#cloneIfPossible(Object)}.
+	 * @param listener        The machine listener to add.
+	 * @param cloneIfPossible whether to try to clone a new instance for each
+	 *                        machine using
+	 *                        {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
 	public void installMachineListener(NotifierListener<SimComponent, Object> listener, boolean cloneIfPossible) {
 		for (WorkStation m : machines.getComponents()) {
@@ -171,11 +170,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	/**
-	 * Enable the lookahead mechanism of this shop. If enabled dispatching rules
-	 * can select jobs arriving from in the near future.
+	 * Enable the lookahead mechanism of this shop. If enabled dispatching rules can
+	 * select jobs arriving from in the near future.
 	 * 
-	 * @param enableLookAhead
-	 *            Whether to enable or disable lookahead.
+	 * @param enableLookAhead Whether to enable or disable lookahead.
 	 */
 	public void setEnableLookAhead(boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
@@ -184,16 +182,15 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	/**
 	 * End simulation if WIP (work in process) reaches this value (0: no limit)
 	 * 
-	 * @param maxJobsInSystem
-	 *            The maximum number of jobs in the system.
+	 * @param maxJobsInSystem The maximum number of jobs in the system.
 	 */
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
 		this.maxJobsInSystem = maxJobsInSystem;
 	}
 
 	/**
-	 * Returns the maximum number of jobs in the system, before the simulation
-	 * is terminated.
+	 * Returns the maximum number of jobs in the system, before the simulation is
+	 * terminated.
 	 * 
 	 * @return The maximum number of jobs in the system.
 	 */
@@ -202,11 +199,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	/**
-	 * End simulation if a certain number of jobs was completed (%lt;=0
-	 * (default): no limit).
+	 * End simulation if a certain number of jobs was completed (%lt;=0 (default):
+	 * no limit).
 	 * 
-	 * @param stopAfterNumJobs
-	 *            The number of jobs to finish.
+	 * @param stopAfterNumJobs The number of jobs to finish.
 	 */
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
 		this.stopAfterNumJobs = stopAfterNumJobs;
@@ -232,8 +228,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	/**
-	 * Returns the {@link SimComponentContainer} containing all
-	 * {@link JobSource}s of this shop.
+	 * Returns the {@link SimComponentContainer} containing all {@link JobSource}s
+	 * of this shop.
 	 * 
 	 * @return The container object.
 	 */
@@ -244,8 +240,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	/**
 	 * Sets all job sources in this shop.
 	 * 
-	 * @param sources
-	 *            An array with all job sources.
+	 * @param sources An array with all job sources.
 	 */
 	public void setSources(JobSource[] sources) {
 		this.sources.removeAll();
@@ -285,8 +280,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	/**
-	 * Returns the {@link SimComponentContainer} containing all
-	 * {@link WorkStation}s of this shop.
+	 * Returns the {@link SimComponentContainer} containing all {@link WorkStation}s
+	 * of this shop.
 	 * 
 	 * @return The container object.
 	 */
@@ -297,8 +292,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	/**
 	 * Sets the workstations of this shop.
 	 * 
-	 * @param machines
-	 *            An array containing all workstations for this shop.
+	 * @param machines An array containing all workstations for this shop.
 	 */
 	public void setMachines(WorkStation[] machines) {
 		this.machines.removeAll();
@@ -312,8 +306,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	 * Adds a single machine to this shop.
 	 * 
 	 * @see #getMachines()
-	 * @param machine
-	 *            The workstation to add.
+	 * @param machine The workstation to add.
 	 */
 	public void addMachine(WorkStation machine) {
 		machine.shop = this;
@@ -324,8 +317,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	/**
 	 * Removes a machine from this shop.
 	 * 
-	 * @param machine
-	 *            The workstation to remove.
+	 * @param machine The workstation to remove.
 	 */
 	public void removeMachine(WorkStation machine) {
 		if (machines.removeComponent(machine)) {
@@ -343,8 +335,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	 * Returns a workstation with the given name, or {@code null} if no such
 	 * workstation exists.
 	 * 
-	 * @param name
-	 *            The workstation's name.
+	 * @param name The workstation's name.
 	 * @return The workstation with the given name, if it exists. {@code null}
 	 *         otherwise.
 	 */
@@ -374,8 +365,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	/**
 	 * Sets the routes available for this job shop.
 	 * 
-	 * @param routes
-	 *            The route list.
+	 * @param routes The route list.
 	 */
 	public void setRoutes(Route[] routes) {
 		this.routes = routes.clone();
@@ -395,9 +385,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	}
 
 	@Override
-	public Shop clone() throws CloneNotSupportedException {
-		Shop s = (Shop) super.clone();
-		return s;
+	public Shop clone() {
+		throw new UnsupportedOperationException("clone()");
 	}
 
 }

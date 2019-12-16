@@ -8,7 +8,7 @@ import java.util.Set;
  * {@code HashMap}. This class can be used to implement {@code ValueStore}
  * functionality on behalf of a host object.
  */
-public class ValueStoreImpl implements ValueStore, SilentCloneable<ValueStoreImpl> {
+public class ValueStoreImpl implements ValueStore, Cloneable {
 
 	private HashMap<Object, Object> valueStore;
 
@@ -18,14 +18,11 @@ public class ValueStoreImpl implements ValueStore, SilentCloneable<ValueStoreImp
 	}
 
 	/**
-	 * Offers a simple get/put-mechanism to store and retrieve information as a
-	 * kind of global data store. This can be used as a simple extension
-	 * mechanism.
+	 * Offers a simple get/put-mechanism to store and retrieve information as a kind
+	 * of global data store. This can be used as a simple extension mechanism.
 	 * 
-	 * @param key
-	 *            The key name.
-	 * @param value
-	 *            value to assign to {@code key}.
+	 * @param key   The key name.
+	 * @param value value to assign to {@code key}.
 	 * @see #valueStoreGet(Object)
 	 */
 	@Override
@@ -36,8 +33,7 @@ public class ValueStoreImpl implements ValueStore, SilentCloneable<ValueStoreImp
 	/**
 	 * Retrieves a value from the value store.
 	 * 
-	 * @param key
-	 *            The entry to return, e.g., identified by a name.
+	 * @param key The entry to return, e.g., identified by a name.
 	 * @return The value associated with {@code key}.
 	 * @see #valueStorePut(Object, Object)
 	 */
@@ -65,8 +61,8 @@ public class ValueStoreImpl implements ValueStore, SilentCloneable<ValueStoreImp
 	/**
 	 * Removes an entry from this value store.
 	 * 
-	 * @return The value previously associated with "key", or null, if no such
-	 *         key was found.
+	 * @return The value previously associated with "key", or null, if no such key
+	 *         was found.
 	 */
 	@Override
 	public Object valueStoreRemove(Object key) {
@@ -79,14 +75,18 @@ public class ValueStoreImpl implements ValueStore, SilentCloneable<ValueStoreImp
 	}
 
 	@Override
-	public ValueStoreImpl clone() throws CloneNotSupportedException {
-		ValueStoreImpl c = (ValueStoreImpl) super.clone();
+	public ValueStoreImpl clone() {
+		try {
+			ValueStoreImpl c = (ValueStoreImpl) super.clone();
 
-		// deep clone of map but only shallow copy of entries
-		c.valueStore = new HashMap<>();
-		c.valueStore.putAll(valueStore);
+			// deep clone of map but only shallow copy of entries
+			c.valueStore = new HashMap<>();
+			c.valueStore.putAll(valueStore);
 
-		return c;
+			return c;
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
+		}
 	}
 
 }

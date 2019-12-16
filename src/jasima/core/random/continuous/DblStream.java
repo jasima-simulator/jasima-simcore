@@ -108,10 +108,16 @@ public abstract class DblStream implements Serializable, Cloneable {
 	 * associated with this stream.
 	 */
 	@Override
-	public DblStream clone() throws CloneNotSupportedException {
-		if (rndGen != null)
-			throw new CloneNotSupportedException("Only a DblStream without a rndGen set can be cloned.");
-		return (DblStream) super.clone();
+	public DblStream clone() {
+		if (rndGen != null) {
+			throw new IllegalStateException("Only a DblStream without a rndGen set can be cloned.");
+		}
+		
+		try {
+			return (DblStream) super.clone();
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
+		}
 	}
 
 	/**
@@ -141,8 +147,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 	 * initialize the random number generator as in
 	 * {@link RandomFactory#initRndGen(DblStream, String)}.
 	 * 
-	 * @param name
-	 *            The stream's name.
+	 * @param name The stream's name.
 	 */
 	public void setName(String name) {
 		this.name = name;

@@ -46,10 +46,9 @@ import jasima.shopSim.util.BasicJobStatCollector;
 
 /**
  * Simulates dynamic job shops and flow shops, based on some parameters. See
- * Rajendran, C.; Holthaus O.:
- * "A Comparative Study of Dispatching Rules in Dynamic Flowshops and Jobshops",
- * European Journal of Operational Research 116 (1999) 1, S. 156-170 for
- * details.
+ * Rajendran, C.; Holthaus O.: "A Comparative Study of Dispatching Rules in
+ * Dynamic Flowshops and Jobshops", European Journal of Operational Research 116
+ * (1999) 1, S. 156-170 for details.
  * <p>
  * An experiment of this type by default contains a
  * {@code BasicJobStatCollector}.
@@ -206,12 +205,9 @@ public class DynamicShopExperiment extends ShopExperiment {
 
 		src.setDueDateFactors(TypeUtil.cloneIfPossible(getDueDateFactor()));
 
-		if (getWeights() != null)
-			try {
-				src.setJobWeights(getWeights().clone());
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
+		if (getWeights() != null) {
+			src.setJobWeights(getWeights().clone());
+		}
 
 		return src;
 	}
@@ -241,8 +237,8 @@ public class DynamicShopExperiment extends ShopExperiment {
 
 	/**
 	 * Sets the desired utilization level for all machines. Machine utilization
-	 * approaches this value in the long term; short term results might differ
-	 * due to random influences in the arrival process.
+	 * approaches this value in the long term; short term results might differ due
+	 * to random influences in the arrival process.
 	 */
 	public void setUtilLevel(double utilLevel) {
 		if (utilLevel < 0.0d || utilLevel > 1.0d)
@@ -257,10 +253,10 @@ public class DynamicShopExperiment extends ShopExperiment {
 
 	/**
 	 * Sets the due date tightness of jobs by specifying a due date factor. The
-	 * {@link DblStream} is used to calculate a job's due date as a multiple of
-	 * a job's processing time. If for instance a due date factor of 2 is
-	 * returned for a certain job then the due date is set to the job's release
-	 * date plus twice the raw processing time of all operations of this job.
+	 * {@link DblStream} is used to calculate a job's due date as a multiple of a
+	 * job's processing time. If for instance a due date factor of 2 is returned for
+	 * a certain job then the due date is set to the job's release date plus twice
+	 * the raw processing time of all operations of this job.
 	 */
 	public void setDueDateFactor(DblStream dueDateFactor) {
 		this.dueDateFactor = dueDateFactor;
@@ -295,9 +291,9 @@ public class DynamicShopExperiment extends ShopExperiment {
 	}
 
 	/**
-	 * Returns the maximum number of operations of a job. Setting this to a
-	 * value {@code <=0} uses the number of machines, i.e., a job with the
-	 * maximum number of operations has to visit each machine exactly once.
+	 * Returns the maximum number of operations of a job. Setting this to a value
+	 * {@code <=0} uses the number of machines, i.e., a job with the maximum number
+	 * of operations has to visit each machine exactly once.
 	 */
 	public int getNumOpsMax() {
 		return numOps.b;
@@ -331,14 +327,14 @@ public class DynamicShopExperiment extends ShopExperiment {
 	}
 
 	/**
-	 * The job source is stopped after a certain number of jobs were completed.
-	 * Jobs are counted in the order they entered the system. If, e.g.,
-	 * {@code stopAfterNumJobs} is 2500 the job source is stopped after all of
-	 * the first 2500 jobs were completed (note: this is is not necessarily the
-	 * same as the first 2500 jobs completed).
+	 * The job source is stopped after a certain number of jobs were completed. Jobs
+	 * are counted in the order they entered the system. If, e.g.,
+	 * {@code stopAfterNumJobs} is 2500 the job source is stopped after all of the
+	 * first 2500 jobs were completed (note: this is is not necessarily the same as
+	 * the first 2500 jobs completed).
 	 * 
-	 * @param stopAfterNumJobs
-	 *            The number of jobs after which to stop, default: 2500.
+	 * @param stopAfterNumJobs The number of jobs after which to stop, default:
+	 *                         2500.
 	 */
 	public void setStopArrivalsAfterNumJobs(int stopAfterNumJobs) {
 		this.stopArrivalsAfterNumJobs = stopAfterNumJobs;
@@ -349,12 +345,11 @@ public class DynamicShopExperiment extends ShopExperiment {
 	}
 
 	/**
-	 * Sets the weights to be used for each job. The default setting is to
-	 * assign a weight of 1 for each job when this attribute is {@code null}.
+	 * Sets the weights to be used for each job. The default setting is to assign a
+	 * weight of 1 for each job when this attribute is {@code null}.
 	 * 
-	 * @param weights
-	 *            A {@link DblStream} to determine job weight. Default: each job
-	 *            gets a weight of 1.
+	 * @param weights A {@link DblStream} to determine job weight. Default: each job
+	 *                gets a weight of 1.
 	 */
 	public void setWeights(DblStream weights) {
 		this.weights = weights;

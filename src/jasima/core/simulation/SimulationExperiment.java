@@ -24,7 +24,7 @@ public class SimulationExperiment extends Experiment {
 	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
 	private ArrayList<Consumer<Simulation>> initActions = null;
-	private SimComponent rootComponent = null; 
+	private SimComponent rootComponent = null;
 
 	// fields used during run
 
@@ -70,8 +70,8 @@ public class SimulationExperiment extends Experiment {
 			sim.setSimTimeStartInstant(yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant());
 		}
 		sim.setSimTimeToMillisFactor(getSimTimeToMillisFactor());
-		
-		if (getRootComponent()!=null) {
+
+		if (getRootComponent() != null) {
 			sim.addComponent(getRootComponent());
 		}
 
@@ -211,15 +211,15 @@ public class SimulationExperiment extends Experiment {
 	}
 
 	@Override
-	public SimulationExperiment clone() throws CloneNotSupportedException {
+	public SimulationExperiment clone() {
 		SimulationExperiment c = (SimulationExperiment) super.clone();
 
 		if (initActions != null) {
 			// shallow clone
 			c.initActions = new ArrayList<>(initActions);
 		}
-		
-		if (rootComponent!=null) {
+
+		if (rootComponent != null) {
 			// attempts a deep clone of rootComponent
 			c.rootComponent = rootComponent.clone();
 		}

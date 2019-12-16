@@ -194,7 +194,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	@Override
-	public FullFactorialExperiment clone() throws CloneNotSupportedException {
+	public FullFactorialExperiment clone() {
 		FullFactorialExperiment e = (FullFactorialExperiment) super.clone();
 
 		e.factors = new LinkedHashMap<String, List<Object>>(factors);

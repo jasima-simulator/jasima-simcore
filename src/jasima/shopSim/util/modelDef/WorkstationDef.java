@@ -94,7 +94,7 @@ public class WorkstationDef extends PropertySupport {
 	}
 
 	@Override
-	public WorkstationDef clone() throws CloneNotSupportedException {
+	public WorkstationDef clone() {
 		WorkstationDef c = (WorkstationDef) super.clone();
 
 		if (initialSetups != null) {

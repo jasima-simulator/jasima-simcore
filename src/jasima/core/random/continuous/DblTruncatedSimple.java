@@ -103,7 +103,7 @@ public class DblTruncatedSimple extends DblStream {
 	}
 
 	@Override
-	public DblStream clone() throws CloneNotSupportedException {
+	public DblStream clone() {
 		DblTruncatedSimple c = (DblTruncatedSimple) super.clone();
 
 		if (baseStream != null)

@@ -33,7 +33,6 @@ import jasima.core.random.continuous.DblStream;
  * @see DblStream
  * 
  * @author Torsten Hildebrandt, 2012-08-07
- * @version "$Id$"
  */
 public class ArrivalsStationary extends ArrivalProcess {
 
@@ -77,7 +76,7 @@ public class ArrivalsStationary extends ArrivalProcess {
 	}
 
 	@Override
-	public DblStream clone() throws CloneNotSupportedException {
+	public DblStream clone() {
 		ArrivalsStationary c = (ArrivalsStationary) super.clone();
 		if (interArrivalTimes != null)
 			c.interArrivalTimes = interArrivalTimes.clone();

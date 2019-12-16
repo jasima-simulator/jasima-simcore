@@ -25,7 +25,6 @@ import java.util.Map;
 import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.statistics.TimeWeightedSummaryStat;
-import jasima.core.util.SilentCloneable;
 import jasima.shopSim.core.IndividualMachine;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.Operation;
@@ -39,11 +38,11 @@ import jasima.shopSim.core.WorkStationListener;
  * 
  * @author Torsten Hildebrandt
  */
-public class MachineStatCollector implements WorkStationListener, SilentCloneable<MachineStatCollector> {
+public class MachineStatCollector implements WorkStationListener, Cloneable {
 
 	/*
-	 * Continuous statistic time average number of number of machines busy at
-	 * each station and time average number in queue
+	 * Continuous statistic time average number of number of machines busy at each
+	 * station and time average number in queue
 	 */
 	public TimeWeightedSummaryStat aveMachinesBusy;
 	public TimeWeightedSummaryStat aniq;
@@ -137,8 +136,12 @@ public class MachineStatCollector implements WorkStationListener, SilentCloneabl
 	}
 
 	@Override
-	public MachineStatCollector clone() throws CloneNotSupportedException {
-		return (MachineStatCollector) super.clone();
+	public MachineStatCollector clone() {
+		try {
+			return (MachineStatCollector) super.clone();
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
+		}
 	}
 
 	@Override

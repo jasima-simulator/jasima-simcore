@@ -37,7 +37,6 @@ import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
-import jasima.core.util.SilentCloneable;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
@@ -78,7 +77,7 @@ import jasima.core.util.observer.NotifierImpl;
  * @author Torsten Hildebrandt
  */
 public abstract class Experiment
-		implements Notifier<Experiment, ExperimentMessage>, SilentCloneable<Experiment>, Serializable, ValueStore {
+		implements Notifier<Experiment, ExperimentMessage>, ValueStore, Cloneable, Serializable {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -574,22 +573,26 @@ public abstract class Experiment
 	//
 
 	@Override
-	public Experiment clone() throws CloneNotSupportedException {
-		Experiment c = (Experiment) super.clone();
+	public Experiment clone() {
+		try {
+			Experiment c = (Experiment) super.clone();
 
-		if (notifierAdapter != null) {
-			c.notifierAdapter = new NotifierImpl<>(c);
-			for (int i = 0; i < numListener(); i++) {
-				c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+			if (notifierAdapter != null) {
+				c.notifierAdapter = new NotifierImpl<>(c);
+				for (int i = 0; i < numListener(); i++) {
+					c.addListener(TypeUtil.cloneIfPossible(getListener(i)));
+				}
 			}
-		}
 
-		// clone value store copying (but not cloning!) all of its entries
-		if (valueStore != null) {
-			c.valueStore = valueStore.clone();
-		}
+			// clone value store copying (but not cloning!) all of its entries
+			if (valueStore != null) {
+				c.valueStore = valueStore.clone();
+			}
 
-		return c;
+			return c;
+		} catch (CloneNotSupportedException sholdntHappen) {
+			throw new RuntimeException(sholdntHappen);
+		}
 	}
 
 	public String toString() {

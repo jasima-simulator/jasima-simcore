@@ -162,18 +162,14 @@ public abstract class BatchForming implements Cloneable, Serializable {
 	}
 
 	@Override
-	public BatchForming clone() throws CloneNotSupportedException {
-		BatchForming bf = (BatchForming) super.clone();
-		bf.possibleBatches = null;
-		bf.orderedJobs = new Job[] {};
-		return bf;
-	}
-
-	public BatchForming silentClone() {
+	public BatchForming clone() {
 		try {
-			return clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			BatchForming bf = (BatchForming) super.clone();
+			bf.possibleBatches = null;
+			bf.orderedJobs = new Job[] {};
+			return bf;
+		} catch (CloneNotSupportedException cantHappen) {
+			throw new AssertionError(cantHappen);
 		}
 	}
 

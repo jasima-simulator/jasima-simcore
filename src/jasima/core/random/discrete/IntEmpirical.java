@@ -142,7 +142,7 @@ public class IntEmpirical extends IntStream {
 	}
 
 	@Override
-	public IntEmpirical clone() throws CloneNotSupportedException {
+	public IntEmpirical clone() {
 		IntEmpirical c = (IntEmpirical) super.clone();
 
 		if (probs != null)

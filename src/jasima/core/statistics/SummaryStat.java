@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 import org.apache.commons.math3.distribution.TDistribution;
 
-import jasima.core.util.SilentCloneable;
-
 /**
  * Class to collect the most important statistics without having to store all
  * values encountered. It can return mean, standard deviation, variance, min,
@@ -40,7 +38,7 @@ import jasima.core.util.SilentCloneable;
  * 
  * @author Torsten Hildebrandt
  */
-public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
+public class SummaryStat implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 817115058373461360L;
 
@@ -95,11 +93,9 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * Convenience method to add all values given as arguments with a weight of
-	 * 1.
+	 * Convenience method to add all values given as arguments with a weight of 1.
 	 * 
-	 * @param vs
-	 *            The values to add.
+	 * @param vs The values to add.
 	 * @return {@code this}, to allow easy chaining of calls.
 	 */
 	public SummaryStat values(double... vs) {
@@ -113,8 +109,7 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	/**
 	 * Adds the given value with a weight of 1.
 	 * 
-	 * @param v
-	 *            The value to add.
+	 * @param v The value to add.
 	 * @return {@code this}, to allow easy chaining of calls.
 	 */
 	public SummaryStat value(double v) {
@@ -124,13 +119,10 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	/**
 	 * Adds a value with a given weight.
 	 * 
-	 * @param v
-	 *            The value to add.
-	 * @param weight
-	 *            The weight to give to this value. Has to be positive.
+	 * @param v      The value to add.
+	 * @param weight The weight to give to this value. Has to be positive.
 	 * @return {@code this}, to allow easy chaining of calls.
-	 * @throws IllegalArgumentException
-	 *             If weight was negative.
+	 * @throws IllegalArgumentException If weight was negative.
 	 */
 	public SummaryStat value(double v, double weight) throws IllegalArgumentException {
 		if (!(weight >= 0.0d))
@@ -172,8 +164,7 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	/**
 	 * The standard deviation of all values.
 	 * 
-	 * @return The standard deviation of all values given to
-	 *         {@link #value(double)}.
+	 * @return The standard deviation of all values given to {@link #value(double)}.
 	 */
 	public double stdDev() {
 		return Math.sqrt(variance());
@@ -182,8 +173,8 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	/**
 	 * Returns the sample variance of the values.
 	 * 
-	 * @return The (sample) variance of all values given to
-	 *         {@link #value(double)}. Returns NaN, if no values were added yet.
+	 * @return The (sample) variance of all values given to {@link #value(double)}.
+	 *         Returns NaN, if no values were added yet.
 	 */
 	public double variance() {
 		if (numObs < 1)
@@ -199,8 +190,8 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	/**
 	 * Returns the population variance of the values.
 	 * 
-	 * @return The (sample) variance of all values given to
-	 *         {@link #value(double)}. Returns NaN, if no values were added yet.
+	 * @return The (sample) variance of all values given to {@link #value(double)}.
+	 *         Returns NaN, if no values were added yet.
 	 */
 	public double variancePopulation() {
 		if (numObs < 1)
@@ -222,8 +213,8 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * Returns the sum of all {@link #value(double)}s (taking into account
-	 * potential weights if {@link #value(double, double)} is used).
+	 * Returns the sum of all {@link #value(double)}s (taking into account potential
+	 * weights if {@link #value(double, double)} is used).
 	 * 
 	 * @return The sum of all values.
 	 */
@@ -234,9 +225,8 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * Returns the sum of all weights. If only {@link #value(double)} is used,
-	 * then the value returned is identical to the value returned by
-	 * {@link #numObs}.
+	 * Returns the sum of all weights. If only {@link #value(double)} is used, then
+	 * the value returned is identical to the value returned by {@link #numObs}.
 	 * 
 	 * @return The weight sum.
 	 */
@@ -282,11 +272,10 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * Combines the data in {@code other} with this SummaryStat-Object. The
-	 * combined object behaves as if it had also seen the data of "other".
+	 * Combines the data in {@code other} with this SummaryStat-Object. The combined
+	 * object behaves as if it had also seen the data of "other".
 	 * 
-	 * @param other
-	 *            The {@link SummaryStat} to combine with this object.
+	 * @param other The {@link SummaryStat} to combine with this object.
 	 * @return Returns {@code this} to allow easy chaining of calls.
 	 */
 	public SummaryStat combine(SummaryStat other) {
@@ -311,13 +300,17 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * Clones this object. We can use the standard functionality here, as there
-	 * are only primitive fields.
+	 * Clones this object. We can use the standard functionality here, as there are
+	 * only primitive fields.
 	 * 
 	 * @return A clone of this {@link SummaryStat}.
 	 */
-	public SummaryStat clone() throws CloneNotSupportedException {
-		return (SummaryStat) super.clone();
+	public SummaryStat clone() {
+		try {
+			return (SummaryStat) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	/**
@@ -376,8 +369,7 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	/**
 	 * Sets a descriptive name for this object.
 	 * 
-	 * @param name
-	 *            A name for this {@code SummaryStat}.
+	 * @param name A name for this {@code SummaryStat}.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -395,11 +387,10 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	// ************* static utility methods *************
 
 	/**
-	 * This method creates a new {@code SummaryStat} object and passes all
-	 * values to it.
+	 * This method creates a new {@code SummaryStat} object and passes all values to
+	 * it.
 	 * 
-	 * @param values
-	 *            The values to use.
+	 * @param values The values to use.
 	 * @return A {@code SummaryStat} summarizing the values.
 	 */
 	public static SummaryStat summarize(double... values) {
@@ -407,11 +398,10 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * This method creates a new {@code SummaryStat} object and passes all
-	 * values to it.
+	 * This method creates a new {@code SummaryStat} object and passes all values to
+	 * it.
 	 * 
-	 * @param values
-	 *            The values to use.
+	 * @param values The values to use.
 	 * @return A {@code SummaryStat} summarizing the values.
 	 */
 	public static SummaryStat summarize(int... values) {
@@ -423,13 +413,11 @@ public class SummaryStat implements Serializable, SilentCloneable<SummaryStat> {
 	}
 
 	/**
-	 * Creates a new {@code SummaryStat} object that behaves if all values seen
-	 * by {@code stats1} and {@code stats2} would have been passed to it.
+	 * Creates a new {@code SummaryStat} object that behaves if all values seen by
+	 * {@code stats1} and {@code stats2} would have been passed to it.
 	 * 
-	 * @param stats1
-	 *            {@code SummaryStat} summarizing first set of values.
-	 * @param stats2
-	 *            {@code SummaryStat} summarizing second set of values.
+	 * @param stats1 {@code SummaryStat} summarizing first set of values.
+	 * @param stats2 {@code SummaryStat} summarizing second set of values.
 	 * @return New {@code SummaryStat} object summarizing the union of first and
 	 *         second value set.
 	 */

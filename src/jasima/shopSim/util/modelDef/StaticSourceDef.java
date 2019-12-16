@@ -39,7 +39,7 @@ public class StaticSourceDef extends SourceDef {
 	}
 
 	@Override
-	public StaticSourceDef clone() throws CloneNotSupportedException {
+	public StaticSourceDef clone() {
 		StaticSourceDef c = (StaticSourceDef) super.clone();
 
 		c.jobSpecs = TypeUtil.deepCloneArrayIfPossible(jobSpecs);

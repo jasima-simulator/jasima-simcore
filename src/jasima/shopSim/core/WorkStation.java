@@ -74,8 +74,8 @@ public class WorkStation extends SimComponentBase {
 	public static final int DEF_SETUP = 0;
 
 	/**
-	 * Constant to denote the batch family of a job, which is not compatible to
-	 * any other.
+	 * Constant to denote the batch family of a job, which is not compatible to any
+	 * other.
 	 */
 	public static final String BATCH_INCOMPATIBLE = "BATCH_INCOMPATIBLE";
 
@@ -236,8 +236,8 @@ public class WorkStation extends SimComponentBase {
 
 	/**
 	 * The machine is notified of the future arrival of the job {@code f} at a
-	 * certain time. Note that f is not the job itself but a clone of this job
-	 * with current operation advanced to this machine obtained with
+	 * certain time. Note that f is not the job itself but a clone of this job with
+	 * current operation advanced to this machine obtained with
 	 * {@link Job#getFuture()}.
 	 */
 	public void futureArrival(final Job f, final double arrivesAt) {
@@ -403,9 +403,9 @@ public class WorkStation extends SimComponentBase {
 	}
 
 	/**
-	 * Selects the next batch from the queue and starts processing. Even though
-	 * this method is public it should never be called externally unless you
-	 * know exactly what you are doing.
+	 * Selects the next batch from the queue and starts processing. Even though this
+	 * method is public it should never be called externally unless you know exactly
+	 * what you are doing.
 	 */
 	public void selectAndStart() {
 		// execute asynchronously so all jobs arrived/departed before selection
@@ -540,8 +540,7 @@ public class WorkStation extends SimComponentBase {
 	}
 
 	/**
-	 * How much work have all machines in this group to finish their current
-	 * jobs.
+	 * How much work have all machines in this group to finish their current jobs.
 	 */
 	public double startedWorkInGroup() {
 		double res = 0.0;
@@ -562,8 +561,8 @@ public class WorkStation extends SimComponentBase {
 	}
 
 	/**
-	 * Returns the sum of processing times of all operations currently waiting
-	 * in this machine's queue.
+	 * Returns the sum of processing times of all operations currently waiting in
+	 * this machine's queue.
 	 */
 	public double workContent(boolean includeFutureJobs) {
 		// jobs already started
@@ -596,8 +595,7 @@ public class WorkStation extends SimComponentBase {
 	 * Translates a setup state {@code s} in a numeric constant.
 	 * 
 	 * @see #setupStateToString(int)
-	 * @param s
-	 *            A setup state name.
+	 * @param s A setup state name.
 	 * @return Numeric constant for {@code s}.
 	 */
 	public int translateSetupState(String s) {
@@ -621,9 +619,8 @@ public class WorkStation extends SimComponentBase {
 	 * Provides a human-readable string for a numeric setup state.
 	 * 
 	 * @see #translateSetupState(String)
-	 * @param id
-	 *            The numeric setup id. This was usually (optionally) created
-	 *            before using {@code translateSetupState(String)}
+	 * @param id The numeric setup id. This was usually (optionally) created before
+	 *           using {@code translateSetupState(String)}
 	 */
 	public String setupStateToString(int id) {
 		if (id == DEF_SETUP)
@@ -727,8 +724,8 @@ public class WorkStation extends SimComponentBase {
 	}
 
 	@Override
-	public WorkStation clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
+	public WorkStation clone() {
+		throw new UnsupportedOperationException("clone()");
 	}
 
 }

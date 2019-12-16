@@ -131,7 +131,7 @@ public class IntEmpDef extends IntStreamDef {
 	}
 
 	@Override
-	public IntEmpDef clone() throws CloneNotSupportedException {
+	public IntEmpDef clone() {
 		IntEmpDef c = (IntEmpDef) super.clone();
 
 		if (values != null)

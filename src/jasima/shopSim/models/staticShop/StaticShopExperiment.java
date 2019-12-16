@@ -57,7 +57,7 @@ public class StaticShopExperiment extends ShopExperiment {
 	}
 
 	@Override
-	public StaticShopExperiment clone() throws CloneNotSupportedException {
+	public StaticShopExperiment clone() {
 		StaticShopExperiment c = (StaticShopExperiment) super.clone();
 
 		if (shopDef!=null) {

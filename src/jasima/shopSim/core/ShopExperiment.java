@@ -95,21 +95,21 @@ public abstract class ShopExperiment extends SimulationExperiment {
 
 			PR sr = getSequencingRule(i);
 			if (sr != null) {
-				sr = sr.silentClone();
+				sr = sr.clone();
 				sr.setOwner(m);
 				m.queue.setSequencingRule(sr);
 			}
 
 			PR br = getBatchSequencingRule(i);
 			if (br != null) {
-				br = br.silentClone();
+				br = br.clone();
 				br.setOwner(m);
 				m.setBatchSequencingRule(br);
 			}
 
 			BatchForming bf = getBatchForming(i);
 			if (bf != null) {
-				bf = bf.silentClone();
+				bf = bf.clone();
 				bf.setOwner(m);
 				m.setBatchForming(bf);
 			}
@@ -188,10 +188,10 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	}
 
 	@Override
-	public ShopExperiment clone() throws CloneNotSupportedException {
-		if (resultMap != null)
-			throw new CloneNotSupportedException("Can't clone an experiment that was already executed.");
-
+	public ShopExperiment clone() {
+		if (resultMap != null) {
+			throw new IllegalStateException("Can't clone an experiment that was already executed.");
+		}
 		ShopExperiment clone = (ShopExperiment) super.clone();
 
 		if (sequencingRule != null)
@@ -224,11 +224,11 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	//
 
 	/**
-	 * End simulation if WIP (work in process) reaches this value (&lt;=0: no
-	 * limit; default is -1).
+	 * End simulation if WIP (work in process) reaches this value (&lt;=0: no limit;
+	 * default is -1).
 	 * 
-	 * @param maxJobsInSystem
-	 *            The maximum number of concurrent jobs allowed in the system.
+	 * @param maxJobsInSystem The maximum number of concurrent jobs allowed in the
+	 *                        system.
 	 */
 	public void setMaxJobsInSystem(int maxJobsInSystem) {
 		this.maxJobsInSystem = maxJobsInSystem;
@@ -239,12 +239,11 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	}
 
 	/**
-	 * Enable/disable the lookahead mechanism of this shop. If enabled,
-	 * dispatching rules can select jobs arriving in the near future (i.e., jobs
-	 * already processed on an immediate predecessor machine).
+	 * Enable/disable the lookahead mechanism of this shop. If enabled, dispatching
+	 * rules can select jobs arriving in the near future (i.e., jobs already
+	 * processed on an immediate predecessor machine).
 	 * 
-	 * @param enableLookAhead
-	 *            Whether or not to enable one-stop look ahead.
+	 * @param enableLookAhead Whether or not to enable one-stop look ahead.
 	 */
 	public void setEnableLookAhead(boolean enableLookAhead) {
 		this.enableLookAhead = enableLookAhead;
@@ -255,12 +254,11 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	}
 
 	/**
-	 * End simulation if a certain number of jobs was completed (&lt;=0
-	 * (default): no limit).
+	 * End simulation if a certain number of jobs was completed (&lt;=0 (default):
+	 * no limit).
 	 * 
-	 * @param stopAfterNumJobs
-	 *            Set the number of jobs to complete before terminating the
-	 *            simulation.
+	 * @param stopAfterNumJobs Set the number of jobs to complete before terminating
+	 *                         the simulation.
 	 */
 	public void setStopAfterNumJobs(int stopAfterNumJobs) {
 		this.stopAfterNumJobs = stopAfterNumJobs;
@@ -279,8 +277,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * machines.
 	 * 
 	 * @see #setSequencingRules(PR[])
-	 * @param sequencingRule
-	 *            The sequencing rule to use on all work stations.
+	 * @param sequencingRule The sequencing rule to use on all work stations.
 	 */
 	public void setSequencingRule(PR sequencingRule) {
 		this.sequencingRule = sequencingRule;
@@ -295,8 +292,8 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * batch machines.
 	 * 
 	 * @see #setBatchSequencingRules(PR[])
-	 * @param batchSequencingRule
-	 *            The batch sequencing rule to use on all work stations.
+	 * @param batchSequencingRule The batch sequencing rule to use on all work
+	 *                            stations.
 	 */
 	public void setBatchSequencingRule(PR batchSequencingRule) {
 		this.batchSequencingRule = batchSequencingRule;
@@ -310,8 +307,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * Sets a batch forming mechanism to be used on all machines.
 	 * 
 	 * @see #setBatchFormingRules(BatchForming[])
-	 * @param batchForming
-	 *            The batch forming rule to use on all machines
+	 * @param batchForming The batch forming rule to use on all machines
 	 */
 	public void setBatchForming(BatchForming batchForming) {
 		this.batchForming = batchForming;
@@ -323,9 +319,8 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * (workstation) in the model.
 	 * 
 	 * @see #setSequencingRule(PR)
-	 * @param sequencingRules
-	 *            An array of sequencing rule, containing one {@link PR} per
-	 *            work station.
+	 * @param sequencingRules An array of sequencing rule, containing one {@link PR}
+	 *                        per work station.
 	 */
 	public void setSequencingRules(PR[] sequencingRules) {
 		this.sequencingRules = sequencingRules;
@@ -341,8 +336,8 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * (workstation) in the model.
 	 * 
 	 * @see #setBatchSequencingRule(PR)
-	 * @param batchSequencingRules
-	 *            An array of batch sequencing rules, one for each workstation.
+	 * @param batchSequencingRules An array of batch sequencing rules, one for each
+	 *                             workstation.
 	 */
 	public void setBatchSequencingRules(PR[] batchSequencingRules) {
 		this.batchSequencingRules = batchSequencingRules;
@@ -358,8 +353,8 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * (workstation) in the model.
 	 * 
 	 * @see #setBatchForming(BatchForming)
-	 * @param batchFormingRules
-	 *            An array of batch forming rules, one for each workstation.
+	 * @param batchFormingRules An array of batch forming rules, one for each
+	 *                          workstation.
 	 */
 	public void setBatchFormingRules(BatchForming[] batchFormingRules) {
 		this.batchFormingRules = batchFormingRules;
@@ -381,8 +376,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	/**
 	 * Sets a list of {@link Shop} listeners to be installed on the shop.
 	 * 
-	 * @param shopListener
-	 *            The listeners to install during experiment execution.
+	 * @param shopListener The listeners to install during experiment execution.
 	 */
 	public void setShopListener(NotifierListener<SimComponent, Object>[] shopListener) {
 		this.shopListener = shopListener;
@@ -391,8 +385,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	/**
 	 * Adds a shop listener to be installed on the experiment's {@link Shop}.
 	 * 
-	 * @param l
-	 *            The listener to install during experiment execution.
+	 * @param l The listener to install during experiment execution.
 	 */
 	public void addShopListener(NotifierListener<SimComponent, Object> l) {
 		if (shopListener == null) {
@@ -422,19 +415,17 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * Sets a list of {@link WorkStation} listeners to be installed on each
 	 * {@link WorkStation}.
 	 * 
-	 * @param machineListener
-	 *            The listeners to install during experiment execution.
+	 * @param machineListener The listeners to install during experiment execution.
 	 */
 	public void setMachineListener(NotifierListener<SimComponent, Object>[] machineListener) {
 		this.machineListener = machineListener;
 	}
 
 	/**
-	 * Adds a WorkStation listener to be installed on each {@link WorkStation}
-	 * in the experiment.
+	 * Adds a WorkStation listener to be installed on each {@link WorkStation} in
+	 * the experiment.
 	 * 
-	 * @param l
-	 *            The listener to install during experiment execution.
+	 * @param l The listener to install during experiment execution.
 	 */
 	public void addMachineListener(NotifierListener<SimComponent, Object> l) {
 		if (this.machineListener == null) {
@@ -452,13 +443,10 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	}
 
 	/**
-	 * Adds a WorkStation-listener to be installed on a certain
-	 * {@link WorkStation}.
+	 * Adds a WorkStation-listener to be installed on a certain {@link WorkStation}.
 	 * 
-	 * @param name
-	 *            The workstation's name.
-	 * @param l
-	 *            The listener to install during experiment execution.
+	 * @param name The workstation's name.
+	 * @param l    The listener to install during experiment execution.
 	 */
 	public void addMachineListener(String name, NotifierListener<SimComponent, Object> l) {
 		if (machListenerSpecific == null)
@@ -478,12 +466,10 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	}
 
 	/**
-	 * Returns an array of all listeners registered for a given machine
-	 * registered before using
-	 * {@code #addMachineListener(String, NotifierListener)}.
+	 * Returns an array of all listeners registered for a given machine registered
+	 * before using {@code #addMachineListener(String, NotifierListener)}.
 	 * 
-	 * @param name
-	 *            The workstation's name.
+	 * @param name The workstation's name.
 	 * @return An array of all listeners for the given machine name.
 	 */
 	public NotifierListener<SimComponent, Object>[] getMachineListenerSpecific(String name) {

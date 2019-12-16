@@ -151,7 +151,7 @@ public class MimacExperiment extends ShopExperiment {
 	}
 
 	@Override
-	public MimacExperiment clone() throws CloneNotSupportedException {
+	public MimacExperiment clone() {
 		MimacExperiment c = (MimacExperiment) super.clone();
 
 		if (jobWeights != null)

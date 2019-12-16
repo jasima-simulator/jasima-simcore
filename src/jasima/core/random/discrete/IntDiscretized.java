@@ -63,7 +63,7 @@ public class IntDiscretized extends IntStream {
 		return (int) Math.round(v);
 	}
 
-	public IntDiscretized clone() throws CloneNotSupportedException {
+	public IntDiscretized clone() {
 		IntDiscretized c = (IntDiscretized) super.clone();
 
 		if (baseStream != null) {

@@ -57,7 +57,7 @@ import util.ExtendedJobStatCollector;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @SuppressWarnings("deprecation")
 public class TestStaticInsts {
@@ -111,8 +111,8 @@ public class TestStaticInsts {
 		StaticShopExperiment shopExperiment = new StaticShopExperiment();
 		shopExperiment.setInstFileName(f.toString());
 		shopExperiment.setEnableLookAhead(true);
-		shopExperiment.setSequencingRule(
-				sr.silentClone().setFinalTieBreaker(new FCFS()).setFinalTieBreaker(new TieBreakerFASFS()));
+		shopExperiment
+				.setSequencingRule(sr.clone().setFinalTieBreaker(new FCFS()).setFinalTieBreaker(new TieBreakerFASFS()));
 		shopExperiment.addShopListener(new ExtendedJobStatCollector());
 
 		return shopExperiment;

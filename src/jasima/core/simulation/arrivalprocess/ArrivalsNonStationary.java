@@ -36,7 +36,6 @@ import jasima.core.random.continuous.DblStream;
  * create non-stationary (Poisson) processes.
  * 
  * @author Torsten Hildebrandt, 2012-08-07
- * @version "$Id$"
  */
 public class ArrivalsNonStationary extends ArrivalProcess {
 
@@ -70,7 +69,7 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 	}
 
 	@Override
-	public DblStream clone() throws CloneNotSupportedException {
+	public DblStream clone() {
 		ArrivalsNonStationary c = (ArrivalsNonStationary) super.clone();
 		if (unitMeanDblStream != null)
 			c.unitMeanDblStream = unitMeanDblStream.clone();
@@ -83,8 +82,8 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 	}
 
 	/**
-	 * Sets the DblStream to use. This stream has to produce values with a mean
-	 * of 1.
+	 * Sets the DblStream to use. This stream has to produce values with a mean of
+	 * 1.
 	 * 
 	 * @param unitMeanDblStream
 	 */
