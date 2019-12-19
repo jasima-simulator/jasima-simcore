@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.util.observer;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,8 +27,7 @@ import org.junit.runners.Suite;
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.util.ArgListTokenizerTest.class, jasima.core.util.ArgListParserTest.class,
-		jasima.core.util.TypeUtilTest.class, jasima.core.util.observer.AllTests.class })
+@Suite.SuiteClasses({ ObservableValueTest.class, DerivedObservableValueTest.class })
 public class AllTests {
 
 }
