@@ -15,12 +15,15 @@ import java.util.function.Supplier;
  * {@link DerivedObservable} it allows a simple way to create reactive
  * expressions.
  * <p>
- * Instances of this class can be seen s akind of variables that can be used in
- * more complex expressions provided by {@link DerivedObservable}.
+ * Instances of this class can be seen s a kind of variables that can be used in
+ * more complex expressions provided by {@link DerivedObservable} or used
+ * directly to e.g. collect statistics or update GUI elements.
  * 
  * @author Torsten Hildebrandt
  *
  * @param <VALUE> The type of the value stored.
+ * @see DerivedObservable
+ * @see ObservableValues
  */
 public class ObservableValue<VALUE> {
 
@@ -71,6 +74,10 @@ public class ObservableValue<VALUE> {
 	 * @param newValue The new value to store. Can be {@code null}.
 	 */
 	public void set(VALUE newValue) {
+		internalSet(newValue);
+	}
+
+	protected void internalSet(VALUE newValue) {
 		if (!Objects.equals(currentValue, newValue)) {
 			lastValue = currentValue;
 

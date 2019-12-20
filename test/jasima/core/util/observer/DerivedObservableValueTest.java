@@ -14,7 +14,7 @@ public class DerivedObservableValueTest {
 		ObservableValue<Integer> v1 = new ObservableValue<Integer>(1);
 		ObservableValue<Integer> v2 = new ObservableValue<Integer>(2);
 
-		ObservableValue<Boolean> eq = BooleanExpressions.equals(v1, v2);
+		ObservableValue<Boolean> eq = ObservableValues.equals(v1, v2);
 		assertFalse(eq.get());
 
 		v1.set(2);
@@ -26,7 +26,7 @@ public class DerivedObservableValueTest {
 		ObservableValue<Integer> v1 = new ObservableValue<Integer>(1);
 		ObservableValue<Integer> v2 = new ObservableValue<Integer>(2);
 
-		ObservableValue<Boolean> eq = BooleanExpressions.equals(v1, v2);
+		ObservableValue<Boolean> eq = ObservableValues.equals(v1, v2);
 		assertFalse(eq.get());
 
 		eq.addListener((obs, e) -> didNotify = true);
@@ -42,7 +42,7 @@ public class DerivedObservableValueTest {
 		ObservableValue<Integer> v1 = new ObservableValue<Integer>(1);
 		ObservableValue<Integer> v2 = new ObservableValue<Integer>(2);
 
-		ObservableValue<Boolean> eq = BooleanExpressions.equals(v1, v2);
+		ObservableValue<Boolean> eq = ObservableValues.equals(v1, v2);
 		assertFalse(eq.get());
 
 		v1.set(2);
@@ -64,10 +64,10 @@ public class DerivedObservableValueTest {
 		ObservableValue<Integer> v1 = new ObservableValue<Integer>(1);
 		ObservableValue<Integer> v2 = new ObservableValue<Integer>(2);
 
-		ObservableValue<Boolean> eq1 = BooleanExpressions.equals(v1, 2);
-		ObservableValue<Boolean> eq2 = BooleanExpressions.equals(v2, 1);
+		ObservableValue<Boolean> eq1 = ObservableValues.equals(v1, 2);
+		ObservableValue<Boolean> eq2 = ObservableValues.equals(v2, 1);
 
-		ObservableValue<Boolean> and1 = BooleanExpressions.and(eq1, eq2);
+		ObservableValue<Boolean> and1 = ObservableValues.and(eq1, eq2);
 
 		assertFalse(eq1.get());
 		assertFalse(eq2.get());
@@ -98,10 +98,10 @@ public class DerivedObservableValueTest {
 		ObservableValue<Integer> v1 = new ObservableValue<Integer>(1);
 		ObservableValue<Integer> v2 = new ObservableValue<Integer>(2);
 
-		ObservableValue<Boolean> eq1 = BooleanExpressions.equals(v1, 2);
-		ObservableValue<Boolean> eq2 = BooleanExpressions.equals(v2, 1);
+		ObservableValue<Boolean> eq1 = ObservableValues.equals(v1, 2);
+		ObservableValue<Boolean> eq2 = ObservableValues.equals(v2, 1);
 
-		ObservableValue<Boolean> or1 = BooleanExpressions.or(eq1, eq2);
+		ObservableValue<Boolean> or1 = ObservableValues.or(eq1, eq2);
 
 		assertFalse(eq1.get());
 		assertFalse(eq2.get());
@@ -139,8 +139,8 @@ public class DerivedObservableValueTest {
 	public void testNot() {
 		ObservableValue<Integer> v1 = new ObservableValue<Integer>(1);
 
-		ObservableValue<Boolean> eq1 = BooleanExpressions.equals(v1, 2);
-		ObservableValue<Boolean> not1 = BooleanExpressions.not(eq1);
+		ObservableValue<Boolean> eq1 = ObservableValues.equals(v1, 2);
+		ObservableValue<Boolean> not1 = ObservableValues.not(eq1);
 
 		assertFalse(eq1.get());
 		assertTrue(not1.get());
