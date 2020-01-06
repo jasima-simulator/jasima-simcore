@@ -155,11 +155,21 @@ public class Simulation {
 
 	/** Public interface of event queue implementations. */
 	public static interface EventQueue {
+
 		/** Insert an event in the queue. */
 		public void insert(SimEvent e);
 
 		/** Extract the (chronologically) next event from the queue. */
 		public SimEvent extract();
+
+		/**
+		 * Removes the given element from the queue.
+		 * 
+		 * @param element the element to remove (mustn't be null)
+		 * @return {@code true} if the element was contained in the heap and
+		 *         successfully removed, {@code false} otherwise
+		 */
+		public boolean remove(SimEvent element);
 	}
 
 	public static enum SimExecState {
@@ -324,7 +334,7 @@ public class Simulation {
 					state = SimExecState.PAUSED;
 
 					if (blockWhilePaused()) {
-						return; // Simulation Threat was interrupted while paused
+						return; // Simulation Thread was interrupted while paused
 					}
 				}
 
@@ -532,6 +542,17 @@ public class Simulation {
 	 */
 	public Future<Map<String, Object>> performRunAsync() {
 		return performRunAsync(ForkJoinPool.commonPool());
+	}
+
+	/**
+	 * Removes the given event object from the event queue.
+	 * 
+	 * @param event the event to remove
+	 * @return {@code true} if the operation was present in the event queue and
+	 *         could be successfully removed, {@code false} otherwise
+	 */
+	public boolean cancel(SimEvent event) {
+		return events.remove(event);
 	}
 
 	/**

@@ -20,7 +20,8 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
-import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 import jasima.core.simulation.Simulation.EventQueue;
 
@@ -28,11 +29,9 @@ import jasima.core.simulation.Simulation.EventQueue;
  * An implementation of {@link jasima.core.simulation.Simulation.EventQueue}
  * using an array-based heap.
  * 
- * @author Torsten Hildebrandt, 2012-08-30
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
-public final class EventHeap implements EventQueue, Serializable {
-	private static final long serialVersionUID = -7578258752027946114L;
+public final class EventHeap implements EventQueue {
 
 	private SimEvent[] nodes; // the tree nodes, packed into an array
 	private int count = 0; // number of used slots
@@ -48,29 +47,12 @@ public final class EventHeap implements EventQueue, Serializable {
 	/**
 	 * Create an event heap with the given capacity.
 	 * 
-	 * @exception IllegalArgumentException
-	 *                if capacity less or equal to zero
+	 * @exception IllegalArgumentException if capacity less or equal to zero
 	 */
 	public EventHeap(int capacity) throws IllegalArgumentException {
 		if (capacity <= 0)
 			throw new IllegalArgumentException();
 		nodes = new SimEvent[capacity];
-	}
-
-	// indexes of heap parents and children
-	private final int parent(int k) {
-		return (k - 1) >>> 1;
-		// return (k - 1) / 2;
-	}
-
-	private final int left(int k) {
-		return (k << 1) + 1;
-		// return 2 * k + 1;
-	}
-
-	private final int right(int k) {
-		return (k << 1) + 2;
-		// return 2 * (k + 1);
 	}
 
 	/**
@@ -82,28 +64,18 @@ public final class EventHeap implements EventQueue, Serializable {
 			setCapacity(3 * nodes.length / 2 + 1);
 		}
 
-		final SimEvent[] nodes = this.nodes;
-
 		if (invalidRoot) {
 			// move new element to root
 			nodes[0] = x;
 			++count;
+			invalidRoot = false;
 
-			sinkRoot();
+			sink(nodes[0], 0);
 		} else {
 			// bubble up: normal heap insertion if more than one insert() in
 			// succession
-			int k = count;
+			bubbleUp(x, count);
 			++count;
-			while (k > 0) {
-				int par = parent(k);
-				if (x.compareTo(nodes[par]) < 0) {
-					nodes[k] = nodes[par];
-					k = par;
-				} else
-					break;
-			}
-			nodes[k] = x;
 		}
 	}
 
@@ -116,11 +88,7 @@ public final class EventHeap implements EventQueue, Serializable {
 
 		// extract() called more than once in succession?
 		if (invalidRoot) {
-			// move largest element to root
-			nodes[0] = nodes[count];
-			nodes[count] = null;
-
-			sinkRoot();
+			fixRootNode();
 		}
 
 		SimEvent least = nodes[0];
@@ -133,13 +101,109 @@ public final class EventHeap implements EventQueue, Serializable {
 		return least;
 	}
 
-	private void sinkRoot() {
-		final int count = this.count;
-		final SimEvent[] nodes = this.nodes;
+	private void fixRootNode() {
+		// move last element to root
+		nodes[0] = nodes[count];
+		nodes[count] = null;
 		invalidRoot = false;
 
-		int k = 0;
-		SimEvent x = nodes[k];
+		sink(nodes[0], 0);
+	}
+
+	/**
+	 * Scans the underlying array if it contains the given element. This methods
+	 * requires O(n) time and compares object references for equality, not using
+	 * {@code equals()}.
+	 * 
+	 * @param element the element to look for.
+	 * @return the index of the element in the underlying array
+	 */
+	public int indexOf(SimEvent element) {
+		Objects.requireNonNull(element);
+		if (invalidRoot) {
+			fixRootNode();
+		}
+
+		for (int i = 0; i < count; i++) {
+			if (nodes[i] == element) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Removes an element from this heap. Required O(n) time to find the position of
+	 * {@code element} in the underlying array.
+	 * 
+	 * @param element the element to remove
+	 * @return {@code true} if the element was contained in the heap and
+	 *         successfully removed, {@code false} otherwise
+	 */
+	public boolean remove(SimEvent element) {
+		int idx = indexOf(element);
+		if (idx < 0) {
+			return false;
+		}
+
+		nodes[idx] = null;
+
+		SimEvent e = nodes[count - 1];
+		nodes[count - 1] = null;
+
+		count--;
+
+		// restore heap condition
+		if (e != null) {
+			if (bubbleUp(e, idx) == idx) {
+				sink(e, idx);
+			}
+		}
+
+		return true;
+	}
+
+	/** remove all elements * */
+	public void clear() {
+		Arrays.fill(nodes, 0, count, null);
+		count = 0;
+		invalidRoot = false;
+	}
+
+	/** Return number of elements * */
+	public int size() {
+		return count;
+	}
+
+	private void setCapacity(int newCap) {
+		if (newCap < count) {
+			throw new IllegalArgumentException("Capacity has to be larger than count.");
+		}
+		SimEvent[] newnodes = new SimEvent[newCap];
+		System.arraycopy(nodes, 0, newnodes, 0, count);
+		nodes = newnodes;
+	}
+
+	private int bubbleUp(SimEvent x, int k) {
+		final SimEvent[] nodes = this.nodes;
+
+		while (k > 0) {
+			int par = parent(k);
+			if (x.compareTo(nodes[par]) < 0) {
+				nodes[k] = nodes[par];
+				k = par;
+			} else
+				break;
+		}
+		nodes[k] = x;
+		return k;
+	}
+
+	private int sink(SimEvent x, int k) {
+		final SimEvent[] nodes = this.nodes;
+		final int count = this.count;
+
 		int l;
 		while ((l = left(k)) < count) {
 			int r = right(k);
@@ -151,36 +215,23 @@ public final class EventHeap implements EventQueue, Serializable {
 				break;
 		}
 		nodes[k] = x;
+		return k;
 	}
 
-	/** Return least element without removing it, or null if empty * */
-	public SimEvent peek() {
-		if (count > 0)
-			return nodes[0];
-		else
-			return null;
+	// indexes of heap parents and children
+	private static final int parent(int k) {
+		return (k - 1) >>> 1;
+		// return (k - 1) / 2;
 	}
 
-	/** Return number of elements * */
-	public int size() {
-		return count;
+	private static final int left(int k) {
+		return (k << 1) + 1;
+		// return 2 * k + 1;
 	}
 
-	/** remove all elements * */
-	public void clear() {
-		for (int i = 0; i < count; ++i)
-			nodes[i] = null;
-		count = 0;
-	}
-
-	public int capacity() {
-		return nodes.length;
-	}
-
-	public void setCapacity(int newCap) {
-		SimEvent[] newnodes = new SimEvent[newCap];
-		System.arraycopy(nodes, 0, newnodes, 0, count);
-		nodes = newnodes;
+	private static final int right(int k) {
+		return (k << 1) + 2;
+		// return 2 * (k + 1);
 	}
 
 }
