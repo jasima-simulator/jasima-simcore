@@ -54,13 +54,6 @@ import util.ExtendedJobStatCollector;
 @SuppressWarnings("deprecation")
 public class TestBestOfFamilyBatching {
 
-	@Before
-	public void setUp() {
-		System.out.println("setting up");
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
-		RandomFactory.reloadSysProps();
-	}
-
 	public static MimacExperiment createBaseExperiment() {
 		MimacExperiment e = new MimacExperiment();
 		e.setScenario(DataSet.FAB4r);

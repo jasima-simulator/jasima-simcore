@@ -61,12 +61,6 @@ public class TestForAllResults extends ExperimentTest {
 
 	private static final boolean SAVE_ACTUAL = false;
 
-	@BeforeClass
-	public static void setUp() {
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
-		RandomFactory.reloadSysProps();
-	}
-
 	@Test
 	public void holthausResultsShouldBeReproducible() {
 		DynamicShopExperiment e = new DynamicShopExperiment();

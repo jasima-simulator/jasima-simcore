@@ -46,12 +46,6 @@ import util.FileChecker;
  */
 public class TestDetailedTraces extends ExperimentTest {
 
-	@BeforeClass
-	public static void setUp() {
-		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
-		RandomFactory.reloadSysProps();
-	}
-
 	@Test
 	public void holthausResultsShouldBeReproducible() {
 		DynamicShopExperiment e = new DynamicShopExperiment();
