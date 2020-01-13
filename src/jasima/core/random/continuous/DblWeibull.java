@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * This class implements a number stream of real values following a
@@ -33,7 +33,6 @@ import jasima.core.util.Util;
  * parameter and a scale parameter.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull
  *      distribution (Wikipedia)</a>
@@ -63,7 +62,7 @@ public class DblWeibull extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblWeibull(shape=%f;scale=%f)", getShape(), getScale());
+		return defFormat("DblWeibull(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getShape() {
@@ -73,10 +72,9 @@ public class DblWeibull extends DblDistribution {
 	/**
 	 * Sets the shape parameter for this distribution.
 	 * 
-	 * @param shape
-	 *            The shape parameter to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If the parameter value was {@code <=0.0}.
+	 * @param shape The shape parameter to use.
+	 * @throws NotStrictlyPositiveException If the parameter value was
+	 *                                      {@code <=0.0}.
 	 */
 	public void setShape(double shape) throws NotStrictlyPositiveException {
 		setDistribution(new WeibullDistribution(shape, dist.getScale()));
@@ -89,10 +87,9 @@ public class DblWeibull extends DblDistribution {
 	/**
 	 * Sets the scale parameter for this distribution.
 	 * 
-	 * @param scale
-	 *            The scale parameter to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If the parameter value was {@code <=0.0}.
+	 * @param scale The scale parameter to use.
+	 * @throws NotStrictlyPositiveException If the parameter value was
+	 *                                      {@code <=0.0}.
 	 */
 	public void setScale(double scale) {
 		setDistribution(new WeibullDistribution(dist.getShape(), scale));

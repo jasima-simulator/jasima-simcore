@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * Implements a stream of numbers following a
@@ -34,7 +34,6 @@ import jasima.core.util.Util;
  * {@link DblGamma Gamma distribution}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-
  *      squared distribution (Wikipedia)</a>
@@ -58,7 +57,7 @@ public class DblChiSquared extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblChiSquared(degreesOfFreedom=%d)", getDegreesOfFreedom());
+		return defFormat("DblChiSquared(degreesOfFreedom=%d)", getDegreesOfFreedom());
 	}
 
 	@Override
@@ -74,10 +73,9 @@ public class DblChiSquared extends DblDistribution {
 	/**
 	 * Sets the degrees of freedom for this distribution.
 	 * 
-	 * @param degreesOfFreedom
-	 *            The degrees of freedom to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If the parameter value was {@code <=0.0}.
+	 * @param degreesOfFreedom The degrees of freedom to use.
+	 * @throws NotStrictlyPositiveException If the parameter value was
+	 *                                      {@code <=0.0}.
 	 */
 	public void setDegreesOfFreedom(int degreesOfFreedom) throws NotStrictlyPositiveException {
 		setDistribution(new ChiSquaredDistribution(degreesOfFreedom));

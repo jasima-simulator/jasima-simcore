@@ -23,9 +23,8 @@ package jasima.core.util.converter;
 import java.util.HashMap;
 
 import jasima.core.random.continuous.DblStream;
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.TokenType;
-import jasima.core.util.Util;
+import jasima.core.util.converter.ArgListTokenizer.TokenType;
+import jasima.core.util.i18n.I18n;
 
 public class TypeConverterDblStream extends TypeToStringConverter {
 
@@ -52,7 +51,7 @@ public class TypeConverterDblStream extends TypeToStringConverter {
 			String[] packageSearchPath) throws ClassCastException {
 		tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.STRING);
 
-		String prefix = tk.currTokenText().trim().toLowerCase(Util.DEF_LOCALE);
+		String prefix = tk.currTokenText().trim().toLowerCase(I18n.DEF_LOCALE);
 		StreamFactory fact = lookupFactory(prefix);
 
 		DblStream stream = fact.stringToStream(tk);

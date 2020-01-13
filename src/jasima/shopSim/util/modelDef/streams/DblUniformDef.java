@@ -25,6 +25,7 @@ import java.util.List;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.continuous.DblUniformRange;
 import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 
 public class DblUniformDef extends DblStreamDef {
 
@@ -47,12 +48,12 @@ public class DblUniformDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
+				errors.add(I18n.defFormat("invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 2) {
-				errors.add(String.format(Util.DEF_LOCALE,
-						"invalid number of parameters (2 required, min and max value): '%s'", params));
+				errors.add(
+						I18n.defFormat("invalid number of parameters (2 required, min and max value): '%s'", params));
 				return null;
 			}
 			DblUniformDef res = new DblUniformDef();
@@ -86,7 +87,7 @@ public class DblUniformDef extends DblStreamDef {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "%s(%s,%s)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
+		return I18n.defFormat("%s(%s,%s)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
 	}
 
 	@Override

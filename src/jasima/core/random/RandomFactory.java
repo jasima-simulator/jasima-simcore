@@ -20,9 +20,11 @@
  *******************************************************************************/
 package jasima.core.random;
 
+import static jasima.core.util.TypeUtil.getClassFromSystemProperty;
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Random;
 
 import jasima.core.experiment.Experiment;
@@ -30,7 +32,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.Simulation;
 import jasima.core.util.MersenneTwister;
 import jasima.core.util.MsgCategory;
-import jasima.core.util.Util;
+import jasima.core.util.TypeUtil;
 
 /**
  * This class provides functionality to create (independent) random number
@@ -54,7 +56,12 @@ public class RandomFactory implements Serializable {
 	private static final long serialVersionUID = 4828925858942593527L;
 
 	public static final String RANDOM_FACTORY_PROP_KEY = RandomFactory.class.getName();
-	public static final String DEFAULT_FACTORY = RandomFactory.class.getName();
+	public static Class<? extends RandomFactory> randomFactoryClass = getClassFromSystemProperty(
+			RANDOM_FACTORY_PROP_KEY, RandomFactory.class, RandomFactory.class);
+
+	public static final String RANDOM_CLASS_PROP_KEY = RandomFactory.class.getName() + ".randomClass";
+	public static Class<? extends Random> randomClass = getClassFromSystemProperty(RANDOM_CLASS_PROP_KEY, Random.class,
+			MersenneTwister.class);
 
 	/**
 	 * Factory method to create a new instance of {@code RandomFactory}. The default
@@ -65,40 +72,22 @@ public class RandomFactory implements Serializable {
 	 * @return A new {@code RandomFactory} instance.
 	 */
 	public static RandomFactory newInstance() {
-		String factName = System.getProperty(RANDOM_FACTORY_PROP_KEY, DEFAULT_FACTORY);
-		try {
-			Class<?> factClass = Class.forName(factName);
-			RandomFactory f = (RandomFactory) factClass.newInstance();
-			f.setSeed(Experiment.DEFAULT_SEED);
-			return f;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		RandomFactory f = TypeUtil.createInstance(randomFactoryClass);
+		f.setSeed(Experiment.DEFAULT_SEED);
+		return f;
 	}
-
-	public static final String RANDOM_CLASS_PROP_KEY = RandomFactory.class.getName() + ".randomClass";
-	public static final String DEFAULT_RANDOM_CLASS = MersenneTwister.class.getName();
 
 	private HashMap<Long, String> seeds = new HashMap<Long, String>();
 	private Random seedStream = new Random();
 	private long hashMask = 5787905968364136369L;
-	private Class<?> randomClass;
 	private Simulation sim;
 
 	/**
-	 * This constructor is usually not used directly, use static method
+	 * This constructor is usually not called directly, use static method
 	 * {@link #newInstance()} instead.
 	 */
 	public RandomFactory() {
 		super();
-
-		// which Random implementation to use?
-		String rndClassName = System.getProperty(RANDOM_CLASS_PROP_KEY, DEFAULT_RANDOM_CLASS);
-		try {
-			randomClass = Class.forName(rndClassName);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -114,7 +103,7 @@ public class RandomFactory implements Serializable {
 		long seed = getSeed(name);
 		if (getSim() != null) {
 			getSim().print(MsgCategory.DEBUG,
-					String.format(Util.DEF_LOCALE, "created random stream '%s' with initial seed %d.", name, seed));
+					defFormat("created random stream '%s' with initial seed %d.", name, seed));
 			if (getSim().isTraceEnabled()) {
 				getSim().trace("create_random_stream", name, seed);
 			}
@@ -132,13 +121,9 @@ public class RandomFactory implements Serializable {
 	 * @return A new {@link Random} instance initialized with the given seed.
 	 */
 	protected Random createRandom(long seed) {
-		try {
-			Random o = (Random) randomClass.newInstance();
-			o.setSeed(seed);
-			return o;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		Random o = TypeUtil.createInstance(randomClass);
+		o.setSeed(seed);
+		return o;
 	}
 
 	/**
@@ -160,7 +145,7 @@ public class RandomFactory implements Serializable {
 				throw new IllegalArgumentException("Already created stream '" + name + "', please use unique names.");
 
 			if (getSim() != null)
-				getSim().print(MsgCategory.WARN, String.format(Util.DEF_LOCALE,
+				getSim().print(MsgCategory.WARN, defFormat(
 						"Collision for random streams named '%s' and '%s'. If possible use different stream names to avoid problems with comparability/reproducability of results.",
 						name, s));
 
@@ -220,7 +205,6 @@ public class RandomFactory implements Serializable {
 	 * @return The stream with random number generator initialized.
 	 */
 	public DblStream initRndGen(DblStream stream) {
-		Objects.requireNonNull(stream.getName());
 		return initRndGen(stream, null);
 	}
 
@@ -234,4 +218,12 @@ public class RandomFactory implements Serializable {
 	public void setSim(Simulation sim) {
 		this.sim = sim;
 	}
+
+	/** Used during tests to change implementation classes while JVM is running. */
+	public static void reloadSysProps() {
+		randomFactoryClass = getClassFromSystemProperty(RANDOM_FACTORY_PROP_KEY, RandomFactory.class,
+				RandomFactory.class);
+		randomClass = getClassFromSystemProperty(RANDOM_CLASS_PROP_KEY, Random.class, MersenneTwister.class);
+	}
+
 }

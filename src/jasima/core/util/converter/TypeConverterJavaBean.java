@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -28,13 +30,12 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.XStreamException;
 
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.TokenType;
 import jasima.core.util.FileFormat;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.TypeUtil.TypeConversionException;
-import jasima.core.util.Util;
 import jasima.core.util.XmlUtil;
+import jasima.core.util.converter.ArgListTokenizer.TokenType;
+import jasima.core.util.i18n.I18n;
 
 public class TypeConverterJavaBean extends TypeToStringConverter {
 
@@ -93,10 +94,8 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 		} catch (ReflectiveOperationException | FileReadException | NoTypeFoundException e) {
 			// this can only happen for the top level object, otherwise it
 			// is already caught and wrapped in a TypeConversionException
-			throw new TypeConversionException(
-					String.format(Util.DEF_LOCALE, "Can't create object for value '%s' (property path: '%s'): %s",
-							className, context, exceptionMessage(e)),
-					e);
+			throw new TypeConversionException(defFormat("Can't create object for value '%s' (property path: '%s'): %s",
+					className, context, exceptionMessage(e)), e);
 		}
 
 		// read and set parameters of complex objects (optional parameter
@@ -115,11 +114,11 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 				tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.EQUALS);
 
 				// find property type
-				PropertyDescriptor prop = beanProps.get(propName.toLowerCase(Util.DEF_LOCALE));
-				if (prop == null)
-					throw new RuntimeException(
-							String.format(Util.DEF_LOCALE, "Can't find property '%s' in type '%s', property path: '%s'",
-									propName, root.getClass().getName(), context));
+				PropertyDescriptor prop = beanProps.get(propName.toLowerCase(I18n.DEF_LOCALE));
+				if (prop == null) {
+					throw new RuntimeException(defFormat("Can't find property '%s' in type '%s', property path: '%s'",
+							propName, root.getClass().getName(), context));
+				}
 
 				// read and set value
 				try {
@@ -135,9 +134,10 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 					// call setter to finally check compatibility
 					prop.getWriteMethod().invoke(root, value);
 				} catch (ReflectiveOperationException | TypeConversionException e1) {
-					throw new TypeConversionException(String.format(Util.DEF_LOCALE,
-							"Can't set property '%s' in type %s (property path: '%s'): %s", propName,
-							root.getClass().getName(), context, exceptionMessage(e1)), e1);
+					throw new TypeConversionException(
+							defFormat("Can't set property '%s' in type %s (property path: '%s'): %s", propName,
+									root.getClass().getName(), context, exceptionMessage(e1)),
+							e1);
 				}
 
 				// more parameters?
@@ -160,21 +160,16 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	/**
 	 * Converts an object given as a String to the original type. This tries to
 	 * convert primitive types (like numbers) first. If this is not successful,
-	 * {@code asString} is interpreted as a class name and loading the
-	 * appropriate class is attempted (potentially prefixed with entries in
+	 * {@code asString} is interpreted as a class name and loading the appropriate
+	 * class is attempted (potentially prefixed with entries in
 	 * {@code packageSearchPath}). If conversion is still not successful, then
 	 * loading an xml file with the name {@code asString} is attempted.
 	 * 
-	 * @param asString
-	 *            String representation of an object.
-	 * @param requiredType
-	 *            The desired target type.
-	 * @param l
-	 *            The class loader to use.
-	 * @param packageSearchPath
-	 *            A package search path.
-	 * @param <T>
-	 *            Type of returned object.
+	 * @param asString          String representation of an object.
+	 * @param requiredType      The desired target type.
+	 * @param l                 The class loader to use.
+	 * @param packageSearchPath A package search path.
+	 * @param <T>               Type of returned object.
 	 * @return The object converted/compatible with {@code requiredType}.
 	 */
 	private static <T> T loadClassOrXml(String asString, Class<T> requiredType, ClassLoader l,
@@ -199,8 +194,7 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 		}
 
 		// give up
-		throw new NoTypeFoundException(
-				String.format(Util.DEF_LOCALE, "Can't load/convert '%s', required type: %s", asString, requiredType));
+		throw new NoTypeFoundException(defFormat("Can't load/convert '%s', required type: %s", asString, requiredType));
 	}
 
 	/**
@@ -208,11 +202,11 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	 * {@code className} is not found, it is searched for in the package search
 	 * path.
 	 * <p>
-	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"}
-	 * and the package search path {@code searchPath} contains an entry
+	 * If, e.g., {@code className} is {@code "MultipleReplicationExperiment"} and
+	 * the package search path {@code searchPath} contains an entry
 	 * {@code "jasima.core.experiment"} , then the class
-	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be
-	 * looked up and instantiated.
+	 * {@code jasima.core.experiment.MultipleReplicationExperiment} will be looked
+	 * up and instantiated.
 	 * </p>
 	 * <p>
 	 * If no matching class could be found, {@code null} will be returned.
@@ -248,8 +242,8 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	}
 
 	/**
-	 * Attempts to load an object from a xml-file {@code fileName}. If such a
-	 * file does not exist or is not readable, {@code null} will be returned.
+	 * Attempts to load an object from a xml-file {@code fileName}. If such a file
+	 * does not exist or is not readable, {@code null} will be returned.
 	 * 
 	 * @see XmlUtil#loadXML(File)
 	 */
@@ -298,13 +292,12 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 	public static String exceptionMessage(Throwable t) {
 		String msg = t.getMessage();
 		if (t instanceof InvocationTargetException) {
-			msg = String.format(Util.DEF_LOCALE, "Error invoking method or constructor: %s", t.getCause().toString());
+			msg = defFormat("Error invoking method or constructor: %s", t.getCause().toString());
 		} else if (t instanceof NoSuchMethodException) {
-			msg = String.format(Util.DEF_LOCALE, "Method or constructor not found: %s", t.getMessage());
+			msg = defFormat("Method or constructor not found: %s", t.getMessage());
 		} else if (t instanceof FileReadException) {
 			FileReadException e = (FileReadException) t;
-			msg = String.format(Util.DEF_LOCALE, "Error reading file '%s': %s", e.getFileName(),
-					e.getCause().getMessage());
+			msg = defFormat("Error reading file '%s': %s", e.getFileName(), e.getCause().getMessage());
 		}
 		return msg;
 	}

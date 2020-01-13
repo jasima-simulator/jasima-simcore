@@ -26,9 +26,8 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 import jasima.core.random.continuous.DblDistribution;
 import jasima.core.random.continuous.DblStream;
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.TokenType;
 import jasima.core.util.Util;
+import jasima.core.util.converter.ArgListTokenizer.TokenType;
 import jasima.core.util.converter.TypeConverterDblStream.StreamFactory;
 
 public class DblDistributionFactory implements StreamFactory {

@@ -18,7 +18,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.util.converter;
+
+import static jasima.core.util.i18n.I18n.defFormat;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -30,7 +32,6 @@ import java.util.Objects;
  * ";", "=".
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class ArgListTokenizer {
 
@@ -42,8 +43,8 @@ public class ArgListTokenizer {
 	};
 
 	/**
-	 * A {@code ParseException} is thrown if there were problems splitting the
-	 * input string into tokens.
+	 * A {@code ParseException} is thrown if there were problems splitting the input
+	 * string into tokens.
 	 */
 	public static class ParseException extends RuntimeException {
 
@@ -64,7 +65,7 @@ public class ArgListTokenizer {
 
 		@Override
 		public String getMessage() {
-			return String.format(Util.DEF_LOCALE, "Parse error at or before position %d: " + msg, msgParams);
+			return defFormat("Parse error at or before position %d: " + msg, msgParams);
 		}
 	}
 
@@ -109,9 +110,9 @@ public class ArgListTokenizer {
 
 	/**
 	 * Returns the next token in the input String. This is on of the values of
-	 * {@link TokenType}, or {@code null}, if the end of the input was reached.
-	 * This method can throw the unchecked {@link ParseException}, if there was
-	 * a problem splitting the input string in tokens.
+	 * {@link TokenType}, or {@code null}, if the end of the input was reached. This
+	 * method can throw the unchecked {@link ParseException}, if there was a problem
+	 * splitting the input string in tokens.
 	 * 
 	 * @return The current token's type.
 	 */
@@ -305,10 +306,10 @@ public class ArgListTokenizer {
 	}
 
 	/**
-	 * Resets the current reading position back to beginning of the current
-	 * token, so {@link #nextToken()} will see the same token again. This is
-	 * useful, if a parser detects a token he can't handle but has to pass back
-	 * to a parent parser for proper processing.
+	 * Resets the current reading position back to beginning of the current token,
+	 * so {@link #nextToken()} will see the same token again. This is useful, if a
+	 * parser detects a token he can't handle but has to pass back to a parent
+	 * parser for proper processing.
 	 */
 	public void pushBackToken() {
 		if (currPos == tokenStart)
@@ -319,8 +320,7 @@ public class ArgListTokenizer {
 	/**
 	 * Sets the input string to work on.
 	 * 
-	 * @param input
-	 *            The input string.
+	 * @param input The input string.
 	 */
 	public void setInput(String input) {
 		this.input = Objects.requireNonNull(input);
@@ -328,15 +328,12 @@ public class ArgListTokenizer {
 
 	/**
 	 * Checks whether the actual token's type matches a certain set of expected
-	 * types. If the types do not match, then a {@link ParseException} is
-	 * raised.
+	 * types. If the types do not match, then a {@link ParseException} is raised.
 	 * 
-	 * @param actual
-	 *            The current token's type.
-	 * @param expected
-	 *            All token types that are currently valid.
-	 * @throws ParseException
-	 *             If {@code actual} if not contained in {@code expected}.
+	 * @param actual   The current token's type.
+	 * @param expected All token types that are currently valid.
+	 * @throws ParseException If {@code actual} if not contained in
+	 *                        {@code expected}.
 	 */
 	public void assureTokenTypes(TokenType actual, TokenType... expected) throws ParseException {
 		for (TokenType e : expected) {

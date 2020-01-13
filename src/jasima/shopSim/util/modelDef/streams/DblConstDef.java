@@ -26,6 +26,7 @@ import java.util.List;
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 
 public class DblConstDef extends DblStreamDef {
 
@@ -46,7 +47,7 @@ public class DblConstDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
+				errors.add(I18n.defFormat("invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 
@@ -81,7 +82,7 @@ public class DblConstDef extends DblStreamDef {
 	@Override
 	public String toString() {
 		String s = Arrays.toString(getValues()).replace("[", "").replace("]", "");
-		return String.format(Util.DEF_LOCALE, "%s(%s)", FACTORY.getTypeString(), s);
+		return I18n.defFormat("%s(%s)", FACTORY.getTypeString(), s);
 	}
 
 	@Override

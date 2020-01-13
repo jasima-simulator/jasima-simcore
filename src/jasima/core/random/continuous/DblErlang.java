@@ -1,5 +1,7 @@
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.Random;
 
 import jasima.core.util.Pair;
@@ -84,6 +86,11 @@ public class DblErlang extends DblStream {
 			throw new IllegalArgumentException();
 
 		this.scale = scale;
+	}
+
+	@Override
+	public String toString() {
+		return defFormat("DblErlang(sape=%d;scale=%f)", getShape(), getScale());
 	}
 
 }

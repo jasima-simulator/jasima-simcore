@@ -20,8 +20,9 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import jasima.core.util.Pair;
-import jasima.core.util.Util;
 
 /**
  * Takes a version of a base stream, where minimum and maximum values are fixed.
@@ -44,7 +45,6 @@ import jasima.core.util.Util;
  * accessed 2015-05-06).
  * 
  * @author Torsten Hildebrandt
- * @since 1.3
  */
 public class DblTruncatedSimple extends DblStream {
 
@@ -114,8 +114,8 @@ public class DblTruncatedSimple extends DblStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblTruncatedSimple(baseStream=%s;minValue=%f;maxValue=%f)",
-				getBaseStream(), getMinValue(), getMaxValue());
+		return defFormat("DblTruncatedSimple(baseStream=%s;minValue=%f;maxValue=%f)", getBaseStream(), getMinValue(),
+				getMaxValue());
 	}
 
 	// ******************* getters / setters below **********************

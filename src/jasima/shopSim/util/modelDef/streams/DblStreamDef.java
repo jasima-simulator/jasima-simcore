@@ -20,13 +20,14 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import jasima.core.random.continuous.DblStream;
-import jasima.core.util.Util;
 import jasima.shopSim.util.modelDef.PropertySupport;
 
 public abstract class DblStreamDef extends PropertySupport {
@@ -65,7 +66,7 @@ public abstract class DblStreamDef extends PropertySupport {
 
 		StreamDefFact fact = streamFactoryReg.get(type);
 		if (fact == null) {
-			errors.add(String.format(Util.DEF_LOCALE, "Invalid stream type '%s'. Supported types are: '%s'.", type,
+			errors.add(defFormat("Invalid stream type '%s'. Supported types are: '%s'.", type,
 					streamFactoryReg.keySet().toString().replaceAll("[\\[\\]]", "")));
 			return null;
 		}

@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -33,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -53,20 +54,15 @@ public class Util {
 	public static final String VERSION = getVersion();
 
 	/**
-	 * Default VERSION used when no version information is available from
-	 * package (e.g., during a run from within Eclipse).
+	 * Default VERSION used when no version information is available from package
+	 * (e.g., during a run from within Eclipse).
 	 */
-	public static final String DEFAULT_VERSION = "1.4.0-DEV";
+	public static final String DEFAULT_VERSION = "3.0.0-SNAPSHOT";
 
 	/**
 	 * Descriptive String showing name, current version and project URL.
 	 */
-	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.googlecode.com/";
-
-	/**
-	 * The default locale used, e.g., to format strings.
-	 */
-	public static Locale DEF_LOCALE = Locale.US;
+	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.net/";
 
 	/**
 	 * Class search path containing all packaged in jasima-main.
@@ -103,8 +99,7 @@ public class Util {
 	/**
 	 * Converts an exception's stack trace to a single line string.
 	 * 
-	 * @param t
-	 *            The {@link Throwable} to convert to a String.
+	 * @param t The {@link Throwable} to convert to a String.
 	 * @return A String representation of {@code t}.
 	 */
 	public static String exceptionToString(Throwable t) {
@@ -117,16 +112,12 @@ public class Util {
 	}
 
 	/**
-	 * Returns a new array with a certain number of new objects of a certain
-	 * type.
+	 * Returns a new array with a certain number of new objects of a certain type.
 	 * 
-	 * @param numElements
-	 *            Number of elements in the result array.
-	 * @param componentType
-	 *            Class of the array elements.
+	 * @param numElements   Number of elements in the result array.
+	 * @param componentType Class of the array elements.
 	 * @return The new array with all elements initialized with new objects.
-	 * @param <T>
-	 *            The component type.
+	 * @param <T> The component type.
 	 */
 	public static <T> T[] initializedArray(int numElements, Class<T> componentType) {
 		try {
@@ -142,19 +133,16 @@ public class Util {
 	}
 
 	/**
-	 * Generic method to remove the first occurrence of an element from an
-	 * array. A new array without the given element is returned (or the old
-	 * array if element was not found).
+	 * Generic method to remove the first occurrence of an element from an array. A
+	 * new array without the given element is returned (or the old array if element
+	 * was not found).
 	 * 
-	 * @param a
-	 *            The array to work with.
-	 * @param elementToRemove
-	 *            The element to remove from {@code a}.
+	 * @param a               The array to work with.
+	 * @param elementToRemove The element to remove from {@code a}.
 	 * @return The array {@code a} with the first occurrence of
-	 *         {@code elementToRemove} removed. If no such element cound be
-	 *         found, {@code a} is returned unchanged.
-	 * @param <T>
-	 *            Type of the array components.
+	 *         {@code elementToRemove} removed. If no such element cound be found,
+	 *         {@code a} is returned unchanged.
+	 * @param <T> Type of the array components.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] removeFromArray(T[] a, T elementToRemove) {
@@ -240,8 +228,7 @@ public class Util {
 
 	/**
 	 * 
-	 * @return An array containing all entries of "ss" not starting with
-	 *         "prefix".
+	 * @return An array containing all entries of "ss" not starting with "prefix".
 	 */
 	public static String[] filter(String[] ss, String prefix) {
 		ArrayList<String> list = new ArrayList<String>(Arrays.asList(ss));
@@ -476,10 +463,8 @@ public class Util {
 	/**
 	 * Randomly permute the given double array.
 	 * 
-	 * @param arr
-	 *            The array to shuffle.
-	 * @param rnd
-	 *            The randomness source to use.
+	 * @param arr The array to shuffle.
+	 * @param rnd The randomness source to use.
 	 */
 	public static void shuffle(double[] arr, Random rnd) {
 		// Shuffle array
@@ -495,10 +480,8 @@ public class Util {
 	/**
 	 * Randomly permute the given int array.
 	 * 
-	 * @param arr
-	 *            The array to shuffle.
-	 * @param rnd
-	 *            The randomness source to use.
+	 * @param arr The array to shuffle.
+	 * @param rnd The randomness source to use.
 	 */
 	public static void shuffle(int[] arr, Random rnd) {
 		// Shuffle array
@@ -516,10 +499,8 @@ public class Util {
 	 * {@code decimals} can be positive or negative.
 	 * 
 	 * @see #round(double[], int)
-	 * @param val
-	 *            The value to round.
-	 * @param decimals
-	 *            The number of decimals to round to.
+	 * @param val      The value to round.
+	 * @param decimals The number of decimals to round to.
 	 * @return The rounded values.
 	 */
 	public static double round(final double val, final int decimals) {
@@ -550,10 +531,8 @@ public class Util {
 	 * @return the parameter {@code vs} to allow easy chaining of method calls.
 	 * 
 	 * @see #round(double, int)
-	 * @param vs
-	 *            An array of doubles to round.
-	 * @param decimals
-	 *            The number of decimals to round the values.
+	 * @param vs       An array of doubles to round.
+	 * @param decimals The number of decimals to round the values.
 	 * @return An array with rounded values.
 	 */
 	public static double[] round(final double[] vs, final int decimals) {
@@ -567,11 +546,9 @@ public class Util {
 	 * Converts an array (either Object[] or of a primitive type) to a String
 	 * containing it's elements in square brackets.
 	 * 
-	 * @param arbitraryArray
-	 *            The array to convert to a String.
+	 * @param arbitraryArray The array to convert to a String.
 	 * @return A String representation of the array {@code arbitraryArray}.
-	 * @throws IllegalArgumentException
-	 *             If {@code arbitraryArray} if not an array.
+	 * @throws IllegalArgumentException If {@code arbitraryArray} if not an array.
 	 */
 	public static String arrayToString(Object arbitraryArray) throws IllegalArgumentException {
 		Class<?> compType = arbitraryArray.getClass().getComponentType();
@@ -602,15 +579,12 @@ public class Util {
 	}
 
 	/**
-	 * Convenience method to put mean, max and variance of a ValueStat object in
-	 * a result map.
+	 * Convenience method to put mean, max and variance of a ValueStat object in a
+	 * result map.
 	 * 
-	 * @param vs
-	 *            the statistic
-	 * @param prefix
-	 *            name prefix
-	 * @param res
-	 *            result map where keys should be added
+	 * @param vs     the statistic
+	 * @param prefix name prefix
+	 * @param res    result map where keys should be added
 	 */
 	public static void putMeanMaxVar(SummaryStat vs, String prefix, Map<String, Object> res) {
 		res.put(prefix + "Mean", vs);
@@ -644,7 +618,7 @@ public class Util {
 		String javaVmName = System.getProperty("java.vm.name");
 		// String javaRuntimeName = System.getProperty("java.runtime.name");
 
-		return String.format(DEF_LOCALE, "java: v%s, %s (%s)", javaVersion, javaVmName, javaVendor);
+		return defFormat("java: v%s, %s (%s)", javaVersion, javaVmName, javaVendor);
 	}
 
 	/**
@@ -658,7 +632,7 @@ public class Util {
 		String osArch = System.getProperty("os.arch");
 		String osVersion = System.getProperty("os.version");
 
-		return String.format(DEF_LOCALE, "OS: %s (%s, v%s)", osName, osArch, osVersion);
+		return defFormat("OS: %s (%s, v%s)", osName, osArch, osVersion);
 	}
 
 	// prevent instantiation

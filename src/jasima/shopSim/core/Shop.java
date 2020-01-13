@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.core;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -29,7 +31,6 @@ import jasima.core.simulation.SimComponentContainer;
 import jasima.core.simulation.SimComponentContainerBase;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
-import jasima.core.util.Util;
 import jasima.core.util.observer.NotifierListener;
 
 /**
@@ -115,8 +116,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 		nextJob.setJobNum(jobsStarted++);
 
 		if (getMaxJobsInSystem() > 0 && (jobsStarted - jobsFinished) >= getMaxJobsInSystem()) {
-			getSim().print(MsgCategory.WARN,
-					String.format(Util.DEF_LOCALE, "WIP reaches %d, aborting sim.", getMaxJobsInSystem()));
+			getSim().print(MsgCategory.WARN, defFormat("WIP reaches %d, aborting sim.", getMaxJobsInSystem()));
 			getSim().end(); // abort simulation
 		}
 

@@ -27,8 +27,8 @@ import org.junit.runners.Suite;
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.util.ArgListTokenizerTest.class, jasima.core.util.ArgListParserTest.class,
-		jasima.core.util.TypeUtilTest.class, jasima.core.util.observer.AllTests.class })
+@Suite.SuiteClasses({ jasima.core.util.TypeUtilTest.class, jasima.core.util.observer.AllTests.class,
+		jasima.core.util.converter.AllTests.class })
 public class AllTests {
 
 }

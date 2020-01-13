@@ -20,6 +20,7 @@
  *******************************************************************************/
 package jasima.core.run;
 
+import static jasima.core.util.i18n.I18n.defFormat;
 import static java.lang.System.lineSeparator;
 
 import java.beans.PropertyDescriptor;
@@ -31,7 +32,7 @@ import java.util.Objects;
 import jasima.core.experiment.Experiment;
 import jasima.core.util.Pair;
 import jasima.core.util.TypeUtil;
-import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
@@ -72,11 +73,10 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 			for (PropertyDescriptor prop : beanProps) {
 				Class<?> type = prop.getPropertyType();
 
-				String description = type.isPrimitive() ? ""
-						: String.format(Util.DEF_LOCALE, "Property of type '%s'", type.getName());
+				String description = type.isPrimitive() ? "" : defFormat("Property of type '%s'", type.getName());
 				if (type.isEnum()) {
 					String enumValues = Arrays.toString(type.getEnumConstants()).replaceAll("[\\[\\]]", "");
-					description = String.format(Util.DEF_LOCALE, "Possible values: %s", enumValues);
+					description = defFormat("Possible values: %s", enumValues);
 				}
 
 				p.accepts(prop.getName(), description).withRequiredArg()
@@ -145,7 +145,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 		Experiment e;
 		if (experiment != null) {
 			e = experiment;
-		} else if (expSpec.toLowerCase(Util.DEF_LOCALE).endsWith(".xls")) {
+		} else if (expSpec.toLowerCase(I18n.DEF_LOCALE).endsWith(".xls")) {
 			// is it an Excel experiment?
 			experimentFileName = expSpec;
 			e = new ExcelExperimentReader(new File(experimentFileName), getClass().getClassLoader(), packageSearchPath)

@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.OutOfRangeException;
-
-import jasima.core.util.Util;
 
 /**
  * This class implements a discrete number stream following a
@@ -35,7 +35,6 @@ import jasima.core.util.Util;
  * 
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Binomial_distribution">Binomial
  *      distribution (Wikipedia)</a>
@@ -65,8 +64,8 @@ public class IntBinomial extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "IntBinomial(probabilityOfSuccess=%f;numTrials=%d)",
-				getProbabilityOfSuccess(), getNumTrials());
+		return defFormat("IntBinomial(probabilityOfSuccess=%f;numTrials=%d)", getProbabilityOfSuccess(),
+				getNumTrials());
 	}
 
 	public double getProbabilityOfSuccess() {
@@ -76,11 +75,9 @@ public class IntBinomial extends IntDistribution {
 	/**
 	 * Sets the probability of success in a single trial.
 	 * 
-	 * @param probOfSuccess
-	 *            The success probability.
-	 * @throws OutOfRangeException
-	 *             If the supplied probability is not in the interval
-	 *             {@code [0,1]}.
+	 * @param probOfSuccess The success probability.
+	 * @throws OutOfRangeException If the supplied probability is not in the
+	 *                             interval {@code [0,1]}.
 	 */
 	public void setProbabilityOfSuccess(double probOfSuccess) throws OutOfRangeException {
 		setDistribution(new BinomialDistribution(dist.getNumberOfTrials(), probOfSuccess));
@@ -93,10 +90,8 @@ public class IntBinomial extends IntDistribution {
 	/**
 	 * Sets the number of trails of the Bernoulli experiment.
 	 * 
-	 * @param numTrials
-	 *            The number of trials.
-	 * @throws NotPositiveException
-	 *             If the supplied value was negative.
+	 * @param numTrials The number of trials.
+	 * @throws NotPositiveException If the supplied value was negative.
 	 */
 	public void setNumTrials(int numTrials) throws NotPositiveException {
 		setDistribution(new BinomialDistribution(numTrials, dist.getProbabilityOfSuccess()));

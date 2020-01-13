@@ -20,10 +20,10 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * A class implementing a number stream with values following the
@@ -68,7 +68,7 @@ public final class DblExp extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblExp(mean=%f)", getMean());
+		return defFormat("DblExp(mean=%f)", getMean());
 	}
 
 	@Override

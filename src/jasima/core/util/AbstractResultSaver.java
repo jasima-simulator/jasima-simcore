@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -67,8 +69,8 @@ public abstract class AbstractResultSaver implements ExperimentListener {
 
 			if (index > 1000) {
 				// give up
-				throw new RuntimeException(String.format(Util.DEF_LOCALE,
-						"Cant't create new file (baseName=%s,ext=%s).", baseName, extension));
+				throw new RuntimeException(
+						defFormat("Cant't create new file (baseName=%s,ext=%s).", baseName, extension));
 			}
 		}
 

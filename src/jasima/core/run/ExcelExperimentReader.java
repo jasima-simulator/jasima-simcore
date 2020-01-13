@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.run;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleConfigurationExperiment;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.TypeUtil.TypeConversionException;
-import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 import jxl.BooleanCell;
 import jxl.Cell;
 import jxl.NumberCell;
@@ -50,7 +52,6 @@ import jxl.read.biff.BiffException;
  * 
  * @author Robin Kreis
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class ExcelExperimentReader {
 
@@ -85,8 +86,8 @@ public class ExcelExperimentReader {
 			super();
 			if (propNames.length != propValues.length)
 				throw new IllegalArgumentException(
-						String.format(Util.DEF_LOCALE, "Number of property names (%d) and values (%d) do not match.",
-								propNames.length, propValues.length));
+						defFormat("Number of property names (%d) and values (%d) do not match.", propNames.length,
+								propValues.length));
 
 			this.propNames = propNames;
 			this.propValues = propValues;
@@ -104,7 +105,7 @@ public class ExcelExperimentReader {
 				try {
 					TypeUtil.setPropertyValue(e, name, value, classLoader, packageSearchPath);
 				} catch (RuntimeException t) {
-					throw new RuntimeException(String.format(Util.DEF_LOCALE, "Problem with value in cell '%s': %s",
+					throw new RuntimeException(defFormat("Problem with value in cell '%s': %s",
 							position(sheetName, row, col + i), t.getMessage()), t);
 				}
 			}
@@ -183,13 +184,13 @@ public class ExcelExperimentReader {
 
 		while ((row = nextRowNonEmpty(jasimaSheet, row)) < jasimaSheet.getRows()) {
 			Cell c = jasimaSheet.getCell(0, row);
-			String s = String.valueOf(getCellValue(c)).trim().toLowerCase(Util.DEF_LOCALE);
+			String s = String.valueOf(getCellValue(c)).trim().toLowerCase(I18n.DEF_LOCALE);
 			if (isSectPrefix(s)) {
 				if (s.startsWith(SECT_MAIN)) {
 					if (mainExp != null) {
-						throw new RuntimeException(String.format(Util.DEF_LOCALE,
-								"There can only be one section '" + SECT_MAIN + "' (cell %s).",
-								position(jasimaSheet, c)));
+						throw new RuntimeException(
+								defFormat("There can only be one section '" + SECT_MAIN + "' (cell %s).",
+										position(jasimaSheet, c)));
 					}
 				} else if (s.startsWith(SECT_FACTORS)) {
 					row = parseFactSection(jasimaSheet, row);
@@ -217,9 +218,9 @@ public class ExcelExperimentReader {
 		Cell c = jasimaSheet.getCell(0, row);
 		String s = String.valueOf(getCellValue(c)).trim();
 		if (!"experiment".equalsIgnoreCase(s)) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE,
-					"First value in section '%s' has to be 'experiment' (found '%s' in cell '%s').", SECT_MAIN, s,
-					position(jasimaSheet, c)));
+			throw new RuntimeException(
+					defFormat("First value in section '%s' has to be 'experiment' (found '%s' in cell '%s').",
+							SECT_MAIN, s, position(jasimaSheet, c)));
 		}
 
 		c = jasimaSheet.getCell(1, row);
@@ -227,8 +228,8 @@ public class ExcelExperimentReader {
 		try {
 			mainExp = TypeUtil.convert(o, Experiment.class, "", classLoader, packageSearchPath);
 		} catch (TypeConversionException t) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE, "There is a problem with cell '%s': %s",
-					position(jasimaSheet, c), t.getMessage()));
+			throw new RuntimeException(
+					defFormat("There is a problem with cell '%s': %s", position(jasimaSheet, c), t.getMessage()));
 		}
 
 		// are there further properties to be set?
@@ -249,8 +250,8 @@ public class ExcelExperimentReader {
 			try {
 				TypeUtil.setPropertyValue(mainExp, propName, propValue, classLoader, packageSearchPath);
 			} catch (RuntimeException t) {
-				throw new RuntimeException(String.format(Util.DEF_LOCALE, "There is a problem with cell '%s': %s",
-						position(jasimaSheet, c), t.getMessage()));
+				throw new RuntimeException(
+						defFormat("There is a problem with cell '%s': %s", position(jasimaSheet, c), t.getMessage()));
 			}
 		}
 
@@ -259,7 +260,7 @@ public class ExcelExperimentReader {
 	}
 
 	private boolean isSectPrefix(String propName) {
-		propName = propName.toLowerCase(Util.DEF_LOCALE);
+		propName = propName.toLowerCase(I18n.DEF_LOCALE);
 		return propName.equals(SECT_MAIN) || propName.equals(SECT_CONFIGS) || propName.equals(SECT_FACTORS);
 	}
 

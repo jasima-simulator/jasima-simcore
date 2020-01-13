@@ -20,11 +20,12 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 
 import jasima.core.util.Pair;
-import jasima.core.util.Util;
 
 /**
  * Creates a number stream with values following a
@@ -73,7 +74,7 @@ public class DblNormal extends DblStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblNormal(mean=%f;stdev=%f)", getMean(), getStdev());
+		return defFormat("DblNormal(mean=%f;stdev=%f)", getMean(), getStdev());
 	}
 
 	public double getMean() {
@@ -81,11 +82,10 @@ public class DblNormal extends DblStream {
 	}
 
 	/**
-	 * Sets the mean value of this normally distributed number stream. Default
-	 * value is {@code 0.0}.
+	 * Sets the mean value of this normally distributed number stream. Default value
+	 * is {@code 0.0}.
 	 * 
-	 * @param mean
-	 *            The mean value.
+	 * @param mean The mean value.
 	 */
 	public void setMean(double mean) {
 		this.mean = mean;
@@ -96,13 +96,11 @@ public class DblNormal extends DblStream {
 	}
 
 	/**
-	 * Sets the standard deviation of this normally distributed number stream.
-	 * This defaults to {@code 1.0}.
+	 * Sets the standard deviation of this normally distributed number stream. This
+	 * defaults to {@code 1.0}.
 	 * 
-	 * @param stdev
-	 *            The standard deviation.
-	 * @throws NotPositiveException
-	 *             Raised if stdev was negative.
+	 * @param stdev The standard deviation.
+	 * @throws NotPositiveException Raised if stdev was negative.
 	 */
 	public void setStdev(double stdev) throws NotPositiveException {
 		if (stdev >= 0.0) {

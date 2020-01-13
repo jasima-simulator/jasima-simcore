@@ -20,6 +20,7 @@
  *******************************************************************************/
 package jasima.core.run;
 
+import static jasima.core.util.i18n.I18n.defFormat;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 
@@ -80,8 +81,7 @@ public abstract class AbstractExperimentRunner {
 
 		MsgCategory[] values = MsgCategory.values();
 		String logLevels = Arrays.toString(values).replaceAll("[\\[\\]]", "");
-		p.acceptsAll(asList("l", "log"),
-				String.format(Util.DEF_LOCALE, "Set log level to one of %s. Default: INFO.", logLevels))
+		p.acceptsAll(asList("l", "log"), defFormat("Set log level to one of %s. Default: INFO.", logLevels))
 				.withRequiredArg().describedAs("level");
 
 		p.accepts("trace", "Produce a detailed event trace (only works for SimulationExperiments).").withOptionalArg()
@@ -124,8 +124,8 @@ public abstract class AbstractExperimentRunner {
 		List<?> argList = new ArrayList<>(opts.nonOptionArguments());
 		handleRemainingArgs(argList);
 		if (argList.size() > 0) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE, "unrecognized command line parameters: %s",
-					Arrays.toString(argList.toArray())));
+			throw new RuntimeException(
+					defFormat("unrecognized command line parameters: %s", Arrays.toString(argList.toArray())));
 		}
 	}
 

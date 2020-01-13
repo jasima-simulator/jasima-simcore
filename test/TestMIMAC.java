@@ -53,11 +53,13 @@ public class TestMIMAC {
 	@Before
 	public void setUp() {
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactoryOld.class.getName());
+		RandomFactory.reloadSysProps();
 	}
 
 	@After
 	public void tearDown() {
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
+		RandomFactory.reloadSysProps();
 	}
 
 	public MimacExperiment createExperiment() {

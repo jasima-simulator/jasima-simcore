@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -31,7 +33,6 @@ import org.apache.commons.math3.exception.TooManyEvaluationsException;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.Pair;
-import jasima.core.util.Util;
 
 /**
  * <p>
@@ -119,7 +120,7 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 			Pair<Boolean, SummaryStat> data = (Pair<Boolean, SummaryStat>) detailedResultsNumeric.get(name);
 			SummaryStat vs = data == null ? null : data.b;
 			if (vs == null)
-				throw new RuntimeException(String.format(Util.DEF_LOCALE, "No results for name '%s'.", name));
+				throw new RuntimeException(defFormat("No results for name '%s'.", name));
 
 			double allowance = Math.abs(vs.mean() * allowancePercentage);
 			double interv = vs.confIntRangeSingle(getErrorProb());
@@ -248,8 +249,8 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 */
 	public void setErrorProb(double errorProb) {
 		if (errorProb <= 0.0 || errorProb >= 1.0)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"errorProb should be in the interval (0,1). invalid: %f", errorProb));
+			throw new IllegalArgumentException(
+					defFormat("errorProb should be in the interval (0,1). invalid: %f", errorProb));
 		this.errorProb = errorProb;
 	}
 
@@ -277,8 +278,8 @@ public class MultipleReplicationExperiment extends AbstractMultiExperiment {
 	 */
 	public void setAllowancePercentage(double allowancePercentage) {
 		if (allowancePercentage <= 0.0 || allowancePercentage >= 1.0)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"allowancePercentage should be in the interval (0,1). invalid: %f", allowancePercentage));
+			throw new IllegalArgumentException(
+					defFormat("allowancePercentage should be in the interval (0,1). invalid: %f", allowancePercentage));
 		this.allowancePercentage = allowancePercentage;
 	}
 

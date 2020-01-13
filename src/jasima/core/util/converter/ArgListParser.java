@@ -18,15 +18,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.util.converter;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import jasima.core.util.ArgListTokenizer.ParseException;
-import jasima.core.util.ArgListTokenizer.TokenType;
+import jasima.core.util.converter.ArgListTokenizer.ParseException;
+import jasima.core.util.converter.ArgListTokenizer.TokenType;
+import jasima.core.util.i18n.I18n;
 
 public class ArgListParser {
 
@@ -158,11 +159,10 @@ public class ArgListParser {
 
 	/**
 	 * Constructs a new ListTokenizer around {@code input} and then calls
-	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse
-	 * the whole string, otherwise it throws a {@link ParseException}.
+	 * {@link #parseClassAndPropDef()}. This class assumes it can read and parse the
+	 * whole string, otherwise it throws a {@link ParseException}.
 	 * 
-	 * @param input
-	 *            The input string to parse.
+	 * @param input The input string to parse.
 	 * @return The
 	 */
 	public static ParseTree parseClassAndPropDef(String input) throws ParseException {
@@ -171,8 +171,8 @@ public class ArgListParser {
 
 		// full input read?
 		if (tk.nextToken() != null) {
-			throw new ParseException(tk.currTokenStart(), String.format(Util.DEF_LOCALE,
-					"There is data after the last token: '%s'.", input.substring(tk.currTokenStart())));
+			throw new ParseException(tk.currTokenStart(),
+					I18n.defFormat("There is data after the last token: '%s'.", input.substring(tk.currTokenStart())));
 		}
 
 		return res;

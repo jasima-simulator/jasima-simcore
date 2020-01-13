@@ -20,12 +20,12 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.HypergeometricDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
-
-import jasima.core.util.Util;
 
 /**
  * This class implements a discrete number stream following a
@@ -36,7 +36,6 @@ import jasima.core.util.Util;
  * 
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">
  *      Hypergeometric distribution (Wikipedia)</a>
@@ -66,8 +65,8 @@ public class IntHypergeometric extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "IntHypergeometric(populationSize=%d;numberOfSuccesses=%d;sampleSize=%d)",
-				getPopulationSize(), getNumberOfSuccesses(), getSampleSize());
+		return defFormat("IntHypergeometric(populationSize=%d;numberOfSuccesses=%d;sampleSize=%d)", getPopulationSize(),
+				getNumberOfSuccesses(), getSampleSize());
 	}
 
 	// ************* getter / setter below ****************
@@ -79,10 +78,8 @@ public class IntHypergeometric extends IntDistribution {
 	/**
 	 * The total population size.
 	 * 
-	 * @param populationSize
-	 *            The value for the population size.
-	 * @throws NotStrictlyPositiveException
-	 *             If the supplied value was {@code <=0}.
+	 * @param populationSize The value for the population size.
+	 * @throws NotStrictlyPositiveException If the supplied value was {@code <=0}.
 	 */
 	public void setPopulationSize(int populationSize) throws NotStrictlyPositiveException {
 		setDistribution(
@@ -96,10 +93,9 @@ public class IntHypergeometric extends IntDistribution {
 	/**
 	 * The number of possible successes in the population.
 	 * 
-	 * @param numberOfSuccesses
-	 *            The number of successes.
-	 * @throws NumberIsTooLargeException
-	 *             If the supplied value is larger than {@code populationSize}.
+	 * @param numberOfSuccesses The number of successes.
+	 * @throws NumberIsTooLargeException If the supplied value is larger than
+	 *                                   {@code populationSize}.
 	 */
 	public void setNumberOfSuccesses(int numberOfSuccesses) throws NumberIsTooLargeException {
 		setDistribution(
@@ -113,10 +109,9 @@ public class IntHypergeometric extends IntDistribution {
 	/**
 	 * The number of samples taken.
 	 * 
-	 * @param sampleSize
-	 *            The number of trials conducted.
-	 * @throws NumberIsTooLargeException
-	 *             If the supplied value is larger than {@code populationSize}.
+	 * @param sampleSize The number of trials conducted.
+	 * @throws NumberIsTooLargeException If the supplied value is larger than
+	 *                                   {@code populationSize}.
 	 */
 	public void setSampleSize(int sampleSize) throws NumberIsTooLargeException {
 		setDistribution(

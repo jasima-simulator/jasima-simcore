@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -49,11 +51,11 @@ public class DblTriangularDef extends DblStreamDef {
 			try {
 				ll = Util.parseDblList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
+				errors.add(defFormat("invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 3) {
-				errors.add(String.format(Util.DEF_LOCALE,
+				errors.add(defFormat(
 						"invalid number of parameters (3 required, min, mode, and max value): '%s'", params));
 				return null;
 			}

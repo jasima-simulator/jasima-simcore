@@ -20,13 +20,13 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.HashMap;
 
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.ParseException;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.TypeUtil.TypeConversionException;
-import jasima.core.util.Util;
+import jasima.core.util.converter.ArgListTokenizer.ParseException;
 
 public abstract class TypeToStringConverter {
 
@@ -64,19 +64,13 @@ public abstract class TypeToStringConverter {
 	 * . This class assumes it can read and parse the whole string, otherwise it
 	 * throws a {@link ParseException}.
 	 * 
-	 * @param s
-	 *            The String value to convert.
-	 * @param requiredType
-	 *            The type it should be converted to.
-	 * @param context
-	 *            An optional property path.
-	 * @param loader
-	 *            The class loader to use.
-	 * @param packageSearchPath
-	 *            Search path to resolve abbreviated class names.
+	 * @param s                 The String value to convert.
+	 * @param requiredType      The type it should be converted to.
+	 * @param context           An optional property path.
+	 * @param loader            The class loader to use.
+	 * @param packageSearchPath Search path to resolve abbreviated class names.
 	 * @return {@code s} converted to the required type.
-	 * @param <T>
-	 *            The required type.
+	 * @param <T> The required type.
 	 */
 	public static <T> T convertFromString(String s, Class<T> requiredType, String context, ClassLoader loader,
 			String[] packageSearchPath) {
@@ -86,7 +80,7 @@ public abstract class TypeToStringConverter {
 
 		// full input read?
 		if (tk.nextToken() != null) {
-			throw new TypeConversionException(String.format(Util.DEF_LOCALE,
+			throw new TypeConversionException(defFormat(
 					"Can't create object for value '%s' (property path: '%s'): There is data after the last token: '%s'.",
 					s, context, s.substring(tk.currTokenStart())));
 		}
@@ -95,22 +89,17 @@ public abstract class TypeToStringConverter {
 	}
 
 	/**
-	 * This method is used internally to create an object as specified by the
-	 * given parse tree.
+	 * This method is used internally to create an object as specified by the given
+	 * parse tree.
 	 * 
-	 * @param tk
-	 *            The {@link ArgListTokenizer} used to split the input String in
-	 *            its parts.
-	 * @param requiredType
-	 *            Type the converted parse tree should be compatible with.
-	 * @param context
-	 *            Optional property context path.
-	 * @param loader
-	 *            The classloader to use.
-	 * @param packageSearchPath
-	 *            The package search path.
-	 * @param <T>
-	 *            Type of returned object.
+	 * @param tk                The {@link ArgListTokenizer} used to split the input
+	 *                          String in its parts.
+	 * @param requiredType      Type the converted parse tree should be compatible
+	 *                          with.
+	 * @param context           Optional property context path.
+	 * @param loader            The classloader to use.
+	 * @param packageSearchPath The package search path.
+	 * @param <T>               Type of returned object.
 	 * @return The object as specified in the parse tree.
 	 */
 	public static <T> T convertFromString(ArgListTokenizer tk, Class<T> requiredType, String context,
@@ -122,8 +111,7 @@ public abstract class TypeToStringConverter {
 	/**
 	 * Returns the most specific converter responsible for a certain type.
 	 * 
-	 * @param requiredType
-	 *            The required class or interface.
+	 * @param requiredType The required class or interface.
 	 * @return the converter for this {@code requiredType}
 	 * @see TypeUtil#computeClasses(Class)
 	 */

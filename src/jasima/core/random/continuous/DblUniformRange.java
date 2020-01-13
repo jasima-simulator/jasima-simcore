@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.Random;
 
 import jasima.core.util.Pair;
@@ -28,7 +30,6 @@ import jasima.core.util.Pair;
  * Returns a uniformly distributed real number in the range [min, max).
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class DblUniformRange extends DblStream {
 
@@ -82,7 +83,7 @@ public class DblUniformRange extends DblStream {
 
 	@Override
 	public String toString() {
-		return "DblUniformRange(min=" + min + ";max=" + max + ")";
+		return defFormat("DblUniformRange(min=%f;max=%f)", min, max);
 	}
 
 	@Override
@@ -102,8 +103,7 @@ public class DblUniformRange extends DblStream {
 	/**
 	 * Sets the minimum value returned by this number stream.
 	 * 
-	 * @param min
-	 *            The minimum to use.
+	 * @param min The minimum to use.
 	 */
 	public void setMin(double min) {
 		this.min = min;
@@ -116,8 +116,7 @@ public class DblUniformRange extends DblStream {
 	/**
 	 * Sets the maximum value returned by this number stream.
 	 * 
-	 * @param max
-	 *            The maximum to use.
+	 * @param max The maximum to use.
 	 */
 	public void setMax(double max) {
 		this.max = max;

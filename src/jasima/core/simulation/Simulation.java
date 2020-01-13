@@ -20,6 +20,12 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import static jasima.core.simulation.Simulation.I18nConsts.EXT_LOADED;
+import static jasima.core.util.TypeUtil.createInstance;
+import static jasima.core.util.i18n.I18n.defFormat;
+import static jasima.core.util.i18n.I18n.defGetMessage;
+import static java.util.Objects.requireNonNull;
+
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -31,31 +37,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import jasima.core.JasimaExtension;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
+import jasima.core.simulation.processes.SimContext;
+import jasima.core.simulation.processes.SimProcess;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.TraceFileProducer;
+import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 
 /**
- * Base class for a discrete event simulation. This class doesn't do much, but
- * only maintains an event queue and manages simulation time. Additionally it
- * offers a centralized place to initialize random number streams and to create
- * status and debug messages.
+ * Base class for a discrete event simulation. This class mainly maintains the
+ * event queue and manages simulation time. Additionally it offers a centralized
+ * place to initialize random number streams and to create status and debug
+ * messages.
  * <p>
  * The typical life cycle of a simulation would be to create it, and
  * subsequently set any parameters. Afterwards {@link #init()} has to be called
@@ -69,6 +86,8 @@ import jasima.core.util.Util;
  */
 public class Simulation {
 
+	private static final Logger logger = LogManager.getLogger(Simulation.class);
+
 	// constants for simTimeToMillisFactor used to convert simTime to an Instant
 	public static final long MILLIS_PER_MINUTE = 60 * 1000;
 	public static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
@@ -76,7 +95,8 @@ public class Simulation {
 	public static final long MILLIS_PER_WEEK = 7 * MILLIS_PER_DAY;
 
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
-	public static final String QUEUE_IMPL_DEF = EventHeap.class.getName();
+	public static final Class<? extends EventHeap> queueImpl = TypeUtil.getClassFromSystemProperty(QUEUE_IMPL_KEY,
+			EventHeap.class, EventHeap.class);
 
 	/**
 	 * {@link SimPrintMessage}s are produced whenever {@code print()} or
@@ -98,13 +118,11 @@ public class Simulation {
 		private String message;
 
 		public SimPrintMessage(Simulation sim, MsgCategory category, String message) {
-			this(sim, category, message, EMPTY);
-			Objects.requireNonNull(message);
+			this(sim, category, requireNonNull(message), EMPTY);
 		}
 
 		public SimPrintMessage(Simulation sim, MsgCategory category, Object... params) {
-			this(sim, category, null, params);
-			Objects.requireNonNull(params);
+			this(sim, category, null, requireNonNull(params));
 		}
 
 		protected SimPrintMessage(Simulation sim, MsgCategory category, String msg, Object... params) {
@@ -190,6 +208,8 @@ public class Simulation {
 
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
+
+	private Locale locale = I18n.DEF_LOCALE;
 
 	// ////////////// attributes/fields used during a simulation
 
@@ -327,6 +347,7 @@ public class Simulation {
 		resetStats();
 
 		simThread = Thread.currentThread();
+		SimContext.setThreadContext(this);
 		try {
 			do {
 				// make current thread block until simulation is unpaused.
@@ -369,6 +390,7 @@ public class Simulation {
 			state = SimExecState.FINISHED;
 		} finally {
 			simThread = null;
+			SimContext.setThreadContext(null);
 		}
 	}
 
@@ -437,9 +459,8 @@ public class Simulation {
 	}
 
 	private String createErrorMsgEventInPast(SimEvent e) {
-		return String.format(Util.DEF_LOCALE,
-				"Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).", e.getTime(),
-				e.getPrio(), e.toString());
+		return defFormat("Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
+				e.getTime(), e.getPrio(), e.toString());
 	}
 
 	/**
@@ -551,7 +572,7 @@ public class Simulation {
 	 * @return {@code true} if the operation was present in the event queue and
 	 *         could be successfully removed, {@code false} otherwise
 	 */
-	public boolean cancel(SimEvent event) {
+	public boolean unschedule(SimEvent event) {
 		return events.remove(event);
 	}
 
@@ -599,10 +620,10 @@ public class Simulation {
 	 * @param time        The time when to call {@code method}.
 	 * @param prio        Priority of the event (to deterministically sequence
 	 *                    events at the same time).
-	 * @param method      The method to call at the given moment.
+	 * @param action      The method to call at the given moment.
 	 */
-	public void schedule(String description, double time, int prio, Runnable method) {
-		SimEvent e = new MethodCallEvent(time, prio, method, description);
+	public void schedule(String description, double time, int prio, Runnable action) {
+		SimEvent e = new MethodCallEvent(time, prio, description, action);
 		schedule(e);
 	}
 
@@ -773,28 +794,6 @@ public class Simulation {
 	}
 
 	/**
-	 * This class is used internally by {@link #schedule(double,int,Runnable)}.
-	 */
-	protected static final class MethodCallEvent extends SimEvent {
-		public final Runnable m;
-
-		private MethodCallEvent(double time, int prio, Runnable method, String description) {
-			super(time, prio, description);
-			m = method;
-		}
-
-		@Override
-		public void handle() {
-			m.run();
-		}
-
-		@Override
-		public String toString() {
-			return getDescription() != null ? getDescription() : String.format("MethodCallEvent(%s)", m.toString());
-		}
-	}
-
-	/**
 	 * After calling end() the simulation is terminated (after handling the current
 	 * event).
 	 */
@@ -820,8 +819,9 @@ public class Simulation {
 	}
 
 	/**
-	 * After calling {@link #pause()} the simulation is paused. This means, the
-	 * {@link #run()} method returns after handling the current event.
+	 * After calling {@link #unpause()} a paused simulation is continued. Internally
+	 * each pause request increases a counter that has to be followed by an unpause
+	 * request. Simulation only resumes i the pause counter reaches zero.
 	 */
 	public void unpause() {
 		if (pauseRequests.decrementAndGet() == 0) {
@@ -1042,7 +1042,7 @@ public class Simulation {
 			Object msgProducer = new Object() {
 				@Override
 				public String toString() {
-					return String.format(Util.DEF_LOCALE, messageFormatString, params);
+					return defFormat(messageFormatString, params);
 				}
 			};
 
@@ -1064,14 +1064,7 @@ public class Simulation {
 	 * @return The event queue to use in this simulation.
 	 */
 	protected EventQueue createEventQueue() {
-		String queueImpl = System.getProperty(QUEUE_IMPL_KEY, QUEUE_IMPL_DEF);
-		Class<?> qClass;
-		try {
-			qClass = Class.forName(queueImpl);
-			return (EventQueue) qClass.newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return createInstance(queueImpl);
 	}
 
 	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
@@ -1222,6 +1215,20 @@ public class Simulation {
 	}
 
 	/**
+	 * Returns the currently set {@code Locale}, i.e., language and region.
+	 */
+	public Locale getLocale() {
+		return locale;
+	}
+
+	/**
+	 * 
+	 */
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	/**
 	 * Sets the factor used to convert the (double-valued) simulation time to
 	 * milli-seconds since {@link #getSimTimeStartInstant()}. The default value is
 	 * 60*1000=60000, assuming simulation time to be in minutes.
@@ -1237,4 +1244,54 @@ public class Simulation {
 		throw new CloneNotSupportedException(); // not implemented yet
 	}
 
+	private boolean wasSignaled;
+	private Exception throwInMainThread;
+
+	public Thread mainThread() {
+		return simThread;
+	}
+
+	public void activate(Exception throwInMainThread) {
+		this.throwInMainThread = throwInMainThread;
+		wasSignaled = true;
+		LockSupport.unpark(simThread);
+	}
+
+	public void deactivate() {
+		assert Thread.currentThread() == simThread;
+
+		wasSignaled = false;
+		while (!wasSignaled) { // guard against spurious wake-ups
+			LockSupport.park();
+		}
+
+		// there was an uncaught exception in the previously executed process
+		if (throwInMainThread != null) {
+			throw new RuntimeException(throwInMainThread);
+		}
+	}
+
+	private SimProcess<?> currentProcess;
+
+	public SimProcess<?> currentProcess() {
+		return currentProcess;
+	}
+
+	public void setCurrentProcess(SimProcess<?> p) {
+		this.currentProcess = p;
+	}
+
+	static void loadExtensions() {
+		for (JasimaExtension ext : ServiceLoader.load(JasimaExtension.class)) {
+			logger.debug(defGetMessage(EXT_LOADED), ext.getClass().getName());
+		}
+	}
+
+	static {
+		loadExtensions();
+	}
+
+	enum I18nConsts {
+		EXT_LOADED;
+	}
 }

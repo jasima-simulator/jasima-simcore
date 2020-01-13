@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import jasima.core.util.Pair;
 
 /**
@@ -60,12 +62,9 @@ public class DblTriangular extends DblStream {
 	/**
 	 * Factory method to create a DblStream given the distribution's mode value.
 	 * 
-	 * @param min
-	 *            The distribution's minimum value.
-	 * @param mode
-	 *            The distribution's mode (most frequent) value.
-	 * @param max
-	 *            The distribution's maximum value.
+	 * @param min  The distribution's minimum value.
+	 * @param mode The distribution's mode (most frequent) value.
+	 * @param max  The distribution's maximum value.
 	 * @return A new DblTriangular object.
 	 */
 	public static DblTriangular fromMinModeMax(double min, double mode, double max) {
@@ -75,12 +74,9 @@ public class DblTriangular extends DblStream {
 	/**
 	 * Factory method to create a DblStream given the distribution's mean value.
 	 * 
-	 * @param min
-	 *            The distribution's minimum value.
-	 * @param mean
-	 *            The distribution's mean value.
-	 * @param max
-	 *            The distribution's maximum value.
+	 * @param min  The distribution's minimum value.
+	 * @param mean The distribution's mean value.
+	 * @param max  The distribution's maximum value.
 	 * @return A new DblTriangular object.
 	 */
 	public static DblTriangular fromMinMeanMax(double min, double mean, double max) {
@@ -127,7 +123,7 @@ public class DblTriangular extends DblStream {
 
 	@Override
 	public String toString() {
-		return "DblTriangular(min=" + min + ";mode=" + mode + ";max=" + max + ")";
+		return defFormat("DblTriangular(min=%f;mode=%f;max=%f)", min, mode, max);
 	}
 
 	@Override

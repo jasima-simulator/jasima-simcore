@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.GeometricDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.exception.OutOfRangeException;
-
-import jasima.core.util.Util;
 
 /**
  * This class implements a discrete number stream following a
@@ -34,7 +34,6 @@ import jasima.core.util.Util;
  * 
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Geometric_distribution">Geometric
  *      distribution (Wikipedia)</a>
@@ -64,7 +63,7 @@ public class IntGeometric extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "IntGeometric(probabilityOfSuccess=%f)", getProbabilityOfSuccess());
+		return defFormat("IntGeometric(probabilityOfSuccess=%f)", getProbabilityOfSuccess());
 	}
 
 	public double getProbabilityOfSuccess() {
@@ -74,11 +73,9 @@ public class IntGeometric extends IntDistribution {
 	/**
 	 * Sets the probability of success in a single trial.
 	 * 
-	 * @param probOfSuccess
-	 *            The success probability.
-	 * @throws OutOfRangeException
-	 *             If the supplied probability if not in the interval
-	 *             {@code (0,1]}.
+	 * @param probOfSuccess The success probability.
+	 * @throws OutOfRangeException If the supplied probability if not in the
+	 *                             interval {@code (0,1]}.
 	 */
 	public void setProbabilityOfSuccess(double probOfSuccess) throws OutOfRangeException {
 		setDistribution(new GeometricDistribution(probOfSuccess));

@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * Implements a number stream with values following a
@@ -33,7 +33,6 @@ import jasima.core.util.Util;
  * shape parameters {@code alpha} and {@code beta}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Beta_distribution">Beta
  *      distribution (Wikipedia)</a>
@@ -63,7 +62,7 @@ public class DblBeta extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblBeta(alpha=%f;beta=%f)", getAlpha(), getBeta());
+		return defFormat("DblBeta(alpha=%f;beta=%f)", getAlpha(), getBeta());
 	}
 
 	public double getAlpha() {
@@ -74,10 +73,8 @@ public class DblBeta extends DblDistribution {
 	 * Sets the parameter value for the distribution's shape parameter
 	 * {@code alpha}.
 	 * 
-	 * @param alpha
-	 *            The alpha value to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If {@code alpha} was {@code <=0}.
+	 * @param alpha The alpha value to use.
+	 * @throws NotStrictlyPositiveException If {@code alpha} was {@code <=0}.
 	 */
 	public void setAlpha(double alpha) throws NotStrictlyPositiveException {
 		setDistribution(new BetaDistribution(alpha, getBeta()));
@@ -90,10 +87,8 @@ public class DblBeta extends DblDistribution {
 	/**
 	 * Sets the shape parameter {@code beta} of the distribution.
 	 * 
-	 * @param beta
-	 *            The {@code beta} parameter value to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If {@code beta} was {@code <=0}.
+	 * @param beta The {@code beta} parameter value to use.
+	 * @throws NotStrictlyPositiveException If {@code beta} was {@code <=0}.
 	 */
 	public void setBeta(double beta) throws NotStrictlyPositiveException {
 		setDistribution(new BetaDistribution(getAlpha(), beta));

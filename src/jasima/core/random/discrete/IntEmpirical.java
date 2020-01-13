@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -170,7 +172,7 @@ public class IntEmpirical extends IntStream {
 		if (sb.length() > 0)
 			params = sb.substring(0, sb.length() - 1);
 
-		return String.format(Util.DEF_LOCALE, "%s(%s)", this.getClass().getSimpleName(), params);
+		return defFormat("%s(%s)", this.getClass().getSimpleName(), params);
 	}
 
 	@Override

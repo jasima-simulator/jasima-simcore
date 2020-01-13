@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.util;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +35,7 @@ import jasima.core.experiment.Experiment;
 import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.ExperimentListener;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.i18n.I18n;
 
 /**
  * Prints experiment messages to the console.
@@ -42,7 +45,7 @@ import jasima.core.statistics.SummaryStat;
 public class ConsolePrinter implements ExperimentListener {
 
 	private MsgCategory logLevel = MsgCategory.DEBUG;
-	private Locale locale = Util.DEF_LOCALE;
+	private Locale locale = I18n.DEF_LOCALE;
 	private String logFormat = "%1$tT.%1$tL\t%4$s\t%2$s\t%3$s";
 	private PrintWriter out = null;
 	private boolean printStdEvents = true;
@@ -179,8 +182,7 @@ public class ConsolePrinter implements ExperimentListener {
 	 * Sets the {@link PrintWriter} where to send output. If this is null, print
 	 * events will be written to {@link System#out}.
 	 * 
-	 * @param out
-	 *            The {@code PrintWriter} to use.
+	 * @param out The {@code PrintWriter} to use.
 	 */
 	public void setOut(PrintWriter out) {
 		this.out = out;
@@ -194,8 +196,7 @@ public class ConsolePrinter implements ExperimentListener {
 	 * PrintStdEvents determines, if print events for standard events (like
 	 * experiment starting) should be produced. Defaults to {@code true}.
 	 * 
-	 * @param printStdEvents
-	 *            Whether or not to print standard events.
+	 * @param printStdEvents Whether or not to print standard events.
 	 */
 	public void setPrintStdEvents(boolean printStdEvents) {
 		this.printStdEvents = printStdEvents;
@@ -206,11 +207,10 @@ public class ConsolePrinter implements ExperimentListener {
 	}
 
 	/**
-	 * Sets the {@link Locale} that is used when formatting messages. The
-	 * default is {@code Locale.US}.
+	 * Sets the {@link Locale} that is used when formatting messages. The default is
+	 * {@code Locale.US}.
 	 * 
-	 * @param locale
-	 *            The locale to use.
+	 * @param locale The locale to use.
 	 * 
 	 * @see Util#DEF_LOCALE
 	 */
@@ -224,10 +224,8 @@ public class ConsolePrinter implements ExperimentListener {
 	 * Static method to prints the results <code>res</code> of an experiment
 	 * <code>e</code> to {@link System#out}.
 	 * 
-	 * @param e
-	 *            The experiment that was executed.
-	 * @param res
-	 *            The list of results.
+	 * @param e   The experiment that was executed.
+	 * @param res The list of results.
 	 */
 	public static void printResults(Experiment e, Map<String, Object> res) {
 		PrintWriter pw = new PrintWriter(System.out, true);
@@ -242,12 +240,9 @@ public class ConsolePrinter implements ExperimentListener {
 	 * Static method to print the results <code>res</code> of an experiment
 	 * <code>e</code> to a {@link PrintWriter}.
 	 * 
-	 * @param out
-	 *            The {@link PrintWriter} to use for printing.
-	 * @param e
-	 *            The experiment that was executed.
-	 * @param res
-	 *            The list of results.
+	 * @param out The {@link PrintWriter} to use for printing.
+	 * @param e   The experiment that was executed.
+	 * @param res The list of results.
 	 */
 	public static void printResults(PrintWriter out, Experiment e, Map<String, Object> res) {
 		out.println();
@@ -290,7 +285,7 @@ public class ConsolePrinter implements ExperimentListener {
 
 			for (String k : valStatNames) {
 				SummaryStat vs = (SummaryStat) res.get(k);
-				out.printf(Util.DEF_LOCALE, "%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f%n", k, vs.mean(), vs.min(), vs.max(),
+				out.printf(I18n.DEF_LOCALE, "%s\t%.4f\t%.4f\t%.4f\t%.4f\t%d\t%.4f%n", k, vs.mean(), vs.min(), vs.max(),
 						vs.stdDev(), vs.numObs(), vs.sum());
 			}
 		}
@@ -313,7 +308,7 @@ public class ConsolePrinter implements ExperimentListener {
 		}
 
 		out.println();
-		out.printf(Util.DEF_LOCALE, "time needed:\t%fs%n", res.get(Experiment.RUNTIME));
+		out.printf(I18n.DEF_LOCALE, "time needed:\t%fs%n", res.get(Experiment.RUNTIME));
 
 		out.flush();
 	}
@@ -322,15 +317,14 @@ public class ConsolePrinter implements ExperimentListener {
 	 * Returns a textual representation of an experiment's properties and their
 	 * current values.
 	 * 
-	 * @param e
-	 *            The experiment to describe.
+	 * @param e The experiment to describe.
 	 */
 	public static String getDescription(Experiment e) {
 		String s;
 		if (e.getName() != null)
-			s = String.format(Util.DEF_LOCALE, "Results of %s '%s'", e.getClass().getSimpleName(), e.getName());
+			s = defFormat("Results of %s '%s'", e.getClass().getSimpleName(), e.getName());
 		else
-			s = String.format(Util.DEF_LOCALE, "Results of %s", e.getClass().getSimpleName());
+			s = defFormat("Results of %s", e.getClass().getSimpleName());
 		return s;
 	}
 }

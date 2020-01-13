@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.util;
+package jasima.core.util.converter;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
@@ -30,8 +30,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import jasima.core.util.ArgListParser.ParseTree;
-import jasima.core.util.ArgListTokenizer.ParseException;
+import jasima.core.util.converter.ArgListParser.ParseTree;
+import jasima.core.util.converter.ArgListTokenizer.ParseException;
 
 public class ArgListParserTest {
 

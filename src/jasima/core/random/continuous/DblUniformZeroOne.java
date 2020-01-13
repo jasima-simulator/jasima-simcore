@@ -29,7 +29,6 @@ import jasima.core.util.Pair;
  * delegates to the underlying method {@link java.util.Random#nextDouble()}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class DblUniformZeroOne extends DblStream {
 

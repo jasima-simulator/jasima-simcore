@@ -43,7 +43,6 @@ import jasima.core.experiment.Experiment;
  * </p>
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class ThreadPoolExecutor extends ExperimentExecutor {
 
@@ -52,7 +51,8 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	// an executor service for each nesting level
 	private Map<Integer, ExecutorService> insts = new HashMap<Integer, ExecutorService>();
 
-	protected ThreadPoolExecutor() {
+	// has to be public to be callable using refection
+	public ThreadPoolExecutor() {
 		super();
 	}
 

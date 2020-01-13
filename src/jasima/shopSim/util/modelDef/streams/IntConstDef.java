@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,7 +49,7 @@ public class IntConstDef extends IntStreamDef {
 			try {
 				ll = Util.parseIntList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
+				errors.add(defFormat("invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 
@@ -82,7 +84,7 @@ public class IntConstDef extends IntStreamDef {
 	@Override
 	public String toString() {
 		String s = Arrays.toString(getValues()).replace("[", "").replace("]", "");
-		return String.format(Util.DEF_LOCALE, "%s(%s)", FACTORY.getTypeString(), s);
+		return defFormat("%s(%s)", FACTORY.getTypeString(), s);
 	}
 
 	@Override

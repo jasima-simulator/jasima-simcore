@@ -40,7 +40,7 @@ public class RandomFactoryOld extends RandomFactory {
 	private Random seedStream = new Random(5787905968364136369L);
 	private long[] seeds = null;
 
-	protected RandomFactoryOld() {
+	public RandomFactoryOld() {
 		super();
 	}
 

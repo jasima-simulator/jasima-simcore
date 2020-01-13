@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * Implements a number stream with values following a
@@ -32,7 +32,6 @@ import jasima.core.util.Util;
  * distribution</a>.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">Log-
  *      normal distribution (Wikipedia)</a>
@@ -62,7 +61,7 @@ public class DblLogNormal extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblLogNormal(shape=%f;scale=%f)", getShape(), getScale());
+		return defFormat("DblLogNormal(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getScale() {
@@ -72,8 +71,7 @@ public class DblLogNormal extends DblDistribution {
 	/**
 	 * Sets the scale parameter to use.
 	 * 
-	 * @param scale
-	 *            The scale value to use.
+	 * @param scale The scale value to use.
 	 */
 	public void setScale(double scale) {
 		setDistribution(new LogNormalDistribution(scale, getShape()));
@@ -86,10 +84,8 @@ public class DblLogNormal extends DblDistribution {
 	/**
 	 * Sets the shape parameter of the distribution.
 	 * 
-	 * @param shape
-	 *            The shape parameter value to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If shape was {@code <=0}.
+	 * @param shape The shape parameter value to use.
+	 * @throws NotStrictlyPositiveException If shape was {@code <=0}.
 	 */
 	public void setShape(double shape) throws NotStrictlyPositiveException {
 		setDistribution(new LogNormalDistribution(getScale(), shape));

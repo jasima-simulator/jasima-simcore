@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import jasima.core.util.MsgCategory;
-import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 
 /**
  * Systematically tests all possible combinations of various discrete factors
@@ -230,7 +230,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 		do {
 			addExperimentForConf(is);
 			if (getMaxConfigurations() > 0 && experiments.size() > getMaxConfigurations()) {
-				throw new RuntimeException(String.format(Util.DEF_LOCALE,
+				throw new RuntimeException(String.format(I18n.DEF_LOCALE,
 						"More than %d configurations. Consider reducing the number of factors and/or factor values or using an optimization algorithm instead.",
 						getMaxConfigurations()));
 			}

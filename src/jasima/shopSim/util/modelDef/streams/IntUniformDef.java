@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.util.modelDef.streams;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.List;
 
 import jasima.core.random.continuous.DblStream;
@@ -47,12 +49,11 @@ public class IntUniformDef extends IntStreamDef {
 			try {
 				ll = Util.parseIntList(params);
 			} catch (NumberFormatException nfe) {
-				errors.add(String.format(Util.DEF_LOCALE, "invalid number: %s", nfe.getLocalizedMessage()));
+				errors.add(defFormat("invalid number: %s", nfe.getLocalizedMessage()));
 				return null;
 			}
 			if (ll.length != 2) {
-				errors.add(String.format(Util.DEF_LOCALE,
-						"invalid number of parameters (2 required, min and max value): '%s'", params));
+				errors.add(defFormat("invalid number of parameters (2 required, min and max value): '%s'", params));
 				return null;
 			}
 
@@ -87,14 +88,14 @@ public class IntUniformDef extends IntStreamDef {
 
 	public IntUniformDef(int min, int max) {
 		this();
-		
+
 		setMinValue(min);
 		setMaxValue(max);
 	}
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "%s(%d,%d)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
+		return defFormat("%s(%d,%d)", FACTORY.getTypeString(), getMinValue(), getMaxValue());
 	}
 
 	@Override

@@ -24,9 +24,8 @@ import java.util.ArrayList;
 
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntConst;
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.TokenType;
 import jasima.core.util.Util;
+import jasima.core.util.converter.ArgListTokenizer.TokenType;
 import jasima.core.util.converter.TypeConverterDblStream.StreamFactory;
 
 public class IntConstFactory implements StreamFactory {

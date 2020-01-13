@@ -20,10 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.exception.OutOfRangeException;
 
 import jasima.core.util.Pair;
-import jasima.core.util.Util;
 
 /**
  * This class implements a discrete number stream following a
@@ -34,7 +35,6 @@ import jasima.core.util.Util;
  * 
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli
  *      distribution (Wikipedia)</a>
@@ -72,7 +72,7 @@ public class IntBernoulli extends IntStream {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "IntBernoulli(probabilityOfSuccess=%f)", getProbabilityOfSuccess());
+		return defFormat("IntBernoulli(probabilityOfSuccess=%f)", getProbabilityOfSuccess());
 	}
 
 	public double getProbabilityOfSuccess() {
@@ -82,11 +82,9 @@ public class IntBernoulli extends IntStream {
 	/**
 	 * Sets the probability of success.
 	 * 
-	 * @param probOfSuccess
-	 *            The success probability.
-	 * @throws OutOfRangeException
-	 *             If the supplied probability is not in the interval
-	 *             {@code [0,1]}.
+	 * @param probOfSuccess The success probability.
+	 * @throws OutOfRangeException If the supplied probability is not in the
+	 *                             interval {@code [0,1]}.
 	 */
 	public void setProbabilityOfSuccess(double probOfSuccess) throws OutOfRangeException {
 		if (probOfSuccess < 0 || probOfSuccess > 1) {

@@ -22,6 +22,7 @@ package jasima.core.util;
 
 import static jasima.core.util.converter.TypeConverterJavaBean.exceptionMessage;
 import static jasima.core.util.converter.TypeToStringConverter.convertToString;
+import static jasima.core.util.i18n.I18n.defFormat;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -44,10 +45,12 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
 import jasima.core.util.converter.TypeToStringConverter;
+import jasima.core.util.i18n.I18n;
 
 /**
  * This class contains a collection of methods concerned with
- * reading/writing/creating/converting Bean properties.
+ * reading/writing/creating/converting Bean properties and loading classes using
+ * Java reflection.
  * 
  * @author Torsten Hildebrandt
  */
@@ -75,16 +78,14 @@ public class TypeUtil {
 	 * This method interprets propPath the same way as
 	 * {@link #getPropertyValue(Object, String)} does.
 	 * 
-	 * @param o
-	 *            The Object from which to get a property value.
-	 * @param propPath
-	 *            A String containing the path to the required property.
+	 * @param o        The Object from which to get a property value.
+	 * @param propPath A String containing the path to the required property.
 	 * @return The property's type.
 	 * 
-	 * @throws RuntimeException
-	 *             If there was a problem getting the value. The cause of this
-	 *             exception (of type {@link ReflectiveOperationException})
-	 *             gives a more detailed indication why the operation failed.
+	 * @throws RuntimeException If there was a problem getting the value. The cause
+	 *                          of this exception (of type
+	 *                          {@link ReflectiveOperationException}) gives a more
+	 *                          detailed indication why the operation failed.
 	 */
 	public static Class<?> getPropertyType(Object o, String propPath) throws RuntimeException {
 		try {
@@ -113,8 +114,8 @@ public class TypeUtil {
 
 			PropertyDescriptor match = getPropertyDescriptor(o, last);
 			if (match == null)
-				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-						"segment '%s' not found of property path '%s'.", last, propPath));
+				throw new IllegalArgumentException(
+						defFormat("segment '%s' not found of property path '%s'.", last, propPath));
 
 			if (arrayElement == -1) {
 				// return property type
@@ -130,28 +131,25 @@ public class TypeUtil {
 				}
 			}
 		} catch (ReflectiveOperationException | IllegalArgumentException e1) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Can't determine type of property '%s': %s",
-					propPath, e1.toString()), e1);
+			throw new RuntimeException(defFormat("Can't determine type of property '%s': %s", propPath, e1.toString()),
+					e1);
 		}
 	}
 
 	/**
-	 * Gets the current value of a property named with propPath using
-	 * reflection.
+	 * Gets the current value of a property named with propPath using reflection.
 	 * <p>
 	 * Example: getProperty( obj, "a.b.c" ); is equivalent to a direct call
 	 * obj.getA().getB().getC()
 	 * 
-	 * @param o
-	 *            The Object from which to get a property value.
-	 * @param propPath
-	 *            A String containing the path to the required property.
+	 * @param o        The Object from which to get a property value.
+	 * @param propPath A String containing the path to the required property.
 	 * @return The property value.
 	 * 
-	 * @throws RuntimeException
-	 *             If there was a problem getting the value. The cause of this
-	 *             exception (of type {@link ReflectiveOperationException})
-	 *             gives a more detailed indication why the operation failed.
+	 * @throws RuntimeException If there was a problem getting the value. The cause
+	 *                          of this exception (of type
+	 *                          {@link ReflectiveOperationException}) gives a more
+	 *                          detailed indication why the operation failed.
 	 */
 	public static Object getPropertyValue(Object o, String propPath) throws RuntimeException {
 		try {
@@ -164,7 +162,7 @@ public class TypeUtil {
 
 			return o;
 		} catch (ReflectiveOperationException | IllegalArgumentException e1) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Can't get property '%s'.", propPath), e1);
+			throw new RuntimeException(defFormat("Can't get property '%s'.", propPath), e1);
 		}
 	}
 
@@ -186,8 +184,8 @@ public class TypeUtil {
 
 		PropertyDescriptor match = getPropertyDescriptor(o, currSegment);
 		if (match == null)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"segment '%s' not found of property path '%s'.", currSegment, propPath));
+			throw new IllegalArgumentException(
+					defFormat("segment '%s' not found of property path '%s'.", currSegment, propPath));
 
 		// call getter and continue
 		Method m = match.getReadMethod();
@@ -211,15 +209,12 @@ public class TypeUtil {
 	/**
 	 * Calls
 	 * {@link #setPropertyValue(Object, String, Object, ClassLoader, String[])}
-	 * using the ClassLoader that was used to load {@code TypeUtil} and the
-	 * default package search path {@link Util#DEF_CLASS_SEARCH_PATH}.
+	 * using the ClassLoader that was used to load {@code TypeUtil} and the default
+	 * package search path {@link Util#DEF_CLASS_SEARCH_PATH}.
 	 * 
-	 * @param o
-	 *            The object with a property to set.
-	 * @param propPath
-	 *            The property path and name of the property to set.
-	 * @param value
-	 *            The value to set the property to.
+	 * @param o        The object with a property to set.
+	 * @param propPath The property path and name of the property to set.
+	 * @param value    The value to set the property to.
 	 * @see #setPropertyValue(Object, String, Object, ClassLoader, String[])
 	 */
 	public static void setPropertyValue(Object o, String propPath, Object value) {
@@ -232,18 +227,13 @@ public class TypeUtil {
 	 * Example: setProperty( obj, "a.b.c", 5 ); is equivalent to a direct call
 	 * obj.getA().getB().setC(5)
 	 * 
-	 * @param o
-	 *            The object with a property to set.
-	 * @param propPath
-	 *            The property path and name of the property to set.
-	 * @param value
-	 *            The value to set the property to.
-	 * @param loader
-	 *            The {@link ClassLoader} to use when new classes have to be
-	 *            loaded.
-	 * @param packageSearchPath
-	 *            A list of package names that are used to complete abbreviated
-	 *            class names.
+	 * @param o                 The object with a property to set.
+	 * @param propPath          The property path and name of the property to set.
+	 * @param value             The value to set the property to.
+	 * @param loader            The {@link ClassLoader} to use when new classes have
+	 *                          to be loaded.
+	 * @param packageSearchPath A list of package names that are used to complete
+	 *                          abbreviated class names.
 	 */
 	public static void setPropertyValue(Object o, String propPath, Object value, ClassLoader loader,
 			String[] packageSearchPath) throws IllegalArgumentException {
@@ -288,8 +278,8 @@ public class TypeUtil {
 			// handle normal property set
 			PropertyDescriptor desc = getPropertyDescriptor(target, setPart);
 			if (desc == null)
-				throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-						"Segment '%s' not found of property path '%s'.", setPart, propPath));
+				throw new IllegalArgumentException(
+						defFormat("Segment '%s' not found of property path '%s'.", setPart, propPath));
 
 			value = convert(value, desc.getPropertyType(), getPart, loader, packageSearchPath);
 			try {
@@ -322,22 +312,16 @@ public class TypeUtil {
 	}
 
 	/**
-	 * Converts an object {@code o} (which usually is a {@code String}) to
-	 * another type {@code requiredType}.
+	 * Converts an object {@code o} (which usually is a {@code String}) to another
+	 * type {@code requiredType}.
 	 * 
-	 * @param o
-	 *            The object to convert.
-	 * @param requiredType
-	 *            The desired type {@code o} should be converted to.
-	 * @param context
-	 *            A String describing the context of {@code o}. This is used to
-	 *            produce more meaningful error messages.
-	 * @param l
-	 *            The {@link ClassLoader} to use.
-	 * @param packageSearchPath
-	 *            Search path when looking up classes.
-	 * @param <T>
-	 *            Type of returned object.
+	 * @param o                 The object to convert.
+	 * @param requiredType      The desired type {@code o} should be converted to.
+	 * @param context           A String describing the context of {@code o}. This
+	 *                          is used to produce more meaningful error messages.
+	 * @param l                 The {@link ClassLoader} to use.
+	 * @param packageSearchPath Search path when looking up classes.
+	 * @param <T>               Type of returned object.
 	 * @return {@code o} converted to {@code requiredType}.
 	 */
 	public static <T> T convert(Object o, Class<T> requiredType, String context, ClassLoader l,
@@ -353,8 +337,8 @@ public class TypeUtil {
 
 	/**
 	 * Computes an array of all super-classes and interfaces of
-	 * {@code requiredType}. This method performs a breadth first traversal of
-	 * the class/interface hierarchy. Consider the following example:
+	 * {@code requiredType}. This method performs a breadth first traversal of the
+	 * class/interface hierarchy. Consider the following example:
 	 * 
 	 * <pre>
 	 *     interface A extends M, N
@@ -363,15 +347,13 @@ public class TypeUtil {
 	 *     class X extends Y implements A, B
 	 * </pre>
 	 * 
-	 * This will produce the following result for {@code x} as
-	 * {@code requiredType}:
+	 * This will produce the following result for {@code x} as {@code requiredType}:
 	 * 
 	 * <pre>
 	 * { X, Y, A, B, C, D, M, N, O, Object }
 	 * </pre>
 	 * 
-	 * @param requiredType
-	 *            The class for which to compute the type hierarchy.
+	 * @param requiredType The class for which to compute the type hierarchy.
 	 * @return A list of super classes/interfaces from most to least specific.
 	 */
 	public static Class<?>[] computeClasses(Class<?> requiredType) {
@@ -412,10 +394,9 @@ public class TypeUtil {
 	 * Finds (bean) properties of {@code o} which have both getter and setter
 	 * methods.
 	 * 
-	 * @param o
-	 *            An arbitrary object.
-	 * @return An array containing a {@link PropertyDescriptor} for each
-	 *         property of {@code o}.
+	 * @param o An arbitrary object.
+	 * @return An array containing a {@link PropertyDescriptor} for each property of
+	 *         {@code o}.
 	 * @see #findWritableProperties(Class)
 	 */
 	public static PropertyDescriptor[] findWritableProperties(Object o) {
@@ -424,14 +405,13 @@ public class TypeUtil {
 
 	/**
 	 * Finds (bean) properties of {@code c} which have both getter and setter
-	 * methods. If an {@link IntrospectionException} is raised when
-	 * executing the method, then this exception is raised again as an unchecked
-	 * exception (wrapped in a {@link RuntimeException}).
+	 * methods. If an {@link IntrospectionException} is raised when executing the
+	 * method, then this exception is raised again as an unchecked exception
+	 * (wrapped in a {@link RuntimeException}).
 	 * 
-	 * @param c
-	 *            An arbitrary class.
-	 * @return An array containing a {@link PropertyDescriptor} for each
-	 *         property of {@code c}.
+	 * @param c An arbitrary class.
+	 * @return An array containing a {@link PropertyDescriptor} for each property of
+	 *         {@code c}.
 	 */
 	public static PropertyDescriptor[] findWritableProperties(Class<?> c) {
 		try {
@@ -451,43 +431,37 @@ public class TypeUtil {
 	}
 
 	/**
-	 * Utility method to return a {@code PropertyDescriptor}. Name matching is
-	 * case in-sensitive.
+	 * Utility method to return a {@code PropertyDescriptor}. Name matching is case
+	 * in-sensitive.
 	 * 
-	 * @param o
-	 *            The object for which to get the property.
-	 * @param propName
-	 *            Name of the bean property.
+	 * @param o        The object for which to get the property.
+	 * @param propName Name of the bean property.
 	 * @return A {@code PropertyDescriptor} matching {@code propName}, otherwise
 	 *         {@code null}.
 	 */
 	private static PropertyDescriptor getPropertyDescriptor(Object o, String propName) {
 		Map<String, PropertyDescriptor> props = writableProperties(o.getClass());
-		PropertyDescriptor desc = props.get(propName.toLowerCase(Util.DEF_LOCALE));
+		PropertyDescriptor desc = props.get(propName.toLowerCase(I18n.DEF_LOCALE));
 		return desc;
 	}
 
 	/**
 	 * Attempts trivial type conversion. This methods supports all casting
-	 * conversions (JLS 5.5) and always returns null when the input object is
-	 * null. If the target type is {@link String}, the result is the return
-	 * value of the input object's {@link Object#toString()} method. Any object
-	 * can be converted to {@link Integer}, {@link Double} and {@link Boolean},
-	 * but those conversions can throw exceptions.
+	 * conversions (JLS 5.5) and always returns null when the input object is null.
+	 * If the target type is {@link String}, the result is the return value of the
+	 * input object's {@link Object#toString()} method. Any object can be converted
+	 * to {@link Integer}, {@link Double} and {@link Boolean}, but those conversions
+	 * can throw exceptions.
 	 * 
-	 * @param o
-	 *            the object to be converted
-	 * @param klass
-	 *            the target type
-	 * @param <T>
-	 *            Type of returned object.
+	 * @param o     the object to be converted
+	 * @param klass the target type
+	 * @param <T>   Type of returned object.
 	 * @return the converted object
-	 * @throws TypeConversionException
-	 *             if the conversion is not supported
-	 * @throws NumberFormatException
-	 *             if the input object is not assignable to {@link Number} and
-	 *             the return value of its {@link Object#toString()} method
-	 *             can't be converted to the numeric target type
+	 * @throws TypeConversionException if the conversion is not supported
+	 * @throws NumberFormatException   if the input object is not assignable to
+	 *                                 {@link Number} and the return value of its
+	 *                                 {@link Object#toString()} method can't be
+	 *                                 converted to the numeric target type
 	 */
 	@SuppressWarnings("unchecked")
 	private static <T> T basicConversions(Object o, Class<T> klass)
@@ -529,7 +503,7 @@ public class TypeUtil {
 				return (T) Boolean.TRUE;
 			if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no") || str.equalsIgnoreCase("0"))
 				return (T) Boolean.FALSE;
-			throw new TypeConversionException(String.format(Util.DEF_LOCALE, "Can't convert '%s' to bool.", o));
+			throw new TypeConversionException(defFormat("Can't convert '%s' to bool.", o));
 		}
 
 		if (klass.isEnum()) {
@@ -562,8 +536,8 @@ public class TypeUtil {
 				return (T) new Character(s.charAt(0));
 		}
 
-		throw new TypeConversionException(String.format(Util.DEF_LOCALE, "Can't convert from '%s' to '%s'.",
-				o.getClass().getName(), klass.getName()));
+		throw new TypeConversionException(
+				defFormat("Can't convert from '%s' to '%s'.", o.getClass().getName(), klass.getName()));
 	}
 
 	private static WeakHashMap<Class<?>, Map<String, PropertyDescriptor>> propCache = null;
@@ -572,10 +546,9 @@ public class TypeUtil {
 	 * Returns a map of property descriptors. Keys in this map are the property
 	 * names converted to lower case.
 	 * 
-	 * @param c
-	 *            The class for which to find the properties.
-	 * @return A map associating a property name (converted to lower case) with
-	 *         a {@link PropertyDescriptor}.
+	 * @param c The class for which to find the properties.
+	 * @return A map associating a property name (converted to lower case) with a
+	 *         {@link PropertyDescriptor}.
 	 */
 	public static Map<String, PropertyDescriptor> writableProperties(Class<?> c) {
 		if (propCache == null)
@@ -587,7 +560,7 @@ public class TypeUtil {
 			PropertyDescriptor[] props = findWritableProperties(c);
 			beanProps = new HashMap<>();
 			for (PropertyDescriptor p : props) {
-				beanProps.put(p.getName().toLowerCase(Util.DEF_LOCALE), p);
+				beanProps.put(p.getName().toLowerCase(I18n.DEF_LOCALE), p);
 			}
 			propCache.put(c, beanProps);
 		}
@@ -595,17 +568,14 @@ public class TypeUtil {
 	}
 
 	/**
-	 * This method returns a clone of an object, if this object is cloneable.
-	 * The clone is created by calling <code>clone()</code> using Java
-	 * reflection, therefore <code>clone()</code> not necessarily has to be
-	 * public.
+	 * This method returns a clone of an object, if this object is cloneable. The
+	 * clone is created by calling <code>clone()</code> using Java reflection,
+	 * therefore <code>clone()</code> not necessarily has to be public.
 	 * 
-	 * @param o
-	 *            The object to be cloned.
-	 * @param <T>
-	 *            Type of returned object.
-	 * @return A clone of {@code o} if it was {@link Cloneable}, or otherwise
-	 *         the original object.
+	 * @param o   The object to be cloned.
+	 * @param <T> Type of returned object.
+	 * @return A clone of {@code o} if it was {@link Cloneable}, or otherwise the
+	 *         original object.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T cloneIfPossible(T o) {
@@ -665,10 +635,8 @@ public class TypeUtil {
 	 * {@code array} creating a clone is attempted using
 	 * {@link #cloneIfPossible(Object)}.
 	 * 
-	 * @param array
-	 *            The array to be cloned.
-	 * @param <T>
-	 *            Component type of the array.
+	 * @param array The array to be cloned.
+	 * @param <T>   Component type of the array.
 	 * @return A clone of {@code array} with each element also cloned.
 	 */
 	public static <T> T[] deepCloneArrayIfPossible(T[] array) {
@@ -743,20 +711,19 @@ public class TypeUtil {
 	private static final String PROP_SUN_JAVA_COMMAND = "sun.java.command";
 
 	/**
-	 * Tries to find the main class of a java run. This is attempted by looking
-	 * up the system properties {@code jasima.experiment} and
-	 * {@code sun.java.command} first. If this does not lead to a valid
-	 * classname (e.g., if started with "-jar" option) an attempt is made to
-	 * interpret the property as the name of a jar file. The manifest of this
-	 * jar is then searched for its entry {@code Main-Class}.
+	 * Tries to find the main class of a java run. This is attempted by looking up
+	 * the system properties {@code jasima.experiment} and {@code sun.java.command}
+	 * first. If this does not lead to a valid classname (e.g., if started with
+	 * "-jar" option) an attempt is made to interpret the property as the name of a
+	 * jar file. The manifest of this jar is then searched for its entry
+	 * {@code Main-Class}.
 	 * <p>
 	 * This code is necessary because Java has no virtual static methods and
 	 * therefore there is no equivalent to the keyword {@code this} in a static
 	 * method.
 	 * 
-	 * @throws ClassNotFoundException
-	 *             If there were problems locating the main class. Should not
-	 *             occur.
+	 * @throws ClassNotFoundException If there were problems locating the main
+	 *                                class. Should not occur.
 	 */
 	public static Class<?> getMainClass() throws ClassNotFoundException {
 		Properties props = System.getProperties();
@@ -766,8 +733,8 @@ public class TypeUtil {
 			main = (String) findEntryCaseInsensitive(props, PROP_SUN_JAVA_COMMAND);
 		}
 		if (main == null) {
-			throw new RuntimeException(String.format(Util.DEF_LOCALE, "Couldn't find properties '%s' or '%s'.",
-					PROP_SUN_JAVA_COMMAND, PROP_JASIMA_EXPERIMENT));
+			throw new RuntimeException(
+					defFormat("Couldn't find properties '%s' or '%s'.", PROP_SUN_JAVA_COMMAND, PROP_JASIMA_EXPERIMENT));
 		}
 
 		// strip any arguments, if present
@@ -823,4 +790,52 @@ public class TypeUtil {
 		return null;
 	}
 
+	public static <E> Class<? extends E> getClassFromSystemProperty(String propertyName, Class<E> clazz,
+			Class<? extends E> defaultClass) {
+		ClassLoader cl = clazz.getClassLoader();
+		Class<? extends E> result;
+
+		String classname = System.getProperty(propertyName);
+		if (classname == null) {
+			result = defaultClass;
+		} else {
+			try {
+				Class<?> class1 = Class.forName(classname, false, cl); // for security reasons it is important to use an
+																		// uninitialized class here.
+				result = class1.asSubclass(clazz);
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Creates an instance of the class passed as a parameter using its
+	 * parameter-less constructor. Should any Exception be triggered creating the
+	 * instance ({@code Class#newInstance()} can throw the checked Exceptions
+	 * {@link InstantiationException} and an {@code IllegalAccessException}), then
+	 * it is rethrown as an unchecked exception wrapped in a RuntimeException.
+	 * 
+	 * @param <T>   Type of the object to create
+	 * @param clazz Class of the object to create (mustn't be null)
+	 * @return The new instance
+	 * @throws RuntimeException If any Exception occurs when creating the instance,
+	 *                          it will be rethrown wrapped in a
+	 *                          {@code RuntimeException}
+	 */
+	public static <T> T createInstance(Class<T> clazz) {
+		try {
+			return clazz.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Prevent instantiation
+	 */
+	private TypeUtil() {
+	}
 }

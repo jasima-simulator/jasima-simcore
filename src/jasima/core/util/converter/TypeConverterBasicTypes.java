@@ -20,10 +20,10 @@
  *******************************************************************************/
 package jasima.core.util.converter;
 
-import jasima.core.util.ArgListTokenizer;
-import jasima.core.util.ArgListTokenizer.TokenType;
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import jasima.core.util.TypeUtil.TypeConversionException;
-import jasima.core.util.Util;
+import jasima.core.util.converter.ArgListTokenizer.TokenType;
 
 public class TypeConverterBasicTypes extends TypeToStringConverter {
 
@@ -62,7 +62,7 @@ public class TypeConverterBasicTypes extends TypeToStringConverter {
 				return (T) Boolean.TRUE;
 			if (s.equalsIgnoreCase("false") || s.equalsIgnoreCase("no") || s.equalsIgnoreCase("0"))
 				return (T) Boolean.FALSE;
-			throw new TypeConversionException(String.format(Util.DEF_LOCALE, "Can't convert '%s' to bool.", s));
+			throw new TypeConversionException(defFormat("Can't convert '%s' to bool.", s));
 		}
 
 		if (klass.isEnum()) {

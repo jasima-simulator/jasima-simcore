@@ -25,7 +25,7 @@ import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Locale;
 
-import jasima.core.util.Util;
+import jasima.core.util.i18n.I18n;
 
 /**
  * <p>
@@ -57,11 +57,10 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	protected double[] p2_n_increment;
 
 	/**
-	 * Creates a QuantileEstimator and optimizes the marker positions to
-	 * estimates the quantiles 0.1, 0.5 (the median) and 0.9 well.
+	 * Creates a QuantileEstimator and optimizes the marker positions to estimates
+	 * the quantiles 0.1, 0.5 (the median) and 0.9 well.
 	 * 
-	 * @param name
-	 *            the name of this {@link SummaryStat}
+	 * @param name the name of this {@link SummaryStat}
 	 */
 	public QuantileEstimator(String name) {
 		super(name);
@@ -70,14 +69,12 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	}
 
 	/**
-	 * Creates a QuantileEstimator and optimizes the marker positions to
-	 * estimates the given quantiles well.
+	 * Creates a QuantileEstimator and optimizes the marker positions to estimates
+	 * the given quantiles well.
 	 * 
 	 * @see #setQuantileList(double...)
-	 * @param name
-	 *            the name of this {@link SummaryStat}
-	 * @param quantiles
-	 *            a list of quantiles to be estimated
+	 * @param name      the name of this {@link SummaryStat}
+	 * @param quantiles a list of quantiles to be estimated
 	 */
 	public QuantileEstimator(String name, double... quantiles) {
 		super(name);
@@ -85,8 +82,8 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	}
 
 	/**
-	 * Sets a list of quantiles to be estimated. For n quantiles, 2n+3 markers
-	 * will be created.
+	 * Sets a list of quantiles to be estimated. For n quantiles, 2n+3 markers will
+	 * be created.
 	 */
 	public void setQuantileList(double... quantiles) {
 		Arrays.sort(quantiles);
@@ -129,8 +126,8 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	}
 
 	/**
-	 * Sets the number of cells of the histogram. Each cell will usually be
-	 * plotted as a bar.
+	 * Sets the number of cells of the histogram. Each cell will usually be plotted
+	 * as a bar.
 	 */
 	public void setCellCount(int cells) {
 		assert cells >= 2;
@@ -143,8 +140,8 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 
 	/**
 	 * Returns the number of cells of the histogram. The returned value will be
-	 * equal to the one passed to {@link #setCellCount(int)}, if the markers
-	 * have't been modified afterwards.
+	 * equal to the one passed to {@link #setCellCount(int)}, if the markers have't
+	 * been modified afterwards.
 	 */
 	public int getCellCount() {
 		return p2_q.length - 1;
@@ -169,9 +166,9 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 
 	/**
 	 * Initializes all markers. This requires {@link #p2_n_increment} to be set.
-	 * After this method completes, {@link #p2_n} and {@link #p2_q} will have
-	 * the right dimensions and {@link #p2_n} will be initialized. This method
-	 * should only be called when {@link #numObs()} would return 0. Otherwise,
+	 * After this method completes, {@link #p2_n} and {@link #p2_q} will have the
+	 * right dimensions and {@link #p2_n} will be initialized. This method should
+	 * only be called when {@link #numObs()} would return 0. Otherwise,
 	 * {@link #clear()} should be called.
 	 */
 	protected void initMarkers() {
@@ -288,8 +285,7 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	}
 
 	/**
-	 * Can be used to receive a list of {@link Bar} instances to create a
-	 * histogram.
+	 * Can be used to receive a list of {@link Bar} instances to create a histogram.
 	 */
 	@Override
 	public Iterator<Bar> iterator() {
@@ -322,14 +318,13 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	/**
 	 * Formats a histogram so that a bar graph can be plotted. Each line of the
 	 * output will represent one bar and have three columns for the middle X
-	 * position, height and width of the bar. The area of each bar is the ratio
-	 * of all values within the X range of the bar.
+	 * position, height and width of the bar. The area of each bar is the ratio of
+	 * all values within the X range of the bar.
 	 * 
 	 * Gnuplot can directly plot a bar graph using the command
 	 * <code>plot <i>filename</i> with boxes</code>.
 	 * 
-	 * @param fmt
-	 *            the formatter to store the output
+	 * @param fmt the formatter to store the output
 	 */
 	public void formatForGnuplot(Formatter fmt) {
 		for (Bar b : this) {
@@ -339,13 +334,12 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 
 	/**
 	 * Estimates a quantile. If there is no marker for the quantile p, linear
-	 * interpolation between the two closest markers is performed. If p is NaN,
-	 * NaN will be returned. If there haven't been enough observations or the
-	 * markers are not initialized, NaN is returned. If <code>p &lt;= 0.0</code>
-	 * or <code>p &gt;= 1.0</code>, the minimum or maximum will be returned.
+	 * interpolation between the two closest markers is performed. If p is NaN, NaN
+	 * will be returned. If there haven't been enough observations or the markers
+	 * are not initialized, NaN is returned. If <code>p &lt;= 0.0</code> or
+	 * <code>p &gt;= 1.0</code>, the minimum or maximum will be returned.
 	 * 
-	 * @param p
-	 *            any number
+	 * @param p any number
 	 * @return a number that is estimated to be bigger than 100p percent of all
 	 *         numbers or Double.NaN, if no data is available
 	 */
@@ -370,8 +364,8 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	@Override
 	public String toString() {
 		if (p2_q.length > 10) {
-			return String.format(Util.DEF_LOCALE, "[10%%<%f, median: %f, 90%%<%f; %d more markers]", quantile(0.1),
-					quantile(0.5), quantile(0.9), p2_q.length - 3);
+			return I18n.defFormat("[10%%<%f, median: %f, 90%%<%f; %d more markers]", quantile(0.1), quantile(0.5),
+					quantile(0.9), p2_q.length - 3);
 		}
 		Formatter fmt = new Formatter();
 		fmt.format("[");
@@ -394,8 +388,7 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 		public double maxX;
 
 		/**
-		 * The estimated ratio of observations within {@link #minX} and
-		 * {@link #maxX}.
+		 * The estimated ratio of observations within {@link #minX} and {@link #maxX}.
 		 */
 		public double area;
 

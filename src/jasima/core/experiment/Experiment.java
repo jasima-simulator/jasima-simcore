@@ -41,6 +41,7 @@ import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
+import jasima.core.util.i18n.I18n;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierImpl;
 
@@ -157,7 +158,7 @@ public abstract class Experiment
 		 * @see Util#DEF_LOCALE
 		 */
 		public String getMessage() {
-			return getMessage(Util.DEF_LOCALE);
+			return getMessage(I18n.DEF_LOCALE);
 		}
 
 		/**

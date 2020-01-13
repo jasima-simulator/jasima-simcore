@@ -50,7 +50,6 @@ import util.ExtendedJobStatCollector;
 /**
  * 
  * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
  */
 @SuppressWarnings("deprecation")
 public class TestBestOfFamilyBatching {
@@ -59,6 +58,7 @@ public class TestBestOfFamilyBatching {
 	public void setUp() {
 		System.out.println("setting up");
 		System.setProperty(RandomFactory.RANDOM_FACTORY_PROP_KEY, RandomFactory.class.getName());
+		RandomFactory.reloadSysProps();
 	}
 
 	public static MimacExperiment createBaseExperiment() {

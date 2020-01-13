@@ -20,6 +20,9 @@
  *******************************************************************************/
 package jasima.core.expExecution;
 
+import static jasima.core.util.TypeUtil.createInstance;
+import static jasima.core.util.TypeUtil.getClassFromSystemProperty;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,59 +39,53 @@ import jasima.core.experiment.Experiment;
  * the number of available processors).
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * @see ThreadPoolExecutor
  * @see ForkJoinPoolExecutor
  */
 public abstract class ExperimentExecutor {
 
 	public static final String EXECUTOR_FACTORY = ExperimentExecutor.class.getName();
-	public static final String DEFAULT_FACTORY = ThreadPoolExecutor.class.getName();
+	public static final Class<? extends ExperimentExecutor> execFactoryImpl = getClassFromSystemProperty(
+			EXECUTOR_FACTORY, ExperimentExecutor.class, ThreadPoolExecutor.class);
 
-	private static volatile ExperimentExecutor execFactoryInst = null;
+	// thread-safe lazy initialization holder class idiom for static fields
+	private static class ExecHolder {
+		static final ExperimentExecutor instance = createExecutor();
+	}
 
 	public static ExperimentExecutor getExecutor() {
-		if (execFactoryInst == null) {
-			synchronized (ExperimentExecutor.class) {
-				if (execFactoryInst == null) { // double check for thread safety
-					String factName = System.getProperty(EXECUTOR_FACTORY, DEFAULT_FACTORY);
-					try {
-						Class<?> c = Class.forName(factName);
-						execFactoryInst = (ExperimentExecutor) c.newInstance();
-					} catch (Exception ex) {
-						throw new RuntimeException(ex);
-					}
+		return ExecHolder.instance;
+	}
 
-					// cleanup
-					Runtime.getRuntime().addShutdownHook(new Thread() {
-						@Override
-						public void run() {
-							ExperimentExecutor.getExecutor().shutdownNow();
-						}
-					});
-				}
+	private static ExperimentExecutor createExecutor() {
+		ExperimentExecutor result = createInstance(execFactoryImpl);
+
+		// cleanup
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				result.shutdownNow();
 			}
-		}
+		});
 
-		return execFactoryInst;
+		return result;
 	}
 
 	/**
-	 * Protected constructor, use {@link #getExecutor()} instead.
+	 * Don't call directly, use {@link #getExecutor()} instead. Has to be public to
+	 * be callable by reflection.
 	 */
-	protected ExperimentExecutor() {
+	public ExperimentExecutor() {
 		super();
 	}
 
 	/**
-	 * Runs an experiment usually in an asynchronous ways. Therefore an
+	 * Runs an experiment (usually in an asynchronous way). Therefore an
 	 * {@link ExperimentFuture} is returned to access results once they become
 	 * available.
 	 * 
-	 * @param e
-	 *            The experiment to execute.
-	 * @param parent
-	 *            The parent experiment of "e". This might be null.
+	 * @param e      The experiment to execute.
+	 * @param parent The parent experiment of "e". This might be null.
 	 * 
 	 * @return An {@link ExperimentFuture} to access experiment results.
 	 */
@@ -104,10 +101,8 @@ public abstract class ExperimentExecutor {
 	 * {@link #runExperiment(Experiment,Experiment)} for all experiments in
 	 * {@code es}.
 	 * 
-	 * @param es
-	 *            A list of {@link Experiment}s to run.
-	 * @param parent
-	 *            The parent experiment of "es". This might be null.
+	 * @param es     A list of {@link Experiment}s to run.
+	 * @param parent The parent experiment of "es". This might be null.
 	 * 
 	 * @return A {@link Collection} of {@link ExperimentFuture}s, one for each
 	 *         submitted experiment.
@@ -120,18 +115,6 @@ public abstract class ExperimentExecutor {
 		}
 
 		return res;
-	}
-
-	/**
-	 * Clears the singleton {@link ExperimentExecutor} instance. Use this method
-	 * only for testing purposes!
-	 */
-	public static void clearInst() {
-		synchronized (ExperimentExecutor.class) {
-			if (execFactoryInst != null)
-				execFactoryInst.shutdownNow();
-			execFactoryInst = null;
-		}
 	}
 
 }

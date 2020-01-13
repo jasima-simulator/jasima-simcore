@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.exception.NotPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * This class implements a discrete number stream following a
@@ -33,7 +33,6 @@ import jasima.core.util.Util;
  * 
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson
  *      distribution (Wikipedia)</a>
@@ -63,7 +62,7 @@ public class IntPoisson extends IntDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "IntPoisson(mean=%f)", getMean());
+		return defFormat("IntPoisson(mean=%f)", getMean());
 	}
 
 	// ************* getter / setter below ****************
@@ -75,10 +74,8 @@ public class IntPoisson extends IntDistribution {
 	/**
 	 * The mean of the Poisson distribution.
 	 * 
-	 * @param mean
-	 *            The value to use.
-	 * @throws NotPositiveException
-	 *             If {@code mean} was {@code <=0}.
+	 * @param mean The value to use.
+	 * @throws NotPositiveException If {@code mean} was {@code <=0}.
 	 */
 	public void setMean(double mean) throws NotPositiveException {
 		setDistribution(new PoissonDistribution(mean));

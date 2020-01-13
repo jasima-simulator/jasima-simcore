@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * Implements a stream of numbers following a
@@ -33,7 +33,6 @@ import jasima.core.util.Util;
  * {@code degreesOfFreedom}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Student%27s_t-distribution">
  *      Student's t-distribution (Wikipedia)</a>
@@ -63,7 +62,7 @@ public class DblTDist extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblTDist(degreesOfFreedom=%f)", getDegreesOfFreedom());
+		return defFormat("DblTDist(degreesOfFreedom=%f)", getDegreesOfFreedom());
 	}
 
 	public double getDegreesOfFreedom() {
@@ -73,10 +72,9 @@ public class DblTDist extends DblDistribution {
 	/**
 	 * Sets the degrees of freedom for this distribution.
 	 * 
-	 * @param degreesOfFreedom
-	 *            The degrees of freedom to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If the parameter value was {@code <=0.0}.
+	 * @param degreesOfFreedom The degrees of freedom to use.
+	 * @throws NotStrictlyPositiveException If the parameter value was
+	 *                                      {@code <=0.0}.
 	 */
 	public void setDegreesOfFreedom(double degreesOfFreedom) throws NotStrictlyPositiveException {
 		setDistribution(new TDistribution(degreesOfFreedom));

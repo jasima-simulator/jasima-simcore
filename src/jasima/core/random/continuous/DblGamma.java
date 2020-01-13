@@ -20,11 +20,11 @@
  *******************************************************************************/
 package jasima.core.random.continuous;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-
-import jasima.core.util.Util;
 
 /**
  * Implements a stream of real numbers where each value follows a
@@ -63,7 +63,7 @@ public class DblGamma extends DblDistribution {
 
 	@Override
 	public String toString() {
-		return String.format(Util.DEF_LOCALE, "DblGamma(shape=%f;scale=%f)", getShape(), getScale());
+		return defFormat("DblGamma(shape=%f;scale=%f)", getShape(), getScale());
 	}
 
 	public double getShape() {
@@ -73,10 +73,9 @@ public class DblGamma extends DblDistribution {
 	/**
 	 * Sets the shape parameter for this distribution.
 	 * 
-	 * @param shape
-	 *            The shape parameter to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If the parameter value was {@code <=0.0}.
+	 * @param shape The shape parameter to use.
+	 * @throws NotStrictlyPositiveException If the parameter value was
+	 *                                      {@code <=0.0}.
 	 */
 	public void setShape(double shape) throws NotStrictlyPositiveException {
 		setDistribution(new GammaDistribution(shape, dist.getScale()));
@@ -89,10 +88,9 @@ public class DblGamma extends DblDistribution {
 	/**
 	 * Sets the scale parameter for this distribution.
 	 * 
-	 * @param scale
-	 *            The scale parameter to use.
-	 * @throws NotStrictlyPositiveException
-	 *             If the parameter value was {@code <=0.0}.
+	 * @param scale The scale parameter to use.
+	 * @throws NotStrictlyPositiveException If the parameter value was
+	 *                                      {@code <=0.0}.
 	 */
 	public void setScale(double scale) throws NotStrictlyPositiveException {
 		setDistribution(new GammaDistribution(dist.getShape(), scale));

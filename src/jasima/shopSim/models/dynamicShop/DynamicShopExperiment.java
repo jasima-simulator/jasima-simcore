@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.shopSim.models.dynamicShop;
 
+import static jasima.core.util.i18n.I18n.defFormat;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -87,8 +89,8 @@ public class DynamicShopExperiment extends ShopExperiment {
 		super.init();
 
 		if (getScenario() == null)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"No scenario specified, should be one of %s.", Arrays.toString(Scenario.values())));
+			throw new IllegalArgumentException(
+					defFormat("No scenario specified, should be one of %s.", Arrays.toString(Scenario.values())));
 
 		Objects.requireNonNull(procTimes);
 
@@ -189,11 +191,11 @@ public class DynamicShopExperiment extends ShopExperiment {
 		int min = getNumOpsMin() > 0 ? getNumOpsMin() : getNumMachines();
 		int max = getNumOpsMax() > 0 ? getNumOpsMax() : getNumMachines();
 		if (min > max)
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE, "invalid range for numOps: [%d; %d]",
-					getNumOpsMin(), getNumOpsMax()));
+			throw new IllegalArgumentException(
+					defFormat("invalid range for numOps: [%d; %d]", getNumOpsMin(), getNumOpsMax()));
 		if (max > getNumMachines())
-			throw new IllegalArgumentException(String.format(Util.DEF_LOCALE,
-					"Can't have more operations (%d) than there are machines (%d).", max, getNumMachines()));
+			throw new IllegalArgumentException(
+					defFormat("Can't have more operations (%d) than there are machines (%d).", max, getNumMachines()));
 		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);
 		src.setNumOps(numOps);
 
