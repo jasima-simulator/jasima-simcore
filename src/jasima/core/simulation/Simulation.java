@@ -1291,7 +1291,7 @@ public class Simulation {
 		loadExtensions();
 	}
 
-	enum I18nConsts {
+	static enum I18nConsts {
 		EXT_LOADED;
 	}
 }

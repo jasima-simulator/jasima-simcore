@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -21,8 +22,9 @@ public final class I18n {
 	 */
 	public static final Locale DEF_LOCALE = Locale.US;
 
-	private static Set<String> bundleNames = new HashSet<>();
-	private static Map<Locale, ArrayDeque<ResourceBundle>> loadedBundles = new HashMap<>();
+	private static final Locale UNKNOWN_LOCALE = Locale.forLanguageTag("yq-YQ");
+	private static final Set<String> bundleNames = new HashSet<>();
+	private static final Map<Locale, ArrayDeque<ResourceBundle>> loadedBundles = new HashMap<>();
 
 	static {
 		loadedBundles.put(DEF_LOCALE, loadNewLocale(DEF_LOCALE));
@@ -51,7 +53,7 @@ public final class I18n {
 
 	public static void registerResourceBundle(String name) {
 		if (bundleNames.contains(requireNonNull(name))) {
-			throw new IllegalArgumentException("Resource bundle " + name + " already defined.");
+			throw new IllegalArgumentException("Resource bundle '" + name + "' already defined.");
 		}
 
 		// load the new ResourceBundle for each Locale requested so far, latest first
@@ -60,22 +62,37 @@ public final class I18n {
 		bundleNames.add(name);
 	}
 
+	@SafeVarargs
+	public static <E extends Enum<E>> void checkEnumTypeHasDefaultMessages(Class<E>... enumTypes) {
+		for (Class<E> et : enumTypes) {
+			for (E e : et.getEnumConstants()) {
+				getMessage(UNKNOWN_LOCALE, e); // throws an exception if nothing is found
+			}
+		}
+	}
+
 	public static String getMessage(Locale l, Enum<?> key) {
 		return getMessage(l, getKeyName(key));
 	}
 
 	public static String getMessage(Locale l, String keyName) {
 		ArrayDeque<ResourceBundle> bundles = loadedBundles.computeIfAbsent(l, I18n::loadNewLocale);
-		Optional<String> firstMatchingMsg = bundles.stream()
-				.map(rb -> rb.getString(keyName))
-				.filter(Objects::nonNull)
-				.findFirst();
-		return firstMatchingMsg.orElseThrow(IllegalArgumentException::new);
+		Optional<String> firstMatchingMsg = bundles.stream().map(rb -> bundleLookup(rb, keyName))
+				.filter(Objects::nonNull).findFirst();
+		return firstMatchingMsg.orElseThrow(() -> new MissingResourceException(
+				"Can't find message for resource key '" + keyName + "'.", I18n.class.getName(), keyName));
+	}
+
+	private static String bundleLookup(ResourceBundle rb, String keyName) {
+		try {
+			return rb.getString(keyName);
+		} catch (Exception e) {
+			return (String) null;
+		}
 	}
 
 	public static String getKeyName(Enum<?> key) {
-		String keyName = key.getClass().getTypeName() + "." + key.toString();
-		return keyName.toLowerCase(I18n.DEF_LOCALE);
+		return key.getClass().getTypeName() + "." + key.toString();
 	}
 
 	private static ArrayDeque<ResourceBundle> loadNewLocale(Locale l) {
