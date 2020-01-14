@@ -397,19 +397,19 @@ public class Simulation {
 	protected void runMainLoop() {
 		// main event loop
 		while (continueSim) {
-			currEvent = events.extract();
+			SimEvent evt = events.extract();
+			currEvent = evt;
 
 			// Advance clock to time of next event
-			simTime = currEvent.getTime();
-			currPrio = currEvent.getPrio();
-
-			currEvent.handle();
-
-			if (currEvent.isAppEvent()) {
-				if (--numAppEvents == 0)
-					continueSim = false;
+			simTime = evt.getTime();
+			currPrio = evt.getPrio();
+			if (evt.isAppEvent() && --numAppEvents == 0) {
+				continueSim = false;
 			}
 
+			evt.handle();
+
+			continueSim = numAppEvents == 0;
 			numEventsProcessed++;
 		}
 	}
@@ -1247,29 +1247,29 @@ public class Simulation {
 	private boolean wasSignaled;
 	private Exception throwInMainThread;
 
-	public Thread mainThread() {
-		return simThread;
-	}
-
-	public void activate(Exception throwInMainThread) {
-		this.throwInMainThread = throwInMainThread;
-		wasSignaled = true;
-		LockSupport.unpark(simThread);
-	}
-
-	public void deactivate() {
-		assert Thread.currentThread() == simThread;
-
-		wasSignaled = false;
-		while (!wasSignaled) { // guard against spurious wake-ups
-			LockSupport.park();
-		}
-
-		// there was an uncaught exception in the previously executed process
-		if (throwInMainThread != null) {
-			throw new RuntimeException(throwInMainThread);
-		}
-	}
+//	public Thread mainThread() {
+//		return simThread;
+//	}
+//
+//	public void activate(Exception throwInMainThread) {
+//		this.throwInMainThread = throwInMainThread;
+//		wasSignaled = true;
+//		LockSupport.unpark(simThread);
+//	}
+//
+//	public void deactivate() {
+//		assert Thread.currentThread() == simThread;
+//
+//		wasSignaled = false;
+//		while (!wasSignaled) { // guard against spurious wake-ups
+//			LockSupport.park();
+//		}
+//
+//		// there was an uncaught exception in the previously executed process
+//		if (throwInMainThread != null) {
+//			throw new RuntimeException(throwInMainThread);
+//		}
+//	}
 
 	private SimProcess<?> currentProcess;
 

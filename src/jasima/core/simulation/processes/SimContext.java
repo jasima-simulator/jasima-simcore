@@ -1,5 +1,6 @@
 package jasima.core.simulation.processes;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import jasima.core.simulation.Simulation;
@@ -57,6 +58,20 @@ public class SimContext {
 			throw new IllegalStateException(); // old context not properly cleared?
 		}
 		currentSim.set(sim);
+	}
+
+	public static Map<String, Object> of(SimRunnable r, String name) {
+		return of(SimProcessUtil.callable(r), name);
+	}
+
+	public static Map<String, Object> of(Callable<?> actions, String name) {
+		Simulation sim = new Simulation();
+		sim.setName(name);
+
+		SimProcess<?> mainProcess = new SimProcess<>(sim, actions);
+		mainProcess.awakeIn(0.0);
+
+		return sim.performRun();
 	}
 
 }
