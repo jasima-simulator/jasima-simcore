@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
-import jasima.core.simulation.MethodCallEvent;
+import jasima.core.simulation.SimEventMethodCall;
 import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.processes.SimProcessUtil.SimRunnable;
@@ -55,7 +55,7 @@ public class SimProcess<R> {
 		this.executor = null;
 		this.state = ProcessState.PASSIVE;
 		this.timeTerminated = this.timeActivated = Double.NaN;
-		this.activateProcessEvent = new MethodCallEvent(sim.simTime(), sim.currentPrio() + 1, "ActivateProcess",
+		this.activateProcessEvent = new SimEventMethodCall(sim.simTime(), sim.currentPrio() + 1, "ActivateProcess",
 				this::activateProcess);
 	}
 

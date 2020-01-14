@@ -623,7 +623,7 @@ public class Simulation {
 	 * @param action      The method to call at the given moment.
 	 */
 	public void schedule(String description, double time, int prio, Runnable action) {
-		SimEvent e = new MethodCallEvent(time, prio, description, action);
+		SimEvent e = new SimEventMethodCall(time, prio, description, action);
 		schedule(e);
 	}
 
