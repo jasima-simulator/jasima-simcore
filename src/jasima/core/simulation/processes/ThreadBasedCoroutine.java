@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.locks.LockSupport;
 
-public class ThreadBasedCoroutine implements Coroutine {
+public class ThreadBasedCoroutine implements Continuation {
 
 	private static ThreadGroup simThreads;
 
@@ -21,7 +21,7 @@ public class ThreadBasedCoroutine implements Coroutine {
 		return t;
 	}
 
-	public static Coroutine of(SimProcess<?> p) {
+	public static Continuation of(SimProcess<?> p) {
 		return new ThreadBasedCoroutine(p);
 	}
 

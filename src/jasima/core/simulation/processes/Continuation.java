@@ -1,6 +1,6 @@
 package jasima.core.simulation.processes;
 
-public interface Coroutine {
+public interface Continuation {
 
 	void activate();
 	void deactivate();

@@ -19,14 +19,14 @@ public class SimProcess<R> {
 		TEST1, TEST2
 	}
 
-	public static Coroutine startExecuting(SimProcess<?> p) {
+	public static Continuation startExecuting(SimProcess<?> p) {
 		return ThreadBasedCoroutine.of(p);
 	}
 
 	private final Simulation sim;
 	private final SimEvent activateProcessEvent;
 
-	private Coroutine executor;
+	private Continuation executor;
 
 	private final Callable<R> action;
 	private R execResult;
