@@ -1,5 +1,6 @@
 package jasima.core.util.i18n;
 
+import static jasima.core.util.i18n.I18n.I18nConsts.RES_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toCollection;
@@ -15,6 +16,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import jasima.core.util.StandardExtensionImpl;
+
 public final class I18n {
 
 	/**
@@ -28,6 +31,7 @@ public final class I18n {
 
 	static {
 		loadedBundles.put(DEF_LOCALE, loadNewLocale(DEF_LOCALE));
+		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
 	}
 
 	/**
@@ -43,44 +47,68 @@ public final class I18n {
 		return String.format(DEF_LOCALE, formatString, args);
 	}
 
-	public static String defGetMessage(Enum<?> key) {
-		return defGetMessage(getKeyName(key));
+	public static String message(Enum<?> key) {
+		return message(DEF_LOCALE, key);
 	}
 
-	public static String defGetMessage(String keyName) {
-		return getMessage(DEF_LOCALE, keyName);
+	public static String message(String keyName) {
+		return message(DEF_LOCALE, keyName);
+	}
+
+	public static String message(Locale l, Enum<?> key) {
+		return message(l, keyName(key));
+	}
+
+	public static String message(Locale l, String keyName) {
+		ArrayDeque<ResourceBundle> bundles = loadedBundles.computeIfAbsent(l, I18n::loadNewLocale);
+		Optional<String> firstMatchingMsg = bundles.stream().map(rb -> bundleLookup(rb, keyName))
+				.filter(Objects::nonNull).findFirst();
+		return firstMatchingMsg.orElseThrow(() -> new MissingResourceException(formattedMessage(RES_NOT_FOUND, keyName),
+				I18n.class.getName(), keyName));
+	}
+
+	public static String formattedMessage(Enum<?> key, Object... args) {
+		return formattedMessage(DEF_LOCALE, key, args);
+	}
+
+	public static String formattedMessage(String keyName, Object... args) {
+		return formattedMessage(DEF_LOCALE, keyName, args);
+	}
+
+	public static String formattedMessage(Locale l, Enum<?> key, Object... args) {
+		return formattedMessage(l, message(l, key), args);
+	}
+
+	public static String formattedMessage(Locale l, String keyName, Object... args) {
+		return String.format(l, message(l, keyName), args);
+	}
+
+	public static String keyName(Enum<?> key) {
+		return key.getClass().getCanonicalName() + "." + key.toString();
 	}
 
 	public static void registerResourceBundle(String name) {
 		if (bundleNames.contains(requireNonNull(name))) {
-			throw new IllegalArgumentException("Resource bundle '" + name + "' already defined.");
+			return;
 		}
 
 		// load the new ResourceBundle for each Locale requested so far, latest first
 		loadedBundles.forEach((l, rbs) -> rbs.addFirst(getBundle(name, l)));
-
 		bundleNames.add(name);
 	}
 
 	@SafeVarargs
-	public static <E extends Enum<E>> void checkEnumTypeHasDefaultMessages(Class<E>... enumTypes) {
+	public static <E extends Enum<E>> void requireResourceBundle(String bundleName, Class<E>... enumTypes) {
+		registerResourceBundle(bundleName);
 		for (Class<E> et : enumTypes) {
-			for (E e : et.getEnumConstants()) {
-				getMessage(UNKNOWN_LOCALE, e); // throws an exception if nothing is found
-			}
+			checkEnumTypeHasDefaultMessages(et);
 		}
 	}
 
-	public static String getMessage(Locale l, Enum<?> key) {
-		return getMessage(l, getKeyName(key));
-	}
-
-	public static String getMessage(Locale l, String keyName) {
-		ArrayDeque<ResourceBundle> bundles = loadedBundles.computeIfAbsent(l, I18n::loadNewLocale);
-		Optional<String> firstMatchingMsg = bundles.stream().map(rb -> bundleLookup(rb, keyName))
-				.filter(Objects::nonNull).findFirst();
-		return firstMatchingMsg.orElseThrow(() -> new MissingResourceException(
-				"Can't find message for resource key '" + keyName + "'.", I18n.class.getName(), keyName));
+	public static <E extends Enum<E>> void checkEnumTypeHasDefaultMessages(Class<E> enumType) {
+		for (E e : enumType.getEnumConstants()) {
+			message(UNKNOWN_LOCALE, e); // throws an exception if nothing is found
+		}
 	}
 
 	private static String bundleLookup(ResourceBundle rb, String keyName) {
@@ -91,12 +119,12 @@ public final class I18n {
 		}
 	}
 
-	public static String getKeyName(Enum<?> key) {
-		return key.getClass().getTypeName() + "." + key.toString();
-	}
-
 	private static ArrayDeque<ResourceBundle> loadNewLocale(Locale l) {
 		return bundleNames.stream().map(n -> getBundle(n, l)).collect(toCollection(ArrayDeque::new));
+	}
+
+	static enum I18nConsts {
+		RES_NOT_FOUND;
 	}
 
 }

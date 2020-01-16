@@ -6,11 +6,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimEvent;
+import jasima.core.simulation.SimProcess;
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.processes.SimContext;
-import jasima.core.simulation.processes.SimProcess;
-import jasima.core.simulation.processes.SimProcess.ProcessState;
+import jasima.core.simulation.SimProcess.ProcessState;
 import jasima.core.util.MsgCategory;
 
 public class SimProcessTest {

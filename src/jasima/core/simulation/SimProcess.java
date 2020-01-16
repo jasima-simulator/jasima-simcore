@@ -1,60 +1,68 @@
-package jasima.core.simulation.processes;
+package jasima.core.simulation;
 
-import static jasima.core.simulation.processes.ComponentStates.requireAllowedState;
+import static jasima.core.util.ComponentStates.requireAllowedState;
+import static jasima.core.util.SimProcessUtil.continueWith;
+import static jasima.core.util.SimProcessUtil.currentExecutor;
+import static jasima.core.util.SimProcessUtil.pauseExecuting;
+import static jasima.core.util.SimProcessUtil.startExecuting;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
 
-import jasima.core.simulation.SimEvent;
-import jasima.core.simulation.SimEventMethodCall;
-import jasima.core.simulation.Simulation;
-import jasima.core.simulation.processes.SimProcessUtil.SimRunnable;
+import jasima.core.simulation.Simulation.ErrorHandler;
+import jasima.core.util.SimProcessUtil;
+import jasima.core.util.SimProcessUtil.SimRunnable;
 
 public class SimProcess<R> implements Runnable {
 
-	private static final ExecutorService exec = Executors.newCachedThreadPool(SimProcess::newWorkerThread);
-	private static ThreadGroup simThreads = null;
-
-	private static Thread newWorkerThread(Runnable r) {
-		if (simThreads == null || simThreads.isDestroyed()) {
-			simThreads = new ThreadGroup("jasimaSimThreads");
-			simThreads.setDaemon(true);
-		}
-		return new Thread(simThreads, r);
+	public static enum ProcessState {
+		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
 	}
 
-	public static enum ProcessState implements ComponentState {
-		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
+	/**
+	 * Marker for all methods that might block, i.e., where execution might not
+	 * finish at the same simulation time when it was started.
+	 */
+	public static class MightBlock extends Exception {
+
+		private static final long serialVersionUID = 3091300075872193106L;
+
+		private MightBlock() { // prevent instantiation, this class is just a maker
+		}
+
 	}
 
 	private final Simulation sim;
 	private final Callable<R> action;
-	private final SimEvent activateProcessEvent;
-
-	private Thread executor;
-
-	private ArrayList<Consumer<SimProcess<?>>> completionNotifiers;
+	private ErrorHandler localErrorHandler;
 
 	private ProcessState state;
 	private R execResult;
 	private Exception execFailure;
+
+	private ArrayList<Consumer<SimProcess<R>>> completionNotifiers;
+	private final SimEvent activateProcessEvent;
 	private boolean wasSignaled;
+	private boolean reactivated;
+	private Thread executor;
 
 	public SimProcess(Simulation sim, SimRunnable r) {
 		this(sim, SimProcessUtil.callable(r));
 	}
 
 	public SimProcess(Simulation sim, Callable<R> action) {
+		this(sim, action, null);
+	}
+
+	public SimProcess(Simulation sim, Callable<R> action, ErrorHandler exceptionHandler) {
 		super();
 
 		this.sim = requireNonNull(sim);
 		this.action = action;
+		this.localErrorHandler = exceptionHandler;
 
 		this.executor = null;
 		this.state = ProcessState.PASSIVE;
@@ -79,65 +87,109 @@ public class SimProcess<R> implements Runnable {
 		}
 	}
 
-	private void activateProcess() {
-		SimProcess<?> current = sim.currentProcess();
-		state = ProcessState.RUNNING;
+	protected boolean handleError(Exception e) {
+		boolean shouldRethrow = true;
 
+		if (localErrorHandler != null) {
+			shouldRethrow = localErrorHandler.test(e);
+		}
+
+		if (shouldRethrow) {
+			shouldRethrow = sim.handleError(e);
+		}
+
+		return shouldRethrow;
+	}
+
+	@Override
+	public void run() {
+		try {
+			executor = currentExecutor();
+			SimContext.setThreadContext(sim);
+			requireAllowedState(state, ProcessState.RUNNING);
+			assert sim.currentProcess() == this;
+
+			try {
+				execResult = doRun();
+				execFailure = null;
+				state = ProcessState.TERMINATED;
+			} catch (Exception e) {
+				execResult = null;
+				execFailure = e;
+				state = ProcessState.ERROR;
+				if (handleError(e)) {
+					sim.terminateWithException(e); // unrecoverable error
+				}
+			}
+
+			runCompleteCallbacks();
+
+			yield();
+
+		} finally {
+			executor = null;
+			SimContext.setThreadContext(null);
+		}
+	}
+
+	private void yield() {
+		assert sim.currentProcess() == this;
+		assert SimContext.currentSimulation() == sim;
+		sim.setCurrentProcess(null);
+
+		// run the event loop in the current Thread (until it switches to a new one)
+		reactivated = false;
+		while (!reactivated && sim.continueSim()) {
+			try {
+				sim.handleNextEvent();
+			} catch (RuntimeException e) {
+				if (handleError(e)) {
+					sim.terminateWithException(e); // unrecoverable error
+				}
+			}
+		}
+
+		// event loop can be finished because whole sim is finished or current process
+		// is supposed to continue (either in its doRun method or after yield in run()).
+		if (!sim.continueSim() && this != sim.mainProcess()) {
+			switchTo(this, sim.mainProcess());
+		}
+	}
+
+	void activateProcess() {
+		requireAllowedState(state, ProcessState.PASSIVE, ProcessState.SCHEDULED);
+
+		state = ProcessState.RUNNING;
+		sim.setCurrentProcess(this);
+		reactivated = true;
+
+		SimProcess<?> current = sim.getEventLoopProcess();
 		if (current != this) {
 			// switch if we are running in the context of another process
 			switchTo(current, this);
 		}
 	}
 
-	@Override
-	public void run() {
-		executor = Thread.currentThread();
-		assert sim.currentProcess() == this;
-
-		SimContext.setThreadContext(sim);
-		try {
-			execResult = doRun();
-			state = ProcessState.TERMINATED;
-		} catch (Exception e) {
-			execFailure = e;
-			state = ProcessState.ERROR;
-		} finally {
-			executor = null;
-			runCompleteCallbacks();
-
-			if (caller != null) {
-				switchTo(this, caller);
-			}
-		}
-	}
-
-	private void yield() throws MightBlock {
-		assert sim.currentProcess() == this;
-		sim.setCurrentProcess(null);
-
-		// run the event loop in the current Thread (until it switches to a new one)
-		sim.runEventLoop();
-	}
-
 	private static void switchTo(SimProcess<?> from, SimProcess<?> to) {
+		assert from.sim == to.sim;
+
 		// start process "to"
 		assert !to.hasFinished();
+		to.sim.setEventLoopProcess(to);
 		if (to.executor == null) {
-			// start execution
-			exec.submit(to);
+			// start new
+			startExecuting(to);
 		} else {
 			// resume
 			to.wasSignaled = true;
-			LockSupport.unpark(to.executor);
+			continueWith(to.executor);
 		}
 
 		// pause current process "from"
-		if (!from.hasFinished()) {
-			assert from.executor == Thread.currentThread();
-
+		if (from != null) {
 			from.wasSignaled = false;
 			while (!from.wasSignaled) { // guard against spurious wakeups
-				LockSupport.park();
+				pauseExecuting(from.executor);
 			}
 		}
 	}
@@ -230,7 +282,7 @@ public class SimProcess<R> implements Runnable {
 		sim.schedule(activateProcessEvent);
 	}
 
-	private void addCompletionNotifier(Consumer<SimProcess<?>> callback) {
+	private void addCompletionNotifier(Consumer<SimProcess<R>> callback) {
 		if (completionNotifiers == null) {
 			completionNotifiers = new ArrayList<>();
 		}
@@ -256,6 +308,14 @@ public class SimProcess<R> implements Runnable {
 
 	public ProcessState processState() {
 		return state;
+	}
+
+	public ErrorHandler getLocalErrorHandler() {
+		return localErrorHandler;
+	}
+
+	public void setLocalErrorHandler(ErrorHandler h) {
+		localErrorHandler = h;
 	}
 
 }

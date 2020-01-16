@@ -21,9 +21,11 @@
 package jasima.core.simulation;
 
 import static jasima.core.simulation.Simulation.I18nConsts.EXT_LOADED;
+import static jasima.core.util.ComponentStates.requireAllowedState;
 import static jasima.core.util.TypeUtil.createInstance;
 import static jasima.core.util.i18n.I18n.defFormat;
-import static jasima.core.util.i18n.I18n.defGetMessage;
+import static jasima.core.util.i18n.I18n.message;
+import static java.util.EnumSet.complementOf;
 import static java.util.Objects.requireNonNull;
 
 import java.time.Clock;
@@ -35,6 +37,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -42,15 +45,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
+import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,10 +63,9 @@ import jasima.core.JasimaExtension;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
-import jasima.core.simulation.processes.SimContext;
-import jasima.core.simulation.processes.SimProcess;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.StandardExtensionImpl;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
@@ -97,6 +100,20 @@ public class Simulation {
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final Class<? extends EventHeap> queueImpl = TypeUtil.getClassFromSystemProperty(QUEUE_IMPL_KEY,
 			EventHeap.class, EventHeap.class);
+
+	@FunctionalInterface
+	public static interface ErrorHandler extends Predicate<Exception> {
+		boolean test(Exception e);
+	}
+
+	public static class SimulationFailed extends RuntimeException {
+
+		private static final long serialVersionUID = 4068987513637601189L;
+
+		SimulationFailed(String msg, Exception cause) {
+			super(msg, cause);
+		}
+	}
 
 	/**
 	 * {@link SimPrintMessage}s are produced whenever {@code print()} or
@@ -203,6 +220,7 @@ public class Simulation {
 	private String name = null;
 	private long simTimeToMillisFactor = MILLIS_PER_MINUTE; // simulation time in minutes
 	private Instant simTimeStartInstant;
+	private ErrorHandler errorHandler = null;
 
 	private SimComponentContainer<SimComponent> rootComponent;
 
@@ -218,29 +236,38 @@ public class Simulation {
 	private int currPrio;
 	private SimEvent currEvent;
 	private long numEventsProcessed;
+	private SimProcess<?> currentProcess;
+	private SimProcess<?> eventLoopProcess;
+
+	private boolean endRequested;
+	private boolean continueSim;
+
+	private boolean awakePausedWorker;
+	private Thread pausedWorkerThread;
+
+	private ConcurrentLinkedQueue<Runnable> runInSimThread;
 
 	// event queue
 	private EventQueue events;
 	// eventNum is used to enforce FIFO-order of concurrent events with equal
 	// priorities
 	private int eventNum;
-	private boolean continueSim;
 	private int numAppEvents;
 
 	private SimExecState state;
 
-	private Semaphore pauseHelper;
 	private AtomicInteger pauseRequests;
-	private Thread simThread;
+
+	private SimProcess<Void> mainProcess;
+
+	private Exception execFailure;
 
 	public Simulation() {
 		super();
 
-		pauseHelper = new Semaphore(1, true);
-		pauseRequests = new AtomicInteger(0);
-
 		state = SimExecState.INITIAL;
-
+		pauseRequests = new AtomicInteger(0);
+		runInSimThread = new ConcurrentLinkedQueue<>();
 		printListener = new ArrayList<>();
 
 		RandomFactory randomFactory = RandomFactory.newInstance();
@@ -299,14 +326,11 @@ public class Simulation {
 	 * {@link #run()}.
 	 */
 	public void init() {
-		checkState("initialize", state(), SimExecState.INITIAL);
+		requireAllowedState(state, SimExecState.INITIAL);
 
 		state = SimExecState.INIT;
-
 		simTime = getInitialSimTime();
-
 		initComponentTree(null, rootComponent);
-
 		rootComponent.init();
 	}
 
@@ -341,89 +365,53 @@ public class Simulation {
 	 * @see jasima.core.simulation.SimEvent#isAppEvent()
 	 */
 	public void run() {
-		checkState("run", state(), SimExecState.BEFORE_RUN);
+		requireAllowedState(state, SimExecState.BEFORE_RUN);
+
+		execFailure = null;
 
 		state = SimExecState.RUNNING;
 		resetStats();
 
-		simThread = Thread.currentThread();
-		SimContext.setThreadContext(this);
-		try {
-			do {
-				// make current thread block until simulation is unpaused.
-				if (pauseRequests.get() > 0) {
-					state = SimExecState.PAUSED;
+		continueSim = numAppEvents > 0 && !endRequested;
+		checkInitialEventTime();
 
-					if (blockWhilePaused()) {
-						return; // Simulation Thread was interrupted while paused
-					}
-				}
+		mainProcess = new SimProcess<Void>(this, null, null);
+		setCurrentProcess(mainProcess);
+		setEventLoopProcess(mainProcess);
+		mainProcess.activateProcess();
+		// we have to call run() to initialize 'mainProcess' properly in order to start
+		// executing the main event loop
+		mainProcess.run();
 
-				state = SimExecState.RUNNING;
-				continueSim = numAppEvents > 0;
-
-				checkInitialEventTime();
-
-				while (continueSim) { // outer loop so we can recover from errors
-					try {
-						runMainLoop();
-					} catch (Throwable t) {
-						boolean rethrow = handleError(t);
-
-						if (rethrow) {
-							state = SimExecState.ERROR;
-
-							if (t instanceof RuntimeException) {
-								throw (RuntimeException) t;
-							} else if (t instanceof Error) {
-								throw (Error) t;
-							} else
-								// can't occur
-								throw new AssertionError();
-						} else {
-							// do nothing
-						}
-					}
-				}
-			} while (pauseRequests.get() > 0);
-
+		if (execFailure == null) {
 			state = SimExecState.FINISHED;
-		} finally {
-			simThread = null;
-			SimContext.setThreadContext(null);
+		} else {
+			state = SimExecState.ERROR;
+			throw new SimulationFailed("There was an unrecoverable error during simulation run.", execFailure);
 		}
 	}
 
-	protected void runMainLoop() {
-		// main event loop
-		while (continueSim) {
-			SimEvent evt = events.extract();
-			currEvent = evt;
+	void handleNextEvent() {
+		SimEvent evt = events.extract();
+		currEvent = evt;
 
-			// Advance clock to time of next event
-			simTime = evt.getTime();
-			currPrio = evt.getPrio();
-			if (evt.isAppEvent() && --numAppEvents == 0) {
-				continueSim = false;
-			}
-
-			evt.handle();
-
-			continueSim = numAppEvents == 0;
-			numEventsProcessed++;
+		// Advance clock to time of next event
+		simTime = evt.getTime();
+		currPrio = evt.getPrio();
+		if (evt.isAppEvent()) {
+			--numAppEvents;
 		}
-	}
+		numEventsProcessed++;
 
-	private boolean blockWhilePaused() {
-		try {
-			pauseHelper.acquire();
-		} catch (InterruptedException e) {
-			assert state == SimExecState.PAUSED;
-			return true;
+		evt.handle();
+
+		// run additional actions that might come from external threads
+		Runnable r;
+		while ((r = runInSimThread.poll()) != null) {
+			r.run();
 		}
-		pauseHelper.release();
 
-		return false;
+		continueSim = numAppEvents > 0 && !endRequested;
 	}
 
 	private void checkInitialEventTime() {
@@ -441,16 +429,19 @@ public class Simulation {
 	}
 
 	/**
-	 * This method is called if an unhandled exception occurs during the main of a
-	 * simulation run. The implementation here just prints an appropriate message
-	 * and then rethrows the Exception, terminating the simulation run.
+	 * This method is called if an unhandled exception occurs during the run phase
+	 * of a simulation run. The implementation here just prints an appropriate
+	 * message and then rethrows the exception, terminating the simulation run.
 	 * 
-	 * @param t The Error or RuntimeException that was triggered somewhere in
-	 *          simulation code.
+	 * @param e The Exception that was triggered somewhere in simulation code.
 	 * @return Whether or not to rethrow the Exception after processing.
 	 */
-	protected boolean handleError(Throwable t) {
-		String errorString = Util.exceptionToString(t);
+	boolean handleError(Exception e) {
+		return (getErrorHandler() != null) ? getErrorHandler().test(e) : defaultErrorHandler(e);
+	}
+
+	protected boolean defaultErrorHandler(Exception e) {
+		String errorString = Util.exceptionToString(e);
 
 		printFmt(MsgCategory.ERROR, "An uncaught exception occurred. Current event='%s', exception='%s'",
 				currentEvent(), errorString);
@@ -470,8 +461,7 @@ public class Simulation {
 	 * {@link #run()} method.
 	 */
 	public void beforeRun() {
-		checkState("call beforeRun() of a", state(), SimExecState.INIT);
-
+		requireAllowedState(state, SimExecState.INIT);
 		state = SimExecState.BEFORE_RUN;
 
 		// schedule simulation end
@@ -495,7 +485,7 @@ public class Simulation {
 	 * It should contain code to initialize statistics variables.
 	 */
 	protected void resetStats() {
-		checkState("resetStats", state(), SimExecState.RUNNING);
+		requireAllowedState(state, SimExecState.RUNNING);
 
 		// schedule statistics reset
 		if (getStatsResetTime() > getInitialSimTime()) {
@@ -581,7 +571,7 @@ public class Simulation {
 	 * 
 	 * @param event Some future event to be executed by the main event loop.
 	 */
-	public void schedule(SimEvent event) {
+	public SimEvent schedule(SimEvent event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio) {
 			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
 					event.getPrio(), event.toString());
@@ -595,6 +585,8 @@ public class Simulation {
 		if (event.isAppEvent())
 			numAppEvents++;
 		events.insert(event);
+
+		return event;
 	}
 
 	/**
@@ -795,54 +787,64 @@ public class Simulation {
 
 	/**
 	 * After calling end() the simulation is terminated (after handling the current
-	 * event).
+	 * event). This method might also be called from an external thread.
 	 */
 	public void end() {
-		continueSim = false;
+		endRequested = true;
 
 		if (pauseRequests.get() > 0) {
-			simThread.interrupt();
+			pausedWorkerThread.interrupt();
 		}
+	}
+
+	public boolean isEndRequested() {
+		return endRequested;
 	}
 
 	/**
 	 * After calling {@link #pause()} the simulation is paused. This means, the
 	 * {@link #run()} method returns after handling the current event.
+	 * <p>
+	 * This method might also be called from an external thread.
 	 */
 	public void pause() {
-		if (pauseRequests.incrementAndGet() == 1) {
-			continueSim = false;
+		requireAllowedState(state, complementOf(EnumSet.of(SimExecState.FINISHED, SimExecState.ERROR)));
 
-			boolean acquired = pauseHelper.tryAcquire();
-			assert acquired;
+		if (pauseRequests.incrementAndGet() == 1) {
+			awakePausedWorker = false;
+			runInSimThread(() -> {
+				// check again because it might have changed while waiting to be processed
+				if (pauseRequests.get() > 0) {
+					assert state == SimExecState.RUNNING;
+
+					state = SimExecState.PAUSED;
+					pausedWorkerThread = Thread.currentThread();
+					while (!awakePausedWorker) {
+						LockSupport.park();
+					}
+
+					state = SimExecState.RUNNING;
+				}
+			});
 		}
 	}
 
 	/**
 	 * After calling {@link #unpause()} a paused simulation is continued. Internally
 	 * each pause request increases a counter that has to be followed by an unpause
-	 * request. Simulation only resumes i the pause counter reaches zero.
+	 * request. Simulation only resumes if the pause counter reaches zero.
+	 * <p>
+	 * This method might also be called from an external thread.
 	 */
 	public void unpause() {
+		requireAllowedState(state, SimExecState.PAUSED, SimExecState.RUNNING);
+
 		if (pauseRequests.decrementAndGet() == 0) {
-			continueSim = true;
-
-			pauseHelper.release();
-		}
-	}
-
-	/**
-	 * Throws an {@link IllegalArgumentException} if the actual state does not match
-	 * the expected one.
-	 * 
-	 * @param operationName Some description of the action that was attempted.
-	 * @param actual        The current simulation state.
-	 * @param expected      The expected simulation state.
-	 */
-	protected static void checkState(String operationName, SimExecState actual, SimExecState expected) {
-		if (!Objects.equals(actual, expected)) {
-			throw new IllegalStateException(String.format("Can only %s simulation in state %s, current state is %s.",
-					operationName, expected, actual));
+			if (pausedWorkerThread != null) {
+				awakePausedWorker = true;
+				LockSupport.unpark(pausedWorkerThread);
+				pausedWorkerThread = null;
+			}
 		}
 	}
 
@@ -911,6 +913,10 @@ public class Simulation {
 	 */
 	public SimEvent currentEvent() {
 		return currEvent;
+	}
+
+	public SimProcess<?> currentProcess() {
+		return currentProcess;
 	}
 
 	/**
@@ -1228,6 +1234,14 @@ public class Simulation {
 		this.locale = locale;
 	}
 
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
+
 	/**
 	 * Sets the factor used to convert the (double-valued) simulation time to
 	 * milli-seconds since {@link #getSimTimeStartInstant()}. The default value is
@@ -1239,59 +1253,54 @@ public class Simulation {
 		this.simTimeToMillisFactor = simTimeToMillisFactor;
 	}
 
+	public boolean continueSim() {
+		return continueSim;
+	}
+
+	public void runInSimThread(Runnable r) {
+		runInSimThread.add(r);
+	}
+
+	SimProcess<Void> mainProcess() {
+		return mainProcess;
+	}
+
+	void setCurrentProcess(SimProcess<?> p) {
+		this.currentProcess = p;
+	}
+
+	void terminateWithException(Exception e) {
+		execFailure = requireNonNull(e);
+		endRequested = true;
+		continueSim = false;
+	}
+
+	SimProcess<?> getEventLoopProcess() {
+		return eventLoopProcess;
+	}
+
+	void setEventLoopProcess(SimProcess<?> eventLoopProcess) {
+		this.eventLoopProcess = eventLoopProcess;
+	}
+
 	@Override
 	protected Simulation clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException(); // not implemented yet
 	}
 
-	private boolean wasSignaled;
-	private Exception throwInMainThread;
-
-//	public Thread mainThread() {
-//		return simThread;
-//	}
-//
-//	public void activate(Exception throwInMainThread) {
-//		this.throwInMainThread = throwInMainThread;
-//		wasSignaled = true;
-//		LockSupport.unpark(simThread);
-//	}
-//
-//	public void deactivate() {
-//		assert Thread.currentThread() == simThread;
-//
-//		wasSignaled = false;
-//		while (!wasSignaled) { // guard against spurious wake-ups
-//			LockSupport.park();
-//		}
-//
-//		// there was an uncaught exception in the previously executed process
-//		if (throwInMainThread != null) {
-//			throw new RuntimeException(throwInMainThread);
-//		}
-//	}
-
-	private SimProcess<?> currentProcess;
-
-	public SimProcess<?> currentProcess() {
-		return currentProcess;
-	}
-
-	public void setCurrentProcess(SimProcess<?> p) {
-		this.currentProcess = p;
+	static {
+		loadExtensions();
+		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
 	}
 
 	static void loadExtensions() {
 		for (JasimaExtension ext : ServiceLoader.load(JasimaExtension.class)) {
-			logger.debug(defGetMessage(EXT_LOADED), ext.getClass().getName());
+			logger.debug(message(EXT_LOADED), ext.getClass().getName());
 		}
 	}
 
-	static {
-		loadExtensions();
+	static enum I18nConsts {
+		EXT_LOADED, NO_CONTEXT;
 	}
 
-	static enum I18nConsts {
-		EXT_LOADED;
-	}
 }

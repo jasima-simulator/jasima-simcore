@@ -834,6 +834,23 @@ public class TypeUtil {
 	}
 
 	/**
+	 * Throws a throwable in the current Thread (can be either a
+	 * {@link RuntimeException} or an {@link Error}).
+	 * 
+	 * @param t The unchecked exception to throw.
+	 */
+	public static void rethrowUncheckedException(Throwable t) {
+		if (t instanceof RuntimeException) {
+			throw (RuntimeException) t;
+		} else if (t instanceof Error) {
+			throw (Error) t;
+		} else {
+			// can't occur
+			throw new AssertionError();
+		}
+	}
+
+	/**
 	 * Prevent instantiation
 	 */
 	private TypeUtil() {

@@ -1,14 +1,14 @@
 package examples.processes;
 
-import static jasima.core.simulation.processes.SimContext.activate;
-import static jasima.core.simulation.processes.SimContext.waitFor;
+import static jasima.core.simulation.SimContext.activate;
+import static jasima.core.simulation.SimContext.waitFor;
 
 import java.util.Random;
 
 import jasima.core.random.continuous.DblExp;
 import jasima.core.random.continuous.DblStream;
+import jasima.core.simulation.SimProcess;
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.processes.SimProcess;
 import jasima.core.util.MsgCategory;
 
 public class MM1Queue {

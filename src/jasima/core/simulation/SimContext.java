@@ -1,10 +1,15 @@
-package jasima.core.simulation.processes;
+package jasima.core.simulation;
 
+import static jasima.core.simulation.Simulation.I18nConsts.NO_CONTEXT;
+
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import jasima.core.simulation.Simulation;
-import jasima.core.simulation.processes.SimProcessUtil.SimRunnable;
+import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.util.SimProcessUtil;
+import jasima.core.util.SimProcessUtil.SimRunnable;
+import jasima.core.util.i18n.I18n;
 
 public class SimContext {
 
@@ -14,12 +19,29 @@ public class SimContext {
 		return currentSim.get();
 	}
 
+	public static Simulation requireSimContext() {
+		Simulation s = currentSimulation();
+		if (s == null) {
+			throw new IllegalStateException(message(NO_CONTEXT));
+		} else {
+			return s;
+		}
+	}
+
 	public static SimProcess<?> currentProcess() {
 		return requireSimContext().currentProcess();
 	}
 
 	public static double simTime() {
 		return requireSimContext().simTime();
+	}
+
+	public static String message(Enum<?> key) {
+		return I18n.message(locale(), key);
+	}
+
+	public static String formattedMessage(Enum<?> key, Object... params) {
+		return I18n.formattedMessage(locale(), key, params);
 	}
 
 	public static SimProcess<Void> activate(SimRunnable r) {
@@ -44,22 +66,6 @@ public class SimContext {
 		currentProcess().suspend();
 	}
 
-	public static Simulation requireSimContext() {
-		Simulation s = currentSimulation();
-		if (s == null) {
-			throw new IllegalStateException("No active simulation context found.");
-		} else {
-			return s;
-		}
-	}
-
-	public static void setThreadContext(Simulation sim) {
-		if (sim != null && currentSim.get() != null) {
-			throw new IllegalStateException(); // old context not properly cleared?
-		}
-		currentSim.set(sim);
-	}
-
 	public static Map<String, Object> of(SimRunnable r, String name) {
 		return of(SimProcessUtil.callable(r), name);
 	}
@@ -72,6 +78,18 @@ public class SimContext {
 		mainProcess.awakeIn(0.0);
 
 		return sim.performRun();
+	}
+
+	public static Locale locale() {
+		Simulation sim = currentSimulation();
+		return sim != null ? sim.getLocale() : I18n.DEF_LOCALE;
+	}
+
+	static void setThreadContext(Simulation sim) {
+		if (sim != null && currentSim.get() != null) {
+			throw new IllegalStateException(); // old context not properly cleared?
+		}
+		currentSim.set(sim);
 	}
 
 }
