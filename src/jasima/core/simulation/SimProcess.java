@@ -12,11 +12,16 @@ import java.util.EnumSet;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import jasima.core.simulation.Simulation.ErrorHandler;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 
 public class SimProcess<R> implements Runnable {
+
+	private static final Logger logger = LogManager.getLogger("jasima.output");
 
 	public static enum ProcessState {
 		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
@@ -38,6 +43,7 @@ public class SimProcess<R> implements Runnable {
 	private final Simulation sim;
 	private final Callable<R> action;
 	private ErrorHandler localErrorHandler;
+	private final String name;
 
 	private ProcessState state;
 	private R execResult;
@@ -50,17 +56,26 @@ public class SimProcess<R> implements Runnable {
 	private Thread executor;
 
 	public SimProcess(Simulation sim, SimRunnable r) {
-		this(sim, SimProcessUtil.callable(r));
+		this(sim, SimProcessUtil.callable(r), null, null);
 	}
 
 	public SimProcess(Simulation sim, Callable<R> action) {
-		this(sim, action, null);
+		this(sim, action, null, null);
 	}
 
-	public SimProcess(Simulation sim, Callable<R> action, ErrorHandler exceptionHandler) {
+	public SimProcess(Simulation sim, SimRunnable r, String name) {
+		this(sim, SimProcessUtil.callable(r), null, name);
+	}
+
+	public SimProcess(Simulation sim, Callable<R> action, String name) {
+		this(sim, action, null, name);
+	}
+
+	public SimProcess(Simulation sim, Callable<R> action, ErrorHandler exceptionHandler, String name) {
 		super();
 
 		this.sim = requireNonNull(sim);
+		this.name = name != null ? name : SequenceNumberService.getFor(sim).nextFormattedValue("simProcess");
 		this.action = action;
 		this.localErrorHandler = exceptionHandler;
 
@@ -104,9 +119,12 @@ public class SimProcess<R> implements Runnable {
 	@Override
 	public void run() {
 		try {
-			executor = currentExecutor();
-			SimContext.setThreadContext(sim);
 			requireAllowedState(state, ProcessState.RUNNING);
+			logger.error("process started");
+
+			executor = currentExecutor();
+			executor.setName(getName());
+			SimContext.setThreadContext(sim);
 			assert sim.currentProcess() == this;
 
 			try {
@@ -125,10 +143,13 @@ public class SimProcess<R> implements Runnable {
 			runCompleteCallbacks();
 
 			yield();
-
+		} catch (Throwable t) {
+			t.printStackTrace();
+			throw t;
 		} finally {
 			executor = null;
 			SimContext.setThreadContext(null);
+			logger.error("process finished");
 		}
 	}
 
@@ -136,6 +157,8 @@ public class SimProcess<R> implements Runnable {
 		assert sim.currentProcess() == this;
 		assert SimContext.currentSimulation() == sim;
 		sim.setCurrentProcess(null);
+
+		logger.error("yield1");
 
 		// run the event loop in the current Thread (until it switches to a new one)
 		reactivated = false;
@@ -149,9 +172,12 @@ public class SimProcess<R> implements Runnable {
 			}
 		}
 
+		logger.error("yield2");
+
 		// event loop can be finished because whole sim is finished or current process
 		// is supposed to continue (either in its doRun method or after yield in run()).
-		if (!sim.continueSim() && this != sim.mainProcess()) {
+		if (!reactivated && !sim.continueSim() && !isMainProcess()) {
+			logger.error("backtomain");
 			switchTo(this, sim.mainProcess());
 		}
 	}
@@ -162,6 +188,8 @@ public class SimProcess<R> implements Runnable {
 		state = ProcessState.RUNNING;
 		sim.setCurrentProcess(this);
 		reactivated = true;
+
+		logger.error("activating " + this);
 
 		SimProcess<?> current = sim.getEventLoopProcess();
 		if (current != this) {
@@ -174,7 +202,7 @@ public class SimProcess<R> implements Runnable {
 		assert from.sim == to.sim;
 
 		// start process "to"
-		assert !to.hasFinished();
+		assert !to.hasFinished() || to.isMainProcess();
 		to.sim.setEventLoopProcess(to);
 		if (to.executor == null) {
 			// start new
@@ -194,13 +222,16 @@ public class SimProcess<R> implements Runnable {
 		}
 	}
 
+	private boolean isMainProcess() {
+		return this == sim.mainProcess();
+	}
+
 	public void awakeIn(double deltaT) {
 		awakeAt(sim.simTime() + deltaT);
 	}
 
 	public void awakeAt(double tAbs) {
 		requireAllowedState(state, EnumSet.of(ProcessState.PASSIVE));
-
 		scheduleReactivateAt(tAbs);
 		state = ProcessState.SCHEDULED;
 	}
@@ -260,12 +291,13 @@ public class SimProcess<R> implements Runnable {
 
 		addCompletionNotifier(p -> current.scheduleReactivateAt(sim.simTime()));
 
-		yield();
+		current.state = ProcessState.PASSIVE;
+		current.yield();
 	}
 
 	public R get() {
 		if (!hasFinished()) {
-			throw new IllegalStateException();
+			throw new IllegalStateException("Process not finished yet.");
 		}
 		if (execFailure != null) {
 			throw new RuntimeException(execFailure);
@@ -316,6 +348,15 @@ public class SimProcess<R> implements Runnable {
 
 	public void setLocalErrorHandler(ErrorHandler h) {
 		localErrorHandler = h;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 }

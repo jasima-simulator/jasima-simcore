@@ -1,55 +1,43 @@
 package examples.processes;
 
 import static jasima.core.simulation.SimContext.activate;
-import static jasima.core.simulation.SimContext.currentSimulation;
 import static jasima.core.simulation.SimContext.suspend;
+import static jasima.core.simulation.SimContext.trace;
 import static jasima.core.simulation.SimContext.waitFor;
-import static java.util.Objects.requireNonNull;
 
-import jasima.core.simulation.SimProcess;
+import java.util.Map;
+
+import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimProcess.MightBlock;
-import jasima.core.simulation.Simulation;
-import jasima.core.util.MsgCategory;
+import jasima.core.util.ConsolePrinter;
 
 public class ProcTest {
 
 	public static void main(String[] args) {
-		Simulation sim = new Simulation();
-		sim.setPrintLevel(MsgCategory.ALL);
-		sim.addPrintListener(System.out::println);
-
-		sim.schedule(1.0, 0, () -> System.out.println("Test"));
-		new SimProcess<>(sim, ProcTest::xxx).awakeIn(0.0);
-
-		sim.performRun();
+		System.out.println("Before sim");
+		Map<String, Object> res = SimContext.of(ProcTest::xxx);
+		System.out.println("After sim");
+		ConsolePrinter.printResults(null, res);
 	}
 
 	public static void xxx() throws MightBlock {
-		Simulation sim = requireNonNull(currentSimulation());
-
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 1; i++) {
 			waitFor(1.0);
-			sim.trace("generator", i);
-
-			String name = "sub" + i;
-			activate(() -> ProcTest.xxx2(name));
+			trace("generator", i);
+			activate(ProcTest::xxx2, "sub" + i);
 		}
-
-		sim.trace("generator suspends now");
+		trace("generator suspends now");
 		suspend();
-
-		sim.trace("never executes");
+		trace("never executes");
 	}
 
-	public static void xxx2(String name) throws MightBlock {
-		Simulation sim = requireNonNull(currentSimulation());
-
+	public static void xxx2() throws MightBlock {
 		waitFor(1.2);
-		sim.trace(name, "1");
+		trace("1");
 		waitFor(1.2);
-		sim.trace(name, "2");
+		trace("2");
 		waitFor(1.2);
-		sim.trace(name, "3");
+		trace("3");
 	}
 
 }

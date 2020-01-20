@@ -100,7 +100,7 @@ public class TestSimulationBasics {
 		System.out.println(res.toString());
 
 		Instant instant = Instant.parse("2019-01-01T06:00:00.00Z");
-		assertEquals(360.0, sim.instantToSimTime(instant), 1e-6);
+		assertEquals(360.0, sim.toSimTime(instant), 1e-6);
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class TestSimulationBasics {
 		System.out.println(res.toString());
 
 		Instant instant = Instant.parse("2019-01-01T04:00:00.00Z");
-		assertEquals(360.0, sim.instantToSimTime(instant), 1e-6);
+		assertEquals(360.0, sim.toSimTime(instant), 1e-6);
 	}
 
 	@Test
@@ -128,7 +128,7 @@ public class TestSimulationBasics {
 		System.out.println(res.toString());
 
 		Instant instant = Instant.parse("2019-01-16T00:00:00.00Z");
-		assertEquals(360.0, sim.instantToSimTime(instant), 1e-6);
+		assertEquals(360.0, sim.toSimTime(instant), 1e-6);
 	}
 
 	public static void dummyHandler() {

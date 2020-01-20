@@ -9,7 +9,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ TestSimulationBasics.class, TestSimulationPausing.class, TestSimulationControlFlow.class,
-		jasima.core.simulation.generic.AllTests.class })
+		jasima.core.simulation.generic.AllTests.class, TestSimProcessBasics.class })
 public class AllTests {
 
 }

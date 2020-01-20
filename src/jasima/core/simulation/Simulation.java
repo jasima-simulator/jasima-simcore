@@ -33,8 +33,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -69,6 +71,8 @@ import jasima.core.util.StandardExtensionImpl;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
+import jasima.core.util.ValueStore;
+import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.i18n.I18n;
 
 /**
@@ -87,7 +91,7 @@ import jasima.core.util.i18n.I18n;
  * 
  * @author Torsten Hildebrandt
  */
-public class Simulation {
+public class Simulation implements ValueStore {
 
 	private static final Logger logger = LogManager.getLogger(Simulation.class);
 
@@ -222,12 +226,16 @@ public class Simulation {
 	private Instant simTimeStartInstant;
 	private ErrorHandler errorHandler = null;
 
+	// delegate ValueStore functionality
+	private ValueStoreImpl valueStore;
+
 	private SimComponentContainer<SimComponent> rootComponent;
 
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
 
 	private Locale locale = I18n.DEF_LOCALE;
+	private ZoneId timeZone = ZoneId.of("UTC");
 
 	// ////////////// attributes/fields used during a simulation
 
@@ -240,7 +248,7 @@ public class Simulation {
 	private SimProcess<?> eventLoopProcess;
 
 	private boolean endRequested;
-	private boolean continueSim;
+	private boolean continueSim2;
 
 	private boolean awakePausedWorker;
 	private Thread pausedWorkerThread;
@@ -253,6 +261,8 @@ public class Simulation {
 	// priorities
 	private int eventNum;
 	private int numAppEvents;
+
+	private Clock clock;
 
 	private SimExecState state;
 
@@ -269,6 +279,7 @@ public class Simulation {
 		pauseRequests = new AtomicInteger(0);
 		runInSimThread = new ConcurrentLinkedQueue<>();
 		printListener = new ArrayList<>();
+		valueStore = new ValueStoreImpl();
 
 		RandomFactory randomFactory = RandomFactory.newInstance();
 		setRndStreamFactory(randomFactory);
@@ -372,10 +383,10 @@ public class Simulation {
 		state = SimExecState.RUNNING;
 		resetStats();
 
-		continueSim = numAppEvents > 0 && !endRequested;
+//		continueSim = numAppEvents > 0 && !endRequested;
 		checkInitialEventTime();
 
-		mainProcess = new SimProcess<Void>(this, null, null);
+		mainProcess = new SimProcess<Void>(this, null, null, "main");
 		setCurrentProcess(mainProcess);
 		setEventLoopProcess(mainProcess);
 		mainProcess.activateProcess();
@@ -410,14 +421,14 @@ public class Simulation {
 		while ((r = runInSimThread.poll()) != null) {
 			r.run();
 		}
-
-		continueSim = numAppEvents > 0 && !endRequested;
+//
+//		continueSim = numAppEvents > 0 && !endRequested;
 	}
 
 	private void checkInitialEventTime() {
 		// ensure time of first event is before initalSimTime, then put in event
 		// queue again; this is done just once to move the check outside the main loop.
-		if (continueSim) {
+		if (continueSim()) {
 			SimEvent e = events.extract();
 			if (e.getTime() < simTime) {
 				throw new IllegalArgumentException(createErrorMsgEventInPast(e));
@@ -645,7 +656,7 @@ public class Simulation {
 	 * @param method      The method to call at the given moment.
 	 */
 	public void schedule(String description, Instant time, int prio, Runnable method) {
-		schedule(description, instantToSimTime(time), prio, method);
+		schedule(description, toSimTime(time), prio, method);
 	}
 
 	/**
@@ -713,7 +724,7 @@ public class Simulation {
 	 * @param method      The method to call at the given moment.
 	 */
 	public void scheduleIn(String description, Duration duration, int prio, Runnable method) {
-		schedule(description, simTime() + durationToSimTime(duration), prio, method);
+		schedule(description, simTime() + toSimTime(duration), prio, method);
 	}
 
 	/**
@@ -879,26 +890,44 @@ public class Simulation {
 	}
 
 	/**
-	 * Converts a given Java {@link Instant} (UTC time stamp) to the simulation time
-	 * it corresponds to.
+	 * Converts a given Java {@link Instant} (absolute UTC time stamp) to the
+	 * simulation time it corresponds to.
 	 * 
 	 * @param instant The instant to be converted to simulation time.
 	 * @return The instant converted to simulation time.
 	 */
-	public double instantToSimTime(Instant instant) {
+	public double toSimTime(Instant instant) {
 		long durationMillis = instant.toEpochMilli() - getSimTimeStartInstant().toEpochMilli();
 		return durationMillis / simTimeToMillisFactor + getInitialSimTime();
 	}
 
 	/**
-	 * Converts a given Java {@link Duration} to the corresponding simulation time.
+	 * Converts a given Java {@link Duration} (i.e., a time span) to the
+	 * corresponding (relative) simulation time.
 	 * 
 	 * @param d The duration to be converted to simulation time.
 	 * @return The amount of simulation time.
 	 */
-	public double durationToSimTime(Duration d) {
+	public double toSimTime(Duration d) {
 		double millis = d.toMillis();
+
 		return millis / simTimeToMillisFactor;
+	}
+
+	/**
+	 * Converts a given number of {@link TemporalUnit}s to the corresponding
+	 * simulation time, like
+	 * {@code double time = sim.toSimTime(5, ChronoUnit.MINUTE)}. Internally this
+	 * creates a temporary {@link Duration} object and then calls
+	 * {@link #toSimTime(Duration)}.
+	 * 
+	 * @param numUnits the amount of time units
+	 * @param u        the temporal unit to use; will usually be on from
+	 *                 {@link ChronoUnit}
+	 * @return The amount of simulation time.
+	 */
+	public double toSimTime(long numUnits, TemporalUnit u) {
+		return toSimTime(Duration.of(numUnits, u));
 	}
 
 	/**
@@ -1254,7 +1283,7 @@ public class Simulation {
 	}
 
 	public boolean continueSim() {
-		return continueSim;
+		return numAppEvents > 0 && !endRequested;
 	}
 
 	public void runInSimThread(Runnable r) {
@@ -1272,7 +1301,7 @@ public class Simulation {
 	void terminateWithException(Exception e) {
 		execFailure = requireNonNull(e);
 		endRequested = true;
-		continueSim = false;
+//		continueSim = false;
 	}
 
 	SimProcess<?> getEventLoopProcess() {
@@ -1283,9 +1312,15 @@ public class Simulation {
 		this.eventLoopProcess = eventLoopProcess;
 	}
 
+	//
+	//
+	// ValueStore implementation
+	//
+	//
+
 	@Override
-	protected Simulation clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException(); // not implemented yet
+	public ValueStore valueStoreImpl() {
+		return valueStore;
 	}
 
 	static {
@@ -1299,8 +1334,74 @@ public class Simulation {
 		}
 	}
 
+	public ZoneId getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(ZoneId timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	public Clock clock() {
+		if (clock != null) {
+			clock = new SimulationClock(this, timeZone);
+		}
+		return clock;
+	}
+
 	static enum I18nConsts {
 		EXT_LOADED, NO_CONTEXT;
 	}
 
+	/**
+	 * Implementation of a clock that always returns the latest time from the
+	 * underlying simulation.
+	 */
+	static final class SimulationClock extends Clock {
+		private final Simulation sim;
+		private final ZoneId zone;
+
+		SimulationClock(Simulation sim, ZoneId zone) {
+			this.sim = requireNonNull(sim);
+			this.zone = requireNonNull(zone);
+		}
+
+		@Override
+		public ZoneId getZone() {
+			return zone;
+		}
+
+		@Override
+		public Instant instant() {
+			return sim.simTimeToInstant();
+		}
+
+		@Override
+		public Clock withZone(ZoneId zone) {
+			if (zone.equals(this.zone)) {
+				return this;
+			}
+			return new SimulationClock(sim, zone);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj != null && obj instanceof SimulationClock) {
+				SimulationClock sc = (SimulationClock) obj;
+				return zone.equals(sc.zone) && sim.equals(sc.sim);
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(sim, zone);
+		}
+
+		@Override
+		public String toString() {
+			return "SimulationClock[" + zone + "]";
+		}
+	}
 }

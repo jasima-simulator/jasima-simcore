@@ -26,6 +26,8 @@ import java.util.Set;
 /**
  * This interface provides a simple get/put-mechanism to store a value
  * associated with a key object, similar to a @link {@link Map}.
+ * <p>
+ * 
  * 
  * @author Torsten Hildebrandt
  */
@@ -37,10 +39,11 @@ public interface ValueStore {
 	 * 
 	 * @param key   The key name.
 	 * @param value value to assign to {@code key}.
+	 * @return returns {@code value}
 	 * @see #valueStoreGet(Object)
 	 */
-	default void valueStorePut(Object key, Object value) {
-		valueStoreImpl().valueStorePut(key, value);
+	default Object valueStorePut(Object key, Object value) {
+		return valueStoreImpl().valueStorePut(key, value);
 	}
 
 	/**

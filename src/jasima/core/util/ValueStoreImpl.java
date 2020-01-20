@@ -23,11 +23,13 @@ public class ValueStoreImpl implements ValueStore, Cloneable {
 	 * 
 	 * @param key   The key name.
 	 * @param value value to assign to {@code key}.
+	 * @return returns {@code value}
 	 * @see #valueStoreGet(Object)
 	 */
 	@Override
-	public void valueStorePut(Object key, Object value) {
+	public Object valueStorePut(Object key, Object value) {
 		valueStore.put(key, value);
+		return value;
 	}
 
 	/**

@@ -6,12 +6,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 import jasima.core.util.i18n.I18n;
 
 public class SimContext {
+
+	private static final Logger out = LogManager.getLogger("jasima");
 
 	private static ThreadLocal<Simulation> currentSim = new ThreadLocal<>();
 
@@ -45,11 +50,19 @@ public class SimContext {
 	}
 
 	public static SimProcess<Void> activate(SimRunnable r) {
-		return activate(SimProcessUtil.callable(r));
+		return activate(SimProcessUtil.callable(r), null);
 	}
 
 	public static <T> SimProcess<T> activate(Callable<T> c) {
-		SimProcess<T> p = new SimProcess<>(requireSimContext(), c);
+		return activate(c, null);
+	}
+
+	public static SimProcess<Void> activate(SimRunnable r, String name) {
+		return activate(SimProcessUtil.callable(r), name);
+	}
+
+	public static <T> SimProcess<T> activate(Callable<T> c, String name) {
+		SimProcess<T> p = new SimProcess<>(requireSimContext(), c, name);
 		p.awakeIn(0.0);
 		return p;
 	}
@@ -66,11 +79,33 @@ public class SimContext {
 		currentProcess().suspend();
 	}
 
-	public static Map<String, Object> of(SimRunnable r, String name) {
-		return of(SimProcessUtil.callable(r), name);
+	public static void trace(Object... params) {
+		out.error(() -> formatMsg(params));
 	}
 
-	public static Map<String, Object> of(Callable<?> actions, String name) {
+	public static String formatMsg(Object... params) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(simTime());
+		for (Object o : params) {
+			sb.append('\t').append(String.valueOf(o));
+		}
+
+		return sb.toString();
+	}
+
+	public static Map<String, Object> of(SimRunnable r) {
+		return of(null, SimProcessUtil.callable(r));
+	}
+
+	public static Map<String, Object> of(Callable<?> actions) {
+		return of(null, actions);
+	}
+
+	public static Map<String, Object> of(String name, SimRunnable r) {
+		return of(name, SimProcessUtil.callable(r));
+	}
+
+	public static Map<String, Object> of(String name, Callable<?> actions) {
 		Simulation sim = new Simulation();
 		sim.setName(name);
 

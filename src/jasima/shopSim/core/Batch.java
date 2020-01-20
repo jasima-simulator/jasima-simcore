@@ -22,16 +22,20 @@ package jasima.shopSim.core;
 
 import java.util.ArrayList;
 
+import jasima.core.util.ValueStore;
+import jasima.core.util.ValueStoreImpl;
+
 /**
  * A batch is a temporary collection of jobs to be processed together in a
  * single operation.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class Batch extends PrioRuleTarget {
 
 	public final Shop shop;
+	// delegate ValueStore functionality
+	private ValueStoreImpl valueStore;
 
 	private static final String SEPARATOR = ",";
 
@@ -78,6 +82,17 @@ public class Batch extends PrioRuleTarget {
 			clone.addToBatch(j);
 		}
 		return clone;
+	}
+
+	//
+	//
+	// ValueStore implementation
+	//
+	//
+
+	@Override
+	public ValueStore valueStoreImpl() {
+		return valueStore;
 	}
 
 	@Override

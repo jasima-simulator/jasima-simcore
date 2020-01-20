@@ -8,8 +8,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import jasima.core.simulation.MightBlock;
 import jasima.core.simulation.SimEvent;
+import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.generic.ResourceNonBlocking.Request.RequestState;
 
