@@ -1,8 +1,15 @@
 package jasima.core.simulation;
 
+import static jasima.core.simulation.SimContext.activate;
+import static jasima.core.simulation.SimContext.suspend;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jasima.core.simulation.SimProcess.MightBlock;
@@ -20,7 +27,7 @@ public class TestSimProcessBasics {
 		sim.addPrintListener(System.out::println);
 	}
 
-	@Test
+	@Test 
 	public void testGeneratorMethod() {
 		new SimProcess<>(sim, TestSimProcessBasics::generatorProcess).awakeIn(0.0);
 		sim.performRun();
@@ -127,6 +134,24 @@ public class TestSimProcessBasics {
 		assertEquals(7.0, sim.simTime(), 1e-6);
 	}
 
+	@Test
+	public void testSuspendedProcessesAreClearedAfterExecution() {
+		AtomicReference<Simulation> sim = new AtomicReference<>(null);
+		Map<String, Object> res = SimContext.of("simulation1", () -> {
+			sim.set(SimContext.currentSimulation());
+			
+			for (int i = 0; i < 10; i++) {
+				activate(TestSimProcessBasics::suspendingProcess, "process" + i);
+			}
+			System.out.println("MAIN suspending");
+			suspend();
+			fail("Mustn't be reached");
+		});
+
+		assertEquals("all processes suspended at time 1", 1.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("all processes terminated", 0, sim.get().numRunnableProcesses());
+	}
+
 	public static void suspendingProcess() throws MightBlock {
 		SimProcess<?> simProcess = SimContext.currentProcess();
 
@@ -145,7 +170,6 @@ public class TestSimProcessBasics {
 
 			String name = "sub" + i;
 			new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess(name)).awakeIn(0.0);
-			;
 		}
 	}
 

@@ -21,6 +21,7 @@
 package jasima.core.simulation;
 
 import static jasima.core.simulation.Simulation.I18nConsts.EXT_LOADED;
+import static jasima.core.simulation.Simulation.SimExecState.INITIAL;
 import static jasima.core.util.ComponentStates.requireAllowedState;
 import static jasima.core.util.TypeUtil.createInstance;
 import static jasima.core.util.i18n.I18n.defFormat;
@@ -41,12 +42,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -67,6 +70,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.SimProcessUtil.SimRunnable;
 import jasima.core.util.StandardExtensionImpl;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
@@ -212,7 +216,7 @@ public class Simulation implements ValueStore {
 	}
 
 	public static enum SimExecState {
-		INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED, FINISHED, ERROR
+		INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED, TERMINATING, FINISHED, ERROR
 	}
 
 	// /////////// simulation parameters
@@ -237,9 +241,10 @@ public class Simulation implements ValueStore {
 	private Locale locale = I18n.DEF_LOCALE;
 	private ZoneId timeZone = ZoneId.of("UTC");
 
+	private SimRunnable mainProcessActions = null;
+
 	// ////////////// attributes/fields used during a simulation
 
-	// the current simulation time.
 	private double simTime;
 	private int currPrio;
 	private SimEvent currEvent;
@@ -248,7 +253,6 @@ public class Simulation implements ValueStore {
 	private SimProcess<?> eventLoopProcess;
 
 	private boolean endRequested;
-	private boolean continueSim2;
 
 	private boolean awakePausedWorker;
 	private Thread pausedWorkerThread;
@@ -264,7 +268,7 @@ public class Simulation implements ValueStore {
 
 	private Clock clock;
 
-	private SimExecState state;
+	private volatile SimExecState state;
 
 	private AtomicInteger pauseRequests;
 
@@ -272,14 +276,19 @@ public class Simulation implements ValueStore {
 
 	private Exception execFailure;
 
+	private Set<SimProcess<?>> runnableProcesses;
+	private volatile int numRunnable; // intentionally redundant to runnableProcesses.size()
+
 	public Simulation() {
 		super();
 
-		state = SimExecState.INITIAL;
+		state = INITIAL;
 		pauseRequests = new AtomicInteger(0);
 		runInSimThread = new ConcurrentLinkedQueue<>();
 		printListener = new ArrayList<>();
 		valueStore = new ValueStoreImpl();
+		runnableProcesses = new HashSet<>();
+		numRunnable = 0;
 
 		RandomFactory randomFactory = RandomFactory.newInstance();
 		setRndStreamFactory(randomFactory);
@@ -337,7 +346,7 @@ public class Simulation implements ValueStore {
 	 * {@link #run()}.
 	 */
 	public void init() {
-		requireAllowedState(state, SimExecState.INITIAL);
+		requireAllowedState(state, INITIAL);
 
 		state = SimExecState.INIT;
 		simTime = getInitialSimTime();
@@ -380,25 +389,35 @@ public class Simulation implements ValueStore {
 
 		execFailure = null;
 
+		mainProcess = new SimProcess<Void>(this, getMainProcessActions(), null, "main");
+		setCurrentProcess(mainProcess);
+		setEventLoopProcess(mainProcess);
+
 		state = SimExecState.RUNNING;
 		resetStats();
 
-//		continueSim = numAppEvents > 0 && !endRequested;
 		checkInitialEventTime();
 
-		mainProcess = new SimProcess<Void>(this, null, null, "main");
-		setCurrentProcess(mainProcess);
-		setEventLoopProcess(mainProcess);
-		mainProcess.activateProcess();
 		// we have to call run() to initialize 'mainProcess' properly in order to start
 		// executing the main event loop
+		mainProcess.activateProcess();
 		mainProcess.run();
+
+		state = SimExecState.TERMINATING;
+		terminateRunningProcesses();
 
 		if (execFailure == null) {
 			state = SimExecState.FINISHED;
 		} else {
 			state = SimExecState.ERROR;
 			throw new SimulationFailed("There was an unrecoverable error during simulation run.", execFailure);
+		}
+	}
+
+	private void terminateRunningProcesses() {
+		assert numRunnable == runnableProcesses.size();
+		for (SimProcess<?> p : runnableProcesses()) {
+			p.terminatePassive();
 		}
 	}
 
@@ -421,8 +440,6 @@ public class Simulation implements ValueStore {
 		while ((r = runInSimThread.poll()) != null) {
 			r.run();
 		}
-//
-//		continueSim = numAppEvents > 0 && !endRequested;
 	}
 
 	private void checkInitialEventTime() {
@@ -1301,7 +1318,6 @@ public class Simulation implements ValueStore {
 	void terminateWithException(Exception e) {
 		execFailure = requireNonNull(e);
 		endRequested = true;
-//		continueSim = false;
 	}
 
 	SimProcess<?> getEventLoopProcess() {
@@ -1353,55 +1369,31 @@ public class Simulation implements ValueStore {
 		EXT_LOADED, NO_CONTEXT;
 	}
 
-	/**
-	 * Implementation of a clock that always returns the latest time from the
-	 * underlying simulation.
-	 */
-	static final class SimulationClock extends Clock {
-		private final Simulation sim;
-		private final ZoneId zone;
+	void processTerminated(SimProcess<?> simProcess) {
+		boolean removeRes = runnableProcesses.remove(simProcess);
+		assert removeRes;
+		numRunnable--;
+	}
 
-		SimulationClock(Simulation sim, ZoneId zone) {
-			this.sim = requireNonNull(sim);
-			this.zone = requireNonNull(zone);
-		}
+	void processCreated(SimProcess<?> simProcess) {
+		runnableProcesses.add(simProcess);
+		numRunnable++;
+	}
 
-		@Override
-		public ZoneId getZone() {
-			return zone;
-		}
+	public int numRunnableProcesses() {
+		return numRunnable;
+	}
 
-		@Override
-		public Instant instant() {
-			return sim.simTimeToInstant();
-		}
+	public List<SimProcess<?>> runnableProcesses() {
+		return Collections.unmodifiableList(new ArrayList<>(runnableProcesses));
+	}
 
-		@Override
-		public Clock withZone(ZoneId zone) {
-			if (zone.equals(this.zone)) {
-				return this;
-			}
-			return new SimulationClock(sim, zone);
-		}
+	public SimRunnable getMainProcessActions() {
+		return mainProcessActions;
+	}
 
-		@Override
-		public boolean equals(Object obj) {
-			if (obj != null && obj instanceof SimulationClock) {
-				SimulationClock sc = (SimulationClock) obj;
-				return zone.equals(sc.zone) && sim.equals(sc.sim);
-			} else {
-				return false;
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(sim, zone);
-		}
-
-		@Override
-		public String toString() {
-			return "SimulationClock[" + zone + "]";
-		}
+	public void setMainProcessActions(SimRunnable mainProcessActions) {
+		requireAllowedState(state, INITIAL);
+		this.mainProcessActions = mainProcessActions;
 	}
 }

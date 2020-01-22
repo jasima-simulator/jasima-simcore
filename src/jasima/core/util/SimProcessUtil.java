@@ -75,7 +75,7 @@ public final class SimProcessUtil {
 	 *         {@link call()}-method is called.
 	 */
 	public static <R> Callable<R> callable(SimRunnable r) {
-		return new RunnableWrapper<>(requireNonNull(r));
+		return r == null ? null : new RunnableWrapper<>(r);
 	}
 
 	/**

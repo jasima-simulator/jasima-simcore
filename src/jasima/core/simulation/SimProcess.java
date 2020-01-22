@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import jasima.core.simulation.Simulation.ErrorHandler;
+import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 
@@ -40,6 +41,10 @@ public class SimProcess<R> implements Runnable {
 
 	}
 
+	private static class TerminateProcess extends Error {
+		private static final long serialVersionUID = 7242165456133430192L;
+	}
+	
 	private final Simulation sim;
 	private final Callable<R> action;
 	private ErrorHandler localErrorHandler;
@@ -71,6 +76,10 @@ public class SimProcess<R> implements Runnable {
 		this(sim, action, null, name);
 	}
 
+	public SimProcess(Simulation sim, SimRunnable r, ErrorHandler exceptionHandler, String name) {
+		this(sim, SimProcessUtil.callable(r), exceptionHandler, name);
+	}
+
 	public SimProcess(Simulation sim, Callable<R> action, ErrorHandler exceptionHandler, String name) {
 		super();
 
@@ -83,6 +92,8 @@ public class SimProcess<R> implements Runnable {
 		this.state = ProcessState.PASSIVE;
 		this.activateProcessEvent = new SimEventMethodCall(sim.simTime(), sim.currentPrio() + 1, "ActivateProcess",
 				this::activateProcess);
+
+		sim.processCreated(this);
 	}
 
 	/**
@@ -143,6 +154,10 @@ public class SimProcess<R> implements Runnable {
 			runCompleteCallbacks();
 
 			yield();
+
+			sim.processTerminated(this);
+		} catch (TerminateProcess tp) {
+			// ignore
 		} catch (Throwable t) {
 			t.printStackTrace();
 			throw t;
@@ -178,6 +193,7 @@ public class SimProcess<R> implements Runnable {
 		// is supposed to continue (either in its doRun method or after yield in run()).
 		if (!reactivated && !sim.continueSim() && !isMainProcess()) {
 			logger.error("backtomain");
+			sim.processTerminated(this);
 			switchTo(this, sim.mainProcess());
 		}
 	}
@@ -197,12 +213,18 @@ public class SimProcess<R> implements Runnable {
 			switchTo(current, this);
 		}
 	}
+	
+	void terminatePassive() {
+//		logger.fatal("{} {} {}", this, this.executor, this.state);
+		requireAllowedState(state, ProcessState.PASSIVE, ProcessState.TERMINATED, ProcessState.ERROR);
+		switchTo(null, this);
+	}
 
 	private static void switchTo(SimProcess<?> from, SimProcess<?> to) {
-		assert from.sim == to.sim;
+		assert from==null || from.sim == to.sim;
 
 		// start process "to"
-		assert !to.hasFinished() || to.isMainProcess();
+		assert !to.hasFinished() || to.isMainProcess() || to.sim.state()==SimExecState.TERMINATING;
 		to.sim.setEventLoopProcess(to);
 		if (to.executor == null) {
 			// start new
@@ -218,6 +240,9 @@ public class SimProcess<R> implements Runnable {
 			from.wasSignaled = false;
 			while (!from.wasSignaled) { // guard against spurious wakeups
 				pauseExecuting(from.executor);
+			}
+			if (from.sim.state()==SimExecState.TERMINATING) {
+				throw new TerminateProcess();
 			}
 		}
 	}

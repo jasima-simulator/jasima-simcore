@@ -2,6 +2,7 @@ package jasima.core.simulation;
 
 import static jasima.core.simulation.Simulation.I18nConsts.NO_CONTEXT;
 
+import java.time.temporal.TemporalUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -39,6 +40,10 @@ public class SimContext {
 
 	public static double simTime() {
 		return requireSimContext().simTime();
+	}
+
+	public static double toSimTime(long amount, TemporalUnit u) {
+		return requireSimContext().toSimTime(amount, u);
 	}
 
 	public static String message(Enum<?> key) {
