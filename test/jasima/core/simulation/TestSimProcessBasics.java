@@ -2,7 +2,9 @@ package jasima.core.simulation;
 
 import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.suspend;
+import static jasima.core.simulation.SimContext.waitFor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
@@ -27,9 +29,9 @@ public class TestSimProcessBasics {
 		sim.addPrintListener(System.out::println);
 	}
 
-	@Test 
+	@Test
 	public void testGeneratorMethod() {
-		new SimProcess<>(sim, TestSimProcessBasics::generatorProcess).awakeIn(0.0);
+		new SimProcess<>(sim, TestSimProcessBasics::generatorProcess, "generator").awakeIn(0.0);
 		sim.performRun();
 		assertEquals(6.6, sim.simTime(), 1e-6);
 	}
@@ -135,11 +137,11 @@ public class TestSimProcessBasics {
 	}
 
 	@Test
-	public void testSuspendedProcessesAreClearedAfterExecution() {
+	public void testSuspendedProcessesAreClearedAfterExecution() throws Exception {
 		AtomicReference<Simulation> sim = new AtomicReference<>(null);
 		Map<String, Object> res = SimContext.of("simulation1", () -> {
 			sim.set(SimContext.currentSimulation());
-			
+
 			for (int i = 0; i < 10; i++) {
 				activate(TestSimProcessBasics::suspendingProcess, "process" + i);
 			}
@@ -148,8 +150,45 @@ public class TestSimProcessBasics {
 			fail("Mustn't be reached");
 		});
 
+		Thread.sleep(200);
+
 		assertEquals("all processes suspended at time 1", 1.0, (Double) res.get("simTime"), 1e-6);
-		assertEquals("all processes terminated", 0, sim.get().numRunnableProcesses());
+		assertEquals("unfinished processes should be accessible after tun", 11, sim.get().numRunnableProcesses());
+		assertEquals("all Threads were cleared", 0,
+				sim.get().runnableProcesses().stream().filter(p -> p.executor != null).count());
+	}
+
+	@Test
+	public void testThreadReuse() throws Exception {
+		AtomicReference<Thread> t = new AtomicReference<>(null);
+
+		SimContext.of("simulation1", () -> {
+			for (int i = 0; i < 10; i++) {
+				System.out.println("starting process " + i);
+				activate(() -> {
+					System.out.println("start");
+					if (t.get() == null) {
+						t.set(Thread.currentThread());
+					} else {
+						assertTrue(Thread.currentThread() == t.get());
+					}
+					SimContext.waitFor(0.5);
+					System.out.println("end");
+				}, "process" + i).join();
+
+				System.out.println("waiting...");
+				SimContext.waitFor(1.0);
+
+				System.out.println("sleeping...");
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+			}
+		});
+		System.out.println("test finished");
 	}
 
 	public static void suspendingProcess() throws MightBlock {
@@ -169,7 +208,7 @@ public class TestSimProcessBasics {
 			sim.trace("generator", i);
 
 			String name = "sub" + i;
-			new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess(name)).awakeIn(0.0);
+			new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess(name), name).awakeIn(0.0);
 		}
 	}
 
@@ -177,12 +216,54 @@ public class TestSimProcessBasics {
 		SimProcess<?> simProcess = SimContext.currentProcess();
 		Simulation sim = simProcess.getSim();
 
+		sim.trace(name, "0");
 		simProcess.waitFor(1.2);
 		sim.trace(name, "1");
 		simProcess.waitFor(1.2);
 		sim.trace(name, "2");
 		simProcess.waitFor(1.2);
 		sim.trace(name, "3");
+	}
+
+	int numWaits, numProcesses;
+
+	@Test @Ignore
+	public void testManyProcesses() throws Exception {
+		for (int n = 10; n <= 20; n++) {
+			long t = System.currentTimeMillis();
+			numWaits = numProcesses = 0;
+			int i = n;
+			Map<String, Object> res = SimContext.of("simulation1", () -> {
+				System.out.println("starting process...");
+				SimProcess<Integer> fibProcess = activate(() -> this.fibonacci(i));
+				fibProcess.join();
+				System.out.println("done. Result is: " + fibProcess.get());
+			});
+			t = (System.currentTimeMillis() - t);
+			System.err.println(i + "\t" + numWaits + "\t" + numProcesses + "\t" + res.get("simTime") + "\t" + t + "ms");
+		}
+		System.out.println("all done.");
+	}
+
+	public int fibonacci(int n) throws MightBlock {
+		numProcesses++;
+
+		int res;
+		if (n == 1 || n == 2) {
+			waitFor(1.0);
+			numWaits++;
+			res = 1;
+		} else {
+			SimProcess<Integer> s1Calc = activate(() -> fibonacci(n - 1));
+			s1Calc.join(); // wait until finished
+
+			SimProcess<Integer> s2Calc = activate(() -> fibonacci(n - 2));
+			s2Calc.join(); // wait until finished
+
+			res = s1Calc.get() + s2Calc.get();
+		}
+
+		return res;
 	}
 
 }

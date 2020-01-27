@@ -26,6 +26,7 @@ import static jasima.core.util.ComponentStates.requireAllowedState;
 import static jasima.core.util.TypeUtil.createInstance;
 import static jasima.core.util.i18n.I18n.defFormat;
 import static jasima.core.util.i18n.I18n.message;
+import static java.util.Collections.unmodifiableList;
 import static java.util.EnumSet.complementOf;
 import static java.util.Objects.requireNonNull;
 
@@ -55,6 +56,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -277,7 +280,6 @@ public class Simulation implements ValueStore {
 	private Exception execFailure;
 
 	private Set<SimProcess<?>> runnableProcesses;
-	private volatile int numRunnable; // intentionally redundant to runnableProcesses.size()
 
 	public Simulation() {
 		super();
@@ -288,7 +290,6 @@ public class Simulation implements ValueStore {
 		printListener = new ArrayList<>();
 		valueStore = new ValueStoreImpl();
 		runnableProcesses = new HashSet<>();
-		numRunnable = 0;
 
 		RandomFactory randomFactory = RandomFactory.newInstance();
 		setRndStreamFactory(randomFactory);
@@ -415,9 +416,10 @@ public class Simulation implements ValueStore {
 	}
 
 	private void terminateRunningProcesses() {
-		assert numRunnable == runnableProcesses.size();
 		for (SimProcess<?> p : runnableProcesses()) {
-			p.terminatePassive();
+			p.terminateWaiting();
+			while (p.executor!=null) 
+				; // active wait until finished (should be very quick)
 		}
 	}
 
@@ -1339,17 +1341,6 @@ public class Simulation implements ValueStore {
 		return valueStore;
 	}
 
-	static {
-		loadExtensions();
-		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
-	}
-
-	static void loadExtensions() {
-		for (JasimaExtension ext : ServiceLoader.load(JasimaExtension.class)) {
-			logger.debug(message(EXT_LOADED), ext.getClass().getName());
-		}
-	}
-
 	public ZoneId getTimeZone() {
 		return timeZone;
 	}
@@ -1365,27 +1356,26 @@ public class Simulation implements ValueStore {
 		return clock;
 	}
 
-	static enum I18nConsts {
-		EXT_LOADED, NO_CONTEXT;
-	}
-
 	void processTerminated(SimProcess<?> simProcess) {
+		synchronized(runnableProcesses) {
 		boolean removeRes = runnableProcesses.remove(simProcess);
 		assert removeRes;
-		numRunnable--;
+		}
 	}
 
-	void processCreated(SimProcess<?> simProcess) {
-		runnableProcesses.add(simProcess);
-		numRunnable++;
+	void processActivated(SimProcess<?> simProcess) {
+		synchronized (runnableProcesses) {
+			runnableProcesses.add(simProcess);
+		}
 	}
-
 	public int numRunnableProcesses() {
-		return numRunnable;
+		return runnableProcesses.size();
 	}
 
 	public List<SimProcess<?>> runnableProcesses() {
-		return Collections.unmodifiableList(new ArrayList<>(runnableProcesses));
+		synchronized (runnableProcesses) {
+			return unmodifiableList(new ArrayList<>(runnableProcesses));
+		}
 	}
 
 	public SimRunnable getMainProcessActions() {
@@ -1395,5 +1385,20 @@ public class Simulation implements ValueStore {
 	public void setMainProcessActions(SimRunnable mainProcessActions) {
 		requireAllowedState(state, INITIAL);
 		this.mainProcessActions = mainProcessActions;
+	}
+
+	static enum I18nConsts {
+		EXT_LOADED, NO_CONTEXT;
+	}
+
+	static {
+		loadExtensions();
+		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
+	}
+
+	static void loadExtensions() {
+		for (JasimaExtension ext : ServiceLoader.load(JasimaExtension.class)) {
+			logger.debug(message(EXT_LOADED), ext.getClass().getName());
+		}
 	}
 }

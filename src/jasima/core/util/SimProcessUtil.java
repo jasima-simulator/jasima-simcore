@@ -40,7 +40,7 @@ public final class SimProcessUtil {
 			}
 		}
 		// create a new thread
-		Thread t = new Thread(tg, r, "jasimaSimThread-" + threadNumber.incrementAndGet(), threadStackSize);
+		Thread t = new Thread(simThreads, r, "jasimaSimThread-" + threadNumber.incrementAndGet(), threadStackSize);
 		t.setDaemon(true);
 		return t;
 	}
