@@ -10,6 +10,7 @@ import java.util.concurrent.locks.LockSupport;
 
 import jasima.core.simulation.SimProcess;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.Simulation;
 
 /**
  * Static helper methods and definitions used to implement {@link SimProcess}es.
@@ -62,20 +63,32 @@ public final class SimProcessUtil {
 		return Thread.currentThread();
 	}
 
-	/**
-	 * Wraps the given {@link SimRunnable} to be used as a {@link Callable} always
-	 * returning {@code null}. This method is the same as
-	 * {@link Executors#callable(Runnable)}, just working with a
-	 * {@link SimRunnable}.
-	 * 
-	 * @param <R> The produced callable will always return null, so R can be
-	 *            anything.
-	 * @param r   The object to wrap, mustn't be null.
-	 * @return A {@link Callable} executing {@code r} when it's
-	 *         {@link call()}-method is called.
-	 */
-	public static <R> Callable<R> callable(SimRunnable r) {
-		return r == null ? null : new RunnableWrapper<>(r);
+//	/**
+//	 * Wraps the given {@link SimRunnable} to be used as a {@link Callable} always
+//	 * returning {@code null}. This method is the same as
+//	 * {@link Executors#callable(Runnable)}, just working with a
+//	 * {@link SimRunnable}.
+//	 * 
+//	 * @param <R> The produced callable will always return null, so R can be
+//	 *            anything.
+//	 * @param r   The object to wrap, mustn't be null.
+//	 * @return A {@link Callable} executing {@code r} when it's
+//	 *         {@link call()}-method is called.
+//	 */
+//	public static <R> Callable<R> callable(SimRunnable r) {
+//		return r == null ? null : new RunnableWrapper<>(r);
+//	}
+
+	public static <R> SimCallable<R> simCallable(SimRunnable r) {
+		return r == null ? null : new SimRunnableWrapper<>(r);
+	}
+
+	public static <R> SimCallable<R> simCallable(SimAction r) {
+		return r == null ? null : new SimActionWrapper<>(r);
+	}
+
+	public static <R> SimCallable<R> simCallable(Callable<R> c) {
+		return c == null ? null : new CallableWrapper<>(c);
 	}
 
 	/**
@@ -89,22 +102,60 @@ public final class SimProcessUtil {
 		void run() throws MightBlock;
 	}
 
+	@FunctionalInterface
+	public interface SimAction {
+		void run(Simulation sim) throws MightBlock;
+	}
+
+	@FunctionalInterface
+	public interface SimCallable<R> {
+		R call(Simulation sim) throws MightBlock, Exception;
+	}
+
 	// utility methods and classes for public API below
 
 	/**
-	 * A Callable that runs a given task ({@link SimRunnable}) and returns null.
+	 * A SimAction that runs a given task ({@link SimRunnable}) and always returns
+	 * {@code null}.
 	 */
-	static final class RunnableWrapper<R> implements Callable<R> {
+	static final class SimRunnableWrapper<R> implements SimCallable<R> {
 		final SimRunnable task;
 
-		RunnableWrapper(SimRunnable task) {
+		SimRunnableWrapper(SimRunnable task) {
 			this.task = task;
 		}
 
 		@Override
-		public R call() throws MightBlock {
+		public R call(Simulation sim) throws MightBlock {
 			task.run();
 			return null;
+		}
+	}
+
+	static final class SimActionWrapper<R> implements SimCallable<R> {
+		final SimAction task;
+
+		SimActionWrapper(SimAction task) {
+			this.task = task;
+		}
+
+		@Override
+		public R call(Simulation sim) throws MightBlock, Exception {
+			task.run(sim);
+			return null;
+		}
+	}
+
+	static final class CallableWrapper<R> implements SimCallable<R> {
+		final Callable<R> c;
+
+		CallableWrapper(Callable<R> task) {
+			this.c = task;
+		}
+
+		@Override
+		public R call(Simulation sim) throws MightBlock, Exception {
+			return c.call();
 		}
 	}
 

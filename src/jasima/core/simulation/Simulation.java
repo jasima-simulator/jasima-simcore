@@ -56,8 +56,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -73,7 +71,8 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
-import jasima.core.util.SimProcessUtil.SimRunnable;
+import jasima.core.util.SimProcessUtil;
+import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.StandardExtensionImpl;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
@@ -244,7 +243,7 @@ public class Simulation implements ValueStore {
 	private Locale locale = I18n.DEF_LOCALE;
 	private ZoneId timeZone = ZoneId.of("UTC");
 
-	private SimRunnable mainProcessActions = null;
+	private SimAction mainProcessActions = null;
 
 	// ////////////// attributes/fields used during a simulation
 
@@ -390,7 +389,7 @@ public class Simulation implements ValueStore {
 
 		execFailure = null;
 
-		mainProcess = new SimProcess<Void>(this, getMainProcessActions(), null, "main");
+		mainProcess = new SimProcess<Void>(this, SimProcessUtil.simCallable(getMainProcessActions()), "main");
 		setCurrentProcess(mainProcess);
 		setEventLoopProcess(mainProcess);
 
@@ -418,7 +417,7 @@ public class Simulation implements ValueStore {
 	private void terminateRunningProcesses() {
 		for (SimProcess<?> p : runnableProcesses()) {
 			p.terminateWaiting();
-			while (p.executor!=null) 
+			while (p.executor != null)
 				; // active wait until finished (should be very quick)
 		}
 	}
@@ -1357,9 +1356,9 @@ public class Simulation implements ValueStore {
 	}
 
 	void processTerminated(SimProcess<?> simProcess) {
-		synchronized(runnableProcesses) {
-		boolean removeRes = runnableProcesses.remove(simProcess);
-		assert removeRes;
+		synchronized (runnableProcesses) {
+			boolean removeRes = runnableProcesses.remove(simProcess);
+			assert removeRes;
 		}
 	}
 
@@ -1368,6 +1367,7 @@ public class Simulation implements ValueStore {
 			runnableProcesses.add(simProcess);
 		}
 	}
+
 	public int numRunnableProcesses() {
 		return runnableProcesses.size();
 	}
@@ -1378,11 +1378,11 @@ public class Simulation implements ValueStore {
 		}
 	}
 
-	public SimRunnable getMainProcessActions() {
+	public SimAction getMainProcessActions() {
 		return mainProcessActions;
 	}
 
-	public void setMainProcessActions(SimRunnable mainProcessActions) {
+	public void setMainProcessActions(SimAction mainProcessActions) {
 		requireAllowedState(state, INITIAL);
 		this.mainProcessActions = mainProcessActions;
 	}

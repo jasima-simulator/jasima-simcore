@@ -114,7 +114,7 @@ public class TestSimProcessBasics {
 			SimProcess<?> simProcess = SimContext.currentProcess();
 
 			SimProcess<String> p2 = new SimProcess<>(sim, () -> {
-				SimContext.waitFor(5.0);
+				waitFor(5.0);
 				return "test";
 			});
 			p2.awakeIn(0.0);
@@ -162,24 +162,23 @@ public class TestSimProcessBasics {
 	public void testThreadReuse() throws Exception {
 		AtomicReference<Thread> t = new AtomicReference<>(null);
 
-		SimContext.of("simulation1", () -> {
+		SimContext.of("simulation1", sim -> {
 			for (int i = 0; i < 10; i++) {
-				System.out.println("starting process " + i);
+				// start process 
 				activate(() -> {
-					System.out.println("start");
 					if (t.get() == null) {
+						// everything has to be executed in this thread
 						t.set(Thread.currentThread());
 					} else {
 						assertTrue(Thread.currentThread() == t.get());
 					}
-					SimContext.waitFor(0.5);
-					System.out.println("end");
+					waitFor(0.5);
 				}, "process" + i).join();
 
-				System.out.println("waiting...");
-				SimContext.waitFor(1.0);
+				// wait for it's end in simulation time
+				waitFor(1.0);
 
-				System.out.println("sleeping...");
+				// sleep for some wall time so thread can go to thread-pool again
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -233,7 +232,7 @@ public class TestSimProcessBasics {
 			long t = System.currentTimeMillis();
 			numWaits = numProcesses = 0;
 			int i = n;
-			Map<String, Object> res = SimContext.of("simulation1", () -> {
+			Map<String, Object> res = SimContext.of("simulation1", sim -> {
 				System.out.println("starting process...");
 				SimProcess<Integer> fibProcess = activate(() -> this.fibonacci(i));
 				fibProcess.join();

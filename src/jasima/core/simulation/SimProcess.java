@@ -8,7 +8,6 @@ import static jasima.core.util.SimProcessUtil.startExecuting;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
@@ -18,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 import jasima.core.simulation.Simulation.ErrorHandler;
 import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.util.SimProcessUtil;
+import jasima.core.util.SimProcessUtil.SimAction;
+import jasima.core.util.SimProcessUtil.SimCallable;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 
 public class SimProcess<R> implements Runnable {
@@ -41,12 +42,12 @@ public class SimProcess<R> implements Runnable {
 
 	}
 
-	private static class TerminateProcess extends Error {
+	private static final class TerminateProcess extends Error {
 		private static final long serialVersionUID = 7242165456133430192L;
 	}
 
 	private final Simulation sim;
-	private final Callable<R> action;
+	private final SimCallable<R> action;
 	private final String name;
 	private ErrorHandler localErrorHandler;
 
@@ -62,32 +63,36 @@ public class SimProcess<R> implements Runnable {
 	volatile Thread executor;
 
 	public SimProcess(Simulation sim, SimRunnable r) {
-		this(sim, SimProcessUtil.callable(r), null, null);
+		this(sim, SimProcessUtil.simCallable(r), null);
 	}
 
-	public SimProcess(Simulation sim, Callable<R> action) {
-		this(sim, action, null, null);
+	public SimProcess(Simulation sim, Callable<R> c) {
+		this(sim, SimProcessUtil.simCallable(c), null);
+	}
+
+	public SimProcess(Simulation sim, SimAction a) {
+		this(sim, SimProcessUtil.simCallable(a), null);
+	}
+
+	public SimProcess(Simulation sim, SimCallable<R> c) {
+		this(sim, c, null);
 	}
 
 	public SimProcess(Simulation sim, SimRunnable r, String name) {
-		this(sim, SimProcessUtil.callable(r), null, name);
+		this(sim, SimProcessUtil.simCallable(r), name);
 	}
 
-	public SimProcess(Simulation sim, Callable<R> action, String name) {
-		this(sim, action, null, name);
+	public SimProcess(Simulation sim, Callable<R> c, String name) {
+		this(sim, SimProcessUtil.simCallable(c), name);
 	}
 
-	public SimProcess(Simulation sim, SimRunnable r, ErrorHandler exceptionHandler, String name) {
-		this(sim, SimProcessUtil.callable(r), exceptionHandler, name);
-	}
-
-	public SimProcess(Simulation sim, Callable<R> action, ErrorHandler exceptionHandler, String name) {
+	public SimProcess(Simulation sim, SimCallable<R> action, String name) {
 		super();
 
 		this.sim = requireNonNull(sim);
 		this.name = name != null ? name : SequenceNumberService.getFor(sim).nextFormattedValue("simProcess");
 		this.action = action;
-		this.localErrorHandler = exceptionHandler;
+		this.localErrorHandler = null;
 		this.executor = null;
 		this.state = ProcessState.PASSIVE;
 		this.activateProcessEvent = new SimEventMethodCall(sim.simTime(), sim.currentPrio() + 1, "ActivateProcess",
@@ -106,7 +111,7 @@ public class SimProcess<R> implements Runnable {
 	 */
 	protected R doRun() throws Exception {
 		if (action != null) {
-			return action.call();
+			return action.call(sim);
 		} else {
 			return null;
 		}
