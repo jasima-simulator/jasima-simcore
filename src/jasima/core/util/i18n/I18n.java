@@ -23,7 +23,7 @@ public final class I18n {
 	/**
 	 * The default locale used, e.g., to format strings. Defaults to {@code en_US}.
 	 */
-	public static final Locale DEF_LOCALE = Locale.US;
+	public static final Locale DEF_LOCALE = Locale.UK;
 
 	private static final Locale UNKNOWN_LOCALE = Locale.forLanguageTag("yq-YQ");
 	private static final Set<String> bundleNames = new HashSet<>();

@@ -1,6 +1,6 @@
 package examples.processes;
 
-import static jasima.core.simulation.SimContext.activate;
+import static jasima.core.simulation.SimContext.activateCallable;
 import static jasima.core.simulation.SimContext.suspend;
 import static jasima.core.simulation.SimContext.trace;
 import static jasima.core.simulation.SimContext.waitFor;

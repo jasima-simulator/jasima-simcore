@@ -73,6 +73,7 @@ import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimAction;
+import jasima.core.util.SimProcessUtil.SimRunnable;
 import jasima.core.util.StandardExtensionImpl;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
@@ -241,7 +242,7 @@ public class Simulation implements ValueStore {
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
 
 	private Locale locale = I18n.DEF_LOCALE;
-	private ZoneId timeZone = ZoneId.of("UTC");
+	private ZoneId zoneId = ZoneId.of("UTC");
 
 	private SimAction mainProcessActions = null;
 
@@ -270,11 +271,11 @@ public class Simulation implements ValueStore {
 
 	private Clock clock;
 
-	private volatile SimExecState state;
+	volatile SimExecState state;
 
 	private AtomicInteger pauseRequests;
 
-	private SimProcess<Void> mainProcess;
+	private SimProcess<?> mainProcess;
 
 	private Exception execFailure;
 
@@ -379,8 +380,8 @@ public class Simulation implements ValueStore {
 	 * <li>triggering event processing.
 	 * </ol>
 	 * A simulation is terminated if either the maximum simulation length is
-	 * reached, there are no more application events in the queue, or some other
-	 * code called {@link #end()}.
+	 * reached, there are no more application events in the queue, or the method
+	 * {@link #end()} was called.
 	 * 
 	 * @see jasima.core.simulation.SimEvent#isAppEvent()
 	 */
@@ -389,7 +390,8 @@ public class Simulation implements ValueStore {
 
 		execFailure = null;
 
-		mainProcess = new SimProcess<Void>(this, SimProcessUtil.simCallable(getMainProcessActions()), "main");
+		mainProcess = new SimProcess<>(this, getMainProcessActions(), "main");
+		currEvent = mainProcess.activateProcessEvent;
 		setCurrentProcess(mainProcess);
 		setEventLoopProcess(mainProcess);
 
@@ -403,7 +405,6 @@ public class Simulation implements ValueStore {
 		mainProcess.activateProcess();
 		mainProcess.run();
 
-		state = SimExecState.TERMINATING;
 		terminateRunningProcesses();
 
 		if (execFailure == null) {
@@ -416,9 +417,11 @@ public class Simulation implements ValueStore {
 
 	private void terminateRunningProcesses() {
 		for (SimProcess<?> p : runnableProcesses()) {
-			p.terminateWaiting();
-			while (p.executor != null)
-				; // active wait until finished (should be very quick)
+			if (p != mainProcess()) {
+				p.terminateWaiting();
+				while (p.executor != null)
+					; // active wait until finished (should be very quick)
+			}
 		}
 	}
 
@@ -1308,7 +1311,7 @@ public class Simulation implements ValueStore {
 		runInSimThread.add(r);
 	}
 
-	SimProcess<Void> mainProcess() {
+	SimProcess<?> mainProcess() {
 		return mainProcess;
 	}
 
@@ -1340,17 +1343,17 @@ public class Simulation implements ValueStore {
 		return valueStore;
 	}
 
-	public ZoneId getTimeZone() {
-		return timeZone;
+	public ZoneId getZoneId() {
+		return zoneId;
 	}
 
-	public void setTimeZone(ZoneId timeZone) {
-		this.timeZone = timeZone;
+	public void setZoneId(ZoneId zone) {
+		this.zoneId = zone;
 	}
 
 	public Clock clock() {
 		if (clock != null) {
-			clock = new SimulationClock(this, timeZone);
+			clock = new SimulationClock(this, zoneId);
 		}
 		return clock;
 	}
@@ -1382,6 +1385,10 @@ public class Simulation implements ValueStore {
 		return mainProcessActions;
 	}
 
+	public void setMainProcessActions(SimRunnable r) {
+		setMainProcessActions(SimProcessUtil.simAction(r));
+	}
+
 	public void setMainProcessActions(SimAction mainProcessActions) {
 		requireAllowedState(state, INITIAL);
 		this.mainProcessActions = mainProcessActions;
@@ -1392,11 +1399,11 @@ public class Simulation implements ValueStore {
 	}
 
 	static {
-		loadExtensions();
 		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
+		loadJasimaExtensions();
 	}
 
-	static void loadExtensions() {
+	static void loadJasimaExtensions() {
 		for (JasimaExtension ext : ServiceLoader.load(JasimaExtension.class)) {
 			logger.debug(message(EXT_LOADED), ext.getClass().getName());
 		}

@@ -1,6 +1,7 @@
 package jasima.core.simulation;
 
 import static jasima.core.simulation.Simulation.I18nConsts.NO_CONTEXT;
+import static jasima.core.util.SimProcessUtil.simAction;
 import static jasima.core.util.SimProcessUtil.simCallable;
 
 import java.time.temporal.TemporalUnit;
@@ -24,7 +25,7 @@ public class SimContext {
 	private static ThreadLocal<Simulation> currentSim = new ThreadLocal<>();
 
 	public static Simulation currentSimulation() {
-		return currentSim.get();
+		return currentSim == null ? null : currentSim.get();
 	}
 
 	public static Simulation requireSimContext() {
@@ -57,34 +58,34 @@ public class SimContext {
 	}
 
 	public static SimProcess<Void> activate(SimRunnable r) {
-		return activate(simCallable(r), null);
+		return activateCallable(simCallable(r), null);
 	}
 
 	public static SimProcess<Void> activate(SimRunnable r, String name) {
-		return activate(simCallable(r), name);
+		return activateCallable(simCallable(r), name);
 	}
 
 	public static <T> SimProcess<T> activate(SimAction a) {
-		return activate(simCallable(a), null);
+		return activateCallable(simCallable(a), null);
 	}
 
 	public static <T> SimProcess<T> activate(SimAction a, String name) {
-		return activate(simCallable(a), name);
+		return activateCallable(simCallable(a), name);
 	}
 
-	public static <T> SimProcess<T> activate(Callable<T> c) {
-		return activate(simCallable(c), null);
+	public static <T> SimProcess<T> activateCallable(Callable<T> c) {
+		return activateCallable(simCallable(c), null);
 	}
 
-	public static <T> SimProcess<T> activate(Callable<T> c, String name) {
-		return activate(simCallable(c), name);
+	public static <T> SimProcess<T> activateCallable(Callable<T> c, String name) {
+		return activateCallable(simCallable(c), name);
 	}
 
-	public static <T> SimProcess<T> activate(SimCallable<T> a) {
-		return activate(a, null);
+	public static <T> SimProcess<T> activateCallable(SimCallable<T> a) {
+		return activateCallable(a, null);
 	}
 
-	public static <T> SimProcess<T> activate(SimCallable<T> a, String name) {
+	public static <T> SimProcess<T> activateCallable(SimCallable<T> a, String name) {
 		SimProcess<T> p = new SimProcess<>(requireSimContext(), a, name);
 		p.awakeIn(0.0);
 		return p;
@@ -117,42 +118,50 @@ public class SimContext {
 	}
 
 	public static Map<String, Object> of(SimRunnable r) {
-		return of(null, simCallable(r));
+		return of(null, simAction(r));
 	}
 
 	public static Map<String, Object> of(String name, SimRunnable r) {
-		return of(name, simCallable(r));
+		return of(name, simAction(r));
 	}
 
 	public static Map<String, Object> of(SimAction a) {
-		return of(null, simCallable(a));
+		return of(null, a);
 	}
 
 	public static Map<String, Object> of(String name, SimAction a) {
-		return of(name, simCallable(a));
-	}
-
-	public static Map<String, Object> of(Callable<?> c) {
-		return of(null, simCallable(c));
-	}
-
-	public static Map<String, Object> of(String name, Callable<?> c) {
-		return of(name, simCallable(c));
-	}
-
-	public static Map<String, Object> of(SimCallable<?> c) {
-		return of(null, c);
-	}
-
-	public static Map<String, Object> of(String name, SimCallable<?> a) {
 		Simulation sim = new Simulation();
 		sim.setName(name);
-
-		SimProcess<?> mainProcess = new SimProcess<>(sim, a, null);
-		mainProcess.awakeIn(0.0);
+		sim.setMainProcessActions(a);
+//
+//		SimProcess<?> mainProcess = new SimProcess<>(sim, a, null);
+//		mainProcess.awakeIn(0.0);
 
 		return sim.performRun();
 	}
+
+//	public static Map<String, Object> of(Callable<?> c) {
+//		return of(null, simCallable(c));
+//	}
+//
+//	public static Map<String, Object> of(String name, Callable<?> c) {
+//		return of(name, simCallable(c));
+//	}
+//
+//	public static Map<String, Object> of(SimCallable<?> c) {
+//		return of(null, c);
+//	}
+
+//	public static Map<String, Object> of(String name, SimCallable<?> a) {
+//		Simulation sim = new Simulation();
+//		sim.setName(name);
+//		sim.setMainProcessActions(a);
+////
+////		SimProcess<?> mainProcess = new SimProcess<>(sim, a, null);
+////		mainProcess.awakeIn(0.0);
+//
+//		return sim.performRun();
+//	}
 
 	public static Locale locale() {
 		Simulation sim = currentSimulation();

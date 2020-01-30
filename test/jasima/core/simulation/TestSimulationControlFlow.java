@@ -2,14 +2,22 @@ package jasima.core.simulation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.simulation.Simulation.SimulationFailed;
+import junit.framework.Assert;
 
 public class TestSimulationControlFlow {
+//	@Rule
+	public Timeout globalTimeout = new Timeout(2000);
 
 	Simulation sim;
 	int count;
@@ -45,6 +53,7 @@ public class TestSimulationControlFlow {
 		sim.schedule("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 		sim.schedule("event2", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
+		// normal execution first time
 		sim.init();
 		sim.beforeRun();
 		sim.run();
@@ -53,7 +62,7 @@ public class TestSimulationControlFlow {
 		assertEquals("simState", SimExecState.FINISHED, sim.state());
 		assertEquals("count", 2, count);
 
-		sim.run(); // should not be possible
+		sim.run(); // should throw IllegalStateException
 	}
 
 	@Test
@@ -157,6 +166,114 @@ public class TestSimulationControlFlow {
 		assertEquals("count", 3, count);
 		assertEquals("simTime", 6.0, sim.simTime(), 1e-6);
 		assertEquals("simState", SimExecState.FINISHED, sim.state());
+	}
+
+	@Test(expected = SimulationFailed.class)
+	public void testErrorWithProcesses1() {
+		boolean[] wasCalled = { false };
+
+		Map<String, Object> res = SimContext.of(sim -> {
+			sim.setErrorHandler(e -> {
+				wasCalled[0] = e instanceof IllegalStateException;
+				return true;
+			});
+
+			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+
+			// main process is finished at that time
+		});
+
+		assertTrue("handler called", wasCalled[0]);
+		assertEquals("simTime", 3.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("count", 1, count);
+	}
+
+	@Test(expected = SimulationFailed.class)
+	public void testErrorWithProcesses2() {
+		boolean[] wasCalled = { false };
+
+		Map<String, Object> res = SimContext.of(sim -> {
+			sim.setErrorHandler(e -> {
+				wasCalled[0] = e instanceof IllegalStateException;
+				return true;
+			});
+
+			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
+
+			sim.currentProcess().suspend();
+			fail("should never be reached");
+		});
+
+		assertTrue("handler called", wasCalled[0]);
+		assertEquals("simTime", 3.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("count", 1, count);
+	}
+
+	@Test(expected = SimulationFailed.class)
+	public void testEventErrorWithProcess() {
+		boolean[] wasCalled = { false };
+
+		Map<String, Object> res = SimContext.of(sim -> {
+			SimContext.activate(s -> {
+				SimProcess<?> p = s.currentProcess();
+				p.setLocalErrorHandler(e -> {
+					Assert.fail("should never be called when event@3.0 throws the exception");
+					return true;
+				});
+				p.waitFor(5.0); // assure process is still active when Exception is thrown
+				fail(); // should never be reached
+			});
+
+			sim.setErrorHandler(e -> {
+				wasCalled[0] = e instanceof IllegalStateException;
+				return true;
+			});
+
+			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
+
+			// main process is finished at that time
+		});
+
+		assertTrue("handler called", wasCalled[0]);
+		assertEquals("simTime", 3.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("count", 1, count);
+	}
+
+	@Test(expected = SimulationFailed.class)
+	public void testEventErrorWithFinishedProcess() {
+		boolean[] wasCalled = { false };
+
+		Map<String, Object> res = SimContext.of(sim -> {
+			SimContext.activate(s -> {
+				SimProcess<?> p = s.currentProcess();
+				p.setLocalErrorHandler(e -> {
+					Assert.fail("should never be called when event@3.0 throws the exception");
+					return true;
+				});
+				// process will finish but still execute event loop after this point
+			});
+
+			sim.setErrorHandler(e -> {
+				wasCalled[0] = e instanceof IllegalStateException;
+				return true;
+			});
+
+			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
+
+			// main process is finished at that time
+		});
+
+		assertTrue("handler called", wasCalled[0]);
+		assertEquals("simTime", 3.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("count", 1, count);
 	}
 
 }

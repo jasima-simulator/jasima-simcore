@@ -24,6 +24,8 @@ import jasima.core.util.SimProcessUtil.SimRunnable;
 public class SimProcess<R> implements Runnable {
 
 	private static final Logger logger = LogManager.getLogger("jasima.output");
+	static {
+	}
 
 	public static enum ProcessState {
 		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
@@ -51,7 +53,7 @@ public class SimProcess<R> implements Runnable {
 	private final String name;
 	private ErrorHandler localErrorHandler;
 
-	private final SimEvent activateProcessEvent;
+	final SimEvent activateProcessEvent;
 
 	private ProcessState state;
 	private R execResult;
@@ -84,6 +86,10 @@ public class SimProcess<R> implements Runnable {
 
 	public SimProcess(Simulation sim, Callable<R> c, String name) {
 		this(sim, SimProcessUtil.simCallable(c), name);
+	}
+
+	public SimProcess(Simulation sim, SimAction a, String name) {
+		this(sim, SimProcessUtil.simCallable(a), name);
 	}
 
 	public SimProcess(Simulation sim, SimCallable<R> action, String name) {
@@ -200,10 +206,15 @@ public class SimProcess<R> implements Runnable {
 
 		// event loop can be finished because whole sim is finished or current process
 		// is supposed to continue (either in its doRun method or after yield in run()).
-		if (!reactivated && !sim.continueSim() && !isMainProcess()) {
+		if (!reactivated && !sim.continueSim()) {
 			logger.error("backtomain");
-			sim.mainProcess().start();
-			this.pause();
+			sim.state = SimExecState.TERMINATING;
+			if (isMainProcess()) {
+				throw new TerminateProcess();
+			} else {
+				sim.mainProcess().start();
+				this.pause();
+			}
 		}
 	}
 
@@ -316,9 +327,9 @@ public class SimProcess<R> implements Runnable {
 		yield();
 	}
 
-	public void join() throws MightBlock {
+	public SimProcess<R> join() throws MightBlock {
 		if (hasFinished()) {
-			return;
+			return this;
 		}
 
 		SimProcess<?> current = sim.currentProcess();
@@ -326,13 +337,15 @@ public class SimProcess<R> implements Runnable {
 			throw new UnsupportedOperationException(); // call from plain event / sim-thread
 		}
 		if (current == this) {
-			throw new IllegalStateException("A process can't wait for its own results.");
+			throw new IllegalStateException("A process can't wait for its own completion.");
 		}
 
 		addCompletionNotifier(p -> current.scheduleReactivateAt(sim.simTime()));
 
 		current.state = ProcessState.PASSIVE;
 		current.yield();
+
+		return this;
 	}
 
 	public R get() {
@@ -354,7 +367,7 @@ public class SimProcess<R> implements Runnable {
 		sim.schedule(activateProcessEvent);
 	}
 
-	private void addCompletionNotifier(Consumer<SimProcess<R>> callback) {
+	public void addCompletionNotifier(Consumer<SimProcess<R>> callback) {
 		if (completionNotifiers == null) {
 			completionNotifiers = new ArrayList<>();
 		}

@@ -91,6 +91,10 @@ public final class SimProcessUtil {
 		return c == null ? null : new CallableWrapper<>(c);
 	}
 
+	public static SimAction simAction(SimRunnable r) {
+		return r == null ? null : new SimRunnableSimActionWrapper(r);
+	}
+
 	/**
 	 * Same as Java's {@link Runnable}, except that it can throw the marker
 	 * Exception {@link MightBlock}. Therefore any {@link Runnable} can also be used
@@ -129,6 +133,19 @@ public final class SimProcessUtil {
 		public R call(Simulation sim) throws MightBlock {
 			task.run();
 			return null;
+		}
+	}
+
+	static final class SimRunnableSimActionWrapper implements SimAction {
+		final SimRunnable task;
+
+		SimRunnableSimActionWrapper(SimRunnable task) {
+			this.task = task;
+		}
+
+		@Override
+		public void run(Simulation sim) throws MightBlock {
+			task.run();
 		}
 	}
 
