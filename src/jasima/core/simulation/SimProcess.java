@@ -123,10 +123,10 @@ public class SimProcess<R> implements Runnable {
 		}
 	}
 
-	protected boolean handleError(Exception e) {
+	protected boolean handleError(Exception e, boolean skipLocal) {
 		boolean shouldRethrow = true;
 
-		if (localErrorHandler != null) {
+		if (localErrorHandler != null && !skipLocal) {
 			shouldRethrow = localErrorHandler.test(e);
 		}
 
@@ -157,7 +157,7 @@ public class SimProcess<R> implements Runnable {
 				execResult = null;
 				execFailure = e;
 				state = ProcessState.ERROR;
-				if (handleError(e)) {
+				if (handleError(e, false)) {
 					sim.terminateWithException(e); // unrecoverable error
 				}
 			}
@@ -196,7 +196,7 @@ public class SimProcess<R> implements Runnable {
 			try {
 				sim.handleNextEvent();
 			} catch (RuntimeException e) {
-				if (handleError(e)) {
+				if (handleError(e, true)) {
 					sim.terminateWithException(e); // unrecoverable error
 				}
 			}

@@ -22,12 +22,13 @@ package jasima.core.util.converter;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.util.converter.ArgListTokenizerTest.class,
+@SuiteClasses({ jasima.core.util.converter.ArgListTokenizerTest.class,
 		jasima.core.util.converter.ArgListParserTest.class })
 public class AllTests {
 

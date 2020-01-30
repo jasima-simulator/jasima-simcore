@@ -21,13 +21,14 @@
  *******************************************************************************/
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class, TestStaticInsts.class, TestStaticInstsTraces.class,
+@SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class, TestStaticInsts.class, TestStaticInstsTraces.class,
 		TestOrderIndependence.class, TestSetups.class, TestBatching.class, TestBestOfFamilyBatching.class,
 		TestGECCOContinuity.class, TestWinterSim2010Continuity.class, TestMIMAC.class, TestForAllResults.class,
 		TestMimacFab4Trace.class, jasima.core.experiment.AllTests.class, TestDetailedTraces.class, TestDowntimes.class,

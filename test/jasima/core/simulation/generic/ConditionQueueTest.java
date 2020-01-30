@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.generic.ConditionQueue;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.observer.ObservableValue;
 

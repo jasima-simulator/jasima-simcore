@@ -22,12 +22,13 @@ package jasima.core.util;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.util.TypeUtilTest.class, jasima.core.util.observer.AllTests.class,
+@SuiteClasses({ jasima.core.util.TypeUtilTest.class, jasima.core.util.observer.AllTests.class,
 		jasima.core.util.converter.AllTests.class })
 public class AllTests {
 

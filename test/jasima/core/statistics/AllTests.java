@@ -22,12 +22,13 @@ package jasima.core.statistics;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class, jasima.core.statistics.TestSummaryStat.class,
+@SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class, jasima.core.statistics.TestSummaryStat.class,
 		TestErlangGamma.class })
 public class AllTests {
 

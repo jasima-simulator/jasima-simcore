@@ -2,14 +2,16 @@ package jasima.core.simulation;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
  * @author Torsten Hildebrandt
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestSimulationBasics.class, TestSimulationPausing.class, TestSimulationControlFlow.class,
-		jasima.core.simulation.generic.AllTests.class, TestSimProcessBasics.class })
+@SuiteClasses({ TestSimProcessBasics.class, TestSimulationBasics.class, TestSimulationControlFlow.class,
+		TestSimulationPausing.class })
+
 public class AllTests {
 
 }

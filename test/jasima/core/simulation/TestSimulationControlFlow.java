@@ -16,7 +16,7 @@ import jasima.core.simulation.Simulation.SimulationFailed;
 import junit.framework.Assert;
 
 public class TestSimulationControlFlow {
-//	@Rule
+	@Rule
 	public Timeout globalTimeout = new Timeout(2000);
 
 	Simulation sim;

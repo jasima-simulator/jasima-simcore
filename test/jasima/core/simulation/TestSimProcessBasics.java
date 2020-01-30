@@ -16,13 +16,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.SimProcess.ProcessState;
 import jasima.core.util.MsgCategory;
 
 public class TestSimProcessBasics {
+	@Rule
+	public Timeout globalTimeout = new Timeout(2000);
 
 	private Simulation sim;
 
@@ -369,7 +373,7 @@ public class TestSimProcessBasics {
 	}
 
 	static Logger log = LogManager.getLogger(TestSimProcessBasics.class);
-	
+
 	public static void main(String... args) throws Exception {
 		Simulation s = new Simulation();
 		s.setMainProcessActions(sim -> {

@@ -22,14 +22,15 @@ package jasima.core.experiment;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestExperimentAbort.class, OCBATest.class, TestExperimentExceptions.class,
-		TestFFEFactorSetting.class, Test_FFE_Array_Setter.class, TestMultipleReplicationExperiment.class })
+@SuiteClasses({ TestExperimentAbort.class, OCBATest.class, TestExperimentExceptions.class, TestFFEFactorSetting.class,
+		Test_FFE_Array_Setter.class, TestMultipleReplicationExperiment.class })
 public class AllTests {
 
 }
