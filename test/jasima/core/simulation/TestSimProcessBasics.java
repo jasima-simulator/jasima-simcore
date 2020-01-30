@@ -26,7 +26,7 @@ import jasima.core.util.MsgCategory;
 
 public class TestSimProcessBasics {
 	@Rule
-	public Timeout globalTimeout = new Timeout(2000);
+	public Timeout globalTimeout = new Timeout(5000);
 
 	private Simulation sim;
 
@@ -178,8 +178,8 @@ public class TestSimProcessBasics {
 		AtomicReference<Thread> t = new AtomicReference<>(null);
 
 		SimContext.of("simulation1", sim -> {
-			for (int i = 0; i < 10; i++) {
-				// start process
+			for (int i = 0; i < 20; i++) {
+				// start process in parallel to main process
 				activate(() -> {
 					if (t.get() == null) {
 						// everything has to be executed in this thread
@@ -202,7 +202,7 @@ public class TestSimProcessBasics {
 
 			}
 		});
-		// test finished, everything ok, if this point is reached
+		// test finished; everything ok, if this point is reached
 	}
 
 	public static void suspendingProcess() throws MightBlock {
@@ -317,7 +317,7 @@ public class TestSimProcessBasics {
 		AtomicLong procRes = new AtomicLong();
 		long t = System.currentTimeMillis();
 		Map<String, Object> res = SimContext.of(sim -> {
-			SimProcess<Long> fibProcess = activateCallable(s -> ack(3, 3));
+			SimProcess<Long> fibProcess = activateCallable(s -> ack(3, 4));
 			fibProcess.join();
 			Long l = fibProcess.get();
 			procRes.set(l);
@@ -375,15 +375,6 @@ public class TestSimProcessBasics {
 	static Logger log = LogManager.getLogger(TestSimProcessBasics.class);
 
 	public static void main(String... args) throws Exception {
-		Simulation s = new Simulation();
-		s.setMainProcessActions(sim -> {
-			log.warn("Hello world.");
-			waitFor(1);
-		});
-		s.setMainProcessActions(() -> {
-			log.warn("Hello world.");
-			waitFor(1);
-		});
 		Map<String, Object> res = SimContext.of(sim -> {
 			log.warn("Hello world.");
 			waitFor(1);
