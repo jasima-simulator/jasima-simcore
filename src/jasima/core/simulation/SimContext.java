@@ -8,6 +8,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +52,10 @@ public class SimContext {
 
 	public static String message(Enum<?> key) {
 		return I18n.message(locale(), key);
+	}
+
+	public static String message(String keyName) {
+		return I18n.message(locale(), keyName);
 	}
 
 	public static String formattedMessage(Enum<?> key, Object... params) {
@@ -130,38 +135,33 @@ public class SimContext {
 	}
 
 	public static Map<String, Object> of(String name, SimAction a) {
-		Simulation sim = new Simulation();
-		sim.setName(name);
-		sim.setMainProcessActions(a);
-//
-//		SimProcess<?> mainProcess = new SimProcess<>(sim, a, null);
-//		mainProcess.awakeIn(0.0);
-
+		Simulation sim = createSim(name, a);
 		return sim.performRun();
 	}
 
-//	public static Map<String, Object> of(Callable<?> c) {
-//		return of(null, simCallable(c));
-//	}
-//
-//	public static Map<String, Object> of(String name, Callable<?> c) {
-//		return of(name, simCallable(c));
-//	}
-//
-//	public static Map<String, Object> of(SimCallable<?> c) {
-//		return of(null, c);
-//	}
+	public static Future<Map<String, Object>> async(SimRunnable r) {
+		return async(null, simAction(r));
+	}
 
-//	public static Map<String, Object> of(String name, SimCallable<?> a) {
-//		Simulation sim = new Simulation();
-//		sim.setName(name);
-//		sim.setMainProcessActions(a);
-////
-////		SimProcess<?> mainProcess = new SimProcess<>(sim, a, null);
-////		mainProcess.awakeIn(0.0);
-//
-//		return sim.performRun();
-//	}
+	public static Future<Map<String, Object>> async(String name, SimRunnable r) {
+		return async(name, simAction(r));
+	}
+
+	public static Future<Map<String, Object>> async(SimAction a) {
+		return async(null, a);
+	}
+
+	public static Future<Map<String, Object>> async(String name, SimAction a) {
+		Simulation sim = createSim(name, a);
+		return sim.performRunAsync();
+	}
+
+	public static Simulation createSim(String name, SimAction a) {
+		Simulation sim = new Simulation();
+		sim.setName(name);
+		sim.setMainProcessActions(a);
+		return sim;
+	}
 
 	public static Locale locale() {
 		Simulation sim = currentSimulation();

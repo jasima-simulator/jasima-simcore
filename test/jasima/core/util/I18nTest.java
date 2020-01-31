@@ -20,16 +20,29 @@
  *******************************************************************************/
 package jasima.core.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.junit.Assert.assertEquals;
 
-/**
- * 
- */
-@RunWith(Suite.class)
-@SuiteClasses({ I18nTest.class, TypeUtilTest.class })
+import java.util.Locale;
 
-public class AllTests {
+import org.junit.Test;
+
+import jasima.core.util.i18n.I18n;
+
+public class I18nTest {
+
+	static {
+		I18n.requireResourceBundle("jasima.core.util.Test");
+	}
+
+	@Test
+	public void testTranslation() {
+		Locale.setDefault(Locale.GERMANY);
+
+		assertEquals("jasima default language is " + I18n.DEF_LOCALE, "DefLanguageCheck", I18n.message("TestKey"));
+		assertEquals("other language1", "French version", I18n.message(Locale.FRANCE, "TestKey"));
+		assertEquals("other language2", "German version", I18n.message(Locale.GERMANY, "TestKey"));
+		assertEquals("unknown1", "Default message", I18n.message(Locale.CHINA, "TestKey"));
+		assertEquals("unknown2", "Default message", I18n.message(Locale.ENGLISH, "TestKey"));
+	}
 
 }

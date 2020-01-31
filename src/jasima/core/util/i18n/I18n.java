@@ -3,6 +3,8 @@ package jasima.core.util.i18n;
 import static jasima.core.util.i18n.I18n.I18nConsts.RES_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.ResourceBundle.Control.FORMAT_DEFAULT;
+import static java.util.ResourceBundle.Control.getNoFallbackControl;
 import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayDeque;
@@ -21,7 +23,7 @@ import jasima.core.util.StandardExtensionImpl;
 public final class I18n {
 
 	/**
-	 * The default locale used, e.g., to format strings. Defaults to {@code en_US}.
+	 * The default locale used, e.g., to format strings. Defaults to {@code en_UK}.
 	 */
 	public static final Locale DEF_LOCALE = Locale.UK;
 
@@ -93,7 +95,7 @@ public final class I18n {
 		}
 
 		// load the new ResourceBundle for each Locale requested so far, latest first
-		loadedBundles.forEach((l, rbs) -> rbs.addFirst(getBundle(name, l)));
+		loadedBundles.forEach((l, rbs) -> rbs.addFirst(loadBundle(name, l)));
 		bundleNames.add(name);
 	}
 
@@ -120,7 +122,11 @@ public final class I18n {
 	}
 
 	private static ArrayDeque<ResourceBundle> loadNewLocale(Locale l) {
-		return bundleNames.stream().map(n -> getBundle(n, l)).collect(toCollection(ArrayDeque::new));
+		return bundleNames.stream().map(n -> loadBundle(n, l)).collect(toCollection(ArrayDeque::new));
+	}
+
+	private static ResourceBundle loadBundle(String name, Locale l) {
+		return getBundle(name, l, getNoFallbackControl(FORMAT_DEFAULT));
 	}
 
 	static enum I18nConsts {
