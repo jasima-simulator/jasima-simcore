@@ -7,8 +7,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.util.SystemMillisClock;
-
 /**
  * Implementation of a {@link Clock} that always returns the latest time from
  * the underlying simulation. Don't instantiate this class directly, use
@@ -39,7 +37,7 @@ final class SimulationClock extends Clock {
 	public Clock withZone(ZoneId zone) {
 		if (zone.equals(this.zone)) {
 			return this;
-		}SystemMillisClock c;
+		}
 		return new SimulationClock(sim, zone);
 	}
 
