@@ -38,7 +38,6 @@ import jasima.core.experiment.Experiment;
  * complete.
  * 
  * @author Torsten Hildebrandt, 2012-09-05
- * @version "$Id$"
  */
 public class ForkJoinPoolExecutor extends ExperimentExecutor {
 
