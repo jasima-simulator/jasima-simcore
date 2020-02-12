@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import jasima.core.simulation.SimEntity;
 import jasima.core.simulation.SimProcess.MightBlock;
 
 public class SqlInjectionAttacker extends SimEntity {

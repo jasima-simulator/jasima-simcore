@@ -355,15 +355,14 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Trigger asynchronous execution of the experiment in Java's default
-	 * {@link ForkJoinPool}.
+	 * Trigger asynchronous execution of the experiment in the default thread pool.
 	 * 
 	 * @return A {@link Future} to obtain experiment results.
 	 * @see #runExperiment()
 	 * @see #runExperimentAsync(ExecutorService)
 	 */
 	public Future<Map<String, Object>> runExperimentAsync() {
-		return runExperimentAsync(ForkJoinPool.commonPool());
+		return runExperimentAsync(Util.DEF_POOL);
 	}
 
 	/**

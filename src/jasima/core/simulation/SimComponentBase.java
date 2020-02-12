@@ -29,7 +29,14 @@ public class SimComponentBase implements SimComponent {
 	private ValueStoreImpl valueStore;
 
 	public SimComponentBase() {
+		this(null);
+	}
+
+	public SimComponentBase(String name) {
 		super();
+		if (name != null) {
+			setName(name);
+		}
 	}
 
 	@Override

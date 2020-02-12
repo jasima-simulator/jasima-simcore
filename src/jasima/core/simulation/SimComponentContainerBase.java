@@ -13,7 +13,12 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	private transient HashMap<String, SUB> componentsByName;
 
 	public SimComponentContainerBase() {
-		super();
+		this(null);
+	}
+
+	public SimComponentContainerBase(String name) {
+		super(name);
+		
 		components = new ArrayList<>();
 		componentsByName = null; // lazy initialization in getComponentByName()
 	}

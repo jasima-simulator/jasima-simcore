@@ -23,9 +23,7 @@ import jasima.core.util.SimProcessUtil.SimRunnable;
 
 public class SimProcess<R> implements Runnable {
 
-	private static final Logger logger = LogManager.getLogger("jasima.output");
-	static {
-	}
+	private static final Logger logger = LogManager.getLogger(SimProcess.class);
 
 	public static enum ProcessState {
 		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
@@ -52,6 +50,7 @@ public class SimProcess<R> implements Runnable {
 	private final SimCallable<R> action;
 	private final String name;
 	private ErrorHandler localErrorHandler;
+	private SimComponent owner;
 
 	final SimEvent activateProcessEvent;
 
@@ -404,12 +403,26 @@ public class SimProcess<R> implements Runnable {
 	}
 
 	public String getName() {
-		return name;
+		String prefix = null;
+		if (isMainProcess()) {
+			prefix = sim.getName();
+		} else if (getOwner() != null) {
+			prefix = getOwner().getHierarchicalName();
+		}
+		return prefix != null ? prefix + '.' + name : name;
 	}
 
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	public SimComponent getOwner() {
+		return owner;
+	}
+
+	public void setOwner(SimComponent owner) {
+		this.owner = owner;
 	}
 
 }

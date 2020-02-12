@@ -38,6 +38,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 import jasima.core.statistics.SummaryStat;
 
@@ -63,6 +66,13 @@ public class Util {
 	 * Descriptive String showing name, current version and project URL.
 	 */
 	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.net/";
+
+	/**
+	 * A default thread pool without an upper limit. Used instead of
+	 * {@link ForkJoinPool#commonPool()} but without the potential problems the work
+	 * stealing algorithm can create.
+	 */
+	public static final ExecutorService DEF_POOL = Executors.newCachedThreadPool();
 
 	/**
 	 * Class search path containing all packaged in jasima-main.

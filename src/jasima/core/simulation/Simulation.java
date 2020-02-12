@@ -53,7 +53,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
@@ -121,7 +120,7 @@ public class Simulation implements ValueStore {
 
 		private static final long serialVersionUID = 4068987513637601189L;
 
-		SimulationFailed(String msg, Exception cause) {
+		SimulationFailed(String msg, Throwable cause) {
 			super(msg, cause);
 		}
 	}
@@ -576,15 +575,14 @@ public class Simulation implements ValueStore {
 	}
 
 	/**
-	 * Trigger asynchronous execution of the simulation in Java's default
-	 * {@link ForkJoinPool}.
+	 * Trigger asynchronous execution of the simulation in the default thread pool.
 	 * 
 	 * @return A {@link Future} to obtain the simulation results.
 	 * @see #performRun()
 	 * @see #performRunAsync(ExecutorService)
 	 */
 	public Future<Map<String, Object>> performRunAsync() {
-		return performRunAsync(ForkJoinPool.commonPool());
+		return performRunAsync(Util.DEF_POOL);
 	}
 
 	/**
@@ -1395,7 +1393,7 @@ public class Simulation implements ValueStore {
 	}
 
 	static enum I18nConsts {
-		EXT_LOADED, NO_CONTEXT;
+		EXT_LOADED;
 	}
 
 	static {

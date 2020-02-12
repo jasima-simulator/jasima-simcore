@@ -1,19 +1,23 @@
 package jasima.core.simulation;
 
-import static jasima.core.simulation.Simulation.I18nConsts.NO_CONTEXT;
+import static jasima.core.simulation.SimContext.I18nConsts.NESTED_FAILED;
+import static jasima.core.simulation.SimContext.I18nConsts.NO_CONTEXT;
 import static jasima.core.util.SimProcessUtil.simAction;
 import static jasima.core.util.SimProcessUtil.simCallable;
+import static jasima.core.util.StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE;
 
 import java.time.temporal.TemporalUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.Simulation.SimulationFailed;
 import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimCallable;
 import jasima.core.util.SimProcessUtil.SimRunnable;
@@ -63,34 +67,34 @@ public class SimContext {
 	}
 
 	public static SimProcess<Void> activate(SimRunnable r) {
-		return activateCallable(simCallable(r), null);
+		return activateCallable(null, simCallable(r));
 	}
 
-	public static SimProcess<Void> activate(SimRunnable r, String name) {
-		return activateCallable(simCallable(r), name);
+	public static SimProcess<Void> activate(String name, SimRunnable r) {
+		return activateCallable(name, simCallable(r));
 	}
 
 	public static <T> SimProcess<T> activate(SimAction a) {
-		return activateCallable(simCallable(a), null);
+		return activateCallable(null, simCallable(a));
 	}
 
-	public static <T> SimProcess<T> activate(SimAction a, String name) {
-		return activateCallable(simCallable(a), name);
+	public static <T> SimProcess<T> activate(String name, SimAction a) {
+		return activateCallable(name, simCallable(a));
 	}
 
 	public static <T> SimProcess<T> activateCallable(Callable<T> c) {
-		return activateCallable(simCallable(c), null);
+		return activateCallable(null, simCallable(c));
 	}
 
-	public static <T> SimProcess<T> activateCallable(Callable<T> c, String name) {
-		return activateCallable(simCallable(c), name);
+	public static <T> SimProcess<T> activateCallable(String name, Callable<T> c) {
+		return activateCallable(name, simCallable(c));
 	}
 
 	public static <T> SimProcess<T> activateCallable(SimCallable<T> a) {
-		return activateCallable(a, null);
+		return activateCallable(null, a);
 	}
 
-	public static <T> SimProcess<T> activateCallable(SimCallable<T> a, String name) {
+	public static <T> SimProcess<T> activateCallable(String name, SimCallable<T> a) {
 		SimProcess<T> p = new SimProcess<>(requireSimContext(), a, name);
 		p.awakeIn(0.0);
 		return p;
@@ -135,8 +139,29 @@ public class SimContext {
 	}
 
 	public static Map<String, Object> of(String name, SimAction a) {
-		Simulation sim = createSim(name, a);
-		return sim.performRun();
+		Map<String, Object> res;
+		if (currentSimulation() != null) {
+			// execute in a new thread, current thread waits until finished
+			Future<Map<String, Object>> resFuture = async(name, a);
+			try {
+				res = resFuture.get();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new SimulationFailed(message(NESTED_FAILED), e);
+			} catch (ExecutionException e) {
+				Throwable c = e.getCause();
+				if (c instanceof RuntimeException) {
+					throw (RuntimeException) c;
+				} else {
+					throw new SimulationFailed(message(NESTED_FAILED), c);
+				}
+			}
+		} else {
+			// execute synchronously in current thread
+			Simulation sim = createSim(name, a);
+			res = sim.performRun();
+		}
+		return res;
 	}
 
 	public static Future<Map<String, Object>> async(SimRunnable r) {
@@ -173,6 +198,14 @@ public class SimContext {
 			throw new IllegalStateException(); // old context not properly cleared?
 		}
 		currentSim.set(sim);
+	}
+
+	static enum I18nConsts {
+		NO_CONTEXT, NESTED_FAILED;
+	}
+
+	static {
+		I18n.requireResourceBundle(JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
 	}
 
 }

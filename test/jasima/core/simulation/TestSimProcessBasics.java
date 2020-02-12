@@ -151,7 +151,7 @@ public class TestSimProcessBasics {
 			simRef.set(sim);
 
 			for (int i = 0; i < 10; i++) {
-				activate(TestSimProcessBasics::suspendingProcess2, "process" + i);
+				activate("process" + i, TestSimProcessBasics::suspendingProcess2);
 			}
 			System.out.println("MAIN suspending");
 			suspend();
@@ -180,7 +180,7 @@ public class TestSimProcessBasics {
 		SimContext.of("simulation1", sim -> {
 			for (int i = 0; i < 20; i++) {
 				// start process in parallel to main process
-				activate(() -> {
+				activate("process" + i, () -> {
 					if (t.get() == null) {
 						// everything has to be executed in this thread
 						t.set(Thread.currentThread());
@@ -188,7 +188,7 @@ public class TestSimProcessBasics {
 						assertTrue(Thread.currentThread() == t.get());
 					}
 					waitFor(0.5);
-				}, "process" + i);
+				});
 
 				// wait for it's end in simulation time
 				waitFor(1.0);
@@ -203,6 +203,30 @@ public class TestSimProcessBasics {
 			}
 		});
 		// test finished; everything ok, if this point is reached
+	}
+
+	@Test
+	public void testProcessNames() throws MightBlock {
+		sim.setName("theSimulation");
+
+		SimComponentContainerBase<SimComponent> cs = new SimComponentContainerBase<SimComponent>("a");
+		cs.addComponent(new SimEntity("b", () -> checkProcessName("a.b.lifecycle")));
+		cs.addComponent(new SimEntity("c", () -> checkProcessName("a.c.lifecycle")));
+		sim.addComponent(cs);
+
+		sim.setMainProcessActions(sim -> {
+			checkProcessName("theSimulation.main");
+			
+			SimContext.activate("process", () -> {
+				checkProcessName("process");
+			});
+		});
+
+		sim.performRun();
+	}
+
+	private void checkProcessName(String expected) {
+		assertEquals(expected, SimContext.currentProcess().getName());
 	}
 
 	public static void suspendingProcess() throws MightBlock {
