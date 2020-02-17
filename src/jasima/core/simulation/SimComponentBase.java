@@ -54,7 +54,7 @@ public class SimComponentBase implements SimComponent {
 
 	@Override
 	public void setParent(SimComponentContainer<?> parent) {
-		hierarchicalName = null;
+		this.hierarchicalName = null;
 		this.parent = parent;
 	}
 
@@ -85,6 +85,7 @@ public class SimComponentBase implements SimComponent {
 			throw new IllegalStateException("'name' can only be set once.");
 		}
 
+		this.hierarchicalName = null;
 		this.name = name;
 	}
 

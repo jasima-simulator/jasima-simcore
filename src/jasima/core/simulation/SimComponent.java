@@ -21,6 +21,9 @@ import jasima.core.util.observer.Notifier;
  */
 public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore, Cloneable {
 
+	/**
+	 * The separator used in {@link #getHierarchicalName()}.
+	 */
 	public static final char NAME_SEPARATOR = '.';
 
 	/**
