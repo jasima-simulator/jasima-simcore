@@ -27,12 +27,16 @@ import java.util.function.Supplier;
  */
 public class ObservableValue<VALUE> {
 
+	public static enum EventType {
+		VALUE_CHANGED, MIGHT_HAVE_CHANGED;
+	}
+
 	private VALUE currentValue;
 	private long versionId;
 
 	private VALUE lastValue;
 
-	private List<Supplier<BiConsumer<ObservableValue<VALUE>, String>>> listenerRefs;
+	private List<Supplier<BiConsumer<ObservableValue<? super VALUE>, EventType>>> listenerRefs;
 
 	/**
 	 * Creates new instance with its value being initialized with {@code null}.
@@ -85,7 +89,7 @@ public class ObservableValue<VALUE> {
 			versionId++;
 
 			if (numListener() > 0) {
-				fireEvent("VALUE_CHANGED");
+				fireEvent(EventType.VALUE_CHANGED);
 			}
 		}
 	}
@@ -128,7 +132,7 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param l The listener.
 	 */
-	public void addListener(BiConsumer<ObservableValue<VALUE>, String> l) {
+	public void addListener(BiConsumer<ObservableValue<? super VALUE>, EventType> l) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
@@ -138,15 +142,15 @@ public class ObservableValue<VALUE> {
 	/**
 	 * Adds a new listener to be notified whenever the stored value is changing.
 	 * This method stores the listener using a weak reference so it can be garbage
-	 * collected automatically when there are no furtehr references to it.
+	 * collected automatically when there are no further references to it.
 	 * 
 	 * @param l The listener.
 	 */
-	public void addWeakListener(BiConsumer<ObservableValue<VALUE>, String> l) {
+	public void addWeakListener(BiConsumer<ObservableValue<? super VALUE>, EventType> l) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
-		WeakReference<BiConsumer<ObservableValue<VALUE>, String>> weakRef = new WeakReference<>(l);
+		WeakReference<BiConsumer<ObservableValue<? super VALUE>, EventType>> weakRef = new WeakReference<>(l);
 		listenerRefs.add(weakRef::get);
 	}
 
@@ -161,9 +165,9 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param event The event denoted by a string.
 	 */
-	protected void fireEvent(String event) {
+	protected void fireEvent(EventType event) {
 		for (int i = 0, n = numListener(); i < n; i++) {
-			BiConsumer<ObservableValue<VALUE>, String> l = listenerRefs.get(i).get();
+			BiConsumer<ObservableValue<? super VALUE>, EventType> l = listenerRefs.get(i).get();
 			if (l != null) {
 				l.accept(this, event);
 			}

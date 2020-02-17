@@ -80,7 +80,7 @@ public class ConditionQueue {
 		actions.add(action);
 
 		if (!listenerInstalled) {
-			condition.addWeakListener(changeListener);
+//			condition.addWeakListener(changeListener); // TODO: fixme
 			listenerInstalled = true;
 		}
 

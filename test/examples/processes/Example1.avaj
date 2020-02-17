@@ -1,0 +1,61 @@
+package examples.processes;
+
+import static jasima.core.simulation.SimContext.waitFor;
+import static jasima.core.simulation.SimContext.waitUntil;
+
+import jasima.core.simulation.MightBlock;
+import jasima.core.simulation.SimProcess;
+import jasima.core.simulation.Simulation;
+import jasima.core.simulation.generic.ResourceNonBlocking;
+
+/**
+ * This is "Example 1: Port system" from the DEMOS book.
+ * 
+ * @author Torsten.Hildebrandt
+ */
+public class Example1 {
+
+	static final double[] ARRIVAL_TIMES = { 0.0, 1.0, 15.0 };
+	static final double TUG_MANOUVERING = 2.0;
+	static final double BOAT_UNLOADING = 14.0;
+
+	Simulation sim;
+
+	ResourceNonBlocking jetties = new ResourceNonBlocking(2);
+	ResourceNonBlocking tugs = new ResourceNonBlocking(3);
+
+	public static void main(String[] args) throws Exception {
+		new Example1().run();
+	}
+
+	void run() throws MightBlock {
+		sim = new Simulation();
+
+		new SimProcess<Void>(sim, this::boatArrivalProcess);
+	}
+
+	void boatArrivalProcess() throws MightBlock {
+		for (int n=0; n<ARRIVAL_TIMES.length; n++) {
+			waitUntil(ARRIVAL_TIMES[n]);
+			String name = "B"+ARRIVAL_TIMES[n];
+			new SimProcess<Void>(sim, ()->boatLifecycleProcess(name));
+		}
+	}
+
+	void boatLifecycleProcess(String name) throws MightBlock {
+		jetties.acquire(1);
+		
+		tugs.acquire(2);
+		waitFor(TUG_MANOUVERING);
+		tugs.release(2);
+		
+		waitFor(BOAT_UNLOADING);
+		
+		tugs.acquire(1);
+		waitFor(TUG_MANOUVERING);
+		tugs.release(1);
+
+		jetties.release(1);
+	}
+
+}

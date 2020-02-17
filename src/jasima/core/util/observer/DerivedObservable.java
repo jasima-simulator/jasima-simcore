@@ -86,7 +86,7 @@ public class DerivedObservable<T> extends ObservableValue<T> {
 			isStale = true;
 
 			if (numListener() > 0) {
-				fireEvent("MIGHT_HAVE_CHANGED");
+				fireEvent(EventType.MIGHT_HAVE_CHANGED);
 			}
 		}
 	}
