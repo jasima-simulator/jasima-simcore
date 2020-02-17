@@ -36,8 +36,8 @@ public class DerivedObservable<T> extends ObservableValue<T> {
 	private final BiConsumer depChangeListener;
 	private boolean listenerInstalled;
 
-	public DerivedObservable(Supplier<T> expression, ObservableValue<?>... dependencies) {
-		super();
+	public DerivedObservable(String name, Supplier<T> expression, ObservableValue<?>... dependencies) {
+		super(name);
 
 		this.expression = expression;
 		this.dependencies = new HashSet<>(Arrays.asList(dependencies));
@@ -134,7 +134,7 @@ public class DerivedObservable<T> extends ObservableValue<T> {
 	}
 
 	private void onDependencyChanged(Object sender, Object event) {
-		assert "VALUE_CHANGED".equals(event) || "MIGHT_HAVE_CHANGED".equals(event);
+		assert EventType.VALUE_CHANGED.equals(event) || EventType.MIGHT_HAVE_CHANGED.equals(event);
 
 		invalidate();
 	}

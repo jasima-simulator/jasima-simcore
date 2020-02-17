@@ -31,18 +31,22 @@ public class ObservableValue<VALUE> {
 		VALUE_CHANGED, MIGHT_HAVE_CHANGED;
 	}
 
+	private final String name;
 	private VALUE currentValue;
+	private VALUE lastValue;
 	private long versionId;
 
-	private VALUE lastValue;
-
-	private List<Supplier<BiConsumer<ObservableValue<? super VALUE>, EventType>>> listenerRefs;
+	private List<Supplier<BiConsumer<ObservableValue<? extends VALUE>, EventType>>> listenerRefs;
 
 	/**
 	 * Creates new instance with its value being initialized with {@code null}.
 	 */
+	public ObservableValue(String name) {
+		this(name, null);
+	}
+
 	public ObservableValue() {
-		this(null);
+		this(null, null);
 	}
 
 	/**
@@ -50,9 +54,22 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param initialValue The initial value of this observable value.
 	 */
-	public ObservableValue(VALUE initialValue) {
+	public ObservableValue(String name, VALUE initialValue) {
 		super();
+
+		this.name = name;
 		this.currentValue = initialValue;
+	}
+
+	public ObservableValue(VALUE initialValue) {
+		this(null, initialValue);
+	}
+
+	/**
+	 * Returns the name of this observable value. Might be null.
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -132,7 +149,7 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param l The listener.
 	 */
-	public void addListener(BiConsumer<ObservableValue<? super VALUE>, EventType> l) {
+	public void addListener(BiConsumer<ObservableValue<? extends VALUE>, EventType> l) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
@@ -146,11 +163,11 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param l The listener.
 	 */
-	public void addWeakListener(BiConsumer<ObservableValue<? super VALUE>, EventType> l) {
+	public void addWeakListener(BiConsumer<ObservableValue<? extends VALUE>, EventType> l) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
-		WeakReference<BiConsumer<ObservableValue<? super VALUE>, EventType>> weakRef = new WeakReference<>(l);
+		WeakReference<BiConsumer<ObservableValue<? extends VALUE>, EventType>> weakRef = new WeakReference<>(l);
 		listenerRefs.add(weakRef::get);
 	}
 
@@ -167,7 +184,7 @@ public class ObservableValue<VALUE> {
 	 */
 	protected void fireEvent(EventType event) {
 		for (int i = 0, n = numListener(); i < n; i++) {
-			BiConsumer<ObservableValue<? super VALUE>, EventType> l = listenerRefs.get(i).get();
+			BiConsumer<ObservableValue<? extends VALUE>, EventType> l = listenerRefs.get(i).get();
 			if (l != null) {
 				l.accept(this, event);
 			}

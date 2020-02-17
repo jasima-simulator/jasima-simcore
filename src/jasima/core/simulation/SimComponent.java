@@ -2,6 +2,7 @@ package jasima.core.simulation;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
@@ -257,6 +258,14 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 */
 	default void scheduleIn(String description, Duration duration, int prio, Runnable method) {
 		getSim().scheduleIn(description, duration, prio, method);
+	}
+
+	default void scheduleIn(long numUnits, TemporalUnit unit, int prio, Runnable method) {
+		getSim().scheduleIn(numUnits, unit, prio, method);
+	}
+
+	default void scheduleIn(String description, long numUnits, TemporalUnit unit, int prio, Runnable method) {
+		getSim().scheduleIn(description, numUnits, unit, prio, method);
 	}
 
 	/**

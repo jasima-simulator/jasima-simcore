@@ -746,6 +746,14 @@ public class Simulation implements ValueStore {
 		schedule(description, simTime() + toSimTime(duration), prio, method);
 	}
 
+	public void scheduleIn(long numUnits, TemporalUnit unit, int prio, Runnable method) {
+		scheduleIn(null, toSimTime(numUnits, unit), prio, method);
+	}
+
+	public void scheduleIn(String description, long numUnits, TemporalUnit unit, int prio, Runnable method) {
+		schedule(description, simTime() + toSimTime(numUnits, unit), prio, method);
+	}
+
 	/**
 	 * Periodically calls a certain method. While this method returns true, a next
 	 * invocation after the given time interval is scheduled.
@@ -929,7 +937,6 @@ public class Simulation implements ValueStore {
 	 */
 	public double toSimTime(Duration d) {
 		double millis = d.toMillis();
-
 		return millis / simTimeToMillisFactor;
 	}
 
@@ -947,6 +954,11 @@ public class Simulation implements ValueStore {
 	 */
 	public double toSimTime(long numUnits, TemporalUnit u) {
 		return toSimTime(Duration.of(numUnits, u));
+	}
+	
+	public Duration simTimeToDuration(double simTime) {
+		double millis = simTime * simTimeToMillisFactor;
+		return Duration.of(Math.round(millis), ChronoUnit.MILLIS);
 	}
 
 	/**

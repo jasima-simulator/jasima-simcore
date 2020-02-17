@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import jasima.core.util.observer.DerivedObservable;
 import jasima.core.util.observer.ObservableValue;
+import jasima.core.util.observer.ObservableValue.EventType;
 
 /**
  * This class allows basing the execution of certain actions on some condition
@@ -29,7 +30,7 @@ public class ConditionQueue {
 
 	private final List<Runnable> actions;
 
-	private final BiConsumer<ObservableValue<Boolean>, String> changeListener;
+	private final BiConsumer<ObservableValue<? extends Boolean>, EventType> changeListener;
 	private boolean listenerInstalled;
 
 	/**
@@ -42,8 +43,8 @@ public class ConditionQueue {
 	 *                         {@link ObservableValue}s.
 	 * @param exprDependencies All {@link ObservableValue}s used in the expression.
 	 */
-	public ConditionQueue(Supplier<Boolean> boolExpression, ObservableValue<?>... exprDependencies) {
-		this(new DerivedObservable<>(boolExpression, exprDependencies));
+	public ConditionQueue(String name, Supplier<Boolean> boolExpression, ObservableValue<?>... exprDependencies) {
+		this(new DerivedObservable<>(name, boolExpression, exprDependencies));
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class ConditionQueue {
 		actions.add(action);
 
 		if (!listenerInstalled) {
-//			condition.addWeakListener(changeListener); // TODO: fixme
+			condition.addWeakListener(changeListener); // TODO: fixme
 			listenerInstalled = true;
 		}
 
@@ -102,8 +103,8 @@ public class ConditionQueue {
 	 * Called by {@literal condition} whenever its value has changed or could have
 	 * changed.
 	 */
-	private void onConditionChanged(ObservableValue<Boolean> sender, String event) {
-		assert "VALUE_CHANGED".equals(event) || "MIGHT_HAVE_CHANGED".equals(event);
+	private void onConditionChanged(ObservableValue<? extends Boolean> sender, EventType event) {
+		assert EventType.VALUE_CHANGED.equals(event) || EventType.MIGHT_HAVE_CHANGED.equals(event);
 
 		if (condition.get()) {
 			runActions();
