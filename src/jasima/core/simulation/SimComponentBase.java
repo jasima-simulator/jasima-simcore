@@ -14,8 +14,6 @@ import jasima.core.util.observer.NotifierImpl;
  */
 public class SimComponentBase implements SimComponent {
 
-	public static final char NAME_SEPARATOR = '.';
-
 	private transient SimComponentContainer<?> parent;
 	private transient String hierarchicalName;
 	private transient Simulation sim;
@@ -62,16 +60,10 @@ public class SimComponentBase implements SimComponent {
 
 	@Override
 	public String getHierarchicalName() {
+		// cache the name for performance reasons
 		if (hierarchicalName == null) {
-			StringBuilder sb = new StringBuilder();
-			SimComponentContainer<?> p = getParent();
-			if (p != null && p != getSim().getRootComponent()) {
-				sb.append(p.getHierarchicalName()).append(NAME_SEPARATOR);
-			}
-			sb.append(this.toString());
-			hierarchicalName = sb.toString();
+			hierarchicalName = SimComponent.super.getHierarchicalName();
 		}
-
 		return hierarchicalName;
 	}
 

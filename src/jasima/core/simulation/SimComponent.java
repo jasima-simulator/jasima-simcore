@@ -21,6 +21,8 @@ import jasima.core.util.observer.Notifier;
  */
 public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore, Cloneable {
 
+	public static final char NAME_SEPARATOR = '.';
+
 	/**
 	 * Base class for messages send by a {@link SimComponent} to registered
 	 * listeners.
@@ -373,7 +375,16 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * representation of the parent ({@link #getParent()}) if it exists and the
 	 * (simple) name of the component's class.
 	 */
-	String getHierarchicalName();
+	default String getHierarchicalName() {
+		StringBuilder sb = new StringBuilder();
+		SimComponentContainer<?> p = getParent();
+		if (p != null && p != getSim().getRootComponent()) {
+			sb.append(p.getHierarchicalName()).append(NAME_SEPARATOR);
+		}
+		sb.append(this.toString());
+
+		return sb.toString();
+	}
 
 	// event notification, delegate to adapter
 
