@@ -32,9 +32,9 @@ public class ConditionQueueTest {
 
 	@Test
 	public void testBasicFunctionality() {
-		ObservableValue<Integer> ov = new ObservableValue<>(null, 0);
+		ObservableValue<Integer> ov = new ObservableValue<>(0);
 
-		ConditionQueue holdUntil = new ConditionQueue(null, () -> ov.get() == 5, ov);
+		ConditionQueue holdUntil = new ConditionQueue(() -> ov.get() == 5, ov);
 
 		boolean immediateResult = holdUntil.executeWhenTrue(() -> timeTriggered = sim.simTime());
 		assertFalse(immediateResult);
@@ -52,9 +52,9 @@ public class ConditionQueueTest {
 
 	@Test
 	public void testInitiallyTrue() {
-		ObservableValue<Integer> ov = new ObservableValue<>(null, 0);
+		ObservableValue<Integer> ov = new ObservableValue<>(0);
 
-		ConditionQueue holdUntil = new ConditionQueue(null, () -> ov.get() == 0, ov);
+		ConditionQueue holdUntil = new ConditionQueue(() -> ov.get() == 0, ov);
 
 		// this evaluated even before simulation is executed
 		boolean immediateResult = holdUntil.executeWhenTrue(() -> timeTriggered = sim.simTime());

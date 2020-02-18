@@ -25,11 +25,11 @@ public final class ObservableValues {
 	 * @return The new observable value.
 	 */
 	public static <T> ObservableValue<T> observable(T initialValue) {
-		return new ObservableValue<T>(null, initialValue);
+		return new ObservableValue<T>(initialValue);
 	}
 
 	public static <T> ObservableValue<T> observable(String name, T initialValue) {
-		return new ObservableValue<T>(name, initialValue);
+		return new ObservableValue<T>(initialValue);
 	}
 
 	/**
@@ -43,12 +43,12 @@ public final class ObservableValues {
 	 * @return The new derived observable value.
 	 */
 	public static <T> DerivedObservable<T> derived(Supplier<T> expression, ObservableValue<?>... dependencies) {
-		return new DerivedObservable<T>(null, expression, dependencies);
+		return new DerivedObservable<T>(expression, dependencies);
 	}
 
 	public static <T> DerivedObservable<T> derived(String name, Supplier<T> expression,
 			ObservableValue<?>... dependencies) {
-		return new DerivedObservable<T>(null, expression, dependencies);
+		return new DerivedObservable<T>(expression, dependencies);
 	}
 
 	/**

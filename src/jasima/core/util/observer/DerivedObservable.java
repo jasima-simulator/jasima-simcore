@@ -36,8 +36,8 @@ public class DerivedObservable<T> extends ObservableValue<T> {
 	private final BiConsumer depChangeListener;
 	private boolean listenerInstalled;
 
-	public DerivedObservable(String name, Supplier<T> expression, ObservableValue<?>... dependencies) {
-		super(name);
+	public DerivedObservable(Supplier<T> expression, ObservableValue<?>... dependencies) {
+		super();
 
 		this.expression = expression;
 		this.dependencies = new HashSet<>(Arrays.asList(dependencies));

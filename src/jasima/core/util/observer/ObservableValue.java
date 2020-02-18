@@ -31,7 +31,6 @@ public class ObservableValue<VALUE> {
 		VALUE_CHANGED, MIGHT_HAVE_CHANGED;
 	}
 
-	private final String name;
 	private VALUE currentValue;
 	private VALUE lastValue;
 	private long versionId;
@@ -41,12 +40,8 @@ public class ObservableValue<VALUE> {
 	/**
 	 * Creates new instance with its value being initialized with {@code null}.
 	 */
-	public ObservableValue(String name) {
-		this(name, null);
-	}
-
 	public ObservableValue() {
-		this(null, null);
+		this(null);
 	}
 
 	/**
@@ -54,22 +49,9 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param initialValue The initial value of this observable value.
 	 */
-	public ObservableValue(String name, VALUE initialValue) {
-		super();
-
-		this.name = name;
-		this.currentValue = initialValue;
-	}
-
 	public ObservableValue(VALUE initialValue) {
-		this(null, initialValue);
-	}
-
-	/**
-	 * Returns the name of this observable value. Might be null.
-	 */
-	public String getName() {
-		return name;
+		super();
+		this.currentValue = initialValue;
 	}
 
 	/**

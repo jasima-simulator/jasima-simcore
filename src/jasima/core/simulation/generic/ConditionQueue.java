@@ -43,8 +43,8 @@ public class ConditionQueue {
 	 *                         {@link ObservableValue}s.
 	 * @param exprDependencies All {@link ObservableValue}s used in the expression.
 	 */
-	public ConditionQueue(String name, Supplier<Boolean> boolExpression, ObservableValue<?>... exprDependencies) {
-		this(new DerivedObservable<>(name, boolExpression, exprDependencies));
+	public ConditionQueue(Supplier<Boolean> boolExpression, ObservableValue<?>... exprDependencies) {
+		this(new DerivedObservable<>(boolExpression, exprDependencies));
 	}
 
 	/**
