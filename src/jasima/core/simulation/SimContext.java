@@ -104,6 +104,10 @@ public class SimContext {
 		currentProcess().waitFor(deltaT);
 	}
 
+	public static void waitFor(long amount, TemporalUnit u) throws MightBlock {
+		currentProcess().waitFor(toSimTime(amount, u));
+	}
+
 	public static void waitUntil(double tAbs) throws MightBlock {
 		currentProcess().waitUntil(tAbs);
 	}
