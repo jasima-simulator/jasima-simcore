@@ -23,6 +23,7 @@ package jasima.core.simulation;
 import static jasima.core.simulation.Simulation.I18nConsts.EXT_LOADED;
 import static jasima.core.simulation.Simulation.SimExecState.INITIAL;
 import static jasima.core.util.ComponentStates.requireAllowedState;
+import static jasima.core.util.SimProcessUtil.simActionFromRunnable;
 import static jasima.core.util.TypeUtil.createInstance;
 import static jasima.core.util.i18n.I18n.defFormat;
 import static jasima.core.util.i18n.I18n.message;
@@ -68,6 +69,7 @@ import jasima.core.JasimaExtension;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
+import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
@@ -259,7 +261,7 @@ public class Simulation implements ValueStore {
 	private boolean awakePausedWorker;
 	private Thread pausedWorkerThread;
 
-	private ConcurrentLinkedQueue<Runnable> runInSimThread;
+	private ConcurrentLinkedQueue<SimAction> runInSimThread;
 
 	// event queue
 	private EventQueue events;
@@ -439,9 +441,13 @@ public class Simulation implements ValueStore {
 		evt.handle();
 
 		// run additional actions that might come from external threads
-		Runnable r;
+		SimAction r;
 		while ((r = runInSimThread.poll()) != null) {
-			r.run();
+			try {
+				r.run(this);
+			} catch (MightBlock e) {
+				throw new AssertionError(); // ignore marker Exception
+			}
 		}
 	}
 
@@ -955,7 +961,7 @@ public class Simulation implements ValueStore {
 	public double toSimTime(long numUnits, TemporalUnit u) {
 		return toSimTime(Duration.of(numUnits, u));
 	}
-	
+
 	public Duration simTimeToDuration(double simTime) {
 		double millis = simTime * simTimeToMillisFactor;
 		return Duration.of(Math.round(millis), ChronoUnit.MILLIS);
@@ -1318,7 +1324,11 @@ public class Simulation implements ValueStore {
 	}
 
 	public void runInSimThread(Runnable r) {
-		runInSimThread.add(r);
+		runInSimThread(simActionFromRunnable(r));
+	}
+
+	public void runInSimThread(SimAction a) {
+		runInSimThread.add(a);
 	}
 
 	SimProcess<?> mainProcess() {

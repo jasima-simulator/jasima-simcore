@@ -95,10 +95,14 @@ public final class SimProcessUtil {
 		return r == null ? null : new SimRunnableSimActionWrapper(r);
 	}
 
+	public static SimAction simActionFromRunnable(Runnable r) {
+		return r == null ? null : new RunnableWrapper(r);
+	}
+
 	/**
 	 * Same as Java's {@link Runnable}, except that it can throw the marker
-	 * Exception {@link MightBlock}. Therefore any {@link Runnable} can also be used
-	 * as a {@link SimRunnable}, but additionally the executed code could be
+	 * Exception {@link MightBlock}. Therefore usually any {@link Runnable} can also
+	 * be used as a {@link SimRunnable}, but additionally the executed code could be
 	 * declared to throw {@link MightBlock}, without having to handle it.
 	 */
 	@FunctionalInterface
@@ -140,6 +144,19 @@ public final class SimProcessUtil {
 		final SimRunnable task;
 
 		SimRunnableSimActionWrapper(SimRunnable task) {
+			this.task = task;
+		}
+
+		@Override
+		public void run(Simulation sim) throws MightBlock {
+			task.run();
+		}
+	}
+
+	static final class RunnableWrapper implements SimAction {
+		final Runnable task;
+
+		RunnableWrapper(Runnable task) {
 			this.task = task;
 		}
 
