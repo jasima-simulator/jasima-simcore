@@ -2,8 +2,8 @@
 <Configuration status="info"  packages="jasima.core.util">
 
     <Properties>
-<!--         <Property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%t] %l - %msg  xxx$$${jasima:simName}xxx %n</Property> -->
-        <Property name="pattern">$$${jasima:simTime} [%level] [%t] - %msg%n</Property>
+        <Property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} $$${jasima:simTime}  [%level] [%t] - %msg%n</Property>
+<!--         <Property name="pattern">$$${jasima:simTime} [%level] [%t] - %msg%n</Property> -->
     </Properties>
 
     <Appenders>
@@ -32,7 +32,7 @@
             <appender-ref ref="console" />
 <!--             <appender-ref ref="Routing" /> -->
         </Root>
-        <Logger name="jasima.core.*" level="info">
+        <Logger name="jasima.core.*" level="debug">
             <appender-ref ref="console" />
 <!--             <appender-ref ref="Routing" level="info" /> -->
         </Logger>
