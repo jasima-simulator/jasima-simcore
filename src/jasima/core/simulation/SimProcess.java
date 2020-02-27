@@ -23,7 +23,7 @@ import jasima.core.util.SimProcessUtil.SimRunnable;
 
 public class SimProcess<R> implements Runnable {
 
-	private static final Logger logger = LogManager.getLogger(SimProcess.class);
+	private static final Logger log = LogManager.getLogger(SimProcess.class);
 
 	public static enum ProcessState {
 		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
@@ -139,7 +139,7 @@ public class SimProcess<R> implements Runnable {
 	@Override
 	public void run() {
 		try {
-			logger.error("process started: " + getName());
+			log.trace("process started: " + getName());
 
 			requireAllowedState(state, ProcessState.RUNNING);
 
@@ -161,7 +161,7 @@ public class SimProcess<R> implements Runnable {
 				}
 			}
 
-			logger.error("actions finished");
+			log.trace("actions finished");
 
 			runCompleteCallbacks();
 
@@ -169,7 +169,7 @@ public class SimProcess<R> implements Runnable {
 
 			sim.processTerminated(this);
 		} catch (TerminateProcess tp) {
-			logger.error("process terminated: " + getName() + "  " + sim.currentProcess() + "  "
+			log.trace("process terminated: " + getName() + "  " + sim.currentProcess() + "  "
 					+ sim.getEventLoopProcess());
 		} catch (Throwable t) {
 			System.err.println(Thread.currentThread() + " " + t);
@@ -178,7 +178,7 @@ public class SimProcess<R> implements Runnable {
 		} finally {
 			executor = null;
 			SimContext.setThreadContext(null);
-			logger.error("process finished: " + getName());
+			log.trace("process finished: " + getName());
 		}
 	}
 
@@ -187,7 +187,7 @@ public class SimProcess<R> implements Runnable {
 		assert SimContext.currentSimulation() == sim;
 		sim.setCurrentProcess(null);
 
-		logger.error("yield1");
+		log.trace("yield1");
 
 		// run the event loop in the current Thread (until it switches to a new one)
 		reactivated = false;
@@ -201,12 +201,12 @@ public class SimProcess<R> implements Runnable {
 			}
 		}
 
-		logger.error("yield2");
+		log.trace("yield2");
 
 		// event loop can be finished because whole sim is finished or current process
 		// is supposed to continue (either in its doRun method or after yield in run()).
 		if (!reactivated && !sim.continueSim()) {
-			logger.error("backtomain");
+			log.trace("backtomain");
 			sim.state = SimExecState.TERMINATING;
 			if (isMainProcess()) {
 				throw new TerminateProcess();
@@ -224,7 +224,7 @@ public class SimProcess<R> implements Runnable {
 		state = ProcessState.RUNNING;
 		sim.setCurrentProcess(this);
 
-		logger.error("activating " + this);
+		log.trace("activating " + this);
 
 		SimProcess<?> current = sim.getEventLoopProcess();
 		if (current != this) {
@@ -240,7 +240,7 @@ public class SimProcess<R> implements Runnable {
 	void terminateWaiting() {
 		// this method is called once from the main simulation thread when simulation is
 		// terminating
-		logger.error("trying to terminate " + getName());
+		log.trace("trying to terminate " + getName());
 		assert sim.state() == SimExecState.TERMINATING;
 		this.start(); // will throw TerminateProcess
 	}
@@ -249,13 +249,13 @@ public class SimProcess<R> implements Runnable {
 		assert !hasFinished() || isMainProcess() || sim.state() == SimExecState.TERMINATING;
 		sim.setEventLoopProcess(this);
 		if (executor == null) {
-			logger.error("start1 " + getName());
+			log.trace("start1 " + getName());
 			requireAllowedState(state, ProcessState.RUNNING);
 
 			// start new
 			startExecuting(this);
 		} else {
-			logger.error("start2 " + getName());
+			log.trace("start2 " + getName());
 			// resume
 			wasSignaled = true;
 			continueWith(executor);

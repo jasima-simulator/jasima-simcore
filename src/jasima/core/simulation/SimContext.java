@@ -3,7 +3,6 @@ package jasima.core.simulation;
 import static jasima.core.simulation.SimContext.I18nConsts.NESTED_FAILED;
 import static jasima.core.simulation.SimContext.I18nConsts.NO_CONTEXT;
 import static jasima.core.util.SimProcessUtil.simAction;
-import static jasima.core.util.SimProcessUtil.simCallable;
 import static jasima.core.util.StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE;
 
 import java.time.temporal.TemporalUnit;
@@ -67,37 +66,35 @@ public class SimContext {
 	}
 
 	public static SimProcess<Void> activate(SimRunnable r) {
-		return activateCallable(null, simCallable(r));
+		return requireSimContext().activate(r);
 	}
 
 	public static SimProcess<Void> activate(String name, SimRunnable r) {
-		return activateCallable(name, simCallable(r));
+		return requireSimContext().activate(name, r);
 	}
 
 	public static <T> SimProcess<T> activate(SimAction a) {
-		return activateCallable(null, simCallable(a));
+		return requireSimContext().activate(a);
 	}
 
 	public static <T> SimProcess<T> activate(String name, SimAction a) {
-		return activateCallable(name, simCallable(a));
+		return requireSimContext().activate(name, a);
 	}
 
 	public static <T> SimProcess<T> activateCallable(Callable<T> c) {
-		return activateCallable(null, simCallable(c));
+		return requireSimContext().activateCallable(c);
 	}
 
 	public static <T> SimProcess<T> activateCallable(String name, Callable<T> c) {
-		return activateCallable(name, simCallable(c));
+		return requireSimContext().activateCallable(name, c);
 	}
 
 	public static <T> SimProcess<T> activateCallable(SimCallable<T> a) {
-		return activateCallable(null, a);
+		return requireSimContext().activateCallable(a);
 	}
 
 	public static <T> SimProcess<T> activateCallable(String name, SimCallable<T> a) {
-		SimProcess<T> p = new SimProcess<>(requireSimContext(), a, name);
-		p.awakeIn(0.0);
-		return p;
+		return requireSimContext().activateCallable(name, a);
 	}
 
 	public static void waitFor(double deltaT) throws MightBlock {

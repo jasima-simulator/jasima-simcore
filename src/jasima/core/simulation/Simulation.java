@@ -70,6 +70,8 @@ import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.util.ProcessActivator;
+import jasima.core.simulation.util.SimCtx;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
@@ -99,7 +101,7 @@ import jasima.core.util.i18n.I18n;
  * 
  * @author Torsten Hildebrandt
  */
-public class Simulation implements ValueStore {
+public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	private static final Logger logger = LogManager.getLogger(Simulation.class);
 
@@ -1352,15 +1354,16 @@ public class Simulation implements ValueStore {
 		this.eventLoopProcess = eventLoopProcess;
 	}
 
-	//
-	//
 	// ValueStore implementation
-	//
-	//
-
 	@Override
 	public ValueStore valueStoreImpl() {
 		return valueStore;
+	}
+
+	// SimCtx implementation
+	@Override
+	public Simulation getSim() {
+		return this;
 	}
 
 	public ZoneId getZoneId() {

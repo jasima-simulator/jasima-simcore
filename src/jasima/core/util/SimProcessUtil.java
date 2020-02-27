@@ -19,7 +19,7 @@ import jasima.core.simulation.Simulation;
  */
 public final class SimProcessUtil {
 
-	private static final int DEF_THREAD_STACK_SIZE = 64 * 1024;
+	private static final int DEF_THREAD_STACK_SIZE = 256 * 1024;
 
 	private static final ExecutorService exec = Executors.newCachedThreadPool(SimProcessUtil::newWorkerThread);
 	private static volatile ThreadGroup simThreads = null;
