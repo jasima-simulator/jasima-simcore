@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -33,7 +32,7 @@ public class DerivedObservable<T> extends ObservableValue<T> {
 	// there has to be a strong ref to the listener, because the dependencies only
 	// use weak references to avoid memory leaks
 	@SuppressWarnings("rawtypes") // TODO: remove
-	private final BiConsumer depChangeListener;
+	private final ObservableListener depChangeListener;
 	private boolean listenerInstalled;
 
 	public DerivedObservable(Supplier<T> expression, ObservableValue<?>... dependencies) {

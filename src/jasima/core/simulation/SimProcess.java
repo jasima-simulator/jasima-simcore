@@ -207,7 +207,7 @@ public class SimProcess<R> implements Runnable {
 		// is supposed to continue (either in its doRun method or after yield in run()).
 		if (!reactivated && !sim.continueSim()) {
 			log.trace("backtomain");
-			sim.state = SimExecState.TERMINATING;
+			sim.state.set(SimExecState.TERMINATING);
 			if (isMainProcess()) {
 				throw new TerminateProcess();
 			} else {

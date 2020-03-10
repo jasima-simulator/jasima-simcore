@@ -4,8 +4,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -27,6 +29,10 @@ import java.util.function.Supplier;
  */
 public class ObservableValue<VALUE> {
 
+	public static interface ObservableListener<V> {
+		void onEvent(ObservableValue<V> ov, EventType et);
+	}
+
 	public static enum EventType {
 		VALUE_CHANGED, MIGHT_HAVE_CHANGED;
 	}
@@ -35,7 +41,11 @@ public class ObservableValue<VALUE> {
 	private VALUE lastValue;
 	private long versionId;
 
-	private List<Supplier<BiConsumer<ObservableValue<? extends VALUE>, EventType>>> listenerRefs;
+	private List<Supplier<ObservableListener<VALUE>>> listenerRefs;
+	private Map<ObservableListener<VALUE>, Supplier<ObservableListener<VALUE>>> supplierLookup;
+//
+//	private List<Supplier<BiConsumer<ObservableValue<? extends VALUE>, EventType>>> listenerRefs;
+//	private Map<Supplier<BiConsumer<ObservableValue<? extends VALUE>, EventType>>> listenerRefs;
 
 	/**
 	 * Creates new instance with its value being initialized with {@code null}.
@@ -131,11 +141,11 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param l The listener.
 	 */
-	public void addListener(BiConsumer<ObservableValue<? extends VALUE>, EventType> l) {
+	public void addListener(ObservableListener<VALUE> l) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
-		listenerRefs.add(() -> l);
+		addListener(l, () -> l);
 	}
 
 	/**
@@ -145,17 +155,44 @@ public class ObservableValue<VALUE> {
 	 * 
 	 * @param l The listener.
 	 */
-	public void addWeakListener(BiConsumer<ObservableValue<? extends VALUE>, EventType> l) {
+	public void addWeakListener(ObservableListener<VALUE> l) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
-		WeakReference<BiConsumer<ObservableValue<? extends VALUE>, EventType>> weakRef = new WeakReference<>(l);
-		listenerRefs.add(weakRef::get);
+		WeakReference<ObservableListener<VALUE>> weakRef = new WeakReference<>(l);
+		addListener(l, weakRef::get);
+	}
+
+	private void addListener(ObservableListener<VALUE> l, Supplier<ObservableListener<VALUE>> e) {
+		supplierLookup.put(l, e);
+		listenerRefs.add(e);
+	}
+
+	/**
+	 * Removes a listener that was previously added using
+	 * {@link #addListener(BiConsumer)} or
+	 * {@link #addWeakListener(ObservableListener)}.
+	 * 
+	 * @param l The listener.
+	 * @return {@code true} if l was still registered as a listener and could be
+	 *         removed.
+	 */
+	public boolean removeListener(ObservableListener<VALUE> l) {
+		Objects.requireNonNull(l);
+		initListenerList();
+
+		Supplier<ObservableListener<VALUE>> supp = supplierLookup.remove(l);
+		if (supp != null) {
+			listenerRefs.remove(supp);
+		}
+
+		return supp != null;
 	}
 
 	private void initListenerList() {
 		if (listenerRefs == null) {
 			listenerRefs = new ArrayList<>();
+			supplierLookup = new WeakHashMap<>();
 		}
 	}
 
@@ -166,9 +203,9 @@ public class ObservableValue<VALUE> {
 	 */
 	protected void fireEvent(EventType event) {
 		for (int i = 0, n = numListener(); i < n; i++) {
-			BiConsumer<ObservableValue<? extends VALUE>, EventType> l = listenerRefs.get(i).get();
+			ObservableListener<VALUE> l = listenerRefs.get(i).get();
 			if (l != null) {
-				l.accept(this, event);
+				l.onEvent(this, event);
 			}
 		}
 	}

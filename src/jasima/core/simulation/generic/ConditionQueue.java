@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import jasima.core.util.observer.DerivedObservable;
 import jasima.core.util.observer.ObservableValue;
 import jasima.core.util.observer.ObservableValue.EventType;
+import jasima.core.util.observer.ObservableValue.ObservableListener;
 
 /**
  * This class allows basing the execution of certain actions on some condition
@@ -30,7 +30,7 @@ public class ConditionQueue {
 
 	private final List<Runnable> actions;
 
-	private final BiConsumer<ObservableValue<? extends Boolean>, EventType> changeListener;
+	private final ObservableListener<Boolean> changeListener;
 	private boolean listenerInstalled;
 
 	/**
@@ -103,7 +103,7 @@ public class ConditionQueue {
 	 * Called by {@literal condition} whenever its value has changed or could have
 	 * changed.
 	 */
-	private void onConditionChanged(ObservableValue<? extends Boolean> sender, EventType event) {
+	private void onConditionChanged(ObservableValue<Boolean> sender, EventType event) {
 		assert EventType.VALUE_CHANGED.equals(event) || EventType.MIGHT_HAVE_CHANGED.equals(event);
 
 		if (condition.get()) {

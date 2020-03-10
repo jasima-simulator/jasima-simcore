@@ -84,6 +84,7 @@ import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.i18n.I18n;
+import jasima.core.util.observer.ObservableValue;
 
 /**
  * Base class for a discrete event simulation. This class mainly maintains the
@@ -274,7 +275,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	private Clock clock;
 
-	volatile SimExecState state;
+	final ObservableValue<SimExecState> state;
 
 	private AtomicInteger pauseRequests;
 
@@ -287,7 +288,9 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	public Simulation() {
 		super();
 
-		state = INITIAL;
+		state = new ObservableValue<>();
+		state.set(INITIAL);
+
 		pauseRequests = new AtomicInteger(0);
 		runInSimThread = new ConcurrentLinkedQueue<>();
 		printListener = new ArrayList<>();
@@ -350,9 +353,9 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * {@link #run()}.
 	 */
 	public void init() {
-		requireAllowedState(state, INITIAL);
+		requireAllowedState(state.get(), INITIAL);
 
-		state = SimExecState.INIT;
+		state.set(SimExecState.INIT);
 		simTime = getInitialSimTime();
 		initComponentTree(null, rootComponent);
 		rootComponent.init();
@@ -389,7 +392,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @see jasima.core.simulation.SimEvent#isAppEvent()
 	 */
 	public void run() {
-		requireAllowedState(state, SimExecState.BEFORE_RUN);
+		requireAllowedState(state.get(), SimExecState.BEFORE_RUN);
 
 		execFailure = null;
 
@@ -398,7 +401,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		setCurrentProcess(mainProcess);
 		setEventLoopProcess(mainProcess);
 
-		state = SimExecState.RUNNING;
+		state.set(SimExecState.RUNNING);
 		resetStats();
 
 		checkInitialEventTime();
@@ -411,9 +414,9 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		terminateRunningProcesses();
 
 		if (execFailure == null) {
-			state = SimExecState.FINISHED;
+			state.set(SimExecState.FINISHED);
 		} else {
-			state = SimExecState.ERROR;
+			state.set(SimExecState.ERROR);
 			throw new SimulationFailed("There was an unrecoverable error during simulation run.", execFailure);
 		}
 	}
@@ -500,8 +503,8 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * {@link #run()} method.
 	 */
 	public void beforeRun() {
-		requireAllowedState(state, SimExecState.INIT);
-		state = SimExecState.BEFORE_RUN;
+		requireAllowedState(state.get(), SimExecState.INIT);
+		state.set(SimExecState.BEFORE_RUN);
 
 		// schedule simulation end
 		if (getSimulationLength() > 0.0) {
@@ -524,7 +527,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * It should contain code to initialize statistics variables.
 	 */
 	protected void resetStats() {
-		requireAllowedState(state, SimExecState.RUNNING);
+		requireAllowedState(state.get(), SimExecState.RUNNING);
 
 		// schedule statistics reset
 		if (getStatsResetTime() > getInitialSimTime()) {
@@ -854,22 +857,22 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * This method might also be called from an external thread.
 	 */
 	public void pause() {
-		requireAllowedState(state, complementOf(EnumSet.of(SimExecState.FINISHED, SimExecState.ERROR)));
+		requireAllowedState(state.get(), complementOf(EnumSet.of(SimExecState.FINISHED, SimExecState.ERROR)));
 
 		if (pauseRequests.incrementAndGet() == 1) {
 			awakePausedWorker = false;
 			runInSimThread(() -> {
 				// check again because it might have changed while waiting to be processed
 				if (pauseRequests.get() > 0) {
-					assert state == SimExecState.RUNNING;
+					assert state.get() == SimExecState.RUNNING;
 
-					state = SimExecState.PAUSED;
+					state.set(SimExecState.PAUSED);
 					pausedWorkerThread = Thread.currentThread();
 					while (!awakePausedWorker) {
 						LockSupport.park();
 					}
 
-					state = SimExecState.RUNNING;
+					state.set(SimExecState.RUNNING);
 				}
 			});
 		}
@@ -883,7 +886,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * This method might also be called from an external thread.
 	 */
 	public void unpause() {
-		requireAllowedState(state, SimExecState.PAUSED, SimExecState.RUNNING);
+		requireAllowedState(state.get(), SimExecState.PAUSED, SimExecState.RUNNING);
 
 		if (pauseRequests.decrementAndGet() == 0) {
 			if (pausedWorkerThread != null) {
@@ -991,6 +994,13 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * Returns the current simulation execution state.
 	 */
 	public SimExecState state() {
+		return state.get();
+	}
+
+	/**
+	 * Returns the current simulation execution state.
+	 */
+	public ObservableValue<SimExecState> observableState() {
 		return state;
 	}
 
@@ -1413,7 +1423,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	}
 
 	public void setMainProcessActions(SimAction mainProcessActions) {
-		requireAllowedState(state, INITIAL);
+		requireAllowedState(state.get(), INITIAL);
 		this.mainProcessActions = mainProcessActions;
 	}
 
