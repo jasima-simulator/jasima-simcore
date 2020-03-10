@@ -29,6 +29,7 @@ import java.util.function.Supplier;
  */
 public class ObservableValue<VALUE> {
 
+	@FunctionalInterface
 	public static interface ObservableListener<V> {
 		void onEvent(ObservableValue<V> ov, EventType et);
 	}
