@@ -21,6 +21,7 @@
 package jasima.core.simulation;
 
 import static jasima.core.simulation.Simulation.I18nConsts.EXT_LOADED;
+import static jasima.core.simulation.Simulation.SimExecState.INIT;
 import static jasima.core.simulation.Simulation.SimExecState.INITIAL;
 import static jasima.core.util.ComponentStates.requireAllowedState;
 import static jasima.core.util.SimProcessUtil.simActionFromRunnable;
@@ -1423,7 +1424,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	}
 
 	public void setMainProcessActions(SimAction mainProcessActions) {
-		requireAllowedState(state.get(), INITIAL);
+		requireAllowedState(state.get(), INITIAL, INIT);
 		this.mainProcessActions = mainProcessActions;
 	}
 
