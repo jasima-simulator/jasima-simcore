@@ -31,9 +31,13 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 			String currName = hierarchicalName.substring(0, dotPos);
 
 			SimComponent comp = getComponentByName(currName);
-			SimComponentContainer<?> asContainer = (SimComponentContainer<?>) comp;
 
-			return asContainer.getComponentByHierarchicalName(hierarchicalName.substring(dotPos + 1));
+			if (comp != null) {
+				SimComponentContainer<?> asContainer = (SimComponentContainer<?>) comp;
+				return asContainer.getComponentByHierarchicalName(hierarchicalName.substring(dotPos + 1));
+			} else {
+				return null;
+			}
 		}
 	}
 
