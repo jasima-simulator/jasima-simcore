@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -89,6 +90,19 @@ public class ObservableValue<VALUE> {
 	 */
 	public void set(VALUE newValue) {
 		internalSet(newValue);
+	}
+
+	/**
+	 * Updates the current value of this observable by calling the function passed
+	 * as a parameter. The current value is passed as a parameter, the value
+	 * returned is used as the new value.
+	 * 
+	 * @param updateFunc The update function to use.
+	 * @return the current observable instance to allow chaining calls.
+	 */
+	public ObservableValue<VALUE> update(Function<VALUE, VALUE> updateFunc) {
+		set(updateFunc.apply(get()));
+		return this;
 	}
 
 	protected void internalSet(VALUE newValue) {
