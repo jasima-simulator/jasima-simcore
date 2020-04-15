@@ -10,8 +10,8 @@ public class TimeSynchronizer {
 	public static final int NUM_SYNC_EVENTS_PER_REAL_SECOND = 25;
 	public static final long REAL_TIME_BETWEEN_SYNC_MILLIS = Math.round(1000.0 / NUM_SYNC_EVENTS_PER_REAL_SECOND);
 
-	private final double realTimeFactor;
 	private final Simulation sim;
+	private double realTimeFactor;
 
 	private long eventCounter;
 	private long framesDropped;
@@ -26,12 +26,9 @@ public class TimeSynchronizer {
 		super();
 
 		this.sim = sim;
-		this.realTimeFactor = realTimeFactor;
+		this.setRealTimeFactor(realTimeFactor);
 
-		eventCounter = framesDropped = 0;
-
-		tStartReal = System.currentTimeMillis();
-		tStartSim = sim.getInitialSimTime();
+		init();
 
 		syncEvent = new SimEvent(tStartSim, SimEvent.EVENT_PRIO_HIGHEST, "sync_event") {
 			@Override
@@ -41,8 +38,6 @@ public class TimeSynchronizer {
 
 				// schedule next sync event
 				eventCounter++;
-				simTimeBetweenSync = sim.toSimTime(Duration.ofMillis(REAL_TIME_BETWEEN_SYNC_MILLIS))
-						* realTimeFactor;
 
 				setTime(tStartSim + eventCounter * simTimeBetweenSync);
 				sim.schedule(this);
@@ -54,6 +49,15 @@ public class TimeSynchronizer {
 			}
 		};
 		sim.schedule(syncEvent);
+
+		sim.valueStorePut("TimeSynchronizer", this);
+	}
+
+	private void init() {
+		eventCounter = framesDropped = 0;
+		tStartReal = System.currentTimeMillis();
+		tStartSim = sim.simTime();
+		simTimeBetweenSync = sim.toSimTime(Duration.ofMillis(REAL_TIME_BETWEEN_SYNC_MILLIS)) * realTimeFactor;
 	}
 
 	protected void syncTime() {
@@ -69,6 +73,15 @@ public class TimeSynchronizer {
 		} else if (timeDiff < 0) {
 			framesDropped++;
 		}
+	}
+
+	public double getRealTimeFactor() {
+		return realTimeFactor;
+	}
+
+	public void setRealTimeFactor(double realTimeFactor) {
+		this.realTimeFactor = realTimeFactor;
+		init();
 	}
 
 }
