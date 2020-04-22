@@ -39,7 +39,8 @@ public class TimeSynchronizer {
 				// schedule next sync event
 				eventCounter++;
 
-				setTime(tStartSim + eventCounter * simTimeBetweenSync);
+				double tNew = tStartSim + eventCounter * simTimeBetweenSync;
+				setTime(Math.max(tNew, sim.simTime()));
 				sim.schedule(this);
 			}
 

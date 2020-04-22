@@ -1,4 +1,6 @@
-package jasima.core.simulation;
+package jasima.core.simulation.util;
+
+import jasima.core.simulation.SimEvent;
 
 /**
  * This class is used internally by {@link #schedule(double,int,Runnable)} to

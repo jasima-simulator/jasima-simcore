@@ -45,9 +45,9 @@ public class ObservableValue<VALUE> {
 
 	private List<Supplier<ObservableListener<VALUE>>> listenerRefs;
 	private Map<ObservableListener<VALUE>, Supplier<ObservableListener<VALUE>>> supplierLookup;
-//
-//	private List<Supplier<BiConsumer<ObservableValue<? extends VALUE>, EventType>>> listenerRefs;
-//	private Map<Supplier<BiConsumer<ObservableValue<? extends VALUE>, EventType>>> listenerRefs;
+
+	private int firingInProgress;
+	private List<ObservableListener<VALUE>> removeWhileFiring;
 
 	/**
 	 * Creates new instance with its value being initialized with {@code null}.
@@ -64,6 +64,8 @@ public class ObservableValue<VALUE> {
 	public ObservableValue(VALUE initialValue) {
 		super();
 		this.currentValue = initialValue;
+
+		firingInProgress = 0;
 	}
 
 	/**
@@ -142,6 +144,22 @@ public class ObservableValue<VALUE> {
 		return Collections.emptySet();
 	}
 
+	public void whenEquals(VALUE v, Runnable action) {
+		Objects.requireNonNull(action);
+
+		final ObservableListener<VALUE> l = new ObservableListener<VALUE>() {
+			@Override
+			public void onEvent(ObservableValue<VALUE> ov, EventType et) {
+				assert ov == ObservableValue.this;
+				if (ov.equals(v)) {
+					action.run();
+					removeListener(this);
+				}
+			}
+		};
+		addListener(l);
+	}
+
 	/**
 	 * Returns the number of listeners currently registered for this observable
 	 * value.
@@ -157,9 +175,6 @@ public class ObservableValue<VALUE> {
 	 * @param l The listener.
 	 */
 	public void addListener(ObservableListener<VALUE> l) {
-		Objects.requireNonNull(l);
-		initListenerList();
-
 		addListener(l, () -> l);
 	}
 
@@ -171,14 +186,14 @@ public class ObservableValue<VALUE> {
 	 * @param l The listener.
 	 */
 	public void addWeakListener(ObservableListener<VALUE> l) {
-		Objects.requireNonNull(l);
-		initListenerList();
-
 		WeakReference<ObservableListener<VALUE>> weakRef = new WeakReference<>(l);
 		addListener(l, weakRef::get);
 	}
 
 	private void addListener(ObservableListener<VALUE> l, Supplier<ObservableListener<VALUE>> e) {
+		Objects.requireNonNull(l);
+		initListenerList();
+
 		supplierLookup.put(l, e);
 		listenerRefs.add(e);
 	}
@@ -196,12 +211,24 @@ public class ObservableValue<VALUE> {
 		Objects.requireNonNull(l);
 		initListenerList();
 
-		Supplier<ObservableListener<VALUE>> supp = supplierLookup.remove(l);
-		if (supp != null) {
-			listenerRefs.remove(supp);
-		}
+		if (firingInProgress > 0) {
+			if (removeWhileFiring == null) {
+				removeWhileFiring = new ArrayList<>();
+			}
+			boolean stillContains = supplierLookup.containsKey(l) && !removeWhileFiring.contains(l);
+			if (stillContains) {
+				removeWhileFiring.add(l);
+			}
+			
+			return stillContains;
+		} else {
+			Supplier<ObservableListener<VALUE>> supp = supplierLookup.remove(l);
+			if (supp != null) {
+				listenerRefs.remove(supp);
+			}
 
-		return supp != null;
+			return supp != null;
+		}
 	}
 
 	private void initListenerList() {
@@ -217,10 +244,19 @@ public class ObservableValue<VALUE> {
 	 * @param event The event denoted by a string.
 	 */
 	protected void fireEvent(EventType event) {
-		for (int i = 0, n = numListener(); i < n; i++) {
-			ObservableListener<VALUE> l = listenerRefs.get(i).get();
+		firingInProgress++;
+		
+		for (Supplier<ObservableListener<VALUE>> s : listenerRefs) {
+			ObservableListener<VALUE> l = s.get();
 			if (l != null) {
 				l.onEvent(this, event);
+			}
+		}
+		
+		if (--firingInProgress == 0 && removeWhileFiring != null) {
+			for (ObservableListener<VALUE> l : removeWhileFiring) {
+				boolean removeRes = removeListener(l);
+				assert removeRes;
 			}
 		}
 	}

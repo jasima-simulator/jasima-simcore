@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import jasima.core.simulation.Simulation.ErrorHandler;
 import jasima.core.simulation.Simulation.SimExecState;
+import jasima.core.simulation.util.SimEventMethodCall;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimCallable;

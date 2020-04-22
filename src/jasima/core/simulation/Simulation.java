@@ -73,6 +73,7 @@ import jasima.core.random.discrete.IntStream;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.util.ProcessActivator;
 import jasima.core.simulation.util.SimCtx;
+import jasima.core.simulation.util.SimEventMethodCall;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
