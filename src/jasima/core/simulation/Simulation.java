@@ -36,6 +36,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -914,6 +915,40 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	}
 
 	/**
+	 * Converts the current simulation time to a Java {@link LocalDateTime}. This
+	 * converts the current simulation time to an {@code Instant} first (see
+	 * {@link #simTimeToInstant()}) and then converts it to the local time for this
+	 * simulation's zone id ({@link #getZoneId()}.
+	 * 
+	 * @see #simTimeToInstant(double)
+	 */
+	public LocalDateTime simTimeToLocalDateTime() {
+		return simTimeToLocalDateTime(simTimeToInstant(simTime()));
+	}
+
+	/**
+	 * Converts a simulation time to a Java {@link LocalDateTime}. The simulation
+	 * time is converted to an {@code Instant} first (see
+	 * {@link #simTimeToInstant()}) and then converted to the local time for this
+	 * simulation's zone id (see {@link #getZoneId()}.
+	 * 
+	 * @see #simTimeToInstant(double)
+	 */
+	public LocalDateTime simTimeToLocalDateTime(double simTime) {
+		return simTimeToLocalDateTime(simTimeToInstant(simTime));
+	}
+
+	/**
+	 * Converts the given {@code Instant} to a local date/time at this simulation's
+	 * zone id ({@link #getZoneId()}.
+	 * 
+	 * @see #simTimeToInstant(double)
+	 */
+	public LocalDateTime simTimeToLocalDateTime(Instant instant) {
+		return LocalDateTime.ofInstant(Objects.requireNonNull(instant), getZoneId());
+	}
+
+	/**
 	 * Converts the given simulation time to a Java {@link Instant} (UTC time
 	 * stamp). Conversion multiplies the time with the factor
 	 * {@link #getSimTimeToMillisFactor()} and rounds the results to the closest
@@ -937,7 +972,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @return The instant converted to simulation time.
 	 */
 	public double toSimTime(Instant instant) {
-		long durationMillis = instant.toEpochMilli() - getSimTimeStartInstant().toEpochMilli();
+		double durationMillis = instant.toEpochMilli() - getSimTimeStartInstant().toEpochMilli();
 		return durationMillis / simTimeToMillisFactor + getInitialSimTime();
 	}
 
@@ -1266,11 +1301,15 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	/**
 	 * Sets the {@link Instant} corresponding to the a simulation time of 0. The
 	 * default setting is to use the beginning of the current year.
+	 * <p>
+	 * The Instant will be truncated to milliseconds, so any nano-second part will
+	 * be cleared.
 	 * 
 	 * @see #simTimeToInstant(double)
 	 */
 	public void setSimTimeStartInstant(Instant simTimeStartInstant) {
-		this.simTimeStartInstant = simTimeStartInstant;
+		long epochMillis = simTimeStartInstant.toEpochMilli();
+		this.simTimeStartInstant = Instant.ofEpochMilli(epochMillis);
 	}
 
 	/**
