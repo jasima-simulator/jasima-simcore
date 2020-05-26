@@ -29,12 +29,21 @@ import jasima.core.util.observer.NotifierListener;
 
 /**
  * This class can be used as a base class for experiment listeners. It delegates
- * all events of {@link Experiment} to separate methods.
+ * all events of {@link Experiment} to separate methods. The class can be used
+ * by implementing his interface, overriding the methods of interest.
+ * <p>
+ * If only a single event/message type is of interest, then also lambda
+ * expressions and the functional interfaces like {@link StartingListener} can
+ * be used.
  * 
  * @author Torsten Hildebrandt
  */
+
 public interface ExperimentListener extends NotifierListener<Experiment, ExperimentMessage> {
 
+	// default implementations of all methods
+
+	@Override // this is the only method defined in the parent interface
 	default void inform(Experiment e, ExperimentMessage event) {
 		if (event == ExperimentMessage.EXPERIMENT_STARTING) {
 			starting((Experiment) e);
@@ -104,4 +113,113 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 			Map<String, Object> runResults) {
 	}
 
+	// functional interfaces for all methods separately
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface HandleOtherListener extends ExperimentListener {
+		@Override
+		void handleOther(Experiment e, ExperimentMessage event);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface PrintListener extends ExperimentListener {
+		@Override
+		void print(Experiment e, ExpPrintEvent event);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface StartingListener extends ExperimentListener {
+		@Override
+		void starting(Experiment e);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface InitializedListener extends ExperimentListener {
+		@Override
+		void initialized(Experiment e);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface BeforeRunListener extends ExperimentListener {
+		@Override
+		void beforeRun(Experiment e);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface RunPerformedListener extends ExperimentListener {
+		@Override
+		void runPerformed(Experiment e);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface AfterRunListener extends ExperimentListener {
+		@Override
+		void afterRun(Experiment e);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface DoneListener extends ExperimentListener {
+		@Override
+		void done(Experiment e);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface ProduceResultsListener extends ExperimentListener {
+		@Override
+		void produceResults(Experiment e, Map<String, Object> res);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface FinishingListener extends ExperimentListener {
+		@Override
+		void finishing(Experiment e, Map<String, Object> results);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface FinishedListener extends ExperimentListener {
+		@Override
+		void finished(Experiment e, Map<String, Object> results);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface MultiExperimentCompletedTaskListener extends ExperimentListener {
+		@Override
+		void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment, Map<String, Object> runResults);
+	}
 }
