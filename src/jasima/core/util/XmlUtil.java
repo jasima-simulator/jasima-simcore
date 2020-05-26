@@ -39,17 +39,20 @@ import com.thoughtworks.xstream.security.NoTypePermission;
 import jasima.core.experiment.Experiment.UniqueNamesCheckingHashMap;
 
 /**
- * Provides utility methods to read and write arbitrary Java objects as xml (xml-Serialization using the xstream library).
+ * Provides utility methods to read and write arbitrary Java objects as xml
+ * (xml-Serialization using the xstream library).
  * 
- * @author Torsten Hildebrandt, 2012-07-13
+ * @author Torsten Hildebrandt
  */
 public class XmlUtil {
+
+	private static final String JASIMA_BEAN_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<?jasima bean?>\n";
+	private static final String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
 
 	/**
 	 * Loads an object from a String containing xml.
 	 * 
-	 * @param xmlString
-	 *            A String containing xml data.
+	 * @param xmlString A String containing xml data.
 	 * @see #saveXML(FileFormat,Object)
 	 * 
 	 * @return The object contained in {@code xmlString}.
@@ -61,10 +64,10 @@ public class XmlUtil {
 	}
 
 	/**
-	 * Loads an object from a String containing xml. Format is assumed to be the XML bean format produced by jasima gui.
+	 * Loads an object from a String containing xml. Format is assumed to be the XML
+	 * bean format produced by jasima gui.
 	 * 
-	 * @param xmlString
-	 *            A String containing xml data.
+	 * @param xmlString A String containing xml data.
 	 * @see #loadXML(FileFormat,String)
 	 * 
 	 * @return The object contained in {@code xmlString}.
@@ -76,8 +79,7 @@ public class XmlUtil {
 	/**
 	 * Loads an object from a file.
 	 * 
-	 * @param f
-	 *            The file to load.
+	 * @param f The file to load.
 	 * @return The object contained in {@code f}.
 	 */
 	public static Object loadXML(FileFormat format, File f) {
@@ -87,10 +89,10 @@ public class XmlUtil {
 	}
 
 	/**
-	 * Loads an object from a file. Format is assumed to be the XML bean format produced by jasima gui.
+	 * Loads an object from a file. Format is assumed to be the XML bean format
+	 * produced by jasima gui.
 	 * 
-	 * @param f
-	 *            The file to load.
+	 * @param f The file to load.
 	 * @return The object contained in {@code f}.
 	 */
 	public static Object loadXML(File f) {
@@ -100,8 +102,7 @@ public class XmlUtil {
 	/**
 	 * Loads an object from a {@link Reader}.
 	 * 
-	 * @param r
-	 *            Source of the xml.
+	 * @param r Source of the xml.
 	 * @return The object contained in {@code r}.
 	 */
 	public static Object loadXML(FileFormat format, Reader r) {
@@ -111,10 +112,10 @@ public class XmlUtil {
 	}
 
 	/**
-	 * Loads an object from a {@link Reader}. Format is assumed to be the XML bean format produced by jasima gui.
+	 * Loads an object from a {@link Reader}. Format is assumed to be the XML bean
+	 * format produced by jasima gui.
 	 * 
-	 * @param r
-	 *            Source of the xml.
+	 * @param r Source of the xml.
 	 * @return The object contained in {@code r}.
 	 */
 	public static Object loadXML(Reader r) {
@@ -124,8 +125,7 @@ public class XmlUtil {
 	/**
 	 * Converts an object into a xml String.
 	 * 
-	 * @param o
-	 *            The object to convert.
+	 * @param o The object to convert.
 	 * @return The object serialized to xml.
 	 */
 	public static String saveXML(FileFormat format, Object o) {
@@ -136,10 +136,8 @@ public class XmlUtil {
 	/**
 	 * Converts an object into xml and writes the result in {@code w}.
 	 * 
-	 * @param o
-	 *            The object to convert.
-	 * @param w
-	 *            The output writer.
+	 * @param o The object to convert.
+	 * @param w The output writer.
 	 */
 	public static void saveXML(FileFormat format, Object o, Writer w) {
 		XStream xstream = getXStream(format);
@@ -149,10 +147,8 @@ public class XmlUtil {
 	/**
 	 * Converts an object into xml and saves the result in a file {@code f}.
 	 * 
-	 * @param o
-	 *            The object to convert.
-	 * @param f
-	 *            The output file. This file is overwritten if it already exists.
+	 * @param o The object to convert.
+	 * @param f The output file. This file is overwritten if it already exists.
 	 */
 	public static void saveXML(FileFormat format, Object o, File f) {
 		XStream xstream = getXStream(format);
@@ -163,6 +159,33 @@ public class XmlUtil {
 		}
 	}
 
+	/**
+	 * Saves the given object in the file {@code f}. This is the same as calling
+	 * {@link #saveXML(FileFormat, Object, File)} with {@code FileFormat.XSTREAM} as
+	 * the file format.
+	 */
+	public static void saveXML(Object o, File f) {
+		saveXML(FileFormat.XSTREAM, o, f);
+	}
+
+	/**
+	 * Saves the given object in the writer {@code w}. This is the same as calling
+	 * {@link #saveXML(FileFormat, Object, Writer)} with {@code FileFormat.XSTREAM}
+	 * as the file format.
+	 */
+	public static void saveXML(Object o, Writer w) {
+		saveXML(FileFormat.XSTREAM, o, w);
+	}
+
+	/**
+	 * Converts the given object to a String in xml format. This is the same as
+	 * calling {@link #saveXML(FileFormat, Object)} with {@code FileFormat.XSTREAM}
+	 * as the file format.
+	 */
+	public static String saveXML(Object o) {
+		return saveXML(FileFormat.XSTREAM, o);
+	}
+
 	private static XStream getXStream(final FileFormat format) {
 		XStream xstream;
 		if (format == FileFormat.JSON) {
@@ -171,14 +194,21 @@ public class XmlUtil {
 			xstream = new XStream(new DomDriver() {
 				@Override
 				public HierarchicalStreamWriter createWriter(Writer out) {
-					if (format == FileFormat.JASIMA_BEAN) {
-						try {
-							out.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<?jasima bean?>\n");
-						} catch (IOException e) {
-							throw new XStreamException(e);
+					try {
+						switch (format) {
+						case JASIMA_BEAN:
+							out.append(JASIMA_BEAN_PREFIX);
+							break;
+						case XSTREAM:
+							out.append(XML_PREFIX);
+							break;
+						default:
+							// do nothing
 						}
+						return super.createWriter(out);
+					} catch (IOException e) {
+						throw new XStreamException(e);
 					}
-					return super.createWriter(out);
 				}
 			});
 		}
@@ -203,8 +233,9 @@ public class XmlUtil {
 			xstream.registerConverter(new JasimaBeanConverter(xstream.getMapper(), false), -10);
 		}
 
-		// clear out existing permissions and set own ones; this prevent the warning message but is not really secure!
-		//TODO: revise when xstream 1.5 is out
+		// clear out existing permissions and set own ones; this prevent the warning
+		// message but is not really secure!
+		// TODO: revise when xstream 1.5 is out
 		xstream.addPermission(NoTypePermission.NONE);
 		xstream.addPermission(AnyTypePermission.ANY);
 		xstream.denyTypeHierarchy(ProcessBuilder.class);
