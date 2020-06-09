@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
+import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.expExecution.ExperimentExecutor;
-import jasima.core.expExecution.ExperimentFuture;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListener;
 import jasima.core.simulation.SimulationExperiment;
@@ -105,7 +107,7 @@ public abstract class AbstractExperimentRunner {
 		try {
 			doParseArgs(args);
 		} catch (RuntimeException e1) {
-			printUsageAndExit(String.valueOf(e1.getLocalizedMessage()));
+			printUsage(String.valueOf(e1.getLocalizedMessage()));
 		}
 
 		return this;
@@ -134,7 +136,7 @@ public abstract class AbstractExperimentRunner {
 
 	protected void processOptions(OptionSet opts) {
 		if (opts.has("help"))
-			printUsageAndExit();
+			printUsage();
 
 		if (opts.has("log")) {
 			String vs = (String) opts.valueOf("log");
@@ -205,19 +207,18 @@ public abstract class AbstractExperimentRunner {
 		}
 	}
 
-	protected void printErrorAndExit(int exitCode, String format, Object... args) {
+	protected static void printError(int exitCode, String format, Object... args) {
 		System.err.printf(format, args);
-		System.exit(exitCode);
 	}
 
-	protected void printUsageAndExit(String format, Object... args) {
+	protected void printUsage(String format, Object... args) {
 		System.err.printf(format, args);
 		System.err.println();
 		System.err.println();
-		printUsageAndExit();
+		printUsage();
 	}
 
-	protected void printUsageAndExit() {
+	protected void printUsage() {
 		try {
 			System.err.println(getHelpCmdLineText());
 			System.err.println();
@@ -243,12 +244,11 @@ public abstract class AbstractExperimentRunner {
 			System.err.println(getHelpFooterText());
 		} catch (IOException ignore) {
 		}
-		System.exit(1);
 	}
 
 	protected String getHelpFooterText() {
 		return lineSeparator() + "All parameter names are CASE-SENSITIVE. For detailed information see "
-				+ lineSeparator() + "http://jasima.googlecode.com.";
+				+ lineSeparator() + "http://jasima.org.";
 	}
 
 	protected String getHelpCmdLineText() {
@@ -261,7 +261,7 @@ public abstract class AbstractExperimentRunner {
 		return experimentFileName;
 	}
 
-	public void run() {
+	public Map<String, Object> run() {
 		System.out.println("**********************************************************************");
 		System.out.println(Util.ID_STRING);
 		System.out.println();
@@ -269,18 +269,23 @@ public abstract class AbstractExperimentRunner {
 		System.out.println(Util.getOSEnvString());
 		System.out.println("**********************************************************************");
 		System.out.println();
+		Experiment exp = null;
 		try {
-			Experiment exp = configureExperiment();
-			doRun(exp);
+			exp = configureExperiment();
+			return doRun(exp);
 		} catch (Throwable t) {
-			printErrorAndExit(10, "%s: %s (%s)", getResultFileNameHint(), t.getLocalizedMessage(),
-					Util.exceptionToString(t));
+			printError(10, "%s: %s (%s)", getResultFileNameHint(), t.getLocalizedMessage(), Util.exceptionToString(t));
+			return exp.getResults();
 		}
 	}
 
-	protected Experiment configureExperiment() {
+	protected @Nullable Experiment configureExperiment() {
 		// create and configure experiment
 		Experiment exp = createExperiment();
+		if (exp == null) {
+			return null;
+		}
+
 		String resultFileNameHint = getResultFileNameHint();
 
 		for (ExperimentListener lstnr : listeners.values()) {
@@ -295,51 +300,30 @@ public abstract class AbstractExperimentRunner {
 		return exp;
 	}
 
-	protected void doRun(Experiment exp) {
-		try {
-			ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(exp, null);
-			Map<String, Object> res = ef.get();
-
-			String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
-			String exc = (String) res.get(Experiment.EXCEPTION);
-			if (msg != null || exc != null) {
-				throw new RuntimeException(msg + "; detailed error: " + exc);
-			}
-
-			if (!hideResults)
-				ConsolePrinter.printResults(exp, res);
-		} catch (InterruptedException e1) {
-			throw new RuntimeException(e1);
+	private @Nullable Map<String, Object> doRun(Experiment exp) {
+		if (exp == null) {
+			return null;
 		}
+
+		ExperimentCompletableFuture ef = ExperimentExecutor.runExperimentAsync(exp, null);
+		Map<String, Object> res = ef.joinIgnoreExceptions();
+
+		String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
+		String exc = (String) res.get(Experiment.EXCEPTION);
+		if (msg != null || exc != null) {
+			throw new RuntimeException(msg + "; detailed error: " + exc);
+		}
+
+		if (!hideResults) {
+			ConsolePrinter.printResults(exp, res);
+		}
+
+		return res;
 	}
 
 	protected Experiment setPropsFromCmdLine(Experiment exp) {
 		// sort props by number of segments so we set parent properties first
-		Collections.sort(manualProps, new Comparator<Pair<String, Object>>() {
-			@Override
-			public int compare(Pair<String, Object> p1, Pair<String, Object> p2) {
-				int i1 = numSegments(p1.a);
-				int i2 = numSegments(p2.a);
-
-				return i1 - i2;
-			}
-
-			/**
-			 * Counts the number of dots '.' in a String.
-			 */
-			private int numSegments(String a) {
-				if (a == null || a.length() == 0)
-					return 0;
-
-				int res = 1;
-				int from = -1;
-				while ((from = a.indexOf('.', from + 1)) >= 0) {
-					res++;
-				}
-
-				return res;
-			}
-		});
+		Collections.sort(manualProps, Comparator.comparingInt(p -> numSegments(p.a)));
 
 		// try to set each property
 		for (Pair<String, Object> p : manualProps) {
@@ -350,6 +334,22 @@ public abstract class AbstractExperimentRunner {
 		}
 
 		return exp;
+	}
+
+	/**
+	 * Counts the number of dots '.' in a String.
+	 */
+	private static int numSegments(String a) {
+		if (a == null || a.length() == 0)
+			return 0;
+
+		int res = 1;
+		int from = -1;
+		while ((from = a.indexOf('.', from + 1)) >= 0) {
+			res++;
+		}
+
+		return res;
 	}
 
 }

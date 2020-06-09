@@ -28,9 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
 import jasima.core.util.MsgCategory;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
+import jasima.core.util.ValueStore;
 
 /**
  * <p>
@@ -83,8 +86,9 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	 * 
 	 * @see FullFactorialExperiment#setConfigurationValidator(ConfigurationValidator)
 	 */
+	@FunctionalInterface
 	public interface ConfigurationValidator extends Serializable {
-		boolean isValid(Map<String, Object> configuration);
+		boolean isValid(Experiment e, Map<String, Object> configuration);
 	}
 
 	// parameters
@@ -107,17 +111,26 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 
 	protected abstract void createExperiments();
 
-	protected void handleConfig(Map<String, Object> conf) {
-		if (!isValidConfiguration(conf))
-			return;
+	protected @Nullable Experiment createExperimentForConf(Map<String, Object> conf) {
+		if (!isValidConfiguration(conf)) {
+			return null;
+		}
+
+		Experiment expForConf = null;
 
 		numConfs++;
 		try {
-			Experiment exp = createExperimentForConf(conf);
-			experiments.add(exp);
-		} catch (final Exception e) {
-			String msg = e.getMessage();
-			print(MsgCategory.ERROR, msg == null ? e.toString() : msg);
+			expForConf = doCreate(conf);
+			List<Map.Entry<String, Object>> entries = sortConfEntries(conf);
+
+			rememberFactorValues(expForConf, entries);
+
+			setProperties(expForConf, entries);
+		} catch (Exception e) {
+			String msg = "error creating configuration " + conf + ": " //
+					+ (e.getMessage() == null ? e.toString() : e.getMessage()) + //
+					" (" + e.getClass().getSimpleName() + ")";
+			print(MsgCategory.ERROR, msg);
 			print(MsgCategory.DEBUG, "%s", new Object() {
 				@Override
 				public String toString() {
@@ -127,32 +140,38 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 				}
 			});
 
-			experiments.add(new Experiment() {
-
-				private static final long serialVersionUID = 4259612422796656502L;
-
-				@Override
-				protected void produceResults() {
-					aborted++;
-					super.produceResults();
-
-					resultMap.put(Experiment.EXCEPTION_MESSAGE, e.getMessage());
-					resultMap.put(Experiment.EXCEPTION, Util.exceptionToString(e));
-				}
-
-				@Override
-				protected void performRun() {
-					// do nothing
-				}
-			});
+			AbortingExperiment abortingExperiment = new AbortingExperiment(msg, e);
+			ValueStore.copy(expForConf, abortingExperiment, FACTORS);
+			abortingExperiment.setName(expForConf.getName());
+			expForConf = abortingExperiment;
 		}
+		return expForConf;
 	}
 
-	protected Experiment createExperimentForConf(Map<String, Object> conf) {
+	protected Experiment doCreate(Map<String, Object> conf) {
 		Experiment e = conf.containsKey(KEY_EXPERIMENT) ? ((Experiment) conf.get(KEY_EXPERIMENT)).clone()
 				: getBaseExperiment().clone();
 		configureRunExperiment(e);
 
+		return e;
+	}
+
+	private void rememberFactorValues(Experiment e, List<Map.Entry<String, Object>> entries) {
+		// remember the factor values used
+		for (Map.Entry<String, Object> p : entries) {
+			if (p.getKey().equals(KEY_EXPERIMENT))
+				continue;
+			@SuppressWarnings("unchecked")
+			List<String> fs = (List<String>) e.valueStoreGet(FACTORS);
+			if (fs == null) {
+				fs = new ArrayList<String>();
+				e.valueStorePut(FACTORS, fs);
+			}
+			fs.add(p.getKey() + "=" + p.getValue());
+		}
+	}
+
+	private List<Map.Entry<String, Object>> sortConfEntries(Map<String, Object> conf) {
 		List<Map.Entry<String, Object>> entries = new ArrayList<Map.Entry<String, Object>>(conf.entrySet());
 		// sort by length
 		Collections.sort(entries, new Comparator<Map.Entry<String, Object>>() {
@@ -169,7 +188,10 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 				return a.length() - b.length();
 			}
 		});
+		return entries;
+	}
 
+	protected void setProperties(Experiment e, List<Map.Entry<String, Object>> entries) {
 		for (Map.Entry<String, Object> p : entries) {
 			if (p.getKey().equals(KEY_EXPERIMENT))
 				continue;
@@ -178,25 +200,15 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 			} else {
 				TypeUtil.setPropertyValue(e, p.getKey(), TypeUtil.cloneIfPossible(p.getValue()));
 			}
-
-			// remember the factor values used
-			@SuppressWarnings("unchecked")
-			List<String> fs = (List<String>) e.valueStoreGet(FACTORS);
-			if (fs == null) {
-				fs = new ArrayList<String>();
-				e.valueStorePut(FACTORS, fs);
-			}
-			fs.add(p.getKey() + "=" + p.getValue());
 		}
-
-		return e;
 	}
 
 	protected boolean isValidConfiguration(Map<String, Object> conf) {
-		if (getConfigurationValidator() == null)
+		if (getConfigurationValidator() == null) {
 			return true;
+		}
 
-		return getConfigurationValidator().isValid(conf);
+		return getConfigurationValidator().isValid(getBaseExperiment(), conf);
 	}
 
 	@Override

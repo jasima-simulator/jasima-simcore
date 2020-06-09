@@ -29,18 +29,15 @@ import java.util.Random;
 import jasima.core.util.MersenneTwister;
 
 /**
- * <p>
  * Allows to run a certain maximum number of experiments chosen randomly. This
  * number of experiment runs is usually smaller than the number of possible
  * factor combinations, i.e., only a fraction of possible designs is tested.
- * </p>
  * <p>
  * The implementation of this class ensures, that each value of a factor occurs
  * equally often (there are no guarantees about value combinations, however, or
- * if a {@link AbstractMultiConfExperiment.ConfigurationValidator} is used).
- * </p>
+ * if a {@link ConfigurationValidator} is used).
  * 
- * @author Torsten Hildebrandt, 2012-06-08
+ * @author Torsten Hildebrandt
  */
 public class RandomFractionalExperiment extends FullFactorialExperiment {
 

@@ -42,6 +42,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
+import javax.annotation.Nullable;
+
 import jasima.core.statistics.SummaryStat;
 
 /**
@@ -65,7 +67,7 @@ public class Util {
 	/**
 	 * Descriptive String showing name, current version and project URL.
 	 */
-	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.net/";
+	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.org/";
 
 	/**
 	 * A default thread pool without an upper limit. Used instead of
@@ -112,7 +114,11 @@ public class Util {
 	 * @param t The {@link Throwable} to convert to a String.
 	 * @return A String representation of {@code t}.
 	 */
-	public static String exceptionToString(Throwable t) {
+	public static String exceptionToString(@Nullable Throwable t) {
+		if (t==null) {
+			return "null";
+		}
+		
 		// convert exception to string
 		Writer sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);

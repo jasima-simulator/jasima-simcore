@@ -25,6 +25,9 @@ import static jasima.core.util.TypeUtil.getClassFromSystemProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+
+import javax.annotation.Nullable;
 
 import jasima.core.experiment.Experiment;
 
@@ -80,41 +83,68 @@ public abstract class ExperimentExecutor {
 	}
 
 	/**
-	 * Runs an experiment (usually in an asynchronous way). Therefore an
-	 * {@link ExperimentFuture} is returned to access results once they become
-	 * available.
-	 * 
-	 * @param e      The experiment to execute.
-	 * @param parent The parent experiment of "e". This might be null.
-	 * 
-	 * @return An {@link ExperimentFuture} to access experiment results.
-	 */
-	public abstract ExperimentFuture runExperiment(Experiment e, Experiment parent);
-
-	/**
 	 * Shuts down this {@link ExperimentExecutor}.
 	 */
 	public abstract void shutdownNow();
 
 	/**
+	 * Returns the {@code ExecutorService} that should be used to execute the
+	 * {@link Experiment}.
+	 * 
+	 * @param e      The experiment to be executed.
+	 * @param parent A parent experiment that is executing {@code e} (can be null).
+	 * @return The {@code ExecutorService} to execute it with.
+	 */
+	public abstract ExecutorService experimentExecutor(Experiment e, @Nullable Experiment parent);
+
+	/**
 	 * Execute many experiments at once. The implementation here simply calls
-	 * {@link #runExperiment(Experiment,Experiment)} for all experiments in
+	 * {@link #runExperimentAsync(Experiment,Experiment)} for all experiments in
 	 * {@code es}.
 	 * 
 	 * @param es     A list of {@link Experiment}s to run.
 	 * @param parent The parent experiment of "es". This might be null.
 	 * 
-	 * @return A {@link Collection} of {@link ExperimentFuture}s, one for each
-	 *         submitted experiment.
+	 * @return A {@link Collection} of {@link ExperimentCompletableFuture}s, one for
+	 *         each submitted experiment.
 	 */
-	public Collection<ExperimentFuture> runAllExperiments(Collection<? extends Experiment> es, Experiment parent) {
-		ArrayList<ExperimentFuture> res = new ArrayList<ExperimentFuture>(es.size());
+	public static Collection<ExperimentCompletableFuture> runAllExperiments(Collection<? extends Experiment> es,
+			Experiment parent) {
+		ArrayList<ExperimentCompletableFuture> res = new ArrayList<ExperimentCompletableFuture>(es.size());
 
 		for (Experiment e : es) {
-			res.add(runExperiment(e, parent));
+			res.add(runExperimentAsync(e, parent));
 		}
 
 		return res;
+	}
+
+	/**
+	 * Runs an experiment (usually in an asynchronous way). Therefore an
+	 * {@link ExperimentCompletableFuture} is returned to access results once they
+	 * become available.
+	 * 
+	 * @param e      The experiment to execute.
+	 * @param parent The parent experiment of "e". This might be null.
+	 * 
+	 * @return An {@link ExperimentCompletableFuture} to access experiment results.
+	 */
+	public static ExperimentCompletableFuture runExperimentAsync(Experiment e, Experiment parent) {
+		return runExperimentAsync(e, parent, getExecutor().experimentExecutor(e, parent));
+	}
+
+	/**
+	 * Runs an experiment (usually in an asynchronous way). Therefore an
+	 * {@link ExperimentCompletableFuture} is returned to access results once they
+	 * become available.
+	 * 
+	 * @param e      The experiment to execute.
+	 * @param parent The parent experiment of "e". This might be null.
+	 * 
+	 * @return An {@link ExperimentCompletableFuture} to access experiment results.
+	 */
+	public static ExperimentCompletableFuture runExperimentAsync(Experiment e, Experiment parent, ExecutorService es) {
+		return new ExperimentCompletableFuture(e, es);
 	}
 
 }

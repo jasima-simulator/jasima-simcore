@@ -30,8 +30,7 @@ import jasima.core.statistics.SummaryStat;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class TestExperimentAbort {
 

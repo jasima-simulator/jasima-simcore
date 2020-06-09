@@ -23,9 +23,13 @@ package jasima.core.experiment;
 /**
  * Simple test class that contains a property of every primitive type.
  */
-public class TestPrimitivesExperiment extends Experiment {
+public class ExpTestPrimitives extends Experiment {
 
 	private static final long serialVersionUID = -5887015972864118660L;
+
+	private boolean exceptionDuringExecution;
+	
+	private boolean exceptionWhenSetToTrue= false;
 
 	private boolean bool1;
 	private Boolean bool2;
@@ -48,7 +52,7 @@ public class TestPrimitivesExperiment extends Experiment {
 
 	private int field = 1;
 
-	public TestPrimitivesExperiment() {
+	public ExpTestPrimitives() {
 		super();
 	}
 
@@ -60,6 +64,8 @@ public class TestPrimitivesExperiment extends Experiment {
 
 	@Override
 	protected void performRun() {
+		if (exceptionDuringExecution)
+			throw new RuntimeException("some run error");
 		field = 3;
 	}
 
@@ -212,6 +218,25 @@ public class TestPrimitivesExperiment extends Experiment {
 
 	public void setString(String string) {
 		this.string = string;
+	}
+
+	public boolean isExceptionDuringExecution() {
+		return exceptionDuringExecution;
+	}
+
+	public void setExceptionDuringExecution(boolean exceptionDuringExecution) {
+		this.exceptionDuringExecution = exceptionDuringExecution;
+	}
+
+	public boolean isExceptionWhenSetToTrue() {
+		return exceptionWhenSetToTrue;
+	}
+
+	public void setExceptionWhenSetToTrue(boolean exceptionWhenSetToTrue) {
+		if (exceptionWhenSetToTrue) {
+			throw new IllegalArgumentException("Can't be set to true.");
+		}
+		this.exceptionWhenSetToTrue = exceptionWhenSetToTrue;
 	}
 
 }

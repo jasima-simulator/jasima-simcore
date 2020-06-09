@@ -32,8 +32,8 @@ import java.util.Map;
 
 import jasima.core.experiment.AbstractMultiExperiment;
 import jasima.core.experiment.Experiment;
-import jasima.core.experiment.Experiment.ExpPrintEvent;
 import jasima.core.experiment.ExperimentListener;
+import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.i18n.I18n;
 
@@ -71,7 +71,7 @@ public class ConsolePrinter implements ExperimentListener {
 	}
 
 	@Override
-	public void print(Experiment e, ExpPrintEvent event) {
+	public void print(Experiment e, ExpPrintMessage event) {
 		if (event.category.ordinal() <= getLogLevel().ordinal()) {
 			String name = e.getName();
 			if (name == null)
@@ -121,6 +121,12 @@ public class ConsolePrinter implements ExperimentListener {
 	public void finished(Experiment e, Map<String, Object> results) {
 		if (isPrintStdEvents())
 			e.print("finished.");
+	}
+
+	@Override
+	public void error(Experiment e, Throwable t) {
+		if (isPrintStdEvents())
+			e.print("there was an exception: %s", t);
 	}
 
 	@Override

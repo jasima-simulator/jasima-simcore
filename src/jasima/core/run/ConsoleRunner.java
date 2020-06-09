@@ -27,7 +27,9 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.util.Pair;
@@ -57,11 +59,12 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	private Experiment experiment;
 	private String expSpec;
 
-	public ConsoleRunner(Experiment indirectExperiment) {
+	public ConsoleRunner(@Nullable Experiment indirectExperiment) {
 		super();
 		this.experiment = indirectExperiment;
-		if (indirectExperiment != null)
+		if (indirectExperiment != null) {
 			this.experimentFileName = indirectExperiment.getClass().getSimpleName();
+		}
 	}
 
 	@Override
@@ -141,7 +144,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	}
 
 	@Override
-	protected Experiment createExperiment() {
+	protected @Nullable Experiment createExperiment() {
 		Experiment e;
 		if (experiment != null) {
 			e = experiment;
@@ -155,22 +158,25 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 			e = TypeUtil.convert(expSpec, Experiment.class, "", getClass().getClassLoader(), packageSearchPath);
 		}
 
-		if (e == null)
-			printErrorAndExit(1, MSG_NO_EXP_FILE);
+		if (e == null) {
+			printError(1, MSG_NO_EXP_FILE);
+		}
 
-		return Objects.requireNonNull(e);
+		return e;
 	}
 
-	public static void run(Experiment e) {
-		run(e, new String[] {});
-	}
-
-	public static void run(Experiment e, String[] args) {
-		new ConsoleRunner(e).parseArgs(args).run();
+	public static @Nullable Map<String, Object> run(Experiment e, String... args) {
+		ConsoleRunner cr = new ConsoleRunner(e);
+		try {
+			return cr.parseArgs(args).run();
+		} catch (RuntimeException e1) {
+			cr.printUsage(String.valueOf(e1.getLocalizedMessage()));
+			return null;
+		}
 	}
 
 	public static void main(String[] args) {
-		new ConsoleRunner(null).parseArgs(args).run();
+		run(null, args);
 	}
 
 }

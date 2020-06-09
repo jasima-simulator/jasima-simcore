@@ -1,11 +1,11 @@
 package jasima.core.util;
 
-import jasima.core.experiment.Experiment.ExpPrintEvent;
+import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.simulation.Simulation.SimPrintMessage;
 
 /**
  * Enum for message categories for {@link SimPrintMessage}s and
- * {@link ExpPrintEvent}s.
+ * {@link ExpPrintMessage}s.
  * 
  * @author Torsten Hildebrandt
  */

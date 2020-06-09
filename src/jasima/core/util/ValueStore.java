@@ -114,4 +114,17 @@ public interface ValueStore {
 	 */
 	ValueStore valueStoreImpl();
 
+	/**
+	 * Copies a value (shallow copy) from one value store to another using the same
+	 * name.
+	 */
+	public static boolean copy(ValueStore from, ValueStore to, String valueName) {
+		if (!from.valueStoreContains(valueName)) {
+			return false;
+		}
+		Object value = from.valueStoreGet(valueName);
+		to.valueStorePut(valueName, value);
+		return true;
+	}
+
 }

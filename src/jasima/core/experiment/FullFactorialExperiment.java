@@ -67,14 +67,12 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	/**
 	 * Adds a configuration to test.
 	 * 
-	 * @param name
-	 *            The factor name. This should be the name of a Java Beans
-	 *            Property of the base experiment, otherwise execution of the
-	 *            experiment will fail. In case {@code value} is a
-	 *            {@link AbstractMultiConfExperiment.ComplexFactorSetter}, name
-	 *            can be arbitrary.
-	 * @param value
-	 *            The value to test for factor {@code name}.
+	 * @param name  The factor name. This should be the name of a Java Beans
+	 *              Property of the base experiment, otherwise execution of the
+	 *              experiment will fail. In case {@code value} is a
+	 *              {@link AbstractMultiConfExperiment.ComplexFactorSetter}, name
+	 *              can be arbitrary.
+	 * @param value The value to test for factor {@code name}.
 	 */
 	public void addFactor(String name, Object value) {
 		List<Object> values = factors.get(name);
@@ -99,8 +97,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 
 	/**
 	 * <p>
-	 * Convenience method to set a factor "factorName" for all possible values
-	 * of an enumeration.
+	 * Convenience method to set a factor "factorName" for all possible values of an
+	 * enumeration.
 	 * </p>
 	 * <p>
 	 * Say an experiment has a property "color" of type {@code ColorEnum}
@@ -121,12 +119,10 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * </pre>
 	 * 
 	 * @see #addFactor(String, Object)
-	 * @param factorName
-	 *            name of the factor.
-	 * @param enumClass
-	 *            The enumeration, of which all members will be used as a value.
-	 * @param <E>
-	 *            Any enumeration type.
+	 * @param factorName name of the factor.
+	 * @param enumClass  The enumeration, of which all members will be used as a
+	 *                   value.
+	 * @param <E>        Any enumeration type.
 	 */
 	public <E extends Enum<?>> void addFactors(String factorName, Class<E> enumClass) {
 		for (Object enumValue : enumClass.getEnumConstants()) {
@@ -135,17 +131,15 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
-	 * Convenience method to add all elements in {@code values} as a possible
-	 * value for a factor/property {@code factorName}. This method is equivalent
-	 * to repeatedly calling {@link #addFactor(String, Object)} for each element
-	 * in {@code values}.
+	 * Convenience method to add all elements in {@code values} as a possible value
+	 * for a factor/property {@code factorName}. This method is equivalent to
+	 * repeatedly calling {@link #addFactor(String, Object)} for each element in
+	 * {@code values}.
 	 * 
 	 * @see #addFactor(String, Object)
 	 * 
-	 * @param factorName
-	 *            Name of the factor.
-	 * @param values
-	 *            Values to use for this factor.
+	 * @param factorName Name of the factor.
+	 * @param values     Values to use for this factor.
 	 */
 	public void addFactors(String factorName, Object... values) {
 		for (Object o : values) {
@@ -154,16 +148,14 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
-	 * Convenience method to add all elements in {@code values} as a possible
-	 * value for a factor/property {@code factorName}. This method is equivalent
-	 * to repeatedly calling {@link #addFactor(String, Object)} for each element
-	 * in {@code values}.
+	 * Convenience method to add all elements in {@code values} as a possible value
+	 * for a factor/property {@code factorName}. This method is equivalent to
+	 * repeatedly calling {@link #addFactor(String, Object)} for each element in
+	 * {@code values}.
 	 * 
 	 * @see #addFactor(String, Object)
-	 * @param factorName
-	 *            Name of the factor.
-	 * @param values
-	 *            A collection of values to use for this factor.
+	 * @param factorName Name of the factor.
+	 * @param values     A collection of values to use for this factor.
 	 */
 	public void addFactors(String factorName, Collection<?> values) {
 		for (Object o : values) {
@@ -184,8 +176,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	/**
 	 * Returns a list with all values of a certain factor.
 	 * 
-	 * @param name
-	 *            A factor name.
+	 * @param name A factor name.
 	 * @return A list with all values for the given factor name.
 	 */
 	public List<?> getFactorValues(String name) {
@@ -246,8 +237,9 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 		for (int i = is.length - 1; i >= 0; i--) {
 			if (++is[i] >= numValuesPerFactor[i]) {
 				is[i] = 0;
-			} else
+			} else {
 				return true;
+			}
 		}
 
 		return false;
@@ -265,7 +257,10 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 			c.put(name, value);
 		}
 
-		handleConfig(c);
+		Experiment e = createExperimentForConf(c);
+		if (e != null) {
+			experiments.add(e);
+		}
 	}
 
 	// just make public, so it appears as a property in the GUI
@@ -275,8 +270,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
-	 * Returns the current setting for the maximum number of configurations to
-	 * run.
+	 * Returns the current setting for the maximum number of configurations to run.
 	 * 
 	 * @return The maximum number of configurations.
 	 */
@@ -285,13 +279,12 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
-	 * Sets the maximum number of configurations (i.e., sub-experiments) that
-	 * are allowed to execute. The default value is 1,000,000. If there are more
-	 * valid configurations/factor combinations, then the
-	 * {@code FullFactorialExperiment} will abort in the initialization phase.
+	 * Sets the maximum number of configurations (i.e., sub-experiments) that are
+	 * allowed to execute. The default value is 1,000,000. If there are more valid
+	 * configurations/factor combinations, then the {@code FullFactorialExperiment}
+	 * will abort in the initialization phase.
 	 * 
-	 * @param maxConfigurations
-	 *            The maximum number of configurations to allow.
+	 * @param maxConfigurations The maximum number of configurations to allow.
 	 */
 	public void setMaxConfigurations(int maxConfigurations) {
 		this.maxConfigurations = maxConfigurations;

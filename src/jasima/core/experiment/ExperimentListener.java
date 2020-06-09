@@ -23,8 +23,7 @@ package jasima.core.experiment;
 import java.util.Map;
 
 import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
-import jasima.core.experiment.Experiment.ExpPrintEvent;
-import jasima.core.experiment.Experiment.ExperimentMessage;
+import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.util.observer.NotifierListener;
 
 /**
@@ -66,8 +65,11 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		} else if (event == ExperimentMessage.EXPERIMENT_FINISHED) {
 			Experiment exp = (Experiment) e;
 			finished(exp, exp.resultMap);
-		} else if (event instanceof ExpPrintEvent) {
-			print((Experiment) e, (ExpPrintEvent) event);
+		} else if (event == ExperimentMessage.EXPERIMENT_ERROR) {
+			Experiment exp = (Experiment) e;
+			error(exp, exp.error);
+		} else if (event instanceof ExpPrintMessage) {
+			print((Experiment) e, (ExpPrintMessage) event);
 		} else if (event instanceof BaseExperimentCompleted) {
 			BaseExperimentCompleted evt = (BaseExperimentCompleted) event;
 			multiExperimentCompletedTask((Experiment) e, evt.experimentRun, evt.results);
@@ -79,7 +81,7 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	default void handleOther(Experiment e, ExperimentMessage event) {
 	}
 
-	default void print(Experiment e, ExpPrintEvent event) {
+	default void print(Experiment e, ExpPrintMessage event) {
 	}
 
 	default void starting(Experiment e) {
@@ -113,6 +115,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 			Map<String, Object> runResults) {
 	}
 
+	default void error(Experiment e, Throwable t) {
+	}
+
 	// functional interfaces for all methods separately
 
 	/**
@@ -130,7 +135,7 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	@FunctionalInterface
 	public interface PrintListener extends ExperimentListener {
 		@Override
-		void print(Experiment e, ExpPrintEvent event);
+		void print(Experiment e, ExpPrintMessage event);
 	}
 
 	/**
@@ -212,6 +217,15 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface FinishedListener extends ExperimentListener {
 		@Override
 		void finished(Experiment e, Map<String, Object> results);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface ErrorListener extends ExperimentListener {
+		@Override
+		void error(Experiment e, Throwable t);
 	}
 
 	/**

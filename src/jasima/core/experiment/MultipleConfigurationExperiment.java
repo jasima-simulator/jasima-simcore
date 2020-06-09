@@ -33,8 +33,7 @@ import java.util.Map;
  * 
  * @see FullFactorialExperiment
  * @author Robin Kreis
- * @author Torsten Hildebrandt, 2013-01-08
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class MultipleConfigurationExperiment extends AbstractMultiConfExperiment {
 
@@ -61,7 +60,10 @@ public class MultipleConfigurationExperiment extends AbstractMultiConfExperiment
 	@Override
 	protected void createExperiments() {
 		for (Map<String, Object> conf : configurations) {
-			handleConfig(conf);
+			Experiment e = createExperimentForConf(conf);
+			if (e != null) {
+				experiments.add(e);
+			}
 		}
 	}
 

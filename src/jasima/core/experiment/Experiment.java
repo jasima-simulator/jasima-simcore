@@ -23,15 +23,17 @@ package jasima.core.experiment;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.expExecution.ExperimentExecutor;
-import jasima.core.expExecution.ExperimentFuture;
-import jasima.core.experiment.Experiment.ExperimentMessage;
+import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.util.ConsolePrinter;
@@ -40,7 +42,6 @@ import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
-import jasima.core.util.i18n.I18n;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierImpl;
 
@@ -91,98 +92,6 @@ public abstract class Experiment
 	public static final String EXCEPTION = "exception";
 	public static final String EXCEPTION_MESSAGE = "exceptionMessage";
 
-	/**
-	 * Simple base class for messages used by the notification mechanism.
-	 */
-	public static class ExperimentMessage {
-		public final String s;
-
-		public ExperimentMessage(String s) {
-			super();
-			this.s = s;
-		}
-
-		@Override
-		public String toString() {
-			return s;
-		}
-
-		public static final ExperimentMessage EXPERIMENT_STARTING = new ExperimentMessage("EXPERIMENT_STARTING");
-		public static final ExperimentMessage EXPERIMENT_INITIALIZED = new ExperimentMessage("EXPERIMENT_INITIALIZED");
-		public static final ExperimentMessage EXPERIMENT_BEFORE_RUN = new ExperimentMessage("EXPERIMENT_BEFORE_RUN");
-		public static final ExperimentMessage EXPERIMENT_RUN_PERFORMED = new ExperimentMessage(
-				"EXPERIMENT_RUN_PERFORMED");
-		public static final ExperimentMessage EXPERIMENT_AFTER_RUN = new ExperimentMessage("EXPERIMENT_AFTER_RUN");
-		public static final ExperimentMessage EXPERIMENT_DONE = new ExperimentMessage("EXPERIMENT_DONE");
-		public static final ExperimentMessage EXPERIMENT_COLLECTING_RESULTS = new ExperimentMessage(
-				"EXPERIMENT_COLLECTING_RESULTS");
-		public static final ExperimentMessage EXPERIMENT_FINISHING = new ExperimentMessage("EXPERIMENT_FINISHING");
-		public static final ExperimentMessage EXPERIMENT_FINISHED = new ExperimentMessage("EXPERIMENT_FINISHED");
-	}
-
-	/**
-	 * Class to store print messages of an experiment.
-	 */
-	public static class ExpPrintEvent extends ExperimentMessage {
-
-		public final Experiment exp;
-		public final MsgCategory category;
-		private String message;
-		private String messageFormatString;
-		private Object[] params;
-
-		public ExpPrintEvent(Experiment exp, MsgCategory category, String message) {
-			super("ExpPrintEvent");
-			if (message == null)
-				throw new NullPointerException();
-			this.exp = exp;
-			this.category = category;
-			this.message = message;
-		}
-
-		public ExpPrintEvent(Experiment exp, MsgCategory category, String messageFormatString, Object... params) {
-			super("ExpPrintEvent");
-			this.exp = exp;
-			this.category = category;
-			this.messageFormatString = messageFormatString;
-			this.params = params;
-			this.message = null;
-		}
-
-		/**
-		 * Returns this message formatted as a {@code String} using the default
-		 * {@link Locale}.
-		 * 
-		 * @return The formatted message using the default {@code Locale}.
-		 * @see Util#DEF_LOCALE
-		 */
-		public String getMessage() {
-			return getMessage(I18n.DEF_LOCALE);
-		}
-
-		/**
-		 * Returns this message formatted using the given {@link Locale}.
-		 * 
-		 * @param locale The {@link Locale} to use when formatting the message.
-		 * @return The formatted message.
-		 */
-		public String getMessage(Locale locale) {
-			// lazy creation of message only when needed
-			if (message == null) {
-				message = String.format(locale, messageFormatString, params);
-				messageFormatString = null;
-				params = null;
-			}
-
-			return message;
-		}
-
-		@Override
-		public String toString() {
-			return getMessage();
-		}
-	}
-
 	// fields to store parameters
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
@@ -193,9 +102,12 @@ public abstract class Experiment
 	// fields used during run
 	private transient int nestingLevel = 0;
 	private transient long runTimeReal;
-	protected transient int aborted;
-	protected Map<String, Object> resultMap;
+	protected transient volatile int aborted;
+	private transient volatile boolean isCancelled;
+	protected transient Map<String, Object> resultMap;
+	protected transient Throwable error;
 
+	@Deprecated
 	public static class UniqueNamesCheckingHashMap extends LinkedHashMap<String, Object> {
 		private static final long serialVersionUID = -6783419937586790463L;
 		private boolean disableCheck;
@@ -226,7 +138,6 @@ public abstract class Experiment
 	 * experiment is run.
 	 */
 	protected void init() {
-		aborted = 0;
 	}
 
 	/**
@@ -259,12 +170,10 @@ public abstract class Experiment
 
 	/**
 	 * Populates the result map {@link #resultMap} with values produced during
-	 * experiment execution. The implementation in Experiment adds the two results
+	 * experiment execution. The Experiment always adds the two results
 	 * {@value #RUNTIME} and {@value EXP_ABORTED}.
 	 */
 	protected void produceResults() {
-		resultMap.put(RUNTIME, runTimeReal());
-		resultMap.put(EXP_ABORTED, aborted);
 	}
 
 	/**
@@ -285,72 +194,144 @@ public abstract class Experiment
 	 */
 	public Map<String, Object> runExperiment() {
 		try {
-			runTimeReal = System.currentTimeMillis();
+			try {
+				runTimeReal = System.currentTimeMillis();
+				aborted = 0;
+				resultMap = new HashMap<>();
+				isCancelled = false;
+
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_STARTING);
+
+				init();
+
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_INITIALIZED);
+
+				beforeRun();
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_BEFORE_RUN);
+
+				performRun();
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_RUN_PERFORMED);
+
+				afterRun();
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_AFTER_RUN);
+
+				done();
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_DONE);
+			} finally {
+				runTimeReal = System.currentTimeMillis() - runTimeReal;
+				addStandardResults();
+			}
+
+			checkCancelledOrInterrupted();
 
 			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_STARTING);
+				fire(ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS);
 
-			init();
+			produceResults();
 
 			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_INITIALIZED);
+				fire(ExperimentMessage.EXPERIMENT_FINISHING);
 
-			beforeRun();
-			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_BEFORE_RUN);
+			finish();
 
-			performRun();
-			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_RUN_PERFORMED);
+			// we are done, don't change results any more
+			resultMap = Collections.unmodifiableMap(resultMap);
 
-			afterRun();
 			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_AFTER_RUN);
+				fire(ExperimentMessage.EXPERIMENT_FINISHED);
 
-			done();
+			// return results
+			return getResults();
+		} catch (Throwable t) {
+			error = t;
+			aborted = 1;
+			addErrorResults();
+
 			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_DONE);
-		} finally {
-			runTimeReal = System.currentTimeMillis() - runTimeReal;
+				fire(ExperimentMessage.EXPERIMENT_ERROR);
+
+			throw t;
 		}
+	}
 
-		// build result map
-		UniqueNamesCheckingHashMap map = new UniqueNamesCheckingHashMap();
-		resultMap = map;
+	/**
+	 * Checks whether the experiment was requested to cancel or the executing Thread
+	 * was interrupted. If so, a {@link CancellationException} (unchecked exception)
+	 * is thrown.
+	 * <p>
+	 * Experiments that wan't to be responsive to cancellation requests should call
+	 * this method frequently from within the main execution Thread.
+	 * 
+	 * @throws CancellationException If the experiment was cancelled or interrupted.
+	 */
+	protected void checkCancelledOrInterrupted() throws CancellationException {
+		if (isCancelled()) {
+			throw new CancellationException("Execution cancelled.");
+		}
+		if (Thread.interrupted()) {
+			Thread.currentThread().interrupt(); // restore interrupt flag
+			throw new CancellationException("Execution interrupted.");
+		}
+	}
 
-		if (numListener() > 0)
-			fire(ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS);
+	protected void addStandardResults() {
+		resultMap.put(RUNTIME, runTimeReal());
+		resultMap.put(EXP_ABORTED, aborted);
+	}
 
-		produceResults();
+	protected void addErrorResults() {
+		resultMap.put(EXP_ABORTED, aborted);
+		resultMap.put(Experiment.EXCEPTION_MESSAGE, error.getMessage());
+		resultMap.put(Experiment.EXCEPTION, Util.exceptionToString(error));
+	}
 
-		// give experiments and listener a chance to view/modify results
-		map.setDisableCheck(true);
+	/**
+	 * Requests the experiment to cancel its execution prematurely. This also
+	 * implies aborting it.
+	 * 
+	 * @see #abort()
+	 * @see #checkCancelledOrInterrupted()
+	 */
+	public void cancel() {
+		abort();
+		this.isCancelled = true;
+	}
 
-		if (numListener() > 0)
-			fire(ExperimentMessage.EXPERIMENT_FINISHING);
+	/**
+	 * Checks whether the experiment was requested to {@link #cancel()} its
+	 * execution.
+	 * 
+	 * @return {@code true}, if {@link #cancel()} was called before; {@code false}
+	 *         otherwise.
+	 */
+	public boolean isCancelled() {
+		return isCancelled;
+	}
 
-		finish();
-
-		if (numListener() > 0)
-			fire(ExperimentMessage.EXPERIMENT_FINISHED);
-
-		// we are done, don't change results any more
-		resultMap = Collections.unmodifiableMap(resultMap);
-
-		// return results
-		return getResults();
+	/**
+	 * Marks experiment execution to be aborted by some error condition. This does
+	 * not necessarily mean it's execution was {@link #cancel()}led prematurely.
+	 */
+	public void abort() {
+		this.aborted = 1;
 	}
 
 	/**
 	 * Call the {@link #runExperiment()} method in an asynchronous way.
 	 * 
 	 * @param pool The {@link ExecutorService} to use.
-	 * @return A {@link Future} to obtain experiment results.
+	 * @return A {@link CompletableFuture} to obtain experiment results.
 	 * @see #runExperiment()
 	 * @see #runExperimentAsync()
 	 */
-	public Future<Map<String, Object>> runExperimentAsync(ExecutorService pool) {
-		return pool.submit(this::runExperiment);
+	public ExperimentCompletableFuture runExperimentAsync(ExecutorService pool) {
+		return ExperimentExecutor.runExperimentAsync(this, null, pool);
 	}
 
 	/**
@@ -360,7 +341,7 @@ public abstract class Experiment
 	 * @see #runExperiment()
 	 * @see #runExperimentAsync(ExecutorService)
 	 */
-	public Future<Map<String, Object>> runExperimentAsync() {
+	public ExperimentCompletableFuture runExperimentAsync() {
 		return runExperimentAsync(Util.DEF_POOL);
 	}
 
@@ -389,16 +370,16 @@ public abstract class Experiment
 	 * about {@code ExperimentExecutor} and {@code nestingLevel}.
 	 * 
 	 * @param sub The sub-experiment to run.
-	 * @return An {@link ExperimentFuture} to access results.
+	 * @return An {@link ExperimentCompletableFuture} to access results.
 	 */
-	protected ExperimentFuture executeSubExperiment(Experiment sub) {
+	protected ExperimentCompletableFuture executeSubExperiment(Experiment sub) {
 		sub.nestingLevel(nestingLevel() + 1);
-		return ExperimentExecutor.getExecutor().runExperiment(sub, this);
+		return ExperimentExecutor.runExperimentAsync(sub, this);
 	}
 
 	/**
 	 * Retrieves a map containing the name and current value for each of this
-	 * class's properties.
+	 * experiment's properties.
 	 * 
 	 * @return A map of all Java Bean properties and their values.
 	 */
@@ -437,7 +418,7 @@ public abstract class Experiment
 	 */
 	public void print(MsgCategory category, String message) {
 		if (numListener() > 0 && category.ordinal() <= getLogLevel().ordinal())
-			fire(new ExpPrintEvent(this, category, message));
+			fire(new ExpPrintMessage(this, category, message));
 	}
 
 	/**
@@ -451,7 +432,7 @@ public abstract class Experiment
 	 */
 	public void print(MsgCategory category, String messageFormat, Object... params) {
 		if (numListener() > 0 && category.ordinal() <= getLogLevel().ordinal())
-			fire(new ExpPrintEvent(this, category, messageFormat, params));
+			fire(new ExpPrintMessage(this, category, messageFormat, params));
 	}
 
 	/**
@@ -604,7 +585,9 @@ public abstract class Experiment
 		// create instance of the Experiment sub-class that was specified as
 		// Java's main class
 		Class<?> klazz = TypeUtil.getMainClass();
-		Experiment e = (Experiment) klazz.newInstance();
+
+		Class<? extends Experiment> ec = klazz.asSubclass(Experiment.class);
+		Experiment e = ec.newInstance();
 
 		// parse command line arguments and run
 		new ConsoleRunner(e).parseArgs(args).run();

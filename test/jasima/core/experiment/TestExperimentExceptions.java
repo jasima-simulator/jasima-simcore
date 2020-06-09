@@ -20,164 +20,209 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import static jasima.core.expExecution.ExperimentExecutor.runExperimentAsync;
+import static jasima.core.experiment.Experiment.EXCEPTION;
+import static jasima.core.experiment.Experiment.EXCEPTION_MESSAGE;
+import static jasima.core.experiment.Experiment.EXP_ABORTED;
+import static jasima.core.experiment.Experiment.RUNTIME;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
+import java.util.concurrent.CompletionException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
-import jasima.core.expExecution.ExperimentExecutor;
-import jasima.core.expExecution.ExperimentFuture;
+import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
 
 public class TestExperimentExceptions {
 
-	public static class ExceptionExperiment extends Experiment {
+	@Rule
+	public Timeout globalTimeout = new Timeout(1000);
 
-		private static final long serialVersionUID = -6611460335281191272L;
+	@Test(expected = MyRuntimeException.class)
+	public void directExectionShouldThrowErrorToCallingThread() {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(true);
 
-		private boolean fail = true;
-		private int dummy = 23;
-
-		@Override
-		protected void performRun() {
-			// do nothing useful
-		}
-
-		@Override
-		protected void produceResults() {
-			super.produceResults();
-
-			if (isFail())
-				throw new RuntimeException("Some strange error.");
-			else
-				resultMap.put("results", getDummy() * getDummy());
-		}
-
-		public boolean isFail() {
-			return fail;
-		}
-
-		public void setFail(boolean fail) {
-			this.fail = fail;
-		}
-
-		public int getDummy() {
-			return dummy;
-		}
-
-		public void setDummy(int dummy) {
-			this.dummy = dummy;
-		}
-
+		// execute directly in main thread
+		e.runExperiment();
 	}
 
 	@Test
-	public void testPlain() {
-		ExceptionExperiment e = new ExceptionExperiment();
+	public void directExectionWithoutErrorShouldNotAddErrorResults() {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(false);
 
-		// execute in main thread
+		// execute directly in main thread
+		Map<String, Object> res = e.runExperiment();
+
+		assertThat(res, not(hasKey(EXCEPTION_MESSAGE)));
+		assertThat(res, not(hasKey(EXCEPTION)));
+	}
+
+	@Test
+	public void directExecutionShouldSetErrorResultsDespiteException() {
+		ExpTestControlFlow exp = new ExpTestControlFlow();
+		exp.setFail(true);
+
+		// execute directly in main thread
 		try {
-			e.runExperiment();
-			e.printResults();
-			fail("No exception.");
-		} catch (RuntimeException expected) {
-			// should raise exception
+			exp.runExperiment();
+		} catch (MyRuntimeException ignore) {
 		}
+
+		Map<String, Object> expResults = exp.getResults();
+		assertThat(expResults, hasKey(EXCEPTION_MESSAGE));
+		assertThat(expResults, hasKey(EXCEPTION));
+		assertThat(expResults, hasEntry(EXP_ABORTED, 1));
+		assertThat(expResults, hasKey(RUNTIME));
 	}
 
 	@Test
-	public void testPlainExecutor() throws InterruptedException {
-		ExceptionExperiment e = new ExceptionExperiment();
+	public void executionWithExperimentExecutorShouldThrowCompletionExceptionOnError() throws Exception {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(true);
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e, null);
-		Map<String, Object> res = ef.get();
+		ExperimentCompletableFuture ef = runExperimentAsync(e, null);
+
+		try {
+			ef.join();
+			fail();
+		} catch (CompletionException expected) {
+			assertThat(expected.getCause(), is(instanceOf(MyRuntimeException.class)));
+		}
+	}
+
+	@Test
+	public void asyncExecutionShouldThrowCompletionExceptionOnError() throws Exception {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(true);
+
+		// execute with Executor
+		ExperimentCompletableFuture ef = e.runExperimentAsync();
+		try {
+			ef.join();
+			fail();
+		} catch (CompletionException expected) {
+			assertThat(expected.getCause(), is(instanceOf(MyRuntimeException.class)));
+		}
+	}
+
+	@Test
+	public void testAsyncExecutionShouldAddErrorResultsWhenIgnoringExceptions() throws Exception {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(true);
+
+		// execute with Executor
+		ExperimentCompletableFuture ef = runExperimentAsync(e, null);
+
+		// ignore execution error but check special results
+		Map<String, Object> res = ef.joinIgnoreExceptions();
 
 		// should produce error messages
-		String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
+		String msg = (String) res.get(EXCEPTION_MESSAGE);
 		assertNotNull(msg);
-		String exc = (String) res.get(Experiment.EXCEPTION);
+		String exc = (String) res.get(EXCEPTION);
 		assertNotNull(exc);
-		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);
+		Integer abort = (Integer) res.get(EXP_ABORTED);
 		assertEquals(1, abort.intValue());
-		Double runtime = (Double) res.get(Experiment.RUNTIME);
+		Double runtime = (Double) res.get(RUNTIME);
 		assertNotNull(runtime);
 	}
 
-	@Test
-	public void test_FFE_Fail() throws InterruptedException {
+	@Test(expected = IllegalArgumentException.class)
+	public void misconfiguredFFEShouldThrowException() throws Exception {
 		FullFactorialExperiment e = new FullFactorialExperiment();
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e, null);
-		Map<String, Object> res = ef.get();
+		e.runExperiment();
+		fail();
+	}
+
+	@Test
+	public void misconfiguredFFEShouldSetErrorValues() throws Exception {
+		FullFactorialExperiment e = new FullFactorialExperiment();
+
+		// execute with Executor
+		ExperimentCompletableFuture ef = runExperimentAsync(e, null);
+		Map<String, Object> res = ef.joinIgnoreExceptions();
 
 		// should produce error messages, no base experiment set
-		String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
+		String msg = (String) res.get(EXCEPTION_MESSAGE);
 		assertNotNull(msg);
-		String exc = (String) res.get(Experiment.EXCEPTION);
+		String exc = (String) res.get(EXCEPTION);
 		assertNotNull(exc);
-		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);
+		Integer abort = (Integer) res.get(EXP_ABORTED);
 		assertEquals(1, abort.intValue());
 	}
 
 	@Test
-	public void test_FFE_WithFail() throws InterruptedException {
+	public void testFFEShouldRunDespiteSubExperimentsFailing() throws Exception {
 		FullFactorialExperiment e = new FullFactorialExperiment();
-		e.setBaseExperiment(new ExceptionExperiment());
+		e.setBaseExperiment(new ExpTestControlFlow());
 		e.addFactors("fail", true, false);
 		e.setAbortUponBaseExperimentAbort(false);
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e, null);
+		ExperimentCompletableFuture ef = runExperimentAsync(e, null);
 		Map<String, Object> res = ef.get();
 		ConsolePrinter.printResults(e, res);
 
 		// FFE itself should not produce errors
-		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);
+		Integer abort = (Integer) res.get(EXP_ABORTED);
 		assertEquals(0, abort.intValue());
-		String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
+		String msg = (String) res.get(EXCEPTION_MESSAGE);
 		assertNull(msg);
-		String exc = (String) res.get(Experiment.EXCEPTION);
+		String exc = (String) res.get(EXCEPTION);
 		assertNull(exc);
 
 		// but report errors from failing base experiments
-		SummaryStat a = (SummaryStat) res.get("baseExperiment." + Experiment.EXP_ABORTED);
+		SummaryStat a = (SummaryStat) res.get("baseExperiment." + EXP_ABORTED);
 		assertEquals(0.5, a.mean(), 1e-10);
-		assertNotNull(res.get("baseExperiment." + Experiment.EXCEPTION_MESSAGE));
-		assertNotNull(res.get("baseExperiment." + Experiment.EXCEPTION));
+		assertNotNull(res.get("baseExperiment." + EXCEPTION_MESSAGE));
+		assertNotNull(res.get("baseExperiment." + EXCEPTION));
 	}
 
 	@Test
-	public void test_FFE_WithFailAbort() throws InterruptedException {
+	public void testFFEShouldFailOnFirstAbortingSubExperiment() throws Exception {
 		FullFactorialExperiment e = new FullFactorialExperiment();
-		e.setBaseExperiment(new ExceptionExperiment());
+		e.setBaseExperiment(new ExpTestControlFlow());
 		e.addFactors("fail", true, false);
+
 		e.setAbortUponBaseExperimentAbort(true);
 
 		// execute with Executor
-		ExperimentFuture ef = ExperimentExecutor.getExecutor().runExperiment(e, null);
+		ExperimentCompletableFuture ef = runExperimentAsync(e, null);
 		Map<String, Object> res = ef.get();
 		ConsolePrinter.printResults(e, res);
 
 		// FFE itself should not produce errors
-		Integer abort = (Integer) res.get(Experiment.EXP_ABORTED);
+		Integer abort = (Integer) res.get(EXP_ABORTED);
 		assertEquals(1, abort.intValue());
-		String msg = (String) res.get(Experiment.EXCEPTION_MESSAGE);
+		String msg = (String) res.get(EXCEPTION_MESSAGE);
 		assertNull(msg);
-		String exc = (String) res.get(Experiment.EXCEPTION);
+		String exc = (String) res.get(EXCEPTION);
 		assertNull(exc);
 
 		// but report errors from failing base experiments
-		SummaryStat a = (SummaryStat) res.get("baseExperiment." + Experiment.EXP_ABORTED);
+		SummaryStat a = (SummaryStat) res.get("baseExperiment." + EXP_ABORTED);
 		assertEquals(1.0, a.mean(), 1e-10);
-		assertNotNull(res.get("baseExperiment." + Experiment.EXCEPTION_MESSAGE));
-		assertNotNull(res.get("baseExperiment." + Experiment.EXCEPTION));
+		assertNotNull(res.get("baseExperiment." + EXCEPTION_MESSAGE));
+		assertNotNull(res.get("baseExperiment." + EXCEPTION));
 	}
 
 }

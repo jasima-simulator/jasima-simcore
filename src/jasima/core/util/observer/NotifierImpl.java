@@ -28,31 +28,6 @@ import jasima.core.experiment.ExperimentListener;
  */
 public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> implements Notifier<SUBJECT, MESSAGE> {
 
-	/**
-	 * A listener that is removing itself after executing once.
-	 * 
-	 * @author Torsten.Hildebrandt
-	 */
-	protected class SingleExecListener implements NotifierListener<SUBJECT, MESSAGE> {
-
-		private final NotifierListener<SUBJECT, MESSAGE> listener;
-
-		protected SingleExecListener(NotifierListener<SUBJECT, MESSAGE> l) {
-			this.listener = l;
-		}
-
-		@Override
-		public void inform(SUBJECT publisher, MESSAGE event) {
-			try {
-				listener.inform(publisher, event);
-			} finally {
-				assert current == this;
-				removeCurrentListener();
-			}
-		}
-
-	}
-
 	private final SUBJECT subject; // the class that is firing events
 
 	private ArrayList<NotifierListener<SUBJECT, MESSAGE>> listeners; // currently registered listeners
@@ -79,7 +54,7 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * Returns the number of currently registered listeners.
 	 */
 	@Override
-	public int numListener() {
+	public synchronized int numListener() {
 		return listeners.size();
 	}
 
@@ -87,7 +62,7 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * Adds a new listener.
 	 */
 	@Override
-	public void addListener(NotifierListener<SUBJECT, MESSAGE> l) {
+	public synchronized void addListener(NotifierListener<SUBJECT, MESSAGE> l) {
 		listeners.add(requireNonNull(l));
 	}
 
@@ -103,21 +78,11 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	}
 
 	/**
-	 * Adds a new listener that removes itself after being executed exactly once.
-	 * Otherwise this method behaves like
-	 * {@link #addListener(Class, NotifierListener)}.
-	 */
-	@Override
-	public <T extends NotifierListener<SUBJECT, MESSAGE>> void addListenerOnce(Class<T> eventType, T eventHandler) {
-		addListener(new SingleExecListener(eventHandler));
-	}
-
-	/**
 	 * Removes the listener given as a parameter. This method returns {@code true}
 	 * on success and {@code false} when the listener could not be found.
 	 */
 	@Override
-	public boolean removeListener(NotifierListener<SUBJECT, MESSAGE> l) {
+	public synchronized boolean removeListener(NotifierListener<SUBJECT, MESSAGE> l) {
 		int idx = listeners.indexOf(requireNonNull(l));
 		if (idx < 0) {
 			return false;
@@ -144,7 +109,7 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * @throws NullPointerException If called while not firing.
 	 */
 	@Override
-	public void removeCurrentListener() {
+	public synchronized void removeCurrentListener() {
 		boolean removeRes = removeListener(requireNonNull(current));
 		assert removeRes;
 	}
@@ -155,7 +120,7 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * @see #numListener()
 	 */
 	@Override
-	public NotifierListener<SUBJECT, MESSAGE> getListener(int idx) {
+	public synchronized NotifierListener<SUBJECT, MESSAGE> getListener(int idx) {
 		return listeners.get(idx);
 	}
 
@@ -163,7 +128,7 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * Send a message to all registered listeners.
 	 */
 	@Override
-	public void fire(MESSAGE msg) {
+	public synchronized void fire(MESSAGE msg) {
 		if (it >= 0) {
 			// already firing, i.e., listener triggered another event
 			if (msgs == null)

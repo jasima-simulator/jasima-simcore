@@ -24,10 +24,6 @@ public interface Notifier<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> {
 		notifierImpl().addListener(eventType, eventHandler);
 	}
 
-	default <T extends NotifierListener<SUBJECT, MESSAGE>> void addListenerOnce(Class<T> eventType, T eventHandler) {
-		notifierImpl().addListenerOnce(eventType, eventHandler);
-	}
-
 	default void removeCurrentListener() {
 		notifierImpl().removeCurrentListener();
 	}

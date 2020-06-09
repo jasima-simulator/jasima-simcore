@@ -20,8 +20,11 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -31,8 +34,8 @@ import java.util.Objects;
 
 import org.junit.Test;
 
+import jasima.core.run.ConsoleRunner;
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.ConsolePrinter;
 
 public class TestFFEFactorSetting {
 
@@ -128,7 +131,12 @@ public class TestFFEFactorSetting {
 
 		ffe.addFactors("bool1", true, false, null);
 
-		Map<String, Object> res = ffe.runExperiment();
+		try {
+			ffe.runExperiment();
+		} catch (IllegalArgumentException expected) {
+		}
+
+		Map<String, Object> res = ffe.getResults();
 		ffe.printResults();
 
 		SummaryStat field = (SummaryStat) res.get("field");
@@ -143,6 +151,54 @@ public class TestFFEFactorSetting {
 		assertEquals(1, (int) res.get("expAborted"));
 	}
 
+	@Test
+	public void testFFEErrorsNotAborting() {
+		FullFactorialExperiment ffe = createFFE();
+		ffe.setAbortUponBaseExperimentAbort(false);
+
+		ffe.addFactors("exceptionWhenSetToTrue", false, true);
+		ffe.addFactors("exceptionDuringExecution", false, true);
+		ffe.addFactors("bool1", true, false, null);
+
+		Map<String, Object> res = ConsoleRunner.run(ffe);
+
+		assertThat("main abort state", res.get("expAborted"), is(0));
+
+		SummaryStat field = (SummaryStat) res.get("field");
+		assertThat("runs with results", field.numObs(), is(2));
+
+		SummaryStat abort = (SummaryStat) res.get("baseExperiment.expAborted");
+		assertThat("all executed", abort.numObs(), is(12));
+		assertThat("aborted", abort.sum(), closeTo(10.0, 1e-6));
+	}
+
+	@Test
+	public void testFFEErrorsAborting() {
+		FullFactorialExperiment ffe = createFFE();
+		ffe.setAbortUponBaseExperimentAbort(true);
+
+		ffe.addFactors("exceptionWhenSetToTrue", false, true);
+		ffe.addFactors("exceptionDuringExecution", false, true);
+		ffe.addFactors("bool1", true, false, null);
+
+		Map<String, Object> res = ConsoleRunner.run(ffe);
+
+		assertThat("main abort state", res.get("expAborted"), is(1));
+
+		SummaryStat field = (SummaryStat) res.get("field");
+		assertThat("runs with results", field.numObs(), is(2));
+
+		SummaryStat abort = (SummaryStat) res.get("baseExperiment.expAborted");
+		assertThat("all executed", abort.numObs(), is(3));
+		assertThat("aborted", abort.sum(), closeTo(1.0, 1e-6));
+	}
+
+	@Test
+	public void testAbortUponBaseExperimentAbortDefaultValue() {
+		FullFactorialExperiment ffe = new FullFactorialExperiment();
+		assertTrue("abortUponBaseExperimentAbort", !ffe.isAbortUponBaseExperimentAbort());
+	}
+
 	private SummaryStat runAndGetResult(FullFactorialExperiment ffe) {
 		Map<String, Object> res = ffe.runExperiment();
 
@@ -151,12 +207,12 @@ public class TestFFEFactorSetting {
 	}
 
 	private FullFactorialExperiment createFFE() {
-		TestPrimitivesExperiment base = new TestPrimitivesExperiment();
+		ExpTestPrimitives base = new ExpTestPrimitives();
 
 		FullFactorialExperiment ffe = new FullFactorialExperiment();
 		ffe.setBaseExperiment(base);
 		ffe.setAbortUponBaseExperimentAbort(true);
-		ffe.addListener(new ConsolePrinter());
+//		ffe.addListener(new ConsolePrinter());
 
 		return ffe;
 	}

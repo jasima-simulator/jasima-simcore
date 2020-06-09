@@ -27,10 +27,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jasima.core.experiment.OCBAExperiment.ProblemType;
+import jasima.core.run.ConsoleRunner;
 import jasima.core.statistics.SummaryStat;
 import jasima.shopSim.models.dynamicShop.DynamicShopExperiment;
 import jasima.shopSim.prioRules.basic.SPT;
@@ -45,12 +45,14 @@ import util.ExtendedJobStatCollector;
 public class OCBATest {
 
 	@Test
-	@Ignore
+//	@Ignore
 	public void prioRuleSelectionShouldGiveExpectedResults() {
 		// create and configure base experiment
 		DynamicShopExperiment he = new DynamicShopExperiment();
 		he.setUtilLevel(0.9);
 		he.addShopListener(new ExtendedJobStatCollector());
+
+//		ConsoleRunner.run(he);
 
 		// create OCBA experiment
 		OCBAExperiment ocbaExperiment = new OCBAExperiment();
@@ -69,17 +71,15 @@ public class OCBATest {
 
 		// no fixed budget, run until we are pretty sure to have the best
 		// configuration
-		ocbaExperiment.setNumReplications(0);
+		ocbaExperiment.setNumReplicationsPerConfiguration(0);
 		ocbaExperiment.setPcsLevel(0.95);
+		ocbaExperiment.setMinReplicationsPerConfiguration(5);
 
 		// optionally produce an Excel file with results and details
-		// ocbaExperiment.addListener(new ExcelSaver());
+//		 ocbaExperiment.addListener(new ExcelSaver());
 
 		// run
-		ocbaExperiment.runExperiment();
-		ocbaExperiment.printResults();
-
-		Map<String, Object> res = ocbaExperiment.getResults();
+		Map<String, Object> res = ConsoleRunner.run(ocbaExperiment);
 
 		int[] av = (int[]) res.get("allocationVector");
 		assertArrayEquals("selection frequency", new int[] { 22, 13 }, av);
@@ -89,8 +89,8 @@ public class OCBATest {
 	}
 
 	/**
-	 * Simple test experiment producing a normally distributed random number as
-	 * a result.
+	 * Simple test experiment producing a normally distributed random number as a
+	 * result.
 	 */
 	public static class TextExp extends Experiment {
 		private static final long serialVersionUID = 4751403145008829877L;
@@ -120,7 +120,9 @@ public class OCBATest {
 		@Override
 		public void produceResults() {
 			super.produceResults();
-			resultMap.put("mean", rnd.nextGaussian() + mean);
+			double res = rnd.nextGaussian() + mean;
+			resultMap.put("mean", res);
+			resultMap.put("meanAsSummaryStat", SummaryStat.summarize(res));
 		}
 
 		@Override
@@ -131,11 +133,33 @@ public class OCBATest {
 	}
 
 	@Test
+	public void testSingleRun() throws Exception {
+		int MAX_REPS = 100;
+		String OBJ = "mean";
+		Double[] means = new Double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
+		ProblemType type = ProblemType.MAXIMIZE;
+
+		Map<String, Object> res = performSingleOCBARun(MAX_REPS, OBJ, means, type, 23);
+		System.out.println(res.toString());
+	}
+
+	@Test
+	public void testSingleRunForSummaryStat() throws Exception {
+		int MAX_REPS = 100;
+		String OBJ = "meanAsSummaryStat";
+		Double[] means = new Double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
+		ProblemType type = ProblemType.MAXIMIZE;
+
+		Map<String, Object> res = performSingleOCBARun(MAX_REPS, OBJ, means, type, 23);
+		System.out.println(res.toString());
+	}
+
+	@Test
 	public void maximizationShouldGiveSameResultsIn1000Runs() throws Exception {
 		int NUM_ITERS = 1000;
 		int MAX_REPS = 100;
 		String OBJ = "mean";
-		double[] means = new double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
+		Double[] means = new Double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
 		ProblemType type = ProblemType.MAXIMIZE;
 
 		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type, new int[] { 0, 0, 0, 80, 652, 268 }, 553.53,
@@ -147,7 +171,7 @@ public class OCBATest {
 		int NUM_ITERS = 1000;
 		int MAX_REPS = 100;
 		String OBJ = "mean";
-		double[] means = new double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
+		Double[] means = new Double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
 		ProblemType type = ProblemType.MINIMIZE;
 
 		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type, new int[] { 880, 120, 0, 0, 0, 0 }, 375.595,
@@ -159,15 +183,16 @@ public class OCBATest {
 		int NUM_ITERS = 100;
 		int MAX_REPS = 0;
 		String OBJ = "mean";
-		double[] means = new double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
+		Double[] means = new Double[] { 2.0, 2.1, 3.0, 8.0, 8.1, 8.09 };
 		ProblemType type = ProblemType.MAXIMIZE;
 
 		performManyOCBARunsAndCheck(NUM_ITERS, MAX_REPS, OBJ, means, type, new int[] { 0, 0, 0, 9, 75, 16 }, 36839.95,
 				0.9518640709807842);
 	}
 
-	private void performManyOCBARunsAndCheck(int numIters, int maxReps, String obs, double[] means, ProblemType type,
+	private void performManyOCBARunsAndCheck(int numIters, int maxReps, String obs, Double[] means, ProblemType type,
 			int[] selFreqExpected, double expsPerRunExpected, double avgPCSExpected) {
+		System.out.println();
 		int[] ocbaResults = new int[means.length];
 
 		SummaryStat evals = new SummaryStat();
@@ -198,30 +223,26 @@ public class OCBATest {
 		assertEquals("avgPCS", avgPCSExpected, pcs.mean(), 0.0001);
 	}
 
-	private Map<String, Object> performSingleOCBARun(int maxReps, String obj, double[] means, ProblemType type,
+	private Map<String, Object> performSingleOCBARun(int maxReps, String obj, Double[] means, ProblemType type,
 			long seed) {
 		OCBAExperiment exp = new OCBAExperiment();
 		exp.setPcsLevel(0.95);
 		exp.setBaseExperiment(new TextExp());
 
-		for (double mean : means)
-			exp.addFactors("mean", mean);
+		exp.addFactors("mean", means);
 
 		exp.setDetailedResults(true);
 		exp.setProblemType(type);
 		exp.setObjective(obj);
 		exp.setMinReplicationsPerConfiguration(5);
-		exp.setNumReplications(maxReps);
+		exp.setNumReplicationsPerConfiguration(maxReps);
 
 		exp.setInitialSeed(seed);
 
-		exp.runExperiment();
-
-		Map<String, Object> res = exp.getResults();
-		return res;
+		return exp.runExperiment();
 	}
 
-	private static int indexOf(double mean, double[] perf) {
+	private static int indexOf(double mean, Double[] perf) {
 		for (int i = 0; i < perf.length; i++) {
 			if (perf[i] == mean)
 				return i;

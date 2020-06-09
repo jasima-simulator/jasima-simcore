@@ -22,7 +22,6 @@ package jasima.core.expExecution;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -51,21 +50,14 @@ public class ThreadPoolExecutor extends ExperimentExecutor {
 	// an executor service for each nesting level
 	private Map<Integer, ExecutorService> insts = new HashMap<Integer, ExecutorService>();
 
-	// has to be public to be callable using refection
+	// has to be public to be callable using reflection
 	public ThreadPoolExecutor() {
 		super();
 	}
 
 	@Override
-	public ExperimentFuture runExperiment(final Experiment e, final Experiment parent) {
-		ExecutorService es = getExecutorInstance(e.nestingLevel());
-		return new FutureWrapper(e, es.submit(new Callable<Map<String, Object>>() {
-			@Override
-			public Map<String, Object> call() throws Exception {
-				e.runExperiment();
-				return e.getResults();
-			}
-		}));
+	public ExecutorService experimentExecutor(Experiment e, Experiment parent) {
+		return getExecutorInstance(e.nestingLevel());
 	}
 
 	@Override

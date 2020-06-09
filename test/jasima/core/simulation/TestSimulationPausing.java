@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.junit.Before;
@@ -53,7 +52,7 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 4000)
-	public void testDefaultBehaviour() {
+	public void testDefaultBehaviour() throws Exception {
 		long t = System.currentTimeMillis();
 
 		Future<Map<String, Object>> future = sim.performRunAsync();
@@ -62,7 +61,7 @@ public class TestSimulationPausing {
 		assertEquals("simTime", 2.0, sim.simTime(), 1e-6);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
 
-		Map<String, Object> res = getFutureResult(future);
+		Map<String, Object> res = future.get();
 
 		t = System.currentTimeMillis() - t;
 
@@ -77,7 +76,7 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 6000)
-	public void testPausing() {
+	public void testPausing() throws Exception {
 		long t = System.currentTimeMillis();
 
 		Future<Map<String, Object>> future = sim.performRunAsync();
@@ -91,7 +90,7 @@ public class TestSimulationPausing {
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
 		sim.unpause(); // continue execution after 3 seconds
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 
 		t = System.currentTimeMillis() - t;
@@ -104,7 +103,7 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 4000)
-	public void testStartPaused() {
+	public void testStartPaused() throws Exception {
 		sim.pause();
 
 		long t = System.currentTimeMillis();
@@ -116,7 +115,7 @@ public class TestSimulationPausing {
 		assertEquals("simTime should be initial", 0.0, sim.simTime(), 1e-6);
 		sim.unpause(); // request simulation start
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 
 		t = System.currentTimeMillis() - t;
@@ -129,7 +128,7 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 7000)
-	public void testStartPauseTwice() {
+	public void testStartPauseTwice() throws Exception {
 		sim.pause();
 
 		long t = System.currentTimeMillis();
@@ -151,7 +150,7 @@ public class TestSimulationPausing {
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
 		sim.unpause(); // continue execution after 3 seconds
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 
 		t = System.currentTimeMillis() - t;
@@ -164,7 +163,7 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 5000)
-	public void testStartPauseDouble() {
+	public void testStartPauseDouble() throws Exception {
 		sim.pause();
 		sim.pause();
 
@@ -182,7 +181,7 @@ public class TestSimulationPausing {
 		assertEquals("simTime should be initial", 0.0, sim.simTime(), 1e-6);
 		sim.unpause();
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 
 		t = System.currentTimeMillis() - t;
@@ -195,24 +194,24 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 4000)
-	public void testUnpauseWhileWaitingForPause1() {
+	public void testUnpauseWhileWaitingForPause1() throws Exception {
 		long t = System.currentTimeMillis();
 
 		Future<Map<String, Object>> future = sim.performRunAsync();
-		
+
 		sleep(300);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
 		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
 		sim.pause();
-		
+
 		sleep(300);
 		// simulation should still be busy with first event
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
 		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
-		
+
 		sim.unpause(); // "cancel" pause
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simState", SimExecState.FINISHED, sim.state());
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 
@@ -226,16 +225,16 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 4000)
-	public void testUnpauseWhileWaitingForPause2() {
+	public void testUnpauseWhileWaitingForPause2() throws Exception {
 		long t = System.currentTimeMillis();
 
 		Future<Map<String, Object>> future = sim.performRunAsync();
-		
+
 		sleep(300);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
 		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
 		sim.pause();
-		
+
 		sleep(300);
 		// simulation should still be busy with first event
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
@@ -247,14 +246,14 @@ public class TestSimulationPausing {
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
 		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
 		sim.pause();
-		
+
 		sleep(500);
 		// simulation should now be paused
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
 		assertEquals("simTime should be initial", 2.0, sim.simTime(), 1e-6);
 		sim.unpause();
-		
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simState", SimExecState.FINISHED, sim.state());
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 
@@ -262,13 +261,13 @@ public class TestSimulationPausing {
 
 		ConsolePrinter.printResults(null, res);
 
-		long timeDiff = t - (300+3000);
+		long timeDiff = t - (300 + 3000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
 		assertTrue("realTimeMax, diff=" + timeDiff, timeDiff < REAL_TIME_ALLOWANCE); // at most 100ms more
 	}
 
 	@Test(timeout = 2000)
-	public void testPausedSimulationCanBeEnded() {
+	public void testPausedSimulationCanBeEnded() throws Exception {
 		long t = System.currentTimeMillis();
 
 		Future<Map<String, Object>> future = sim.performRunAsync();
@@ -284,7 +283,7 @@ public class TestSimulationPausing {
 
 		sim.end();
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simTime", 2.0, sim.simTime(), 1e-6);
 		assertEquals("simState", SimExecState.PAUSED, sim.state());
 
@@ -298,7 +297,7 @@ public class TestSimulationPausing {
 	}
 
 	@Test(timeout = 3000)
-	public void testRunningSimulationCanBeEnded() {
+	public void testRunningSimulationCanBeEnded() throws Exception {
 		long t = System.currentTimeMillis();
 
 		Future<Map<String, Object>> future = sim.performRunAsync();
@@ -309,7 +308,7 @@ public class TestSimulationPausing {
 
 		sim.end();
 
-		Map<String, Object> res = getFutureResult(future); // wait for completion
+		Map<String, Object> res = future.get(); // wait for completion
 		assertEquals("simTime", 4.0, sim.simTime(), 1e-6);
 		assertEquals("simState", SimExecState.FINISHED, sim.state());
 
@@ -322,12 +321,12 @@ public class TestSimulationPausing {
 		assertTrue("realTimeMax, diff=" + timeDiff, timeDiff < REAL_TIME_ALLOWANCE); // at most 100ms more
 	}
 
-	private Map<String, Object> getFutureResult(Future<Map<String, Object>> future) {
-		try {
-			return future.get(); // blocks until result is available
-		} catch (InterruptedException | ExecutionException e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	private Map<String, Object> getFutureResult(Future<Map<String, Object>> future) {
+//		try {
+//			return future.get(); // blocks until result is available
+//		} catch (InterruptedException | ExecutionException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 }

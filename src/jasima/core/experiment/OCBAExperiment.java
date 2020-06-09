@@ -137,7 +137,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	private String objective;
 	private ProblemType problemType = ProblemType.MINIMIZE;
 	private int minReplicationsPerConfiguration = -1;
-	private int numReplications = 10;
+	private int numReplicationsPerConfiguration = 10;
 	private double pcsLevel = 0.0;
 	private boolean detailedResults = true;
 
@@ -154,11 +154,6 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	public OCBAExperiment() {
 		super();
 		setProduceAveragedResults(false);
-	}
-
-	@Override
-	public void init() {
-		super.init();
 	}
 
 	@Override
@@ -179,7 +174,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 				configurations.add(mre);
 			}
 
-			totalBudget = configurations.size() * getNumReplications();
+			totalBudget = configurations.size() * getNumReplicationsPerConfiguration();
 
 			// set iteration budget based on total number of configurations
 			iterationBudget = Math.round(0.1f * configurations.size());
@@ -202,9 +197,14 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	@Override
 	protected Experiment createExperimentForConf(Map<String, Object> conf) {
 		Experiment e = super.createExperimentForConf(conf);
+		if (e == null) {
+			return null;
+		}
+
 		// reset name
 		e.setName(getBaseExperiment().getName());
 
+		// wrap in a MRE
 		MultipleReplicationExperiment mre = new MultipleReplicationExperiment();
 		mre.setBaseExperiment(e);
 		configureRunExperiment(mre);
@@ -299,7 +299,6 @@ public class OCBAExperiment extends FullFactorialExperiment {
 			iter = Math.min(iter, totalBudget - budgetUsed);
 
 		int[] newRuns = ocba(iter);
-		// System.out.println(Arrays.toString(newRuns));
 
 		// configure new experiments to be performed
 		for (int i = 0; i < newRuns.length; i++) {
@@ -322,8 +321,12 @@ public class OCBAExperiment extends FullFactorialExperiment {
 		assert i >= 0;
 
 		Object o = r.get(getObjective());
-		if (o == null)
+		if (o == null) {
+			o = r.get(getObjective() + ".mean");
+		}
+		if (o == null) {
 			throw new RuntimeException("Can't find result value for objective '" + getObjective() + "'.");
+		}
 
 		budgetUsed += configurations.get(i).getMaxReplications();
 
@@ -581,12 +584,12 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	 * 
 	 * @param numReplications The number of replications to use.
 	 */
-	public void setNumReplications(int numReplications) {
-		this.numReplications = numReplications;
+	public void setNumReplicationsPerConfiguration(int numReplications) {
+		this.numReplicationsPerConfiguration = numReplications;
 	}
 
-	public int getNumReplications() {
-		return numReplications;
+	public int getNumReplicationsPerConfiguration() {
+		return numReplicationsPerConfiguration;
 	}
 
 	public ProblemType getProblemType() {

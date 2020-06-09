@@ -32,7 +32,6 @@ import jasima.core.random.RandomFactoryOld;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
-import jasima.core.util.TraceFileProducer;
 import jasima.core.util.observer.NotifierListener;
 import jasima.shopSim.core.PrioRuleTarget;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
@@ -48,7 +47,7 @@ import util.ExtendedJobStatCollector;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @SuppressWarnings("deprecation")
 public class TestGECCOContinuity {
@@ -129,30 +128,28 @@ public class TestGECCOContinuity {
 					max(npt, p), sub(
 							mul(p, sub(
 									ifte(div(
-											add(div(mul(
-													add(winq2,
-															tis),
+											add(div(mul(add(winq2, tis),
 													winq2), 0), mul(mul(npt, rpt),
 															rpt)),
 											div(ifte(
-													div(add(winq2,
-															tis), ifte(
-																	div(add(winq2, tis),
-																			ifte(max(sub(p, npt),
-																					sub(sub(0, p), winq2)), ol, tis)),
+													div(add(winq2, tis), ifte(
+															div(add(winq2, tis),
+																	ifte(max(sub(p, npt), sub(sub(0, p), winq2)), ol,
+																			tis)),
 															sub(winq2, ol),
 															mul(tis, ifte(add(tiq, ol), mul(tis, winq2), tis)))),
-											sub(mul(npt, rpt), ol), mul(tis, div(mul(add(winq2, tis), winq2), 0))),
-									mul(mul(npt, rpt),
-											winq2))), sub(
-													div(mul(add(winq2, tis), winq2),
-															add(ifte(add(tiq, sub(p, npt)), tis, npt), mul(npt, rpt))),
-													p),
+													sub(mul(npt, rpt), ol),
+													mul(tis, div(mul(add(winq2, tis), winq2), 0))),
+													mul(mul(npt, rpt), winq2))),
+											sub(div(mul(
+													add(winq2, tis), winq2),
+													add(ifte(add(tiq, sub(p, npt)), tis, npt), mul(npt, rpt))), p),
 											ifte(ifte(
 													ifte(sub(div(tis, add(sub(p, npt), mul(npt, rpt))), p),
 															sub(div(mul(add(winq2, tis), winq2),
 																	add(ifte(add(tiq, ol), tis, npt), mul(npt, rpt))),
-															p), add(winq2, tis)),
+																	p),
+															add(winq2, tis)),
 													div(mul(tis, winq2), add(add(winq2, tis), mul(npt, rpt))),
 													add(tiq, ol)), sub(div(sub(p, npt), sub(winq2, ol)), p),
 													div(mul(tis, winq2), add(tis, mul(npt, rpt))))),
@@ -195,7 +192,7 @@ public class TestGECCOContinuity {
 		e.setShopListener(null);
 
 		e.addShopListener(new ExtendedJobStatCollector());
-		e.addShopListener(new TraceFileProducer("traceNew.txt"));
+//		e.addShopListener(new TraceFileProducer("traceNew.txt"));
 
 		e.addListener(new ConsolePrinter(MsgCategory.DEBUG));
 

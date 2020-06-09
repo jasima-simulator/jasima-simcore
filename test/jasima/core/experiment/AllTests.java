@@ -29,8 +29,10 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author Torsten Hildebrandt
  */
 @RunWith(Suite.class)
-@SuiteClasses({ TestExperimentAbort.class, OCBATest.class, TestExperimentExceptions.class, TestFFEFactorSetting.class,
-		Test_FFE_Array_Setter.class, TestMultipleReplicationExperiment.class })
+@SuiteClasses({ OCBATest.class, Test_FFE_Array_Setter.class, TestExperimentAbort.class, TestExperimentBasics.class,
+		TestExperimentCancellation.class, TestExperimentExceptions.class, TestFFEFactorSetting.class,
+		TestMultipleReplicationExperiment.class })
+
 public class AllTests {
 
 }
