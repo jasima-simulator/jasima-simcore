@@ -43,6 +43,7 @@ import java.util.Scanner;
 import java.util.WeakHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import jasima.core.util.converter.TypeToStringConverter;
 import jasima.core.util.i18n.I18n;
@@ -759,22 +760,29 @@ public class TypeUtil {
 	}
 
 	private static Class<?> loadFromJar(String classOrJar) throws IOException, ClassNotFoundException {
+		System.err.println("classOrJar: " + classOrJar);
+
 		try (JarFile jar = new JarFile(classOrJar)) {
-			Map<String, Attributes> jarEntries = jar.getManifest().getEntries();
+			Manifest manifest = jar.getManifest();
+			if (manifest == null) {
+				throw new RuntimeException("MANIFEST.MF not found in jar.");
+			}
+
+			Attributes attributes = manifest.getMainAttributes();
+
 			// is app using "jar in jar" export from eclipse? in this case
 			// main-class is JarRsrcLoader
-			Attributes o = (Attributes) findEntryCaseInsensitive(jarEntries, "Rsrc-Main-Class");
-			if (o == null || o.size() == 0) {
+			String mainClass = attributes.getValue("Rsrc-Main-Class");
+			if (mainClass == null) {
 				// regular main class
-				o = (Attributes) findEntryCaseInsensitive(jarEntries, "Main-Class");
+				mainClass = attributes.getValue("Main-Class");
 			}
-			assert o.size() == 1;
-
-			// get first entry from 'o'
-			String cName = (String) o.values().iterator().next();
+			if (mainClass == null) {
+				return null;
+			}
 
 			// try to load cName
-			Class<?> klazz = Util.class.getClassLoader().loadClass(cName);
+			Class<?> klazz = TypeUtil.class.getClassLoader().loadClass(mainClass);
 			return klazz;
 		}
 	}
