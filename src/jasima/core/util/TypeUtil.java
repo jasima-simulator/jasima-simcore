@@ -760,8 +760,6 @@ public class TypeUtil {
 	}
 
 	private static Class<?> loadFromJar(String classOrJar) throws IOException, ClassNotFoundException {
-		System.err.println("classOrJar: " + classOrJar);
-
 		try (JarFile jar = new JarFile(classOrJar)) {
 			Manifest manifest = jar.getManifest();
 			if (manifest == null) {
@@ -778,7 +776,7 @@ public class TypeUtil {
 				mainClass = attributes.getValue("Main-Class");
 			}
 			if (mainClass == null) {
-				return null;
+				throw new RuntimeException("Couldn't determine main class.");
 			}
 
 			// try to load cName
