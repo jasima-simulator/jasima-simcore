@@ -53,25 +53,22 @@ public class ExperimentCompletableFuture extends CompletableFuture<Map<String, O
 
 		this.experiment = requireNonNull(e);
 		addFinishedListener();
-
 		this.future = es.submit(e::runExperiment);
 	}
 
 	private void addFinishedListener() {
-		ExperimentListener finishedListener = new ExperimentListener() {
+		ExperimentListener finallyListener = new ExperimentListener() {
 			@Override
-			public void finished(Experiment e, Map<String, Object> results) {
-				complete(results);
-				e.removeCurrentListener();
-			}
-
-			@Override
-			public void error(Experiment e, Throwable t) {
-				completeExceptionally(t);
+			public void finalAction(Experiment e) {
+				if (e.getError() != null) {
+					completeExceptionally(e.getError());
+				} else {
+					complete(e.getResults());
+				}
 				e.removeCurrentListener();
 			}
 		};
-		experiment.addListener(finishedListener);
+		experiment.addListener(finallyListener);
 	}
 
 	public Experiment getExperiment() {

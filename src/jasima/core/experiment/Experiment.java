@@ -78,7 +78,7 @@ import jasima.core.util.observer.NotifierImpl;
  * @author Torsten Hildebrandt
  */
 public abstract class Experiment
-		implements Notifier<Experiment, ExperimentMessage>, ValueStore, Cloneable, Serializable, Runnable {
+		implements Notifier<Experiment, ExperimentMessage>, ValueStore, Cloneable, Serializable {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -377,21 +377,21 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Method to implement the {@link Runnable} interface. Implementation here just
-	 * delegates to {@link #runExperiment()}.
-	 */
-	@Override
-	public void run() {
-		runExperiment();
-	}
-
-	/**
 	 * Returns the result map produced when executing this experiment.
 	 * 
 	 * @return This experiment's results as an unmodifiable map.
 	 */
 	public final Map<String, Object> getResults() {
 		return Collections.unmodifiableMap(resultMap);
+	}
+
+	/**
+	 * @return The exception that terminated this experiment. Might be a
+	 *         {@link CancellationException} if this experiment's execution was
+	 *         cancelled.
+	 */
+	public final Throwable getError() {
+		return error;
 	}
 
 	/**
