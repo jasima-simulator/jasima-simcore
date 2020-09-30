@@ -1,5 +1,8 @@
 package jasima.core.util.observer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Notifier inform {@link NotifierListener}s about events. This implements a
  * version of the Observer-pattern using Java Generics. Implementation can be
@@ -40,6 +43,16 @@ public interface Notifier<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> {
 		notifierImpl().fire(msg);
 	}
 
-	Notifier<SUBJECT, MESSAGE> notifierImpl();
+	final static Map<Notifier<?, ?>, NotifierImpl<?, ?>> adapters = new HashMap<>();
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	default Notifier<SUBJECT, MESSAGE> notifierImpl() {
+		NotifierImpl<?, ?> adapter = adapters.get(this);
+		if (adapter == null) {
+			adapter = new NotifierImpl(this);
+			adapters.put(this, adapter);
+		}
+		return (Notifier<SUBJECT, MESSAGE>) adapter;
+	}
 
 }

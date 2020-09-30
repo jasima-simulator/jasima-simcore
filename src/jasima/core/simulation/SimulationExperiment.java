@@ -1,6 +1,7 @@
 package jasima.core.simulation;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
@@ -118,6 +119,18 @@ public class SimulationExperiment extends Experiment {
 		super.produceResults();
 
 		sim.produceResults(resultMap);
+	}
+	
+	/**
+	 * Converts a given Java {@link Duration} (i.e., a time span) to the
+	 * corresponding (relative) simulation time.
+	 * 
+	 * @param d The duration to be converted to simulation time.
+	 * @return The amount of simulation time.
+	 */
+	public double toSimTime(Duration d) {
+		double millis = d.toMillis();
+		return millis / simTimeToMillisFactor;
 	}
 
 	/**

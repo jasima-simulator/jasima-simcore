@@ -45,34 +45,32 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	@Override // this is the only method defined in the parent interface
 	default void inform(Experiment e, ExperimentMessage event) {
 		if (event == ExperimentMessage.EXPERIMENT_STARTING) {
-			starting((Experiment) e);
+			starting(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_INITIALIZED) {
-			initialized((Experiment) e);
+			initialized(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_BEFORE_RUN) {
-			beforeRun((Experiment) e);
+			beforeRun(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_RUN_PERFORMED) {
-			runPerformed((Experiment) e);
+			runPerformed(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_AFTER_RUN) {
-			afterRun((Experiment) e);
+			afterRun(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_DONE) {
-			done((Experiment) e);
+			done(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS) {
-			Experiment exp = (Experiment) e;
-			produceResults(exp, exp.resultMap);
+			produceResults(e, e.resultMap);
 		} else if (event == ExperimentMessage.EXPERIMENT_FINISHING) {
-			Experiment exp = (Experiment) e;
-			finishing(exp, exp.resultMap);
+			finishing(e, e.resultMap);
 		} else if (event == ExperimentMessage.EXPERIMENT_FINISHED) {
-			Experiment exp = (Experiment) e;
-			finished(exp, exp.resultMap);
+			finished(e, e.resultMap);
 		} else if (event == ExperimentMessage.EXPERIMENT_ERROR) {
-			Experiment exp = (Experiment) e;
-			error(exp, exp.error);
+			error(e, e.error);
+		} else if (event == ExperimentMessage.EXPERIMENT_FINALLY) {
+			finalAction(e);
 		} else if (event instanceof ExpPrintMessage) {
-			print((Experiment) e, (ExpPrintMessage) event);
+			print(e, (ExpPrintMessage) event);
 		} else if (event instanceof BaseExperimentCompleted) {
 			BaseExperimentCompleted evt = (BaseExperimentCompleted) event;
-			multiExperimentCompletedTask((Experiment) e, evt.experimentRun, evt.results);
+			multiExperimentCompletedTask(e, evt.experimentRun, evt.results);
 		} else {
 			handleOther(e, event);
 		}
@@ -116,6 +114,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	}
 
 	default void error(Experiment e, Throwable t) {
+	}
+
+	default void finalAction(Experiment e) {
 	}
 
 	// functional interfaces for all methods separately
@@ -226,6 +227,15 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface ErrorListener extends ExperimentListener {
 		@Override
 		void error(Experiment e, Throwable t);
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface FinallyListener extends ExperimentListener {
+		@Override
+		void finalAction(Experiment e);
 	}
 
 	/**

@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.LinkedHashMap;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -190,6 +191,7 @@ public class XmlUtil {
 		XStream xstream;
 		if (format == FileFormat.JSON) {
 			xstream = new XStream(new JettisonMappedXmlDriver());
+			xstream.registerConverter(new MapConverter(xstream.getMapper()));
 		} else {
 			xstream = new XStream(new DomDriver() {
 				@Override
@@ -242,4 +244,26 @@ public class XmlUtil {
 
 		return xstream;
 	}
+
+	/**
+	 * Loads an object from a String containing JSON data suitable for XSTREAM.
+	 * 
+	 * @param jsonString A String containing JSON data.
+	 * @see #loadXML(FileFormat,String)
+	 * 
+	 * @return The object contained in {@code jsonString}.
+	 */
+	public static Object loadJSON(String jsonString) {
+		return loadXML(FileFormat.JSON, jsonString);
+	}
+
+	/**
+	 * Converts the given object to a String in JSON format. This is the same as
+	 * calling {@link #saveXML(FileFormat, Object)} with {@code FileFormat.} as the
+	 * file format.
+	 */
+	public static String saveJSON(Object o) {
+		return saveXML(FileFormat.JSON, o);
+	}
+
 }

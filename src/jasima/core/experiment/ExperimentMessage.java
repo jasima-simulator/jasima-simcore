@@ -34,6 +34,7 @@ public class ExperimentMessage {
 	public static final ExperimentMessage EXPERIMENT_FINISHING = new ExperimentMessage("EXPERIMENT_FINISHING");
 	public static final ExperimentMessage EXPERIMENT_FINISHED = new ExperimentMessage("EXPERIMENT_FINISHED");
 	public static final ExperimentMessage EXPERIMENT_ERROR = new ExperimentMessage("EXPERIMENT_ERROR");
+	public static final ExperimentMessage EXPERIMENT_FINALLY = new ExperimentMessage("EXPERIMENT_FINALLY");
 
 	/**
 	 * Class to store print messages of an experiment.

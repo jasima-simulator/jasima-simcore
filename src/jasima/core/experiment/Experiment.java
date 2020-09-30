@@ -78,7 +78,7 @@ import jasima.core.util.observer.NotifierImpl;
  * @author Torsten Hildebrandt
  */
 public abstract class Experiment
-		implements Notifier<Experiment, ExperimentMessage>, ValueStore, Cloneable, Serializable {
+		implements Notifier<Experiment, ExperimentMessage>, ValueStore, Cloneable, Serializable, Runnable {
 
 	/**
 	 * Just an arbitrary default seed.
@@ -131,6 +131,14 @@ public abstract class Experiment
 
 	public Experiment() {
 		super();
+	}
+
+	/**
+	 * This method is called to perform any work that needs to be performed before
+	 * the experiment can be initialized. It is called before the {@link #init()}
+	 * method and can be used to perform additional parameter checks, for instance.
+	 */
+	protected void starting() {
 	}
 
 	/**
@@ -199,12 +207,13 @@ public abstract class Experiment
 				aborted = 0;
 				resultMap = new HashMap<>();
 				isCancelled = false;
+				error = null;
 
+				starting();
 				if (numListener() > 0)
 					fire(ExperimentMessage.EXPERIMENT_STARTING);
 
 				init();
-
 				if (numListener() > 0)
 					fire(ExperimentMessage.EXPERIMENT_INITIALIZED);
 
@@ -240,24 +249,46 @@ public abstract class Experiment
 
 			finish();
 
-			// we are done, don't change results any more
-			resultMap = Collections.unmodifiableMap(resultMap);
-
 			if (numListener() > 0)
 				fire(ExperimentMessage.EXPERIMENT_FINISHED);
 
 			// return results
 			return getResults();
 		} catch (Throwable t) {
-			error = t;
-			aborted = 1;
-			addErrorResults();
-
-			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_ERROR);
-
+			try {
+				handleExecutionError(t);
+			} catch (Throwable ignore) {
+				// TODO: use proper log message
+				ignore.printStackTrace();
+			}
 			throw t;
+		} finally {
+			try {
+				finalActions();
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_FINALLY);
+			} catch (Throwable ignore) {
+				// TODO: use proper log message
+				ignore.printStackTrace();
+			}
 		}
+	}
+
+	protected void handleExecutionError(Throwable t) {
+		error = t;
+		aborted = 1;
+		addErrorResults();
+		if (numListener() > 0)
+			fire(ExperimentMessage.EXPERIMENT_ERROR);
+	}
+
+	/**
+	 * This method can be used for actions like clean-up that should be done
+	 * irrespectively of whether an exception occurred during experiment execution
+	 * or not. Any code executed in this method should take care that it is not
+	 * producing any uncatched exceptions itself.
+	 */
+	protected void finalActions() {
 	}
 
 	/**
@@ -346,12 +377,21 @@ public abstract class Experiment
 	}
 
 	/**
+	 * Method to implement the {@link Runnable} interface. Implementation here just
+	 * delegates to {@link #runExperiment()}.
+	 */
+	@Override
+	public void run() {
+		runExperiment();
+	}
+
+	/**
 	 * Returns the result map produced when executing this experiment.
 	 * 
-	 * @return This experiment's results.
+	 * @return This experiment's results as an unmodifiable map.
 	 */
 	public final Map<String, Object> getResults() {
-		return resultMap;
+		return Collections.unmodifiableMap(resultMap);
 	}
 
 	/**
@@ -581,7 +621,7 @@ public abstract class Experiment
 
 	// ******************* static methods ************************
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String... args) throws Exception {
 		// create instance of the Experiment sub-class that was specified as
 		// Java's main class
 		Class<?> klazz = TypeUtil.getMainClass();
