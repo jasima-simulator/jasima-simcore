@@ -115,10 +115,10 @@ public class Util {
 	 * @return A String representation of {@code t}.
 	 */
 	public static String exceptionToString(@Nullable Throwable t) {
-		if (t==null) {
+		if (t == null) {
 			return "null";
 		}
-		
+
 		// convert exception to string
 		Writer sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -643,12 +643,20 @@ public class Util {
 	 * 
 	 * @return The OS environment.
 	 */
-	public static String getOSEnvString() {
+	public static String getOsEnvString() {
 		String osName = System.getProperty("os.name");
 		String osArch = System.getProperty("os.arch");
 		String osVersion = System.getProperty("os.version");
 
-		return defFormat("OS: %s (%s, v%s)", osName, osArch, osVersion);
+		return defFormat("os: %s (%s, v%s)", osName, osArch, osVersion);
+	}
+
+	/**
+	 * @return the current working directory.
+	 */
+	public static String getWorkingDirString() {
+		String userDir = System.getProperty("user.dir");
+		return defFormat("dir: %s", userDir);
 	}
 
 	// prevent instantiation

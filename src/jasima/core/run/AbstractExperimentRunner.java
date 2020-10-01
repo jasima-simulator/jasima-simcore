@@ -46,6 +46,7 @@ import jasima.core.util.ConsolePrinter;
 import jasima.core.util.ExcelSaver;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.Pair;
+import jasima.core.util.StringUtil;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
@@ -64,6 +65,8 @@ import joptsimple.util.KeyValuePair;
  * @author Torsten Hildebrandt
  */
 public abstract class AbstractExperimentRunner {
+
+	private static final String DOTS = StringUtil.repeat("*", 80);
 
 	protected Map<Object, ExperimentListener> listeners;
 	protected boolean hideResults = false;
@@ -262,12 +265,13 @@ public abstract class AbstractExperimentRunner {
 	}
 
 	public Map<String, Object> run() {
-		System.out.println("**********************************************************************");
+		System.out.println(DOTS);
 		System.out.println(Util.ID_STRING);
 		System.out.println();
 		System.out.println(Util.getJavaEnvString());
-		System.out.println(Util.getOSEnvString());
-		System.out.println("**********************************************************************");
+		System.out.println(Util.getOsEnvString());
+		System.out.println(Util.getWorkingDirString());
+		System.out.println(DOTS);
 		System.out.println();
 		Experiment exp = null;
 		try {
