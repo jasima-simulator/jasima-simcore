@@ -616,7 +616,7 @@ public abstract class Experiment
 	}
 
 	public String toString() {
-		return getName() == null ? super.toString() : getName();
+		return getName() == null ? "exp@" + Integer.toHexString(hashCode()) : getName();
 	}
 
 	// ******************* static methods ************************

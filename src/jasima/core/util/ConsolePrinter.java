@@ -73,9 +73,7 @@ public class ConsolePrinter implements ExperimentListener {
 	@Override
 	public void print(Experiment e, ExpPrintMessage event) {
 		if (event.category.ordinal() <= getLogLevel().ordinal()) {
-			String name = e.getName();
-			if (name == null)
-				name = "exp@" + Integer.toHexString(e.hashCode());
+			String name = e.toString();
 
 			String msg = String.format(getLocale(), getLogFormat(), new Date(), event.category.toString(),
 					event.getMessage(getLocale()), name);

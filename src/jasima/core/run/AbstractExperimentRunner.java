@@ -272,13 +272,13 @@ public abstract class AbstractExperimentRunner {
 			System.out.println(DOTS);
 			System.out.println(Util.ID_STRING);
 			System.out.println();
+			if (exp != null) {
+				System.out.println(exp.getClass().getSimpleName() + ": " + exp.toString());
+				System.out.println();
+			}
 			System.out.println(Util.getJavaEnvString());
 			System.out.println(Util.getOsEnvString());
 			System.out.println(Util.getWorkingDirString());
-			if (exp != null) {
-				System.out.println();
-				System.out.println(exp.getClass().getSimpleName() + ": " + exp.getName());
-			}
 			System.out.println(DOTS);
 			System.out.println();
 		}
