@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.experiment;
 
+import static jasima.core.util.observer.ObservableValues.observable;
+
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.Collections;
@@ -31,7 +33,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.random.RandomFactory;
@@ -44,6 +45,7 @@ import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierImpl;
+import jasima.core.util.observer.ObservableValue;
 
 /**
  * An Experiment is something that produces results depending on various
@@ -92,6 +94,10 @@ public abstract class Experiment
 	public static final String EXCEPTION = "exception";
 	public static final String EXCEPTION_MESSAGE = "exceptionMessage";
 
+	public enum ExperimentState {
+		INITIAL, ABOUT_TO_START, RUNNING, FINISHED, ERROR
+	}
+
 	// fields to store parameters
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
@@ -106,6 +112,7 @@ public abstract class Experiment
 	private transient volatile boolean isCancelled;
 	protected transient Map<String, Object> resultMap;
 	protected transient Throwable error;
+	private transient volatile ObservableValue<ExperimentState> state;
 
 	@Deprecated
 	public static class UniqueNamesCheckingHashMap extends LinkedHashMap<String, Object> {
@@ -131,6 +138,8 @@ public abstract class Experiment
 
 	public Experiment() {
 		super();
+
+		state = observable(ExperimentState.INITIAL);
 	}
 
 	/**
@@ -192,15 +201,61 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Runs the experiment. This is the main method to call to execute an
+	 * Runs the experiment in a synchronous way. This is the main method to call in
+	 * order to execute an experiment. Sub-classes normally don't have to overwrite
+	 * this method but create customized behavior by overriding one of the
+	 * life-cycle methods like {@link #init()}, {@link #beforeRun()},
+	 * {@link #performRun()} (this one is required), {@link #done()},
+	 * {@link #produceResults()} or {@link #finish()}.
+	 * 
+	 * @return The results of experiment execution.
+	 * @see #runExperimentAsync()
+	 */
+	public Map<String, Object> runExperiment() {
+		aboutToStart();
+		return runExperimentInternal();
+	}
+
+	/**
+	 * Call the {@link #runExperiment()} method in an asynchronous way.
+	 * 
+	 * @param pool The {@link ExecutorService} to use.
+	 * @return A {@link CompletableFuture} to obtain experiment results.
+	 * @see #runExperiment()
+	 * @see #runExperimentInternal()
+	 * @see #runExperimentAsync()
+	 */
+	public ExperimentCompletableFuture runExperimentAsync(ExecutorService pool) {
+		return ExperimentExecutor.runExperimentAsync(this, null, pool);
+	}
+
+	/**
+	 * Trigger asynchronous execution of the experiment in the default thread pool.
+	 * 
+	 * @return A {@link Future} to obtain experiment results.
+	 * @see #runExperiment()
+	 * @see #runExperimentAsync(ExecutorService)
+	 */
+	public ExperimentCompletableFuture runExperimentAsync() {
+		return runExperimentAsync(Util.DEF_POOL);
+	}
+
+	/**
+	 * Runs the experiment. This is the main method to call in order to execute an
 	 * experiment. Sub-classes normally don't have to overwrite this method but
-	 * create customized behavior by overriding on of the methods like
+	 * create customized behavior by overriding one of the life-cycle methods like
 	 * {@link #init()}, {@link #beforeRun()}, {@link #performRun()} (this one is
 	 * required), {@link #done()}, {@link #produceResults()} or {@link #finish()}.
 	 * 
 	 * @return The results of experiment execution.
 	 */
-	public Map<String, Object> runExperiment() {
+	protected Map<String, Object> runExperimentInternal() {
+		synchronized (state) {
+			// checking and setting as an atomic operation
+			requireState(ExperimentState.ABOUT_TO_START);
+			state.set(ExperimentState.RUNNING);
+		}
+
 		try {
 			try {
 				runTimeReal = System.currentTimeMillis();
@@ -270,10 +325,44 @@ public abstract class Experiment
 			} catch (Throwable ignore) {
 				// TODO: use proper log message
 				ignore.printStackTrace();
+			} finally {
+				state.set(error == null ? ExperimentState.FINISHED : ExperimentState.ERROR);
 			}
 		}
 	}
 
+	/**
+	 * Don't call this method directly. Used internally by
+	 * {@link ExperimentCompletableFuture} and in {@link #runExperiment()}.
+	 */
+	final void aboutToStart() {
+		synchronized (state) {
+			// checking and setting as an atomic operation
+			requireState(ExperimentState.INITIAL);
+			state.set(ExperimentState.ABOUT_TO_START);
+		}
+	}
+
+	/**
+	 * Checks, if an experiment is in a certain state.
+	 * 
+	 * @param expected The expected state of an experiment.
+	 * @throws IllegalStateException If not in the expected state.
+	 */
+	protected void requireState(ExperimentState expected) {
+		ExperimentState current = state.get();
+		if (current != expected) {
+			throw new IllegalStateException(
+					"State expected " + expected + ", but was " + current + ". An experiment can only run once.");
+		}
+	}
+
+	/**
+	 * Lifecycle method that is executed if there was an Exception during experiment
+	 * execution. In addition an EXPERIMENT_ERROR event is fired.
+	 * 
+	 * @param t
+	 */
 	protected void handleExecutionError(Throwable t) {
 		error = t;
 		aborted = 1;
@@ -354,29 +443,6 @@ public abstract class Experiment
 	}
 
 	/**
-	 * Call the {@link #runExperiment()} method in an asynchronous way.
-	 * 
-	 * @param pool The {@link ExecutorService} to use.
-	 * @return A {@link CompletableFuture} to obtain experiment results.
-	 * @see #runExperiment()
-	 * @see #runExperimentAsync()
-	 */
-	public ExperimentCompletableFuture runExperimentAsync(ExecutorService pool) {
-		return ExperimentExecutor.runExperimentAsync(this, null, pool);
-	}
-
-	/**
-	 * Trigger asynchronous execution of the experiment in the default thread pool.
-	 * 
-	 * @return A {@link Future} to obtain experiment results.
-	 * @see #runExperiment()
-	 * @see #runExperimentAsync(ExecutorService)
-	 */
-	public ExperimentCompletableFuture runExperimentAsync() {
-		return runExperimentAsync(Util.DEF_POOL);
-	}
-
-	/**
 	 * Returns the result map produced when executing this experiment.
 	 * 
 	 * @return This experiment's results as an unmodifiable map.
@@ -392,6 +458,21 @@ public abstract class Experiment
 	 */
 	public final Throwable getError() {
 		return error;
+	}
+
+	/**
+	 * @return The current execution state of this experiment as an
+	 *         {@link ObservableValue}.
+	 */
+	public final ObservableValue<ExperimentState> state() {
+		return state;
+	}
+
+	/**
+	 * @return The current execution state of this experiment.
+	 */
+	public final ExperimentState getState() {
+		return state.get();
 	}
 
 	/**
@@ -597,6 +678,8 @@ public abstract class Experiment
 		try {
 			Experiment c = (Experiment) super.clone();
 
+			c.state = observable(ExperimentState.INITIAL);
+
 			if (notifierAdapter != null) {
 				c.notifierAdapter = new NotifierImpl<>(c);
 				for (int i = 0; i < numListener(); i++) {
@@ -610,8 +693,8 @@ public abstract class Experiment
 			}
 
 			return c;
-		} catch (CloneNotSupportedException sholdntHappen) {
-			throw new RuntimeException(sholdntHappen);
+		} catch (CloneNotSupportedException shouldntHappen) {
+			throw new RuntimeException(shouldntHappen);
 		}
 	}
 

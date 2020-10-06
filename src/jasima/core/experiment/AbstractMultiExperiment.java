@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.Pair;

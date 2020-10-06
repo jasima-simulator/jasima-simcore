@@ -206,6 +206,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 
 		// wrap in a MRE
 		MultipleReplicationExperiment mre = new MultipleReplicationExperiment();
+		mre.setAllowParallelExecution(isAllowParallelExecution());
 		mre.setBaseExperiment(e);
 		configureRunExperiment(mre);
 
@@ -304,6 +305,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 		for (int i = 0; i < newRuns.length; i++) {
 			if (newRuns[i] > 0) {
 				MultipleReplicationExperiment mre = configurations.get(i);
+				mre.state().set(ExperimentState.INITIAL);
 				mre.setMaxReplications(newRuns[i]);
 				experiments.add(mre);
 			}
@@ -414,6 +416,10 @@ public class OCBAExperiment extends FullFactorialExperiment {
 	protected int[] ocba(int add_budget) {
 		final int nd = stats.length;
 
+		if (nd == 1) {
+			return new int[] { add_budget };
+		}
+
 		double t_s_mean[] = new double[nd];
 		if (getProblemType() == ProblemType.MAXIMIZE) { /* MAX problem */
 			for (int i = 0; i < nd; i++)
@@ -463,7 +469,7 @@ public class OCBAExperiment extends FullFactorialExperiment {
 			for (int i = 0; i < nd; i++)
 				if (morerun[i] == 1) {
 					an[i] = (int) (t1_budget / ratio_s * ratio[i]);
-					/* disable thoese design which have benn run too much */
+					/* disable designs which have been run too much */
 					if (an[i] < stats[i].numObs()) {
 						an[i] = stats[i].numObs();
 						morerun[i] = 0;

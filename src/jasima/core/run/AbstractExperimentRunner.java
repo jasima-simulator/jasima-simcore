@@ -36,9 +36,9 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.expExecution.ExperimentExecutor;
 import jasima.core.experiment.Experiment;
+import jasima.core.experiment.ExperimentCompletableFuture;
 import jasima.core.experiment.ExperimentListener;
 import jasima.core.simulation.SimulationExperiment;
 import jasima.core.util.AbstractResultSaver;

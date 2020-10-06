@@ -24,10 +24,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
@@ -153,10 +150,104 @@ public class TestExperimentBasics {
 
 		try {
 			Map<String, Object> res = f.join();
-			System.out.println(Thread.currentThread() + "\tafter join.");
+			System.out.println(Thread.currentThread() + "\tafter join\t" + res.toString());
 		} finally {
 			Thread.sleep(2000);
 		}
+	}
+
+	@Test(timeout = 5000)
+	public void runAsyncFutureGet() throws Exception {
+		Experiment e = new TimeConsumingExperiment();
+
+		ExperimentCompletableFuture f = e.runExperimentAsync();
+
+		Map<String, Object> res = f.get(); // wait for exp to finish
+		assertThat("result", res.get("a"), is(2));
+
+		Map<String, Object> res2 = f.get(); // second get() should return immediately
+		assertThat("same results", res2, is(res));
+	}
+
+	@Test(timeout = 5000)
+	public void runAsyncFutureJoin() throws Exception {
+		Experiment e = new TimeConsumingExperiment();
+
+		ExperimentCompletableFuture f = e.runExperimentAsync();
+
+		Map<String, Object> res = f.join(); // wait for exp to finish
+		assertThat("result", res.get("a"), is(2));
+
+		Map<String, Object> res2 = f.join(); // second join() should return immediately
+		assertThat("same results", res2, is(res));
+	}
+
+	@Test(timeout = 5000)
+	public void runAsyncJoinIgnoreExceptions() throws Exception {
+		Experiment e = new TimeConsumingExperiment();
+
+		ExperimentCompletableFuture f = e.runExperimentAsync();
+
+		Map<String, Object> res = f.joinIgnoreExceptions(); // wait for exp to finish
+		assertThat("result", res.get("a"), is(2));
+
+		Map<String, Object> res2 = f.joinIgnoreExceptions(); // second joinIgnoreExceptions() should return immediately
+		assertThat("same results", res2, is(res));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void cantRunSameExperimentTwice() throws Exception {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(false);
+
+		Map<String, Object> res = e.runExperiment();
+		assertThat("result", res.get("results"), is(23 * 23));
+
+		e.runExperiment(); // not allowed
+	}
+
+	@Test
+	public void cantRunSameExperimentTwiceAsync() throws Exception {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(false);
+
+		// start first execution
+		ExperimentCompletableFuture exec1 = e.runExperimentAsync();
+		
+		// try second start
+		try {
+			e.runExperimentAsync();
+			fail("second execution not prevented");
+		} catch (IllegalStateException expected) {
+		}
+		
+		// first execution should complete as expected
+		Map<String, Object> res = exec1.join();
+		assertThat("result", res.get("results"), is(23 * 23));
+		assertThat("expAborted", res.get("expAborted"), is(0));
+		assertThat("error", res.get("error"), is(nullValue()));
+	}
+
+	@Test
+	public void cantRunSameExperimentTwiceAsyncSync() throws Exception {
+		ExpTestControlFlow e = new ExpTestControlFlow();
+		e.setFail(false);
+
+		// start first execution
+		ExperimentCompletableFuture exec1 = e.runExperimentAsync();
+		
+		// try second start synchronously
+		try {
+			e.runExperiment();
+			fail("second execution not prevented");
+		} catch (IllegalStateException expected) {
+		}
+		
+		// first execution should complete as expected
+		Map<String, Object> res = exec1.join();
+		assertThat("result", res.get("results"), is(23 * 23));
+		assertThat("expAborted", res.get("expAborted"), is(0));
+		assertThat("error", res.get("error"), is(nullValue()));
 	}
 
 }

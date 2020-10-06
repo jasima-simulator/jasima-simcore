@@ -399,7 +399,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 		execFailure = null;
 
-		mainProcess = new SimProcess<>(this, getMainProcessActions(), "main");
+		mainProcess = new SimProcess<>(this, getMainProcessActions(), "simMain");
 		currEvent = mainProcess.activateProcessEvent;
 		setCurrentProcess(mainProcess);
 		setEventLoopProcess(mainProcess);
@@ -435,6 +435,20 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	}
 
 	void handleNextEvent() {
+		// run additional actions that might come from external threads
+		SimAction r;
+		while ((r = runInSimThread.poll()) != null) {
+			try {
+				r.run(this);
+			} catch (MightBlock e) {
+				throw new AssertionError(); // ignore marker Exception
+			}
+		}
+
+		if (!continueSim()) {
+			return;
+		}
+
 		SimEvent evt = events.extract();
 		currEvent = evt;
 
@@ -447,16 +461,6 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		numEventsProcessed++;
 
 		evt.handle();
-
-		// run additional actions that might come from external threads
-		SimAction r;
-		while ((r = runInSimThread.poll()) != null) {
-			try {
-				r.run(this);
-			} catch (MightBlock e) {
-				throw new AssertionError(); // ignore marker Exception
-			}
-		}
 	}
 
 	private void checkInitialEventTime() {
@@ -573,6 +577,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 		HashMap<String, Object> res = new HashMap<>();
 		produceResults(res);
+
 		return res;
 	}
 
@@ -843,9 +848,10 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 */
 	public void end() {
 		endRequested = true;
-
 		if (pauseRequests.get() > 0) {
-			pausedWorkerThread.interrupt();
+			awakePausedWorker = true;
+			LockSupport.unpark(pausedWorkerThread);
+			pausedWorkerThread = null;
 		}
 	}
 
@@ -871,7 +877,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 					state.set(SimExecState.PAUSED);
 					pausedWorkerThread = Thread.currentThread();
-					while (!awakePausedWorker) {
+					while (!(awakePausedWorker || pausedWorkerThread.isInterrupted())) {
 						LockSupport.park();
 					}
 
@@ -890,7 +896,6 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 */
 	public void unpause() {
 		requireAllowedState(state.get(), SimExecState.PAUSED, SimExecState.RUNNING);
-
 		if (pauseRequests.decrementAndGet() == 0) {
 			if (pausedWorkerThread != null) {
 				awakePausedWorker = true;

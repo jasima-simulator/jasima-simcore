@@ -215,7 +215,7 @@ public class TestSimProcessBasics {
 		sim.addComponent(cs);
 
 		sim.setMainProcessActions(sim -> {
-			checkProcessName("theSimulation.main");
+			checkProcessName("theSimulation.simMain");
 			
 			SimContext.activate("process", () -> {
 				checkProcessName("process");

@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package jasima.core.expExecution;
+package jasima.core.experiment;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,9 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import jasima.core.experiment.Experiment;
-import jasima.core.experiment.ExperimentListener;
 
 /**
  * Thin wrapper around a {@link Future}, making it cancellable/interruptable and
@@ -52,8 +49,9 @@ public class ExperimentCompletableFuture extends CompletableFuture<Map<String, O
 		super();
 
 		this.experiment = requireNonNull(e);
+		e.aboutToStart();
 		addFinishedListener();
-		this.future = es.submit(e::runExperiment);
+		this.future = es.submit(e::runExperimentInternal);
 	}
 
 	private void addFinishedListener() {

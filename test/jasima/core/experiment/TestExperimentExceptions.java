@@ -43,7 +43,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
 

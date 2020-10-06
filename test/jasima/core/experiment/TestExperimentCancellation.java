@@ -35,7 +35,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import jasima.core.expExecution.ExperimentCompletableFuture;
 import jasima.core.experiment.ExperimentListener.StartingListener;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.statistics.SummaryStat;
@@ -136,6 +135,7 @@ public class TestExperimentCancellation {
 		e.setRuntimeMillis(100);
 		e.setFail(false);
 
+		// interrupt from different Thread
 		interruptAfterMillis(Thread.currentThread(), 50);
 
 		try {
@@ -183,7 +183,7 @@ public class TestExperimentCancellation {
 	}
 
 	@Test
-	public void mreWithInterruptedSubsShouldAbortIfAbourtUponBaseExperiemntAbortIsTrue() {
+	public void mreWithInterruptedSubsShouldAbortIfAbortUponBaseExperiemntAbortIsTrue() {
 		ExpTestControlFlow e = new ExpTestControlFlow();
 		e.setRuntimeMillis(100);
 		e.setFail(false);

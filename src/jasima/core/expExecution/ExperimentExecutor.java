@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nullable;
 
 import jasima.core.experiment.Experiment;
+import jasima.core.experiment.ExperimentCompletableFuture;
 
 /**
  * Base class for classes executing experiments. This class implements the

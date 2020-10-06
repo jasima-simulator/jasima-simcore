@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.util.ConsolePrinter;
+import jasima.core.util.MsgCategory;
 
 public class TestSimulationPausing {
 
@@ -40,6 +41,7 @@ public class TestSimulationPausing {
 		// set up a simulation that runs about 3 seconds real time with simulation time
 		// ranging from 0 to 23.
 		sim = new Simulation();
+		sim.setPrintLevel(MsgCategory.ALL);
 		sim.addPrintListener(System.out::println);
 
 		sim.schedule("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
@@ -266,11 +268,11 @@ public class TestSimulationPausing {
 		assertTrue("realTimeMax, diff=" + timeDiff, timeDiff < REAL_TIME_ALLOWANCE); // at most 100ms more
 	}
 
-	@Test(timeout = 2000)
+	@Test//(timeout = 2000)
 	public void testPausedSimulationCanBeEnded() throws Exception {
-		long t = System.currentTimeMillis();
-
 		Future<Map<String, Object>> future = sim.performRunAsync();
+
+		long t = System.currentTimeMillis();
 
 		sleep(500);
 		assertEquals("simState", SimExecState.RUNNING, sim.state());
@@ -283,9 +285,12 @@ public class TestSimulationPausing {
 
 		sim.end();
 
+		System.out.println("waiting for simulation to end...");
 		Map<String, Object> res = future.get(); // wait for completion
+		System.out.println("simulation ended.");
+		
 		assertEquals("simTime", 2.0, sim.simTime(), 1e-6);
-		assertEquals("simState", SimExecState.PAUSED, sim.state());
+		assertEquals("simState", SimExecState.FINISHED, sim.state());
 
 		t = System.currentTimeMillis() - t;
 

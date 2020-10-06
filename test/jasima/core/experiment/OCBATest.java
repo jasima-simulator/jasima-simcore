@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jasima.core.experiment.OCBAExperiment.ProblemType;
@@ -92,7 +93,7 @@ public class OCBATest {
 	 * Simple test experiment producing a normally distributed random number as a
 	 * result.
 	 */
-	public static class TextExp extends Experiment {
+	public static class TestExp extends Experiment {
 		private static final long serialVersionUID = 4751403145008829877L;
 
 		private double mean;
@@ -121,6 +122,7 @@ public class OCBATest {
 		public void produceResults() {
 			super.produceResults();
 			double res = rnd.nextGaussian() + mean;
+//			System.out.println("value: "+res);
 			resultMap.put("mean", res);
 			resultMap.put("meanAsSummaryStat", SummaryStat.summarize(res));
 		}
@@ -155,6 +157,18 @@ public class OCBATest {
 	}
 
 	@Test
+	public void testSingleRun1() throws Exception {
+		int MAX_REPS = 100;
+		String OBJ = "mean";
+		Double[] means = new Double[] { 2.0 };
+		ProblemType type = ProblemType.MAXIMIZE;
+
+		Map<String, Object> res = performSingleOCBARun(MAX_REPS, OBJ, means, type, 23, 0.0);
+		System.out.println(res.toString());
+	}
+
+	@Test
+	@Ignore
 	public void maximizationShouldGiveSameResultsIn1000Runs() throws Exception {
 		int NUM_ITERS = 1000;
 		int MAX_REPS = 100;
@@ -167,6 +181,7 @@ public class OCBATest {
 	}
 
 	@Test
+	@Ignore
 	public void minimizationShouldGiveSameResultsIn1000Runs() throws Exception {
 		int NUM_ITERS = 1000;
 		int MAX_REPS = 100;
@@ -179,6 +194,7 @@ public class OCBATest {
 	}
 
 	@Test
+	@Ignore
 	public void maximizationNoOverallBudgetShouldGiveSameResults() throws Exception {
 		int NUM_ITERS = 100;
 		int MAX_REPS = 0;
@@ -205,7 +221,7 @@ public class OCBATest {
 
 			Map<String, Object> res = performSingleOCBARun(maxReps, obs, means, type, seed);
 
-			TextExp best = (TextExp) res.get("bestConfiguration");
+			TestExp best = (TestExp) res.get("bestConfiguration");
 			int bestIdx = indexOf(best.mean, means);
 			evals.value(((Number) res.get("numEvaluations")).doubleValue());
 			pcs.value((Double) res.get("pcs"));
@@ -225,10 +241,15 @@ public class OCBATest {
 
 	private Map<String, Object> performSingleOCBARun(int maxReps, String obj, Double[] means, ProblemType type,
 			long seed) {
-		OCBAExperiment exp = new OCBAExperiment();
-		exp.setPcsLevel(0.95);
-		exp.setBaseExperiment(new TextExp());
+		return performSingleOCBARun(maxReps, obj, means, type, seed, 0.95);
+	}
 
+	private Map<String, Object> performSingleOCBARun(int maxReps, String obj, Double[] means, ProblemType type,
+			long seed, double pcsLevel) {
+		OCBAExperiment exp = new OCBAExperiment();
+		exp.setPcsLevel(pcsLevel);
+		exp.setBaseExperiment(new TestExp());
+//exp.setAllowParallelExecution(false);
 		exp.addFactors("mean", means);
 
 		exp.setDetailedResults(true);

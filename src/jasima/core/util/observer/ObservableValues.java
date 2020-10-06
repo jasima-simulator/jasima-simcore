@@ -61,7 +61,7 @@ public final class ObservableValues {
 	 * @return A derived observable of type {@code Boolean} containing the result of
 	 *         comparing both values.
 	 */
-	public static <T> DerivedObservable<Boolean> equals(ObservableValue<? extends T> v1,
+	public static <T> DerivedObservable<Boolean> isEqual(ObservableValue<? extends T> v1,
 			ObservableValue<? extends T> v2) {
 		Objects.requireNonNull(v1);
 		Objects.requireNonNull(v2);
@@ -69,20 +69,20 @@ public final class ObservableValues {
 	}
 
 	/**
-	 * Same as {@link #equals(ObservableValue, ObservableValue)}, but comparing an
+	 * Same as {@link #isEqual(ObservableValue, ObservableValue)}, but comparing an
 	 * observable value directly to a constant value.
 	 */
-	public static <T, T2 extends T> DerivedObservable<Boolean> equals(ObservableValue<? extends T> v1, T2 v2) {
+	public static <T, T2 extends T> DerivedObservable<Boolean> isEqual(ObservableValue<? extends T> v1, T2 v2) {
 		Objects.requireNonNull(v1);
 		return derived(() -> v1.equals(v2), v1);
 	}
 
 	/**
-	 * Same as {@link #equals(ObservableValue, ObservableValue)}, but comparing an
+	 * Same as {@link #isEqual(ObservableValue, ObservableValue)}, but comparing an
 	 * observable value directly to a constant value.
 	 */
-	public static <T, T2 extends T> DerivedObservable<Boolean> equals(T2 v1, ObservableValue<? extends T> v2) {
-		return equals(v2, v1);
+	public static <T, T2 extends T> DerivedObservable<Boolean> isEqual(T2 v1, ObservableValue<? extends T> v2) {
+		return isEqual(v2, v1);
 	}
 
 	/**
