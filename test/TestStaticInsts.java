@@ -33,7 +33,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import jasima.core.statistics.SummaryStat;
-import jasima.core.util.Util;
+import jasima.core.util.IoUtil;
 import jasima.shopSim.core.PR;
 import jasima.shopSim.models.staticShop.StaticShopExperiment;
 import jasima.shopSim.prioRules.basic.ATC;
@@ -80,7 +80,7 @@ public class TestStaticInsts {
 	public static void testFromFile(String fileName, PR[] rules) throws Exception {
 		String[] res = test(fileName, rules);
 		System.out.println(Arrays.toString(res));
-		String[] exp = Util.lines(new File(fileName + ".expected"));
+		String[] exp = IoUtil.lines(fileName + ".expected");
 		assertArrayEquals("simulation results", exp, res);
 	}
 

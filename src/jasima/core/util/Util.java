@@ -23,11 +23,10 @@ package jasima.core.util;
 import static jasima.core.util.i18n.I18n.defFormat;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+//import java.io.File;
+//import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
@@ -226,20 +225,6 @@ public class Util {
 		}
 
 		return null;
-	}
-
-	public static String[] lines(File f) throws IOException {
-		return lines(new FileReader(f));
-	}
-
-	public static String[] lines(Reader r) throws IOException {
-		BufferedReader br = new BufferedReader(r);
-		ArrayList<String> ss = new ArrayList<String>();
-		String s;
-		while ((s = br.readLine()) != null) {
-			ss.add(s);
-		}
-		return ss.toArray(new String[ss.size()]);
 	}
 
 	/**
