@@ -22,6 +22,11 @@
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
 		<log4j2.version>2.13.3</log4j2.version>
+<asciidoctorj.diagram.version>2.0.5</asciidoctorj.diagram.version>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
+		<!-- <asciidoctorj.version>2.4.1</asciidoctorj.version> -->
+		<!-- <jruby.version>9.2.13.0</jruby.version> -->
 	</properties>
 
 	<url>http://jasima.net/</url>
@@ -108,6 +113,57 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.9.1</version>
+					<configuration>
+						<!-- Disable generateReports if you don't want to include the built-in 
+							reports -->
+						<generateReports>true</generateReports>
+						<generateSitemap>true</generateSitemap>
+						<relativizeDecorationLinks>false</relativizeDecorationLinks>
+						<locales>en</locales>
+						<siteDirectory>${basedir}/site</siteDirectory>
+						<inputEncoding>UTF-8</inputEncoding>
+						<outputEncoding>UTF-8</outputEncoding>
+						<asciidoc>
+							<!-- Optional site-wide AsciiDoc attributes -->
+							<attributes>
+								<icons>font</icons>
+								<source-highlighter>coderay</source-highlighter>
+								<coderay-css>style</coderay-css>
+								<toclevels>2</toclevels>
+							</attributes>
+						</asciidoc>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.asciidoctor</groupId>
+							<artifactId>asciidoctor-maven-plugin</artifactId>
+							<version>${asciidoctor.maven.plugin.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.asciidoctor</groupId>
+							<artifactId>asciidoctorj-diagram</artifactId>
+							<version>${asciidoctorj.diagram.version}</version>
+						</dependency>
+						<!-- Comment this section to use the default jruby artifact provided 
+							by the plugin -->
+						<!-- <dependency> -->
+						<!-- <groupId>org.jruby</groupId> -->
+						<!-- <artifactId>jruby-complete</artifactId> -->
+						<!-- <version>${jruby.version}</version> -->
+						<!-- </dependency> -->
+						<!-- Comment this section to use the default AsciidoctorJ artifact 
+							provided by the plugin -->
+						<!-- <dependency> -->
+						<!-- <groupId>org.asciidoctor</groupId> -->
+						<!-- <artifactId>asciidoctorj</artifactId> -->
+						<!-- <version>${asciidoctorj.version}</version> -->
+						<!-- </dependency> -->
+					</dependencies>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -297,4 +353,20 @@
 		<tag>HEAD</tag>
 		<developerConnection>scm:git:ssh://git@bitbucket.org/jasimaSolutions/jasima.git</developerConnection>
 	</scm>
+
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.2.0</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.1.1</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
 </project>

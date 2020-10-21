@@ -1,0 +1,151 @@
+package jasima.core.simulation.util;
+
+import java.util.Objects;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+import jasima.core.simulation.SimEvent;
+
+public abstract class SimEventPeriodic extends SimEvent {
+
+	private final boolean isAppEvent;
+	protected final double firstInvocation;
+	private final double lastInvocation;
+
+	abstract static class Builder<T extends Builder<T>> {
+
+		private boolean isAppEvent = true;
+		private int eventPrio = SimEvent.EVENT_PRIO_NORMAL;
+		private String eventName = "SimEventPeriodic";
+		private double firstInvocation = Double.NaN;
+		private double lastInvocation = Double.NaN;
+
+		public Builder<T> noAppEvent() {
+			this.isAppEvent = false;
+			return this;
+		}
+
+		public Builder<T> eventPrio(int eventPrio) {
+			this.eventPrio = eventPrio;
+			return this;
+		}
+
+		public Builder<T> firstInvocation(double firstInvocation) {
+			this.firstInvocation = firstInvocation;
+			return this;
+		}
+
+		public Builder<T> lastInvocation(double lastInvocation) {
+			this.lastInvocation = lastInvocation;
+			return this;
+		}
+
+		public Builder<T> eventName(String eventName) {
+			this.eventName = eventName;
+			return this;
+		}
+
+		abstract SimEventPeriodic build();
+
+		// subclasses must return "this"
+		protected abstract T self();
+
+	}
+
+	SimEventPeriodic(Builder<?> b) {
+		super(b.firstInvocation, b.eventPrio, b.eventName);
+		this.firstInvocation = b.firstInvocation;
+		this.lastInvocation = b.lastInvocation;
+		this.isAppEvent = b.isAppEvent;
+	}
+
+//		// exactly one of these three is used
+//		private final Runnable actionPlain;
+//		private final DoubleSupplier actionDoubleSupplier;
+//		private final BooleanSupplier actionBoolSupplier;
+
+//		private double nextInvocation;
+//		
+//		private final double interval;
+//		private int n = 0;
+//
+//		private SimEventPeriodic(double firstInvocation, double lastInvocation, double interval, int prio, boolean isAppEvent, Runnable r, BooleanSupplier bs, DoubleSupplier ds) {
+//			super(firstInvocation, prio, "SimEventPeriodic");
+//			
+//			actionPlain = r;
+//			actionBoolSupplier = bs;
+//			actionDoubleSupplier = ds;
+//			
+//			this.firstInvocation = this.nextInvocation = firstInvocation;
+//			this.interval = interval;
+//			this.lastInvocation = lastInvocation;
+//
+//			this.isAppEvent = isAppEvent;
+//		}
+//
+//		@Override
+//		public void handle() {
+////			method.run();
+////			if (setTimeNext()) {
+////				schedule(this);
+////			}
+////			double next = method.getAsDouble();
+////			if (next >= 0.0) {
+////				// schedule next invocation reusing Event object
+////				setTime(next);
+////				schedule(this);
+////			}
+//		}
+
+	private void setTimeNext() {
+		// schedule next invocation reusing Event object
+		setTime(firstInvocation + (++n) * interval);
+	}
+
+	@Override
+	public boolean isAppEvent() {
+		return isAppEvent;
+	}
+}
+
+public class SimEventFixedInterval extends SimEventPeriodic {
+
+	private final Runnable action;
+	private int n = 0;
+
+	public static class Builder extends SimEventPeriodic.Builder<Builder> {
+
+		private Runnable action;
+		private double interval;
+
+		public Builder(Runnable action, double interval) {
+			super();
+			this.action = Objects.requireNonNull(action);
+		}
+
+		@Override
+		SimEventFixedInterval build() {
+			return new SimEventFixedInterval(this);
+		}
+
+		@Override
+		protected Builder self() {
+			return this;
+		}
+
+	}
+
+	private SimEventFixedInterval(Builder b) {
+		super(b);
+		this.action = b.action;
+	}
+
+	@Override
+	public void handle() {
+		action.run();
+		// schedule next invocation reusing Event object
+		setTime(firstInvocation + (++n) * interval);
+		schedule(this);
+	}
+
+}
