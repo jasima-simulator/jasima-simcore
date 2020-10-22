@@ -148,8 +148,13 @@ public class IndividualMachine {
 
 	@Override
 	public String toString() {
+		return getName();
+	}
+
+	public String getName() {
 		if (name == null)
-			name = workStation.getName() + (workStation.numInGroup() > 1 ? "." + idx : "");
+			return workStation.getName() + (workStation.numInGroup() > 1 ? "." + idx : "");
+
 		return name;
 	}
 
