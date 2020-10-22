@@ -469,7 +469,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		if (continueSim()) {
 			SimEvent e = events.extract();
 			if (e.getTime() < simTime) {
-				throw new IllegalArgumentException(createErrorMsgEventInPast(e));
+				throw new IllegalArgumentException(createErrorMsgEventInPast(e, simTime));
 			}
 
 			// everything is ok, reinsert first event
@@ -498,9 +498,10 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		return true;
 	}
 
-	private String createErrorMsgEventInPast(SimEvent e) {
-		return defFormat("Can't schedule an event that is in the past (time to schedule: %f, prio=%d, event=%s).",
-				e.getTime(), e.getPrio(), e.toString());
+	private String createErrorMsgEventInPast(SimEvent e, double simTime) {
+		return defFormat(
+				"Can't schedule an event that is in the past (time to schedule: %f, simTime: %f, prio=%d, event=%s).",
+				e.getTime(), simTime, e.getPrio(), e.toString());
 	}
 
 	/**
@@ -626,7 +627,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 					event.getPrio(), event.toString());
 		}
 		if (event.getTime() < simTime) {
-			String msg = createErrorMsgEventInPast(event);
+			String msg = createErrorMsgEventInPast(event, simTime);
 			printFmt(MsgCategory.ERROR, msg);
 			throw new IllegalArgumentException(msg);
 		}

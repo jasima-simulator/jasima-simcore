@@ -38,7 +38,7 @@ import jasima.core.simulation.SimComponent;
  * hour.
  * 
  * @see MaintenanceSource
- * @author Torsten Hildebrandt, 2014-04-15
+ * @author Torsten Hildebrandt
  */
 public class DowntimeSource {
 
@@ -123,11 +123,20 @@ public class DowntimeSource {
 	}
 
 	protected double calcDeactivateTime(Shop shop) {
-		return shop.simTime() + timeBetweenFailures.nextDbl();
+		return shop.simTime() + ensurePositiveNumber(timeBetweenFailures);
 	}
 
 	protected double calcActivateTime(Shop shop) {
-		return shop.simTime() + timeToRepair.nextDbl();
+		return shop.simTime() + ensurePositiveNumber(timeToRepair);
+	}
+
+	protected double ensurePositiveNumber(DblStream dblStream) {
+		double ttr;
+		do {
+			ttr = dblStream.nextDbl();
+		} while (ttr < 0);
+
+		return ttr;
 	}
 
 	@Override
