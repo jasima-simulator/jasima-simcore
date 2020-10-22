@@ -26,15 +26,19 @@ import java.io.BufferedReader;
 //import java.io.File;
 //import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
@@ -52,21 +56,17 @@ import jasima.core.statistics.SummaryStat;
  */
 public class Util {
 
-	/**
-	 * The current jasima version.
-	 */
-	public static final String VERSION = getVersion();
+	private static final Properties buildProps;
 
-	/**
-	 * Default VERSION used when no version information is available from package
-	 * (e.g., during a run from within Eclipse).
-	 */
-	public static final String DEFAULT_VERSION = "3.0.0-SNAPSHOT";
-
-	/**
-	 * Descriptive String showing name, current version and project URL.
-	 */
-	public static final String ID_STRING = "JASIMA, v" + VERSION + "; http://jasima.org/";
+	static {
+		buildProps = new Properties();
+		try (Reader r = new InputStreamReader(Util.class.getResourceAsStream("/jasima/core/util/version.properties"),
+				StandardCharsets.UTF_8)) {
+			buildProps.load(r);// TODO: maybe lazy loading on first use?
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * A default thread pool without an upper limit. Used instead of
@@ -75,6 +75,7 @@ public class Util {
 	 */
 	public static final ExecutorService DEF_POOL = Executors.newCachedThreadPool();
 
+	//TODO: make this list expandable using the plugin mechanism
 	/**
 	 * Class search path containing all packaged in jasima-main.
 	 */
@@ -596,15 +597,20 @@ public class Util {
 	}
 
 	/**
-	 * Utility method to get the current package's version.
+	 * Utility method to get the current version (obtained from git/Maven during the
+	 * build).
 	 * 
 	 * @return The current jasima version as a String.
 	 */
-	private static String getVersion() {
-		String v = null;
-		if (Util.class.getPackage() != null)
-			v = Util.class.getPackage().getImplementationVersion();
-		return v == null ? DEFAULT_VERSION : v;
+	public static String getVersion() {
+		return getBuildProperty("jasima.version");
+	}
+
+	/**
+	 * Returns a descriptive String showing name, current version and project URL.
+	 */
+	public static String getIdString() {
+		return "JASIMA, v" + getVersion() + "; http://jasima.org/";
 	}
 
 	/**
@@ -642,6 +648,10 @@ public class Util {
 	public static String getWorkingDirString() {
 		String userDir = System.getProperty("user.dir");
 		return defFormat("dir: %s", userDir);
+	}
+
+	private static synchronized String getBuildProperty(String prop) {
+		return buildProps.getProperty(prop, "!!!" + prop + "!!!");
 	}
 
 	// prevent instantiation

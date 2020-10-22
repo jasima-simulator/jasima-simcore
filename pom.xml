@@ -22,6 +22,7 @@
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
 		<log4j2.version>2.13.3</log4j2.version>
+		<versionName>${project.version} (${maven.build.timestamp}, branch ${git.branch}, commit ${git.commit.id.abbrev})</versionName>
 	</properties>
 
 	<url>http://jasima.net/</url>
@@ -203,6 +204,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<filtering>true</filtering>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -257,17 +261,43 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>4.0.2</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>generate-resources</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/jasima/core/util/git.properties</generateGitPropertiesFilename>
+					<includeOnlyProperties>
+						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+						<includeOnlyProperty>^git.commit.user.*$</includeOnlyProperty>
+						<includeOnlyProperty>^git.branch$</includeOnlyProperty>
+					</includeOnlyProperties>
+					<commitIdGenerationMode>full</commitIdGenerationMode>
+				</configuration>
+			</plugin>
 		</plugins>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
+				<filtering>true</filtering>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
 		</resources>
-		<testSourceDirectory>test</testSourceDirectory>
 		<testResources>
 			<testResource>
 				<directory>test</directory>
@@ -297,4 +327,21 @@
 		<tag>HEAD</tag>
 		<developerConnection>scm:git:ssh://git@bitbucket.org/jasimaSolutions/jasima.git</developerConnection>
 	</scm>
+
+	<profiles>
+		<profile>
+			<!-- For releases, use a simple version name, consisting of the version 
+				number. Don't add timestamp, SCM info, build number, etc. -->
+			<id>versionNameForRelease</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+				</property>
+			</activation>
+			<properties>
+				<versionName>${project.version}</versionName>
+			</properties>
+		</profile>
+	</profiles>
+
 </project>

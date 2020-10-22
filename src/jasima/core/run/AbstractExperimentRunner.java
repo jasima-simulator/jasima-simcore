@@ -225,7 +225,7 @@ public abstract class AbstractExperimentRunner {
 		try {
 			System.err.println(getHelpCmdLineText());
 			System.err.println();
-			System.err.println(Util.ID_STRING);
+			System.err.println(Util.getIdString());
 
 			// print additional options if any
 			OptionParser op2 = new OptionParser();
@@ -270,7 +270,7 @@ public abstract class AbstractExperimentRunner {
 			exp = configureExperiment();
 		} finally {
 			System.out.println(DOTS);
-			System.out.println(Util.ID_STRING);
+			System.out.println(Util.getIdString());
 			System.out.println();
 			if (exp != null) {
 				System.out.println(exp.getClass().getSimpleName() + ": " + exp.toString());
