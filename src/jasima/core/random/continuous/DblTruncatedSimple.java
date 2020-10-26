@@ -21,6 +21,7 @@
 package jasima.core.random.continuous;
 
 import static jasima.core.util.i18n.I18n.defFormat;
+import static java.lang.Double.isNaN;
 
 import jasima.core.util.Pair;
 
@@ -69,7 +70,7 @@ public class DblTruncatedSimple extends DblStream {
 
 	@Override
 	public void init() {
-		if (minValue > maxValue)
+		if (!isValidRange(getMinValue(), getMaxValue()))
 			throw new IllegalArgumentException();
 
 		super.init();
@@ -82,12 +83,7 @@ public class DblTruncatedSimple extends DblStream {
 
 	@Override
 	public double nextDbl() {
-		double baseValue = baseStream.nextDbl();
-		if (baseValue < minValue)
-			baseValue = minValue;
-		if (baseValue > maxValue)
-			baseValue = maxValue;
-		return baseValue;
+		return valueInRange(baseStream.nextDbl(), getMinValue(), getMaxValue());
 	}
 
 	@Override
@@ -157,6 +153,34 @@ public class DblTruncatedSimple extends DblStream {
 	 */
 	public void setMaxValue(double maxValue) {
 		this.maxValue = maxValue;
+	}
+
+	// static methods
+
+	/**
+	 * Static method to generate a truncated value in the range
+	 * minValue<=baseValue<=maxValue. Assign NaN to minValue or maxValue if you
+	 * don't want to have a lower / upper bound.
+	 * 
+	 * @param baseValue The value to check for falling in the desired interval.
+	 * @param minValue
+	 * @param maxValue
+	 * @return the truncated value.
+	 */
+	public static double valueInRange(double baseValue, double minValue, double maxValue) {
+		if (!isValidRange(minValue, maxValue)) {
+			throw new IllegalArgumentException();
+		}
+
+		if (baseValue < minValue)
+			baseValue = minValue;
+		if (baseValue > maxValue)
+			baseValue = maxValue;
+		return baseValue;
+	}
+
+	private static boolean isValidRange(double min, double max) {
+		return (min <= max) ? true : (isNaN(min) || isNaN(max));
 	}
 
 }

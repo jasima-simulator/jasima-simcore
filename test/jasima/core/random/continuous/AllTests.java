@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * This file is part of jasima, v1.3, the Java simulator for manufacturing and 
  * logistics.
@@ -19,21 +18,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+package jasima.core.random.continuous;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * 
- * @author Torsten Hildebrandt
  */
 @RunWith(Suite.class)
-@SuiteClasses({ HolthausSimpleTest.class, JobShopTests.class, TestStaticInsts.class, TestStaticInstsTraces.class,
-		TestOrderIndependence.class, TestSetups.class, TestBatching.class, TestBestOfFamilyBatching.class,
-		TestGECCOContinuity.class, TestWinterSim2010Continuity.class, TestMIMAC.class, TestForAllResults.class,
-		TestMimacFab4Trace.class, jasima.core.experiment.AllTests.class, TestDetailedTraces.class, TestDowntimes.class,
-		jasima.core.util.AllTests.class, jasima.core.statistics.AllTests.class, jasima.core.simulation.AllTests.class,
-		jasima.core.random.continuous.AllTests.class })
+@SuiteClasses({ DblTruncatedSimpleTest.class })
 public class AllTests {
 
 }
