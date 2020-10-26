@@ -33,8 +33,7 @@ import jasima.shopSim.prioRules.basic.SPT;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class TestOrderIndependence {
 

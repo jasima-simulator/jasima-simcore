@@ -24,7 +24,6 @@ package jasima.shopSim.core;
  * Operations specify what to process.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id: Operation.java 550 2015-01-23 15:07:23Z thildebrandt@gmail.com$"
  */
 public class Operation implements Cloneable {
 

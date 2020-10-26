@@ -28,7 +28,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * equals SPT for problems with only one work center.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class SRPT extends PR {
 

@@ -31,9 +31,7 @@ import jasima.shopSim.prioRules.gp.GPRuleBase;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: Wintersim2010GPRules.java 550 2015-01-23 15:07:23Z
- *          thildebrandt@gmail.com $
+ * @author Torsten Hildebrandt
  */
 public class Wintersim2010GPRules {
 

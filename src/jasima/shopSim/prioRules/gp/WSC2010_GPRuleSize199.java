@@ -34,7 +34,6 @@ import jasima.shopSim.prioRules.basic.SLK;
  * , WinterSim 2010, doi:10.1109/WSC.2010.5678946.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class WSC2010_GPRuleSize199 extends GPRuleBase {
 

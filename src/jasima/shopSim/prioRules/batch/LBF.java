@@ -30,7 +30,6 @@ import jasima.shopSim.core.WorkStation;
  * for which most other jobs of the same batch family are waiting in the queue.
  * 
  * @author Christoph Pickardt, 2011-11-14
- * @version "$Id$"
  */
 public class LBF extends PR {
 

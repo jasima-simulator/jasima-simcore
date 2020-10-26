@@ -28,7 +28,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * state required by a job, or -1 otherwise.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class SetupAvoidance extends PR {
 

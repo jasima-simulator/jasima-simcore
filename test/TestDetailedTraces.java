@@ -42,7 +42,7 @@ import util.FileChecker;
  * This is basically the same as {@link TestForAllResults}, but checks the
  * complete details of a trace file.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 public class TestDetailedTraces extends ExperimentTest {
 

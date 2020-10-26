@@ -41,7 +41,6 @@ import jasima.core.statistics.SummaryStat;
  * results of an experiment can be validated with a single method call.
  * 
  * @author Torsten Hildebrandt, 2012-08-08
- * @version "$Id$"
  */
 public class ExperimentTest {
 

@@ -29,7 +29,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * SPT rules.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version "$Id$"
  */
 public class MOD extends PR {
 

@@ -36,7 +36,7 @@ import jasima.shopSim.util.MachineStatCollector;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 public class JSExample extends Shop {
 	final Random streamService = new Random(1234234535);

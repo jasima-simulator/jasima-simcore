@@ -72,7 +72,7 @@ import util.Wintersim2010GPRules.GPRuleSize99;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @SuppressWarnings("deprecation")
 public class TestWinterSim2010Continuity {

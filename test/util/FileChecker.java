@@ -32,9 +32,7 @@ import java.util.zip.GZIPInputStream;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id: FileChecker.java 73 2013-01-08 17:16:19Z THildebrandt@gmail.com
- *          $
+ * @author Torsten Hildebrandt
  */
 public class FileChecker {
 	private FileChecker() {

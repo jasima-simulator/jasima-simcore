@@ -46,7 +46,7 @@ import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
  * flowtime minus the sum of all processing times. It therefore only measures
  * reducible components of the flowtime, i.e., waiting and setup times.
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @Deprecated
 public class ExtendedJobStatCollector extends ShopListenerBase {

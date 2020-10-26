@@ -30,7 +30,6 @@ import jasima.core.util.Pair;
  * {@link java.util.Random#nextInt()}.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class IntUniformAllInts extends IntStream {
 

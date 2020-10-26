@@ -29,8 +29,7 @@ import jasima.shopSim.prioRules.setup.SST;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class TestSetups {
 

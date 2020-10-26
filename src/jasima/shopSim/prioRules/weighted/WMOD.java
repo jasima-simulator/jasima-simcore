@@ -31,7 +31,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * the WMOD rule by Jensen et al. (1995).
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version "$Id$"
  */
 public class WMOD extends PR {
 

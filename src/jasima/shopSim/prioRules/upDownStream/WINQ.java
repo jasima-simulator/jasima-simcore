@@ -31,7 +31,6 @@ import jasima.shopSim.core.WorkStation;
  * work content in the next queue of a job is zero.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class WINQ extends PR {
 

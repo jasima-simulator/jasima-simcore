@@ -37,7 +37,6 @@ import jasima.shopSim.core.PriorityQueue;
  * 
  * @author Christoph Pickardt, 2011-11-15
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class ATCS extends PR {
 

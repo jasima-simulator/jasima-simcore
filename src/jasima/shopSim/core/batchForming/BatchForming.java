@@ -43,7 +43,6 @@ import jasima.shopSim.core.WorkStation;
  * 
  * @author Christoph Pickardt, 2010-05-27
  * @author Torsten Hildebrandt, 2010-03-18
- * @version "$Id$"
  */
 public abstract class BatchForming implements Cloneable, Serializable {
 

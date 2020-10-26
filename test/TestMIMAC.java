@@ -45,7 +45,7 @@ import util.ExtendedJobStatCollector;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @SuppressWarnings("deprecation")
 public class TestMIMAC {

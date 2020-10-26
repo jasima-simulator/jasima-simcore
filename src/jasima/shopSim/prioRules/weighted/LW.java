@@ -28,7 +28,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * express different levels of importance of jobs.
  * 
  * @author Christoph Pickardt, 2010-03-16
- * @version "$Id$"
  */
 public class LW extends PR {
 

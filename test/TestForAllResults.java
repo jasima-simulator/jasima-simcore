@@ -54,7 +54,7 @@ import util.ExtendedJobStatCollector;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
+ * @author Torsten Hildebrandt
  */
 @SuppressWarnings({ "unused", "deprecation" })
 public class TestForAllResults extends ExperimentTest {

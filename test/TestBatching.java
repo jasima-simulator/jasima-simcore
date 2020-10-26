@@ -31,8 +31,7 @@ import jasima.shopSim.prioRules.basic.TieBreakerFASFS;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @author Torsten Hildebrandt
  */
 public class TestBatching {
 

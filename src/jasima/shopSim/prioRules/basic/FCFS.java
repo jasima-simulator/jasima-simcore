@@ -28,7 +28,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * (First In (buffer) First Out).
  * 
  * @author Christoph Pickardt, 2011-11-16
- * @version "$Id$"
  */
 public class FCFS extends PR {
 

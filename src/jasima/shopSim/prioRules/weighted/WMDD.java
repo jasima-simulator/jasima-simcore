@@ -29,7 +29,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * account.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version "$Id$"
  */
 public class WMDD extends PR {
 

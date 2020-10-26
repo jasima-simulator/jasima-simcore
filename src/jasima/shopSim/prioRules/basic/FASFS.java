@@ -27,7 +27,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * This class implements the First Arrival at Shop First Served rule.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class FASFS extends PR {
 

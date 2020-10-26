@@ -23,8 +23,7 @@ import java.util.Random;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version $Id$
+ * @author Torsten Hildebrandt
  */
 public class RandomHelper {
 

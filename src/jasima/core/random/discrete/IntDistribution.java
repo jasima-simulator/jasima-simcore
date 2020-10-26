@@ -32,7 +32,6 @@ import jasima.core.util.Pair;
  * exposing their parameters as Java Bean properties.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class IntDistribution extends IntStream {
 

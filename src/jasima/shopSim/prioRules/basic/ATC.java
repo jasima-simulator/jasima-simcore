@@ -29,7 +29,6 @@ import jasima.shopSim.core.PriorityQueue;
  * Morton (1987).
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class ATC extends PR {
 

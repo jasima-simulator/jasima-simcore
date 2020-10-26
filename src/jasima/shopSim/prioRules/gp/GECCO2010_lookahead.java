@@ -29,7 +29,6 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
  * GECCO 2010, doi:10.1145/1830483.1830530
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class GECCO2010_lookahead extends GPRuleBase {
 

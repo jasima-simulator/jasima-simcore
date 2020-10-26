@@ -29,7 +29,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * penalizes jobs that require a setup.
  * 
  * @author Christoph Pickardt, 2011-11-15
- * @version "$Id$"
  */
 public class DK extends PR {
 

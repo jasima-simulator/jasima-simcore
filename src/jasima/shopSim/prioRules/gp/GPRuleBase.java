@@ -29,7 +29,6 @@ import jasima.shopSim.core.PrioRuleTarget;
  * methods for some commonly used arithmetic functions.
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 @SuppressWarnings("serial")
 public abstract class GPRuleBase extends PR {

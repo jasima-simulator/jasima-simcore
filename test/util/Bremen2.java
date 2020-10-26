@@ -27,8 +27,7 @@ import jasima.shopSim.prioRules.upDownStream.PTPlusWINQPlusNPT;
 
 /**
  * 
- * @author Torsten Hildebrandt <hil@biba.uni-bremen.de>
- * @version "$Id$"
+ * @author Torsten Hildebrandt
  */
 public class Bremen2 extends PR {
 

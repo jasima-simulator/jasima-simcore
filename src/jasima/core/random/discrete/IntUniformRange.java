@@ -29,7 +29,6 @@ import jasima.core.util.Pair;
  * both min and max).
  * 
  * @author Torsten Hildebrandt
- * @version "$Id$"
  */
 public class IntUniformRange extends IntStream {
 
