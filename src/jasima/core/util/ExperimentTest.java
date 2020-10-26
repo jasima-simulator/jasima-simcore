@@ -20,8 +20,8 @@
  *******************************************************************************/
 package jasima.core.util;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -49,8 +49,8 @@ public class ExperimentTest {
 	public ErrorCollector errorCollector = new ErrorCollector();
 
 	/**
-	 * precision in terms of ULPs (Units in the last place), so FP comparisons
-	 * work for large and small numbers;
+	 * precision in terms of ULPs (Units in the last place), so FP comparisons work
+	 * for large and small numbers;
 	 * 
 	 * @see <a href=
 	 *      "https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">
@@ -61,10 +61,8 @@ public class ExperimentTest {
 	/**
 	 * Checks whether key sets of actual and expected results are the same.
 	 * 
-	 * @param resActual
-	 *            The map of results actually obtained.
-	 * @param resExpected
-	 *            The map of expected results.
+	 * @param resActual   The map of results actually obtained.
+	 * @param resExpected The map of expected results.
 	 */
 	protected void checkKeySets(Map<String, Object> resActual, Map<String, Object> resExpected) {
 		Set<String> keysAct = new HashSet<String>(resActual.keySet());
@@ -86,13 +84,10 @@ public class ExperimentTest {
 	/**
 	 * Checks if all keys in <code>resExpected</code> are also present in
 	 * <code>resActual</code> and have the same values. Additional keys in
-	 * <code>resActual</code> as well as the key <code>"runTime"</code> are
-	 * ignored.
+	 * <code>resActual</code> as well as the key <code>"runTime"</code> are ignored.
 	 * 
-	 * @param resActual
-	 *            The map of results actually obtained.
-	 * @param resExpected
-	 *            The map of expected results.
+	 * @param resActual   The map of results actually obtained.
+	 * @param resExpected The map of expected results.
 	 */
 	protected void checkResults(Map<String, Object> resActual, Map<String, Object> resExpected) {
 		for (String name : resExpected.keySet()) {

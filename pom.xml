@@ -63,22 +63,23 @@
 			<version>3.0.2</version>
 		</dependency>
 		<dependency>
+			<!-- Hamcrest has to be before junit; it is not a test dep because of ExperimentTest -->
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<version>2.2</version>
-			<scope>test</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 			<version>2.2</version>
-			<scope>test</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
