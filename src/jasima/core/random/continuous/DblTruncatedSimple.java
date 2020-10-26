@@ -40,9 +40,9 @@ import jasima.core.util.Pair;
  * larger than {@code maxValue}.
  * <p>
  * See also <a href=
- * "http://www.comnets.uni-bremen.de/itg/itgfg521/per_eval/p004.html">Wolfgang
+ * "https://sites.google.com/site/100mostfrequenterrors/list/error003">Wolfgang
  * Bziuk: Generating random variates from truncated distributions</a> (last
- * accessed 2015-05-06).
+ * accessed 2020-10-26).
  * 
  * @author Torsten Hildebrandt
  */
