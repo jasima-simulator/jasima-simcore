@@ -107,9 +107,30 @@ public class ArgListTokenizerTest {
 	}
 
 	@Test
+	public void testUnnecessaryEscapeShouldBeCopiedLiterally() {
+		List<String> actual = tokenize("\\A\\B\\C \\\\XYZ");
+		List<String> expected = asList("\\A\\B\\C"," ","\\XYZ");
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void testUnnecessaryEscapeInQuotedStringShouldBeCopiedLiterally() {
+		List<String> actual = tokenize("\"\\A\\B\\C \\\\XYZ\"");
+		List<String> expected = asList("\\A\\B\\C \\XYZ");
+		assertThat(actual, is(expected));
+	}
+
+	@Test
 	public void testEscaped() {
 		List<String> expected = asList("   ", "abc=def", " ", ";123", ";", "rrr", ";");
 		List<String> actual = tokenize("   abc\\=def \\;123;rrr;");
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void testEscapedSpecialChars() {
+		List<String> expected = asList(" \\\r\n\t();=");
+		List<String> actual = tokenize("\\ \\\\\\r\\n\\t\\(\\)\\;\\=");
 		assertThat(actual, is(expected));
 	}
 

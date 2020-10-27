@@ -69,6 +69,8 @@ public class ArgListTokenizer {
 		}
 	}
 
+	private static String ESCAPE_CHARS = "()=;rnt \\\"";
+
 	private String input;
 	private int currPos;
 
@@ -254,6 +256,7 @@ public class ArgListTokenizer {
 		int end = tokenEnd;
 		if (input.charAt(start) == '"') {
 			assert tokenType == TokenType.STRING;
+			assert input.charAt(end - 1) == '"';
 			start++;
 			end--;
 			assert start <= end;
@@ -264,6 +267,19 @@ public class ArgListTokenizer {
 			for (int i = start; i < end; i++) {
 				char c = input.charAt(i);
 				if (escape) {
+					if (ESCAPE_CHARS.indexOf(c) < 0) {
+						// invalid escape
+						sb.append('\\');
+					} else {
+						// replace with special values if needed
+						if (c == 't') {
+							c = '\t';
+						} else if (c == 'r') {
+							c = '\r';
+						} else if (c == 'n') {
+							c = '\n';
+						}
+					}
 					sb.append(c);
 					escape = false;
 				} else {
@@ -273,12 +289,12 @@ public class ArgListTokenizer {
 						escape = true;
 					}
 				}
-
 			}
 
 			return sb.toString();
-		} else
+		} else {
 			return input.substring(start, end);
+		}
 	}
 
 	public TokenType currTokenType() {
