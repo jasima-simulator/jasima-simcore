@@ -160,7 +160,6 @@
 				<configuration>
 					<source>${target-jdk}</source>
 					<target>${target-jdk}</target>
-					<release>${target-jdk}</release>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -344,6 +343,23 @@
 				<versionName>${project.version}</versionName>
 			</properties>
 		</profile>
+		<profile>
+			<id>addReleaseOption</id>
+			<activation>
+				<jdk>[1.9,]</jdk>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<!-- release option only possible when building on jdk>=9 -->
+							<release>${target-jdk}</release>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-
 </project>
