@@ -107,17 +107,15 @@ public class ArgListTokenizerTest {
 	}
 
 	@Test
-	public void testUnnecessaryEscapeShouldBeCopiedLiterally() {
-		List<String> actual = tokenize("\\A\\B\\C \\\\XYZ");
-		List<String> expected = asList("\\A\\B\\C"," ","\\XYZ");
-		assertThat(actual, is(expected));
+	public void testUnnecessaryEscapeShouldRaiseException() {
+		thrown.expect(ParseException.class);
+		tokenize("\\A\\B\\C \\\\XYZ");
 	}
 
 	@Test
-	public void testUnnecessaryEscapeInQuotedStringShouldBeCopiedLiterally() {
-		List<String> actual = tokenize("\"\\A\\B\\C \\\\XYZ\"");
-		List<String> expected = asList("\\A\\B\\C \\XYZ");
-		assertThat(actual, is(expected));
+	public void testUnnecessaryEscapeInQuotedStringShouldRaiseException() {
+		thrown.expect(ParseException.class);
+		tokenize("\"\\A\\B\\C \\\\XYZ\"");
 	}
 
 	@Test

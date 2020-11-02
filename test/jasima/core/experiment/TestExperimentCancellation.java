@@ -173,7 +173,7 @@ public class TestExperimentCancellation {
 		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(e, 10);
 		mre.setAbortUponBaseExperimentAbort(false);
 		
-		Map<String, Object> res = ConsoleRunner.run(mre);
+		Map<String, Object> res = ConsoleRunner.runWithArgs(mre);
 		assertThat((Integer) res.get("numTasks"), is(10));
 		assertThat((Integer) res.get("expAborted"), is(0));
 		
@@ -192,7 +192,7 @@ public class TestExperimentCancellation {
 		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(e, 10);
 //		mre.setAbortUponBaseExperimentAbort(true); // this should be the default
 		
-		Map<String, Object> res = ConsoleRunner.run(mre);
+		Map<String, Object> res = ConsoleRunner.runWithArgs(mre);
 		assertThat((Integer) res.get("numTasks"), is(1));
 		assertThat((Integer) res.get("expAborted"), is(1));
 		

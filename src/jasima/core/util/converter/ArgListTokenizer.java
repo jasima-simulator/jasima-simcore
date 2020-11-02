@@ -57,7 +57,7 @@ public class ArgListTokenizer {
 			super();
 			this.msg = msg;
 			this.msgParams = new Object[1 + msgParams.length];
-			this.msgParams[0] = errorPos;
+			this.msgParams[0] = errorPos + 1;
 			for (int i = 0; i < msgParams.length; i++) {
 				this.msgParams[i + 1] = msgParams[i];
 			}
@@ -70,6 +70,7 @@ public class ArgListTokenizer {
 	}
 
 	private static String ESCAPE_CHARS = "()=;rnt \\\"";
+	private static String CHARS_TO_ESCAPE = "()=;\r\n\t \\\"";
 
 	private String input;
 	private int currPos;
@@ -225,13 +226,13 @@ public class ArgListTokenizer {
 		}
 
 		if (escape)
-			throw new ParseException(tokenStart, "Escape character at end of input.");
+			throw new ParseException(tokenStart, "escape character at end of input '%s'", input);
 
 		if (isQuoted) {
 			if (c == '"') {
 				currPos++;
 			} else {
-				throw new ParseException(tokenStart, "Quoted string not closed.");
+				throw new ParseException(tokenStart, "quoted string not closed in input '%s'", input);
 			}
 		}
 		tokenEnd = currPos;
@@ -268,8 +269,7 @@ public class ArgListTokenizer {
 				char c = input.charAt(i);
 				if (escape) {
 					if (ESCAPE_CHARS.indexOf(c) < 0) {
-						// invalid escape
-						sb.append('\\');
+						throw new ParseException(i, "invalid escaped character in input '%s'", input);
 					} else {
 						// replace with special values if needed
 						if (c == 't') {
@@ -361,6 +361,57 @@ public class ArgListTokenizer {
 		if (expected.length == 1)
 			msg = "expected %s, but found: %s, '%s'";
 		throw new ParseException(currTokenStart(), msg, Arrays.deepToString(expected), actual, currTokenText());
+	}
+
+	public static String escapeString(String raw) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < raw.length(); i++) {
+			char c = raw.charAt(i);
+
+			if (CHARS_TO_ESCAPE.indexOf(c) >= 0) {
+				// needs escaping
+				sb.append('\\');
+				if (c == '\t') {
+					sb.append('t');
+				} else if (c == '\r') {
+					sb.append('r');
+				} else if (c == '\n') {
+					sb.append('n');
+				} else {
+					sb.append(c);
+				}
+			} else {
+				// TODO: avoid copying if no character has to be escaped?
+				sb.append(c);
+			}
+		}
+
+		return sb.toString();
+	}
+
+	public static String quoteString(String raw) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < raw.length(); i++) {
+			char c = raw.charAt(i);
+
+			if (CHARS_TO_ESCAPE.indexOf(c) >= 0 && "(); ".indexOf(c) < 0) {
+				// needs escaping
+				sb.append('\\');
+				if (c == '\t') {
+					sb.append('t');
+				} else if (c == '\r') {
+					sb.append('r');
+				} else if (c == '\n') {
+					sb.append('n');
+				} else {
+					sb.append(c);
+				}
+			} else {
+				sb.append(c);
+			}
+		}
+
+		return '"' + sb.toString() + '"';
 	}
 
 }

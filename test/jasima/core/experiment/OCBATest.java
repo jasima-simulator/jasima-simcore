@@ -80,7 +80,7 @@ public class OCBATest {
 //		 ocbaExperiment.addListener(new ExcelSaver());
 
 		// run
-		Map<String, Object> res = ConsoleRunner.run(ocbaExperiment);
+		Map<String, Object> res = ConsoleRunner.runWithArgs(ocbaExperiment);
 
 		int[] av = (int[]) res.get("allocationVector");
 		assertArrayEquals("selection frequency", new int[] { 22, 13 }, av);
