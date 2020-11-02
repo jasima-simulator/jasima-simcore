@@ -16,7 +16,6 @@ public class ExpTestControlFlow extends Experiment {
 				Thread.sleep(runtimeMillis);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
-				throw new RuntimeException(e);
 			}
 		}
 		
