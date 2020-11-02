@@ -22,7 +22,8 @@
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
 		<log4j2.version>2.13.3</log4j2.version>
-		<versionName>${project.version} (${maven.build.timestamp}, branch ${git.branch}, commit ${git.commit.id.abbrev})</versionName>
+		<versionName>${project.version} (${maven.build.timestamp}, ${git.branch}@${git.commit.id.abbrev})</versionName>
+		<jasima-cli.main.class>jasima.core.run.ConsoleRunner</jasima-cli.main.class>
 	</properties>
 
 	<url>http://jasima.net/</url>
@@ -186,7 +187,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>jasima.core.run.ConsoleRunner</mainClass>
+							<mainClass>${jasima-cli.main.class}</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
