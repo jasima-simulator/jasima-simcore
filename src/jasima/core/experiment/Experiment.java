@@ -713,7 +713,7 @@ public abstract class Experiment
 		Experiment e = ec.newInstance();
 
 		// parse command line arguments and run
-		new ConsoleRunner(e).parseArgs(args).run();
+		new ConsoleRunner(e).runWith(args);
 	}
 
 }
