@@ -39,7 +39,7 @@ import jasima.core.util.observer.NotifierListener;
  * 
  * @author Torsten Hildebrandt
  */
-public class Shop extends SimComponentContainerBase<SimComponent> {
+public class Shop extends SimComponentContainerBase {
 
 	public static class ShopMessage {
 
@@ -67,8 +67,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	private int stopAfterNumJobs = 0;
 	private boolean enableLookAhead = false;
 
-	private SimComponentContainerBase<JobSource> sources;
-	private SimComponentContainerBase<WorkStation> machines;
+	private SimComponentContainerBase sources;
+	private SimComponentContainerBase machines;
 	public Route[] routes = {};
 
 	public int jobsFinished;
@@ -81,10 +81,10 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	public Shop() {
 		super();
 
-		sources = new SimComponentContainerBase<>();
+		sources = new SimComponentContainerBase();
 		addComponent(sources);
 
-		machines = new SimComponentContainerBase<>();
+		machines = new SimComponentContainerBase();
 		addComponent(machines);
 	}
 
@@ -151,7 +151,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	 *                        {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
 	public void installMachineListener(NotifierListener<SimComponent, Object> listener, boolean cloneIfPossible) {
-		for (WorkStation m : machines.getComponents()) {
+		for (SimComponent sc : machines.getComponents()) {
+			WorkStation m = (WorkStation) sc;
 			NotifierListener<SimComponent, Object> ml = listener;
 			if (cloneIfPossible)
 				ml = TypeUtil.cloneIfPossible(ml);
@@ -233,7 +234,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	 * 
 	 * @return The container object.
 	 */
-	public SimComponentContainer<JobSource> sources() {
+	public SimComponentContainer sources() {
 		return sources;
 	}
 
@@ -262,7 +263,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 			js.index = -1;
 
 			int i = 0;
-			for (JobSource s : sources.getComponents()) {
+			for (SimComponent sc : sources.getComponents()) {
+				JobSource s = (JobSource) sc;
 				s.index = i++;
 			}
 		}
@@ -285,7 +287,7 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 	 * 
 	 * @return The container object.
 	 */
-	public SimComponentContainer<WorkStation> machines() {
+	public SimComponentContainer machines() {
 		return machines;
 	}
 
@@ -325,7 +327,8 @@ public class Shop extends SimComponentContainerBase<SimComponent> {
 			machine.index = -1;
 
 			int i = 0;
-			for (WorkStation w : machines.getComponents()) {
+			for (SimComponent sc : machines.getComponents()) {
+				WorkStation w = (WorkStation) sc;
 				w.index = i++;
 			}
 		}

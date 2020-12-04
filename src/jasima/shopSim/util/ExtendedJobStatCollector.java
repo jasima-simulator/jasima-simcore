@@ -87,7 +87,8 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		weightedTardinessWithWIP.setName("weightedTardinessWithWIP");
 
 		if (shop != null)
-			for (WorkStation m : shop.machines().getComponents()) {
+			for (SimComponent sc : shop.machines().getComponents()) {
+				WorkStation m = (WorkStation) sc;
 				for (int i = 0, n = m.queue.size(); i < n; i++) {
 					storeWIPJob(m.queue.get(i));
 				}
@@ -100,8 +101,8 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	/**
-	 * Updates statistics after simulation ended with data from a job that is
-	 * still processed on the shop floor.
+	 * Updates statistics after simulation ended with data from a job that is still
+	 * processed on the shop floor.
 	 */
 	protected void storeWIPJob(PrioRuleTarget job) {
 		for (int i = 0; i < job.numJobsInBatch(); i++) {

@@ -5,21 +5,21 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface SimComponentContainer<SUB extends SimComponent> extends SimComponent, Iterable<SUB> {
+public interface SimComponentContainer extends SimComponent, Iterable<SimComponent> {
 
-	List<SUB> getComponents();
+	List<SimComponent> getComponents();
 
-	SimComponentContainer<SUB> addComponent(SUB sc);
+	SimComponentContainer addComponent(SimComponent sc);
 
-	boolean removeComponent(SUB sc);
+	boolean removeComponent(SimComponent sc);
 
 	void removeAll();
 
-	SUB getComponent(int index);
+	SimComponent getComponent(int index);
 
 	int numComponents();
 
-	SUB getComponentByName(String name);
+	SimComponent getComponentByName(String name);
 
 	default SimComponent getComponentByHierarchicalName(String hierarchicalName) {
 		int dotPos = hierarchicalName.indexOf('.');
@@ -33,7 +33,7 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 			SimComponent comp = getComponentByName(currName);
 
 			if (comp != null) {
-				SimComponentContainer<?> asContainer = (SimComponentContainer<?>) comp;
+				SimComponentContainer asContainer = (SimComponentContainer) comp;
 				return asContainer.getComponentByHierarchicalName(hierarchicalName.substring(dotPos + 1));
 			} else {
 				return null;
@@ -83,7 +83,7 @@ public interface SimComponentContainer<SUB extends SimComponent> extends SimComp
 		getComponents().forEach(c -> c.produceResults(res));
 	}
 
-	default <T extends SUB> void componentSetHelper(T newValue, Supplier<T> getter, Consumer<T> setter) {
+	default <T extends SimComponent> void componentSetHelper(T newValue, Supplier<T> getter, Consumer<T> setter) {
 		T oldValue = getter.get();
 		if (oldValue != null) {
 			removeComponent(oldValue);

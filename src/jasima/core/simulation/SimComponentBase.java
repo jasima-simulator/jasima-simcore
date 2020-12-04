@@ -1,5 +1,7 @@
 package jasima.core.simulation;
 
+import javax.annotation.Nullable;
+
 import jasima.core.util.TypeUtil;
 import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
@@ -14,7 +16,7 @@ import jasima.core.util.observer.NotifierImpl;
  */
 public class SimComponentBase implements SimComponent {
 
-	private transient SimComponentContainer<?> parent;
+	private transient SimComponentContainer parent;
 	private transient String hierarchicalName;
 	private transient Simulation sim;
 
@@ -48,12 +50,12 @@ public class SimComponentBase implements SimComponent {
 	}
 
 	@Override
-	public SimComponentContainer<?> getParent() {
+	public @Nullable SimComponentContainer getParent() {
 		return parent;
 	}
 
 	@Override
-	public void setParent(SimComponentContainer<?> parent) {
+	public void setParent(@Nullable SimComponentContainer parent) {
 		this.hierarchicalName = null;
 		this.parent = parent;
 	}

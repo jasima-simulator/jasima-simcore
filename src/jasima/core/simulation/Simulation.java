@@ -243,7 +243,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	// delegate ValueStore functionality
 	private ValueStoreImpl valueStore;
 
-	private SimComponentContainer<SimComponent> rootComponent;
+	private SimComponentContainer rootComponent;
 
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
@@ -318,7 +318,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
 		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();
 
-		setRootComponent(new SimComponentContainerBase<SimComponent>() {
+		setRootComponent(new SimComponentContainerBase() {
 			@Override
 			public void beforeRun() {
 				super.beforeRun();
@@ -371,12 +371,12 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @param parent
 	 * @param child
 	 */
-	protected void initComponentTree(SimComponentContainer<?> parent, SimComponent child) {
+	protected void initComponentTree(SimComponentContainer parent, SimComponent child) {
 		child.setParent(parent);
 		child.setSim(this);
 
-		if (child instanceof SimComponentContainer<?>) {
-			SimComponentContainer<?> scc = (SimComponentContainer<?>) child;
+		if (child instanceof SimComponentContainer) {
+			SimComponentContainer scc = (SimComponentContainer) child;
 			scc.getComponents().forEach(c -> initComponentTree(scc, c));
 		}
 	}
@@ -1267,7 +1267,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @return The root component of all {@link SimComponent}s contained in the
 	 *         simulation.
 	 */
-	public SimComponentContainer<SimComponent> getRootComponent() {
+	public SimComponentContainer getRootComponent() {
 		return rootComponent;
 	}
 
@@ -1277,7 +1277,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * 
 	 * @param rootComponent The new root component.
 	 */
-	protected void setRootComponent(SimComponentContainer<SimComponent> rootComponent) {
+	protected void setRootComponent(SimComponentContainer rootComponent) {
 		if (this.rootComponent != null) {
 			this.rootComponent.setSim(null);
 		}

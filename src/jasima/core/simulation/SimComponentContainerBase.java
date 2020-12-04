@@ -5,12 +5,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-public class SimComponentContainerBase<SUB extends SimComponent> extends SimComponentBase
-		implements SimComponentContainer<SUB> {
+/** Simple implementation of a {@link SimComponentContainer}.
+ * 
+ * @author Torsten Hildebrandt
+ */
+public class SimComponentContainerBase extends SimComponentBase implements SimComponentContainer {
 
-	private ArrayList<SUB> components;
-	private transient HashMap<String, SUB> componentsByName;
+	private List<SimComponent> components;
+	private transient Map<String, SimComponent> componentsByName;
 
 	public SimComponentContainerBase() {
 		this(null);
@@ -18,7 +22,7 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 
 	public SimComponentContainerBase(String name) {
 		super(name);
-		
+
 		components = new ArrayList<>();
 		componentsByName = null; // lazy initialization in getComponentByName()
 	}
@@ -31,22 +35,22 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	}
 
 	@Override
-	public List<SUB> getComponents() {
+	public List<SimComponent> getComponents() {
 		return Collections.unmodifiableList(components);
 	}
 
 	@Override
-	public Iterator<SUB> iterator() {
+	public Iterator<SimComponent> iterator() {
 		return components.iterator();
 	}
 
 	@Override
-	public SUB getComponent(int index) {
+	public SimComponent getComponent(int index) {
 		return components.get(index);
 	}
 
 	@Override
-	public SUB getComponentByName(String name) {
+	public SimComponent getComponentByName(String name) {
 		if (componentsByName == null) {
 			componentsByName = new HashMap<>();
 			components.forEach(c -> componentsByName.put(c.getName(), c));
@@ -56,7 +60,7 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	}
 
 	@Override
-	public SimComponentContainerBase<SUB> addComponent(SUB sc) {
+	public SimComponentContainerBase addComponent(SimComponent sc) {
 		// name has to be unique
 		if (getComponentByName(sc.getName()) != null) {
 			throw new IllegalArgumentException(String.format("Container '%s' already contains a component '%s'.",
@@ -74,7 +78,7 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 	}
 
 	@Override
-	public boolean removeComponent(SUB sc) {
+	public boolean removeComponent(SimComponent sc) {
 		boolean b = components.remove(sc);
 		if (b) {
 			sc.setParent(null);
@@ -93,17 +97,16 @@ public class SimComponentContainerBase<SUB extends SimComponent> extends SimComp
 		return components.size();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public SimComponentContainerBase<SUB> clone() {
-		SimComponentContainerBase<SUB> clone = (SimComponentContainerBase<SUB>) super.clone();
+	public SimComponentContainerBase clone() {
+		SimComponentContainerBase clone = (SimComponentContainerBase) super.clone();
 
 		clone.componentsByName = null;
 
 		clone.components = new ArrayList<>();
 		for (int i = 0; i < numComponents(); i++) {
-			SUB c = getComponent(i);
-			clone.addComponent((SUB) c.clone());
+			SimComponent c = getComponent(i);
+			clone.addComponent(c.clone());
 		}
 
 		return clone;

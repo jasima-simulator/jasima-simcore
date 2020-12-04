@@ -97,7 +97,7 @@ public class DynamicJobSource extends JobSource {
 
 	protected Operation[] createRoute() {
 		// machine order
-		SimComponentContainer<WorkStation> machines = getShop().machines();
+		SimComponentContainer machines = getShop().machines();
 
 		final int n = getNumOps() != null ? getNumOps().nextInt() : machines.numComponents();
 		assert n > 0;
@@ -114,7 +114,7 @@ public class DynamicJobSource extends JobSource {
 				mi = getMachIdx().nextInt();
 			} while (machineChosen[mi]);
 
-			WorkStation m = machines.getComponent(mi);
+			WorkStation m = (WorkStation) machines.getComponent(mi);
 			machineChosen[mi] = true;
 
 			Operation o = ops[i] = new Operation();

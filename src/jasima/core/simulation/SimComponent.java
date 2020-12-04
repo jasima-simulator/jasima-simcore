@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.annotation.Nullable;
+
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
@@ -110,12 +112,12 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	/**
 	 * Returns the container this component is contained in.
 	 */
-	SimComponentContainer<?> getParent();
+	@Nullable SimComponentContainer getParent();
 
 	/**
 	 * Sets the container this component is contained in.
 	 */
-	void setParent(SimComponentContainer<?> p);
+	void setParent(@Nullable SimComponentContainer p);
 
 	/**
 	 * Gets the name of this component (must not be changed once set).
@@ -389,7 +391,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 */
 	default String getHierarchicalName() {
 		StringBuilder sb = new StringBuilder();
-		SimComponentContainer<?> p = getParent();
+		SimComponentContainer p = getParent();
 		if (p != null && p != getSim().getRootComponent()) {
 			sb.append(p.getHierarchicalName()).append(NAME_SEPARATOR);
 		}

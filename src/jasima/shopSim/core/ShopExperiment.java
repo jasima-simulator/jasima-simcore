@@ -91,7 +91,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 
 		// set dispatching rule of machines
 		for (int i = 0, n = shop.machines().numComponents(); i < n; i++) {
-			WorkStation m = shop.machines().getComponent(i);
+			WorkStation m = (WorkStation) shop.machines().getComponent(i);
 
 			PR sr = getSequencingRule(i);
 			if (sr != null) {

@@ -209,14 +209,14 @@ public class TestSimProcessBasics {
 	public void testProcessNames() throws MightBlock {
 		sim.setName("theSimulation");
 
-		SimComponentContainerBase<SimComponent> cs = new SimComponentContainerBase<SimComponent>("a");
+		SimComponentContainerBase cs = new SimComponentContainerBase("a");
 		cs.addComponent(new SimEntity("b", () -> checkProcessName("a.b.lifecycle")));
 		cs.addComponent(new SimEntity("c", () -> checkProcessName("a.c.lifecycle")));
 		sim.addComponent(cs);
 
 		sim.setMainProcessActions(sim -> {
 			checkProcessName("theSimulation.simMain");
-			
+
 			SimContext.activate("process", () -> {
 				checkProcessName("process");
 			});
