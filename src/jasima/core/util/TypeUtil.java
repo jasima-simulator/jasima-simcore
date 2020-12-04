@@ -857,6 +857,26 @@ public class TypeUtil {
 	}
 
 	/**
+	 * Loads a class of the given name using the context class loader.
+	 * 
+	 * @param <T>                 Required type of the class.
+	 * 
+	 * @param className           Name of the class.
+	 * @param requiredParentClass Type token for the class or interface that has to
+	 *                            be implemented.
+	 * @return The loaded class.
+	 * 
+	 * @throws ClassNotFoundException If no class of the given name could be found.
+	 * @throws ClassCastException     If a matching class was found, but was not
+	 *                                compatible with {@code requiredParentClass}.
+	 */
+	public static <T> Class<? extends T> loadClass(String className, Class<T> requiredParentClass)
+			throws ClassNotFoundException, ClassCastException {
+		Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+		return clazz.asSubclass(requiredParentClass);
+	}
+
+	/**
 	 * Prevent instantiation
 	 */
 	private TypeUtil() {

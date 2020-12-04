@@ -22,6 +22,8 @@ package jasima.core.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -71,4 +73,58 @@ public class TypeUtilTest {
 	public static class X extends Y implements A, B {
 
 	}
+
+	@Test
+	public void loadClass__validClassName__classObject() throws Exception {
+		assertEquals(Y.class, TypeUtil.loadClass(Y.class.getName(), Y.class));
+	}
+
+	@Test
+	public void loadClass__correctParentClass__classObject() throws Exception {
+		assertEquals(Y.class, TypeUtil.loadClass(Y.class.getName(), D.class));
+	}
+
+	@Test(expected = ClassCastException.class)
+	public void loadClass__incompatibleParentClass__classCastException() throws Exception {
+		TypeUtil.loadClass(Y.class.getName(), A.class);
+	}
+
+	@Test(expected = ClassNotFoundException.class)
+	public void loadClass__unknownClassName__classObject() throws Exception {
+		TypeUtil.loadClass(Y.class.getName() + "NotExisting", Y.class);
+	}
+
+	@Test
+	public void loadClass__shouldUseContextClassLoader() throws Exception {
+		Class<Y> testClass = Y.class;
+
+		// should work before changing class loader
+		assertEquals(testClass, TypeUtil.loadClass(testClass.getName(), testClass));
+
+		// change context class loader ignoring 'testClass'
+		ClassLoader oldCtxClassLoader = Thread.currentThread().getContextClassLoader();
+		try {
+			ClassLoader noYClassLoader = new ClassLoader(oldCtxClassLoader) {
+				@Override
+				public Class<?> loadClass(String name) throws ClassNotFoundException {
+					if (testClass.getName().equals(name))
+						throw new ClassNotFoundException();
+
+					return super.loadClass(name);
+				}
+			};
+			Thread.currentThread().setContextClassLoader(noYClassLoader);
+
+			// should trigger exception now
+			try {
+				TypeUtil.loadClass(testClass.getName(), testClass);
+				fail("no exception triggered");
+			} catch (ClassNotFoundException expected) {
+			}
+		} finally {
+			// restore old class loader in order not to screw up other tests
+			Thread.currentThread().setContextClassLoader(oldCtxClassLoader);
+		}
+	}
+
 }
