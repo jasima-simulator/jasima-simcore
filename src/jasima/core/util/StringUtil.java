@@ -1,7 +1,7 @@
 package jasima.core.util;
 
 /**
- * Static helper methods dealing with Strings.
+ * Static helper methods dealing with Strings and CharSequences.
  * 
  * @author Torsten.Hildebrandt
  *
@@ -41,4 +41,11 @@ public class StringUtil {
 		return cs == null || cs.length() == 0;
 	}
 
+	
+	/**
+	 * Replace all line breaks in the given String by " \n " to make it print in a single line.
+	 */
+	public static String replaceLineBreaks(String s) {
+		return s.replaceAll("(\\r\\n|\\r|\\n)", " \\\\n ");
+	}
 }

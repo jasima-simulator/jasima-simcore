@@ -42,4 +42,29 @@ public class StringUtilTest {
 		assertEquals(false, StringUtil.isNullOrEmpty(" "));
 	}
 
+	@Test
+	public void replaceLineBreaks__shouldWorkForCr() {
+		assertEquals(" \\n ", StringUtil.replaceLineBreaks("\r"));
+	}
+
+	@Test
+	public void replaceLineBreaks__shouldWorkForLf() {
+		assertEquals(" \\n ", StringUtil.replaceLineBreaks("\n"));
+	}
+
+	@Test
+	public void replaceLineBreaks__shouldWorkForCrLf() {
+		assertEquals(" \\n ", StringUtil.replaceLineBreaks("\r\n"));
+	}
+
+	@Test
+	public void replaceLineBreaks__shouldWorkForThreeDifferentLines_emptyLines() {
+		assertEquals(" \\n  \\n  \\n ", StringUtil.replaceLineBreaks("\n\r\r\n"));
+	}
+
+	@Test
+	public void replaceLineBreaks__shouldWorkForThreeDifferentLines_withContents() {
+		assertEquals("a \\n b \\n c \\n d", StringUtil.replaceLineBreaks("a\nb\rc\r\nd"));
+	}
+	
 }
