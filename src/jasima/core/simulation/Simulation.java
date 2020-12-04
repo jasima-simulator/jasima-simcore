@@ -1196,6 +1196,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
 	public void setSimulationLength(double simulationLength) {
+		requireAllowedState(state.get(), SimExecState.INIT, SimExecState.INITIAL);
 		if (!(simulationLength >= 0.0)) {
 			throw new IllegalArgumentException("" + simulationLength);
 		}
