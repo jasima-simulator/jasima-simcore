@@ -833,9 +833,9 @@ public class TypeUtil {
 	 */
 	public static <T> T createInstance(Class<T> clazz) {
 		try {
-			return clazz.newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			return clazz.getDeclaredConstructor().newInstance();
+		} catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
+			throw new RuntimeException("error instantiating class " + clazz, e);
 		}
 	}
 
