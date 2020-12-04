@@ -27,4 +27,19 @@ public class StringUtilTest {
 		assertEquals("", StringUtil.repeat("", 13));
 	}
 
+	@Test
+	public void isNullOrEmpty__null__true() {
+		assertEquals(true, StringUtil.isNullOrEmpty(null));
+	}
+
+	@Test
+	public void isNullOrEmpty__emptyString__true() {
+		assertEquals(true, StringUtil.isNullOrEmpty(""));
+	}
+
+	@Test
+	public void isNullOrEmpty__nonEmptyString__false() {
+		assertEquals(false, StringUtil.isNullOrEmpty(" "));
+	}
+
 }
