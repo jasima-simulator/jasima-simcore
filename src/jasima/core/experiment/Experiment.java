@@ -25,7 +25,6 @@ import static jasima.core.util.observer.ObservableValues.observable;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -260,7 +259,7 @@ public abstract class Experiment
 			try {
 				runTimeReal = System.currentTimeMillis();
 				aborted = 0;
-				resultMap = new HashMap<>();
+				resultMap = new LinkedHashMap<>();
 				isCancelled = false;
 				error = null;
 

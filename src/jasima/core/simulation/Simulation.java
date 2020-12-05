@@ -43,8 +43,8 @@ import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -566,7 +566,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		afterRun();
 		done();
 
-		HashMap<String, Object> res = new HashMap<>();
+		Map<String, Object> res = new LinkedHashMap<>();
 		produceResults(res);
 
 		return res;
