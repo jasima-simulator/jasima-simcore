@@ -20,14 +20,12 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
-import static jasima.core.simulation.Simulation.I18nConsts.EXT_LOADED;
 import static jasima.core.simulation.Simulation.SimExecState.INIT;
 import static jasima.core.simulation.Simulation.SimExecState.INITIAL;
 import static jasima.core.util.ComponentStates.requireAllowedState;
 import static jasima.core.util.SimProcessUtil.simActionFromRunnable;
 import static jasima.core.util.TypeUtil.createInstance;
 import static jasima.core.util.i18n.I18n.defFormat;
-import static jasima.core.util.i18n.I18n.message;
 import static java.util.Collections.unmodifiableList;
 import static java.util.EnumSet.complementOf;
 import static java.util.Objects.requireNonNull;
@@ -52,7 +50,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -64,10 +61,6 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import jasima.core.JasimaExtension;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
@@ -80,7 +73,6 @@ import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimRunnable;
-import jasima.core.util.StandardExtensionImpl;
 import jasima.core.util.TraceFileProducer;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
@@ -106,8 +98,6 @@ import jasima.core.util.observer.ObservableValue;
  * @author Torsten Hildebrandt
  */
 public class Simulation implements ValueStore, SimCtx, ProcessActivator {
-
-	private static final Logger logger = LogManager.getLogger(Simulation.class);
 
 	// constants for simTimeToMillisFactor used to convert simTime to an Instant
 	public static final long MILLIS_PER_MINUTE = 60 * 1000;
@@ -1473,20 +1463,5 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	public void setMainProcessActions(SimAction mainProcessActions) {
 		requireAllowedState(state.get(), INITIAL, INIT);
 		this.mainProcessActions = mainProcessActions;
-	}
-
-	static enum I18nConsts {
-		EXT_LOADED;
-	}
-
-	static {
-		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
-		loadJasimaExtensions();
-	}
-
-	static void loadJasimaExtensions() {
-		for (JasimaExtension ext : ServiceLoader.load(JasimaExtension.class)) {
-			logger.debug(message(EXT_LOADED), ext.getClass().getName());
-		}
 	}
 }

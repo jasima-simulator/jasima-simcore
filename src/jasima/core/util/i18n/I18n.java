@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import jasima.core.JasimaExtension;
 import jasima.core.util.StandardExtensionImpl;
 
 public final class I18n {
@@ -32,6 +33,8 @@ public final class I18n {
 	private static final Map<Locale, ArrayDeque<ResourceBundle>> loadedBundles = new HashMap<>();
 
 	static {
+		JasimaExtension.requireExtensionsLoaded();
+
 		loadedBundles.put(DEF_LOCALE, loadNewLocale(DEF_LOCALE));
 		I18n.requireResourceBundle(StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE, I18nConsts.class);
 	}

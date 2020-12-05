@@ -24,6 +24,7 @@ import static jasima.core.util.i18n.I18n.defFormat;
 
 import java.util.HashMap;
 
+import jasima.core.JasimaExtension;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.TypeUtil.TypeConversionException;
 import jasima.core.util.converter.ArgListTokenizer.ParseException;
@@ -133,10 +134,8 @@ public abstract class TypeToStringConverter {
 	}
 
 	static {
+		JasimaExtension.requireExtensionsLoaded();
 		converterReg = new HashMap<>();
-
-		registerConverter(new TypeConverterBasicTypes());
-		registerConverter(new TypeConverterJavaBean());
 	}
 
 }
