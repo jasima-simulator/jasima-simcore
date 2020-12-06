@@ -1369,6 +1369,17 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		this.simTimeToMillisFactor = simTimeToMillisFactor;
 	}
 
+	/**
+	 * Specifies the time unit of the (double-valued) simulation time. The default
+	 * value is ChronoUnit.MINUTES. 
+	 *
+	 * @see #simTimeToInstant(double)
+	 * @see #setSimTimeToMillisFactor(long)
+	 */
+	public void setSimTimeToMillisFactor(TemporalUnit u) {
+		setSimTimeToMillisFactor(Duration.of(1, u).toMillis());
+	}
+
 	public boolean continueSim() {
 		return numAppEvents > 0 && !endRequested;
 	}

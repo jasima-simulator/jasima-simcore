@@ -6,12 +6,15 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneOffset;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.simulation.Simulation.SimPrintMessage;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.SimProcessUtil.SimAction;
 
 public class SimulationExperiment extends Experiment {
 
@@ -24,15 +27,21 @@ public class SimulationExperiment extends Experiment {
 	private double statsResetTime = 0.0d;
 	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
-	private ArrayList<Consumer<Simulation>> initActions = null;
+	private List<Consumer<Simulation>> initActions = null;
 	private SimComponent rootComponent = null;
+	private SimAction mainProcess = null;
 
 	// fields used during run
 
 	protected transient Simulation sim;
 
 	public SimulationExperiment() {
+		this(null);
+	}
+
+	public SimulationExperiment(SimAction mainProcess) {
 		super();
+		setMainProcess(mainProcess);
 	}
 
 	@Override
@@ -58,6 +67,7 @@ public class SimulationExperiment extends Experiment {
 		sim.setInitialSimTime(getInitialSimTime());
 		sim.setPrintLevel(getLogLevel());
 		sim.getRndStreamFactory().setSeed(getInitialSeed());
+		sim.setMainProcessActions(getMainProcess());
 
 		if (getSimulationLength() >= 0.0) {
 			sim.setSimulationLength(getSimulationLength());
@@ -120,7 +130,7 @@ public class SimulationExperiment extends Experiment {
 
 		sim.produceResults(resultMap);
 	}
-	
+
 	/**
 	 * Converts a given Java {@link Duration} (i.e., a time span) to the
 	 * corresponding (relative) simulation time.
@@ -215,12 +225,30 @@ public class SimulationExperiment extends Experiment {
 		this.simTimeToMillisFactor = simTimeToMillisFactor;
 	}
 
+	/**
+	 * Specifies the time unit of the (double-valued) simulation time. The default
+	 * value is ChronoUnit.MINUTES. 
+	 *
+	 * @see Simulation#setSimTimeToMillisFactor(long)
+	 */
+	public void setSimTimeToMillisFactor(TemporalUnit u) {
+		setSimTimeToMillisFactor(Duration.of(1, u).toMillis());
+	}
+
 	public SimComponent getRootComponent() {
 		return rootComponent;
 	}
 
 	public void setRootComponent(SimComponent rootComponent) {
 		this.rootComponent = rootComponent;
+	}
+
+	public SimAction getMainProcess() {
+		return mainProcess;
+	}
+
+	public void setMainProcess(SimAction mainProcess) {
+		this.mainProcess = mainProcess;
 	}
 
 	@Override
