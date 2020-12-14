@@ -23,6 +23,7 @@ package jasima.core.experiment;
 import static jasima.core.util.observer.ObservableValues.observable;
 
 import java.beans.PropertyDescriptor;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -701,6 +702,12 @@ public abstract class Experiment
 		return getName() == null ? "exp@" + Integer.toHexString(hashCode()) : getName();
 	}
 
+	protected Object readResolve() throws ObjectStreamException {
+		// initial transient state when deserializing
+		this.state = observable(ExperimentState.INITIAL); 
+		return this;
+	}
+	
 	// ******************* static methods ************************
 
 	public static void main(String... args) throws Exception {
@@ -709,7 +716,7 @@ public abstract class Experiment
 		Class<?> klazz = TypeUtil.getMainClass();
 
 		Class<? extends Experiment> ec = klazz.asSubclass(Experiment.class);
-		Experiment e = ec.newInstance();
+		Experiment e = ec.getDeclaredConstructor().newInstance();
 
 		// parse command line arguments and run
 		new ConsoleRunner(e).runWith(args);
