@@ -100,58 +100,58 @@ public class TypeConverterJavaBean extends TypeToStringConverter {
 
 		// read and set parameters of complex objects (optional parameter
 		// list in round parenthesis)
-		if (tk.nextTokenNoWhitespace() == TokenType.PARENS_OPEN) {
-			Map<String, PropertyDescriptor> beanProps = TypeUtil.writableProperties(root.getClass());
-			while (true) {
-				// name
-				TokenType token = tk.nextTokenNoWhitespace();
-				tk.assureTokenTypes(token, TokenType.STRING, TokenType.PARENS_CLOSE);
-				if (token == TokenType.PARENS_CLOSE)
-					break; // end of parameter list
-				String propName = tk.currTokenText();
+		if (tk.nextTokenNoWhitespace() != TokenType.PARENS_OPEN) {
+			tk.pushBackToken(); // let parent handle it
+			return root;
+		}
 
-				// equals
-				tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.EQUALS);
+		Map<String, PropertyDescriptor> beanProps = TypeUtil.writableProperties(root.getClass());
+		while (true) {
+			// name
+			TokenType token = tk.nextTokenNoWhitespace();
+			tk.assureTokenTypes(token, TokenType.STRING, TokenType.PARENS_CLOSE);
+			if (token == TokenType.PARENS_CLOSE)
+				break; // end of parameter list
+			String propName = tk.currTokenText();
 
-				// find property type
-				PropertyDescriptor prop = beanProps.get(propName.toLowerCase(I18n.DEF_LOCALE));
-				if (prop == null) {
-					throw new RuntimeException(defFormat("Can't find property '%s' in type '%s', property path: '%s'",
-							propName, root.getClass().getName(), context));
-				}
+			// equals
+			tk.assureTokenTypes(tk.nextTokenNoWhitespace(), TokenType.EQUALS);
 
-				// read and set value
-				try {
-					String propPath;
-					if (context != null && context.length() > 0)
-						propPath = context + "." + propName;
-					else
-						propPath = propName;
-
-					// recursively create object for property value
-					Object value = convertFromString(tk, prop.getPropertyType(), propPath, loader, packageSearchPath);
-
-					// call setter to finally check compatibility
-					prop.getWriteMethod().invoke(root, value);
-				} catch (ReflectiveOperationException | TypeConversionException e1) {
-					throw new TypeConversionException(
-							defFormat("Can't set property '%s' in type %s (property path: '%s'): %s", propName,
-									root.getClass().getName(), context, exceptionMessage(e1)),
-							e1);
-				}
-
-				// more parameters?
-				token = tk.nextTokenNoWhitespace();
-				tk.assureTokenTypes(token, TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
-				if (token == TokenType.SEMICOLON) {
-					// nothing special, start next iteration
-				} else if (token == TokenType.PARENS_CLOSE) {
-					break; // found end of list
-				}
+			// find property type
+			PropertyDescriptor prop = beanProps.get(propName.toLowerCase(I18n.DEF_LOCALE));
+			if (prop == null) {
+				throw new RuntimeException(defFormat("Can't find property '%s' in type '%s', property path: '%s'",
+						propName, root.getClass().getName(), context));
 			}
-		} else {
-			// let parent handle it
-			tk.pushBackToken();
+
+			// read and set value
+			try {
+				String propPath;
+				if (context != null && context.length() > 0)
+					propPath = context + "." + propName;
+				else
+					propPath = propName;
+
+				// recursively create object for property value
+				Object value = convertFromString(tk, prop.getPropertyType(), propPath, loader, packageSearchPath);
+
+				// call setter to finally check compatibility
+				prop.getWriteMethod().invoke(root, value);
+			} catch (ReflectiveOperationException | TypeConversionException e1) {
+				throw new TypeConversionException(
+						defFormat("Can't set property '%s' in type %s (property path: '%s'): %s", propName,
+								root.getClass().getName(), context, exceptionMessage(e1)),
+						e1);
+			}
+
+			// more parameters?
+			token = tk.nextTokenNoWhitespace();
+			tk.assureTokenTypes(token, TokenType.SEMICOLON, TokenType.PARENS_CLOSE);
+			if (token == TokenType.SEMICOLON) {
+				// nothing special, start next iteration
+			} else if (token == TokenType.PARENS_CLOSE) {
+				break; // found end of list
+			}
 		}
 
 		return root;

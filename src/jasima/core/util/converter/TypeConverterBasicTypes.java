@@ -83,7 +83,7 @@ public class TypeConverterBasicTypes extends TypeToStringConverter {
 
 		if (klass == char.class || klass == Character.class) {
 			if (s.length() == 1)
-				return (T) new Character(s.charAt(0));
+				return (T) Character.valueOf(s.charAt(0));
 		}
 
 		throw new AssertionError(); // should never be reached

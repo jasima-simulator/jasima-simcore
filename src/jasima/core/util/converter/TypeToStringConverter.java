@@ -22,6 +22,7 @@ package jasima.core.util.converter;
 
 import static jasima.core.util.i18n.I18n.defFormat;
 
+import java.awt.List;
 import java.util.HashMap;
 
 import jasima.core.JasimaExtension;
@@ -117,6 +118,10 @@ public abstract class TypeToStringConverter {
 	 * @see TypeUtil#computeClasses(Class)
 	 */
 	public static TypeToStringConverter lookupConverter(Class<?> requiredType) {
+		if (requiredType.isArray() || List.class.isAssignableFrom(requiredType)) {
+			return new TypeToStringConverterGenericList();
+		}
+		
 		// try direct lookup
 		TypeToStringConverter res = converterReg.get(requiredType);
 		if (res == null) {
@@ -134,8 +139,8 @@ public abstract class TypeToStringConverter {
 	}
 
 	static {
-		JasimaExtension.requireExtensionsLoaded();
 		converterReg = new HashMap<>();
+		JasimaExtension.requireExtensionsLoaded();
 	}
 
 }

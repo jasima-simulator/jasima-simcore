@@ -534,7 +534,7 @@ public class TypeUtil {
 				return (T) (Character) o;
 			String s = convertToString(o);
 			if (s.length() == 1)
-				return (T) new Character(s.charAt(0));
+				return (T) Character.valueOf(s.charAt(0));
 		}
 
 		throw new TypeConversionException(

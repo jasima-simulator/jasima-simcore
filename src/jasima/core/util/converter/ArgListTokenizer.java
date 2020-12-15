@@ -39,7 +39,7 @@ public class ArgListTokenizer {
 	 * The recognized tokens.
 	 */
 	public static enum TokenType {
-		STRING, PARENS_OPEN, PARENS_CLOSE, EQUALS, SEMICOLON, WHITE_SPACE
+		STRING, PARENS_OPEN, PARENS_CLOSE, BRACKETS_OPEN, BRACKETS_CLOSE, EQUALS, SEMICOLON, WHITE_SPACE
 	};
 
 	/**
@@ -69,8 +69,8 @@ public class ArgListTokenizer {
 		}
 	}
 
-	private static String ESCAPE_CHARS = "()=;rnt \\\"";
-	private static String CHARS_TO_ESCAPE = "()=;\r\n\t \\\"";
+	private static String ESCAPE_CHARS = "()[]=;rnt \\\"";
+	private static String CHARS_TO_ESCAPE = "()[]=;\r\n\t \\\"";
 
 	private String input;
 	private int currPos;
@@ -145,6 +145,12 @@ public class ArgListTokenizer {
 		case ')':
 			tokenType = TokenType.PARENS_CLOSE;
 			break;
+		case '[':
+			tokenType = TokenType.BRACKETS_OPEN;
+			break;
+		case ']':
+			tokenType = TokenType.BRACKETS_CLOSE;
+			break;
 		case ';':
 			tokenType = TokenType.SEMICOLON;
 			break;
@@ -211,6 +217,8 @@ public class ArgListTokenizer {
 				case '"':// begin of new quoted String
 				case '(':
 				case ')':
+				case '[':
+				case ']':
 				case ';':
 				case '=':
 				case ' ':
