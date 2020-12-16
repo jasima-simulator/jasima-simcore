@@ -23,21 +23,21 @@ public class TestComponentNames {
 	public void testGetComponentByName() {
 		SimComponentContainerBase c = createTree();
 		
-		assertEquals("sub1",c.getComponentByName("sub1").getName());
-		assertEquals("b",((SimComponentContainer)c.getComponentByName("sub2")).getComponentByName("b").getName());
+		assertEquals("sub1",c.getChildByName("sub1").getName());
+		assertEquals("b",((SimComponentContainer)c.getChildByName("sub2")).getChildByName("b").getName());
 	}
 
 	@Test
 	public void testGetComponentByNameNonExisting() {
 		SimComponentContainerBase c = createTree();
-		assertEquals(null,c.getComponentByName("subXXX"));
+		assertEquals(null,c.getChildByName("subXXX"));
 	}
 
 	@Test
 	public void testGetComponentByHierarchicalNameSub() {
 		SimComponentContainerBase c = createTree();
 		
-		SimComponent cmp = c.getComponentByHierarchicalName("main.sub1");
+		SimComponent cmp = c.getByHierarchicalName("main.sub1");
 		assertEquals("sub1", cmp.getName());
 		assertEquals(".main.sub1", cmp.getHierarchicalName());
 	}
@@ -46,7 +46,7 @@ public class TestComponentNames {
 	public void testGetComponentByHierarchicalNameSubSub() {
 		SimComponentContainerBase c = createTree();
 		
-		SimComponent cmp = c.getComponentByHierarchicalName("main.sub2.b");
+		SimComponent cmp = c.getByHierarchicalName("main.sub2.b");
 		assertEquals("b",cmp.getName());
 		assertEquals(".main.sub2.b",cmp.getHierarchicalName());
 	}
@@ -66,10 +66,10 @@ public class TestComponentNames {
 
 	private SimComponentContainerBase createTree() {
 		SimComponentContainerBase c = new SimComponentContainerBase("main");
-		c.addComponent(new SimComponentBase("sub1"));
+		c.addChild(new SimComponentBase("sub1"));
 		SimComponentContainerBase sub2 = new SimComponentContainerBase("sub2");
-		sub2.addComponent(new SimComponentBase("a")).addComponent(new SimComponentBase("b"));
-		c.addComponent(sub2);
+		sub2.addChild(new SimComponentBase("a")).addChild(new SimComponentBase("b"));
+		c.addChild(sub2);
 		return c;
 	}
 

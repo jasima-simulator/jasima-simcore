@@ -92,7 +92,7 @@ public class StaticShopExperiment extends ShopExperiment {
 
 		// overwrite JobSpec data with new due dates
 		if (!Double.isNaN(getDueDateTightness())) {
-			StaticJobSource src = (StaticJobSource) shop.sources().getComponent(0);
+			StaticJobSource src = (StaticJobSource) shop.sources().getChild(0);
 			JobSpec[] jobs = src.jobs;
 
 			for (int i = 0, n = src.jobs.length; i < n; i++) {

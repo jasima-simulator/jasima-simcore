@@ -99,13 +99,13 @@ public class DynamicJobSource extends JobSource {
 		// machine order
 		SimComponentContainer machines = getShop().machines();
 
-		final int n = getNumOps() != null ? getNumOps().nextInt() : machines.numComponents();
+		final int n = getNumOps() != null ? getNumOps().nextInt() : machines.numChildren();
 		assert n > 0;
 
 		Operation[] ops = new Operation[n];
 
 		// initially all false
-		boolean[] machineChosen = new boolean[machines.numComponents()];
+		boolean[] machineChosen = new boolean[machines.numChildren()];
 
 		for (int i = 0; i < n; i++) {
 			// TODO: change: not very elegant but works for now
@@ -114,7 +114,7 @@ public class DynamicJobSource extends JobSource {
 				mi = getMachIdx().nextInt();
 			} while (machineChosen[mi]);
 
-			WorkStation m = (WorkStation) machines.getComponent(mi);
+			WorkStation m = (WorkStation) machines.getChild(mi);
 			machineChosen[mi] = true;
 
 			Operation o = ops[i] = new Operation();

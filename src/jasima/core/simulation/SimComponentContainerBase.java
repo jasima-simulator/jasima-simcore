@@ -37,7 +37,7 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public List<SimComponent> getComponents() {
+	public List<SimComponent> getChildren() {
 		return Collections.unmodifiableList(components);
 	}
 
@@ -47,12 +47,12 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public SimComponent getComponent(int index) {
+	public SimComponent getChild(int index) {
 		return components.get(index);
 	}
 
 	@Override
-	public @Nullable SimComponent getComponentByName(String name) {
+	public @Nullable SimComponent getChildByName(String name) {
 		if (componentsByName == null) {
 			componentsByName = new HashMap<>();
 			components.forEach(c -> componentsByName.put(c.getName(), c));
@@ -62,9 +62,9 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public SimComponentContainerBase addComponent(SimComponent sc) {
+	public SimComponentContainerBase addChild(SimComponent sc) {
 		// name has to be unique
-		if (getComponentByName(sc.getName()) != null) {
+		if (getChildByName(sc.getName()) != null) {
 			throw new IllegalArgumentException(String.format("Container '%s' already contains a component '%s'.",
 					getHierarchicalName(), sc.getName()));
 		}
@@ -80,7 +80,7 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public boolean removeComponent(SimComponent sc) {
+	public boolean removeChild(SimComponent sc) {
 		boolean b = components.remove(sc);
 		if (b) {
 			sc.setParent(null);
@@ -89,13 +89,13 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public void removeAll() {
+	public void removeChildren() {
 		components.forEach(c -> c.setParent(null));
 		components.clear();
 	}
 
 	@Override
-	public int numComponents() {
+	public int numChildren() {
 		return components.size();
 	}
 
@@ -106,9 +106,9 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 		clone.componentsByName = null;
 
 		clone.components = new ArrayList<>();
-		for (int i = 0; i < numComponents(); i++) {
-			SimComponent c = getComponent(i);
-			clone.addComponent(c.clone());
+		for (int i = 0; i < numChildren(); i++) {
+			SimComponent c = getChild(i);
+			clone.addChild(c.clone());
 		}
 
 		return clone;

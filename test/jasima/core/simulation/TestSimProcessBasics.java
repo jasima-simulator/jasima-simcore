@@ -210,8 +210,8 @@ public class TestSimProcessBasics {
 		sim.setName("theSimulation");
 
 		SimComponentContainerBase cs = new SimComponentContainerBase("a");
-		cs.addComponent(new SimEntity("b", () -> checkProcessName("a.b.lifecycle")));
-		cs.addComponent(new SimEntity("c", () -> checkProcessName("a.c.lifecycle")));
+		cs.addChild(new SimEntity("b", () -> checkProcessName("a.b.lifecycle")));
+		cs.addChild(new SimEntity("c", () -> checkProcessName("a.c.lifecycle")));
 		sim.addComponent(cs);
 
 		sim.setMainProcessActions(sim -> {

@@ -72,7 +72,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 
 	protected void createShop() {
 		shop = doCreateShop();
-		sim.getRootComponent().addComponent(shop);
+		sim.getRootComponent().addChild(shop);
 	}
 
 	/**
@@ -90,8 +90,8 @@ public abstract class ShopExperiment extends SimulationExperiment {
 		shop.setEnableLookAhead(isEnableLookAhead());
 
 		// set dispatching rule of machines
-		for (int i = 0, n = shop.machines().numComponents(); i < n; i++) {
-			WorkStation m = (WorkStation) shop.machines().getComponent(i);
+		for (int i = 0, n = shop.machines().numChildren(); i < n; i++) {
+			WorkStation m = (WorkStation) shop.machines().getChild(i);
 
 			PR sr = getSequencingRule(i);
 			if (sr != null) {

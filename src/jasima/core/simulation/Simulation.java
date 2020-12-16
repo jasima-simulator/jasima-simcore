@@ -354,7 +354,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 		if (child instanceof SimComponentContainer) {
 			SimComponentContainer scc = (SimComponentContainer) child;
-			scc.getComponents().forEach(c -> initComponentTree(scc, c));
+			scc.getChildren().forEach(c -> initComponentTree(scc, c));
 		}
 	}
 
@@ -1044,7 +1044,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * simulation.
 	 */
 	public void addComponent(SimComponent sc) {
-		getRootComponent().addComponent(sc);
+		getRootComponent().addChild(sc);
 	}
 
 	/**
@@ -1052,7 +1052,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * name such as "container1.sub1.myMachine".
 	 */
 	public SimComponent getComponentByHierarchicalName(String hierarchicalName) {
-		return getRootComponent().getComponentByHierarchicalName(hierarchicalName);
+		return getRootComponent().getByHierarchicalName(hierarchicalName);
 	}
 
 	/**

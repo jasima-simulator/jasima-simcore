@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import jasima.core.util.StringUtil;
 
 /**
@@ -14,22 +16,73 @@ import jasima.core.util.StringUtil;
  */
 public interface SimComponentContainer extends SimComponent, Iterable<SimComponent> {
 
-	List<SimComponent> getComponents();
+	/**
+	 * Returns a list of all child components of this container.
+	 */
+	List<SimComponent> getChildren();
 
-	SimComponentContainer addComponent(SimComponent sc);
+	/**
+	 * Adds a child node to the container.
+	 * 
+	 * @return the container itself (to allow chaining calls)
+	 */
+	SimComponentContainer addChild(SimComponent sc);
 
-	boolean removeComponent(SimComponent sc);
+	/**
+	 * Removes a child from this container.
+	 * 
+	 * @param sc the child to remove
+	 * @return true, if the child was removed; false otherwise
+	 */
+	boolean removeChild(SimComponent sc);
 
-	void removeAll();
+	/**
+	 * Returns {@code true}, if this container contains the node given as a
+	 * parameter.
+	 */
+	default boolean containsChild(SimComponent sc) {
+		return sc.getParent() == this;
+	}
 
-	SimComponent getComponent(int index);
+	/**
+	 * Removes all child nodes from this container.
+	 */
+	void removeChildren();
 
-	int numComponents();
+	/**
+	 * Returns the number of children currently contained in this container.
+	 */
+	int numChildren();
 
-	SimComponent getComponentByName(String name);
+	/**
+	 * Returns the child identified by {@code index}.
+	 * 
+	 * @param index the child's index (0-based; range: [0, numChildren-1])
+	 * @return The child.
+	 */
+	SimComponent getChild(int index);
 
+	/**
+	 * Returns the child identified by {@code name}.
+	 * 
+	 * @param name The child's name.
+	 * @return The child; {@code null} if not found.
+	 */
+	@Nullable
+	SimComponent getChildByName(String name);
+
+	/**
+	 * Tries to find a component using the relative names given in the parameter.
+	 * The first name segment has to match the container's name, next name-segment a
+	 * child, next name-segment a child's child etc.
+	 * <p>
+	 * Names segments are separated using '.', i.e., a valid hierarchical name could
+	 * for instance be "network1.machines.welding1".
+	 * 
+	 * @see Simulation#getComponentByHierarchicalName(String)
+	 */
 	@Override
-	default SimComponent getComponentByHierarchicalName(String hierarchicalName) {
+	default @Nullable SimComponent getByHierarchicalName(String hierarchicalName) {
 		// first part of hierarchicalName matching our name?
 		String thisName = hierarchicalName;
 
@@ -41,7 +94,7 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 		}
 
 		if (!StringUtil.equals(thisName, getName())) {
-			return null;
+			return null; // no match
 		}
 
 		// find child if required
@@ -50,61 +103,63 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 		if (dotPos >= 0) {
 			childName = hierarchicalName.substring(0, dotPos);
 		}
-		SimComponent comp = getComponentByName(childName);
+		SimComponent comp = getChildByName(childName);
 
-		return comp.getComponentByHierarchicalName(hierarchicalName);
+		return comp.getByHierarchicalName(hierarchicalName);
 	}
+
+	// code below is forwarding lifecycle events to children
 
 	@Override
 	default void init() {
 		SimComponent.super.init();
 
-		getComponents().forEach(c -> c.init());
+		getChildren().forEach(c -> c.init());
 	}
 
 	@Override
 	default void beforeRun() {
 		SimComponent.super.beforeRun();
 
-		getComponents().forEach(c -> c.beforeRun());
+		getChildren().forEach(c -> c.beforeRun());
 	}
 
 	@Override
 	default void resetStats() {
 		SimComponent.super.resetStats();
 
-		getComponents().forEach(c -> c.resetStats());
+		getChildren().forEach(c -> c.resetStats());
 	}
 
 	@Override
 	default void afterRun() {
 		SimComponent.super.afterRun();
 
-		getComponents().forEach(c -> c.afterRun());
+		getChildren().forEach(c -> c.afterRun());
 	}
 
 	@Override
 	default void done() {
 		SimComponent.super.done();
 
-		getComponents().forEach(c -> c.done());
+		getChildren().forEach(c -> c.done());
 	}
 
 	@Override
 	default void produceResults(Map<String, Object> res) {
 		SimComponent.super.produceResults(res);
 
-		getComponents().forEach(c -> c.produceResults(res));
+		getChildren().forEach(c -> c.produceResults(res));
 	}
 
 	default <T extends SimComponent> void componentSetHelper(T newValue, Supplier<T> getter, Consumer<T> setter) {
 		T oldValue = getter.get();
 		if (oldValue != null) {
-			removeComponent(oldValue);
+			removeChild(oldValue);
 		}
 
 		setter.accept(newValue);
-		addComponent(newValue);
+		addChild(newValue);
 	}
 
 }

@@ -188,7 +188,7 @@ public class ShopConfigurator {
 			Operation o = new Operation();
 
 			// TODO: od.getName()
-			o.setMachine((WorkStation) shop.machines().getComponent(od.getWorkstation()));
+			o.setMachine((WorkStation) shop.machines().getChild(od.getWorkstation()));
 			o.setProcTime(od.getProcTime());
 			// TODO: od.procTimeReal
 

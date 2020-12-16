@@ -156,7 +156,7 @@ public class DynamicShopExperiment extends ShopExperiment {
 						mi = getMachIdx().nextInt();
 					} while (machineChosen[mi]);
 
-					WorkStation m = (WorkStation) shop.machines().getComponent(mi);
+					WorkStation m = (WorkStation) shop.machines().getChild(mi);
 					machineChosen[mi] = true;
 
 					if (getScenario() == Scenario.JOB_SHOP) {
@@ -166,9 +166,9 @@ public class DynamicShopExperiment extends ShopExperiment {
 
 				if (getScenario() == Scenario.FLOW_SHOP) {
 					int k = 0;
-					for (int i = 0, j = shop.machines().numComponents(); i < j; i++) {
+					for (int i = 0, j = shop.machines().numChildren(); i < j; i++) {
 						if (machineChosen[i])
-							ops[k++].setMachine((WorkStation) shop.machines().getComponent(i));
+							ops[k++].setMachine((WorkStation) shop.machines().getChild(i));
 					}
 				}
 

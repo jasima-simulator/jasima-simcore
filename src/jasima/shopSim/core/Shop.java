@@ -82,10 +82,10 @@ public class Shop extends SimComponentContainerBase {
 		super();
 
 		sources = new SimComponentContainerBase();
-		addComponent(sources);
+		addChild(sources);
 
 		machines = new SimComponentContainerBase();
-		addComponent(machines);
+		addChild(machines);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class Shop extends SimComponentContainerBase {
 	 *                        {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
 	public void installMachineListener(NotifierListener<SimComponent, Object> listener, boolean cloneIfPossible) {
-		for (SimComponent sc : machines.getComponents()) {
+		for (SimComponent sc : machines.getChildren()) {
 			WorkStation m = (WorkStation) sc;
 			NotifierListener<SimComponent, Object> ml = listener;
 			if (cloneIfPossible)
@@ -225,7 +225,7 @@ public class Shop extends SimComponentContainerBase {
 	 * @see #sources
 	 */
 	public JobSource[] getSources() {
-		return sources.getComponents().toArray(new JobSource[0]);
+		return sources.getChildren().toArray(new JobSource[0]);
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class Shop extends SimComponentContainerBase {
 	 * @param sources An array with all job sources.
 	 */
 	public void setSources(JobSource[] sources) {
-		this.sources.removeAll();
+		this.sources.removeChildren();
 
 		for (JobSource js : sources) {
 			addJobSource(js);
@@ -253,17 +253,17 @@ public class Shop extends SimComponentContainerBase {
 
 	public void addJobSource(JobSource js) {
 		js.setShop(this);
-		js.index = sources.numComponents();
-		sources.addComponent(js);
+		js.index = sources.numChildren();
+		sources.addChild(js);
 	}
 
 	public void removeJobSource(JobSource js) {
-		if (sources.removeComponent(js)) {
+		if (sources.removeChild(js)) {
 			js.setShop(null);
 			js.index = -1;
 
 			int i = 0;
-			for (SimComponent sc : sources.getComponents()) {
+			for (SimComponent sc : sources.getChildren()) {
 				JobSource s = (JobSource) sc;
 				s.index = i++;
 			}
@@ -278,7 +278,7 @@ public class Shop extends SimComponentContainerBase {
 	 * @see #machines()
 	 */
 	public WorkStation[] getMachines() {
-		return machines.getComponents().toArray(new WorkStation[machines.numComponents()]);
+		return machines.getChildren().toArray(new WorkStation[machines.numChildren()]);
 	}
 
 	/**
@@ -297,7 +297,7 @@ public class Shop extends SimComponentContainerBase {
 	 * @param machines An array containing all workstations for this shop.
 	 */
 	public void setMachines(WorkStation[] machines) {
-		this.machines.removeAll();
+		this.machines.removeChildren();
 
 		for (WorkStation ws : machines) {
 			addMachine(ws);
@@ -312,8 +312,8 @@ public class Shop extends SimComponentContainerBase {
 	 */
 	public void addMachine(WorkStation machine) {
 		machine.shop = this;
-		machine.index = machines.numComponents();
-		machines.addComponent(machine);
+		machine.index = machines.numChildren();
+		machines.addChild(machine);
 	}
 
 	/**
@@ -322,12 +322,12 @@ public class Shop extends SimComponentContainerBase {
 	 * @param machine The workstation to remove.
 	 */
 	public void removeMachine(WorkStation machine) {
-		if (machines.removeComponent(machine)) {
+		if (machines.removeChild(machine)) {
 			machine.shop = null;
 			machine.index = -1;
 
 			int i = 0;
-			for (SimComponent sc : machines.getComponents()) {
+			for (SimComponent sc : machines.getChildren()) {
 				WorkStation w = (WorkStation) sc;
 				w.index = i++;
 			}

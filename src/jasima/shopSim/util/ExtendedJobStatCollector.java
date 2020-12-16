@@ -87,7 +87,7 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 		weightedTardinessWithWIP.setName("weightedTardinessWithWIP");
 
 		if (shop != null)
-			for (SimComponent sc : shop.machines().getComponents()) {
+			for (SimComponent sc : shop.machines().getChildren()) {
 				WorkStation m = (WorkStation) sc;
 				for (int i = 0, n = m.queue.size(); i < n; i++) {
 					storeWIPJob(m.queue.get(i));

@@ -413,9 +413,9 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * @param hierarchicalName The name to check.
 	 * @return this, if name matches the parameter; null otherwise.
 	 * 
-	 * @see SimComponentContainer#getComponentByHierarchicalName(String)
+	 * @see SimComponentContainer#getByHierarchicalName(String)
 	 */
-	default SimComponent getComponentByHierarchicalName(String hierarchicalName) {
+	default SimComponent getByHierarchicalName(String hierarchicalName) {
 		return StringUtil.equals(hierarchicalName, getName()) ? this : null;
 	}
 
