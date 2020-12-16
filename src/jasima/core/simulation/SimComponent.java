@@ -13,6 +13,8 @@ import javax.annotation.Nullable;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
+import jasima.core.simulation.util.SimComponentRoot;
+import jasima.core.util.StringUtil;
 import jasima.core.util.ValueStore;
 import jasima.core.util.observer.Notifier;
 
@@ -112,7 +114,8 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	/**
 	 * Returns the container this component is contained in.
 	 */
-	@Nullable SimComponentContainer getParent();
+	@Nullable
+	SimComponentContainer getParent();
 
 	/**
 	 * Sets the container this component is contained in.
@@ -385,19 +388,35 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	}
 
 	/**
-	 * Returns a base name for a SimConponent consisting of the hierarchical
-	 * representation of the parent ({@link #getParent()}) if it exists and the
+	 * Returns a base name for a SimComponent consisting of the hierarchical
+	 * representation of the parent ({@link #getParent()}), if it exists, and the
 	 * (simple) name of the component's class.
 	 */
 	default String getHierarchicalName() {
 		StringBuilder sb = new StringBuilder();
 		SimComponentContainer p = getParent();
-		if (p != null && p != getSim().getRootComponent()) {
+		if (p != null) {
 			sb.append(p.getHierarchicalName()).append(NAME_SEPARATOR);
+		} else {
+			if (!(this instanceof SimComponentRoot)) {
+				sb.append(NAME_SEPARATOR);
+			}
 		}
 		sb.append(this.toString());
 
 		return sb.toString();
+	}
+
+	/**
+	 * Returns the current component if this component's name matched the parameter.
+	 * 
+	 * @param hierarchicalName The name to check.
+	 * @return this, if name matches the parameter; null otherwise.
+	 * 
+	 * @see SimComponentContainer#getComponentByHierarchicalName(String)
+	 */
+	default SimComponent getComponentByHierarchicalName(String hierarchicalName) {
+		return StringUtil.equals(hierarchicalName, getName()) ? this : null;
 	}
 
 	// event notification, delegate to adapter

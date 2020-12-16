@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 /** Simple implementation of a {@link SimComponentContainer}.
  * 
  * @author Torsten Hildebrandt
@@ -50,7 +52,7 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public SimComponent getComponentByName(String name) {
+	public @Nullable SimComponent getComponentByName(String name) {
 		if (componentsByName == null) {
 			componentsByName = new HashMap<>();
 			components.forEach(c -> componentsByName.put(c.getName(), c));

@@ -41,11 +41,18 @@ public class StringUtil {
 		return cs == null || cs.length() == 0;
 	}
 
-	
 	/**
-	 * Replace all line breaks in the given String by " \n " to make it print in a single line.
+	 * Replace all line breaks in the given String by " \n " to make it print in a
+	 * single line.
 	 */
 	public static String replaceLineBreaks(String s) {
 		return s.replaceAll("(\\r\\n|\\r|\\n)", " \\\\n ");
+	}
+
+	/**
+	 * Returns true if both strings are either null or s1.equal(s2).
+	 */
+	public static boolean equals(String s1, String s2) {
+		return (s1 == null) ? s2 == null : s1.equals(s2);
 	}
 }

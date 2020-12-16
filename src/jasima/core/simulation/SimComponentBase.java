@@ -82,15 +82,14 @@ public class SimComponentBase implements SimComponent {
 		if (!isValidName(name)) {
 			throw new IllegalArgumentException(String.format("Component name '%s' is not valid.", name));
 		}
+		setNameInternal(name);
+	}
 
-		if (this.name != null) {
-			throw new IllegalStateException("'name' can only be set once.");
-		}
-
+	protected void setNameInternal(String name) {
 		this.hierarchicalName = null;
 		this.name = name;
 	}
-
+	
 	@Override
 	public String toString() {
 		if (getName() == null) {

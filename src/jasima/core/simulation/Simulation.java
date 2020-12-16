@@ -66,6 +66,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.random.discrete.IntStream;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.util.ProcessActivator;
+import jasima.core.simulation.util.SimComponentRoot;
 import jasima.core.simulation.util.SimCtx;
 import jasima.core.simulation.util.SimEventMethodCall;
 import jasima.core.util.ConsolePrinter;
@@ -308,21 +309,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
 		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();
 
-		setRootComponent(new SimComponentContainerBase() {
-			@Override
-			public void beforeRun() {
-				super.beforeRun();
-
-				trace("sim_start");
-			}
-
-			@Override
-			public void afterRun() {
-				super.afterRun();
-
-				trace("sim_end");
-			}
-		});
+		setRootComponent(new SimComponentRoot());
 	}
 
 	public void addPrintListener(Consumer<SimPrintMessage> listener) {
@@ -1258,6 +1245,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @return The root component of all {@link SimComponent}s contained in the
 	 *         simulation.
 	 */
+	@Override
 	public SimComponentContainer getRootComponent() {
 		return rootComponent;
 	}

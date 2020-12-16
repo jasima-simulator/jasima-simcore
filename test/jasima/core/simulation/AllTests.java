@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestSimContext.class, TestSimProcessBasics.class, TestSimulationBasics.class,
-		TestSimulationControlFlow.class, TestSimulationPausing.class })
+		TestSimulationControlFlow.class, TestSimulationPausing.class, TestComponentNames.class })
 
 public class AllTests {
 
