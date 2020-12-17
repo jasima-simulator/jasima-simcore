@@ -20,8 +20,11 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import static jasima.core.simulation.Simulation.SimExecState.BEFORE_RUN;
 import static jasima.core.simulation.Simulation.SimExecState.INIT;
 import static jasima.core.simulation.Simulation.SimExecState.INITIAL;
+import static jasima.core.simulation.Simulation.SimExecState.PAUSED;
+import static jasima.core.simulation.Simulation.SimExecState.RUNNING;
 import static jasima.core.util.ComponentStates.requireAllowedState;
 import static jasima.core.util.SimProcessUtil.simActionFromRunnable;
 import static jasima.core.util.TypeUtil.createInstance;
@@ -99,6 +102,9 @@ import jasima.core.util.observer.ObservableValue;
  * @author Torsten Hildebrandt
  */
 public class Simulation implements ValueStore, SimCtx, ProcessActivator {
+
+	// result value name for simulation time at end of simulation run
+	public static final String SIM_TIME = "simTime";
 
 	// constants for simTimeToMillisFactor used to convert simTime to an Instant
 	public static final long MILLIS_PER_MINUTE = 60 * 1000;
@@ -278,6 +284,8 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	private Exception execFailure;
 
 	private Set<SimProcess<?>> runnableProcesses;
+
+	private SimEvent simEndEvent;
 
 	public Simulation() {
 		super();
@@ -491,14 +499,18 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		requireAllowedState(state.get(), SimExecState.INIT);
 		state.set(SimExecState.BEFORE_RUN);
 
-		// schedule simulation end
-		if (getSimulationLength() > 0.0) {
-			schedule(new SimEvent(getSimulationLength(), SimEvent.EVENT_PRIO_LOWEST) {
-				@Override
-				public void handle() {
+		simEndEvent = new SimEvent(getInitialSimTime() + getSimulationLength(), SimEvent.EVENT_PRIO_LOWEST) {
+			@Override
+			public void handle() {
+				// check again because simLength might have changed during the simulation run
+				if (simTime() == getTime()) {
 					end();
 				}
-			});
+			}
+		};
+
+		if (getSimulationLength() > 0.0) {
+			schedule(simEndEvent);
 		}
 
 		rootComponent.beforeRun();
@@ -1035,7 +1047,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * Populates the given HashMap with results produced in the simulation run.
 	 */
 	public void produceResults(Map<String, Object> res) {
-		res.put("simTime", simTime());
+		res.put(SIM_TIME, simTime());
 		rootComponent.produceResults(res);
 	}
 
@@ -1045,6 +1057,35 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 */
 	public void addComponent(SimComponent sc) {
 		getRootComponent().addChild(sc);
+		activate(sc);
+	}
+
+	/**
+	 * Calls all lifecycle events on "sc" to be in sync with the simulation it is
+	 * added to. This should happen automatically if a component was added to the
+	 * simulation before the run, but has to be called when components are added
+	 * dynamically while the simulation is ongoing.
+	 */
+	public void activate(SimComponent sc) {
+		requireAllowedState(state.get(), INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED);
+		switch (state.get()) {
+		case INITIAL:
+			break; // do nothing
+		case INIT:
+			sc.init();
+			break;
+		case BEFORE_RUN:
+			sc.init();
+			sc.beforeRun();
+			break;
+		case RUNNING:
+		case PAUSED:
+			sc.init();
+			sc.beforeRun();
+			break;
+		default:
+			throw new AssertionError();
+		}
 	}
 
 	/**
@@ -1173,12 +1214,18 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/** Sets the maximum simulation time. A value of 0.0 means no such limit. */
 	public void setSimulationLength(double simulationLength) {
-		requireAllowedState(state.get(), SimExecState.INIT, SimExecState.INITIAL);
 		if (!(simulationLength >= 0.0)) {
 			throw new IllegalArgumentException("" + simulationLength);
 		}
 
 		this.simulationLength = simulationLength;
+
+		double simEndTime = simTime() + getSimulationLength();
+		if (simEndEvent != null && simEndTime != simEndEvent.getTime()) {
+			// schedule another invocation at the correct time
+			simEndEvent.setTime(simEndTime);
+			schedule(simEndEvent);
+		}
 	}
 
 	/**
@@ -1271,6 +1318,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/** Sets the initial value of the simulation clock. */
 	public void setInitialSimTime(double initialSimTime) {
+		requireAllowedState(state.get(), SimExecState.INIT, SimExecState.INITIAL);
 		this.initialSimTime = initialSimTime;
 	}
 
@@ -1359,7 +1407,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/**
 	 * Specifies the time unit of the (double-valued) simulation time. The default
-	 * value is ChronoUnit.MINUTES. 
+	 * value is ChronoUnit.MINUTES.
 	 *
 	 * @see #simTimeToInstant(double)
 	 * @see #setSimTimeToMillisFactor(long)
