@@ -66,7 +66,6 @@ import java.util.function.Predicate;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
-import jasima.core.random.discrete.IntStream;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.util.ProcessActivator;
 import jasima.core.simulation.util.SimComponentRoot;
@@ -1254,17 +1253,8 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * {@code s}. This just delegates to the {@link RandomFactory} of this
 	 * simulation.
 	 */
-	public DblStream initRndGen(DblStream s, String streamName) {
+	public <T extends DblStream> T initRndGen(T s, String streamName) {
 		return getRndStreamFactory().initRndGen(s, streamName);
-	}
-
-	/**
-	 * Initializes the random number generator associated with the {@link IntStream}
-	 * {@code s}. This just delegates to the {@link RandomFactory} of this
-	 * simulation.
-	 */
-	public IntStream initRndGen(IntStream s, String streamName) {
-		return (IntStream) getRndStreamFactory().initRndGen(s, streamName);
 	}
 
 	/**

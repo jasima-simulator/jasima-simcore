@@ -177,7 +177,7 @@ public class RandomFactory implements Serializable {
 	 *                    information.
 	 * @return The same as {@code stream}.
 	 */
-	public DblStream initRndGen(DblStream stream, String defaultName) {
+	public <T extends DblStream> T initRndGen(T stream, String defaultName) {
 		if (stream == null || stream.getRndGen() != null)
 			return stream;
 

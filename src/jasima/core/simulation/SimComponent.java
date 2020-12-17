@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblStream;
-import jasima.core.random.discrete.IntStream;
 import jasima.core.simulation.util.SimComponentRoot;
 import jasima.core.util.StringUtil;
 import jasima.core.util.ValueStore;
@@ -369,17 +368,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 *
 	 * @see Simulation#initRndGen(DblStream, String)
 	 */
-	default DblStream initRndGen(DblStream s, String streamName) {
-		return getSim().initRndGen(s, streamName);
-	}
-
-	/**
-	 * Initializes the random number generator associated with the {@link IntStream}
-	 * {@code s}. This just delegates to the {@link RandomFactory} of a simulation.
-	 *
-	 * @see Simulation#initRndGen(IntStream, String)
-	 */
-	default IntStream initRndGen(IntStream s, String streamName) {
+	default <T extends DblStream> T initRndGen(T s, String streamName) {
 		return getSim().initRndGen(s, streamName);
 	}
 
