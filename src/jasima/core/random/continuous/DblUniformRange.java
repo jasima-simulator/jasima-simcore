@@ -92,7 +92,7 @@ public class DblUniformRange extends DblStream {
 	}
 
 	private void checkValues(double min, double max) {
-		if (min > max)
+		if (!(min < max))
 			throw new IllegalArgumentException("min>max " + min + " " + max);
 	}
 
