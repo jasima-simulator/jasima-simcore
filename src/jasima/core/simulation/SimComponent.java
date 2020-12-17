@@ -336,6 +336,13 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 		getSim().scheduleProcess(prio, method);
 	}
 
+	/**
+	 * @see Simulation#scheduleProcess(double, int, DoubleSupplier)
+	 */
+	default void scheduleProcess(double firstInvocation, int prio, DoubleSupplier method) {
+		getSim().scheduleProcess(firstInvocation, prio, method);
+	}
+
 	// event tracing
 
 	/**
