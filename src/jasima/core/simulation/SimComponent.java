@@ -130,7 +130,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	void setName(String name);
 
 	default boolean isValidName(String name) {
-		return name != null && name.length() > 0 && name.indexOf('.') < 0;
+		return name != null && name.length() > 0 && name.indexOf(NAME_SEPARATOR) < 0;
 	}
 
 	// default implementations of lifecycle messages/events
