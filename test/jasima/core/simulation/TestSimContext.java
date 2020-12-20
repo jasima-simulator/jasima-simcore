@@ -5,6 +5,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -160,6 +163,69 @@ public class TestSimContext {
 
 		// check results
 		assertEquals(2.0, (Double) res1.get("simTime"), 1e-6);
+	}
+
+	@Test(expected = SimulationFailed.class)
+	public void cantSetInitialSimTimeOnceRunning() throws Exception {
+		// triggers IllegalStateException which is then wrapped in a SimulationFailed
+		SimContext.of(sim -> {
+			sim.setInitialSimTime(0.0); 
+		});
+	}
+
+	@Test
+	public void testTimeConvertInDays() throws Exception {
+		SimContext.of(sim -> {
+			sim.setSimTimeToMillisFactor(ChronoUnit.DAYS);
+
+			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+			sim.setSimTimeStartInstant(startInstant);
+
+			waitFor(5); // wait 5 days
+
+			assertEquals("simTimeAtEnd", 5.0, sim.simTime(), 1e-6);
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+		});
+	}
+
+	@Test
+	public void testWaitForDuration() throws Exception {
+		SimContext.of(sim -> {
+			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+			sim.setSimTimeStartInstant(startInstant);
+
+			waitFor(Duration.ofDays(5)); // wait 5 days
+
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+		});
+	}
+
+	@Test
+	public void testTimeConvertInMinutes() throws Exception {
+		SimContext.of(sim -> {
+			sim.setSimTimeToMillisFactor(ChronoUnit.MINUTES);
+
+			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+			sim.setSimTimeStartInstant(startInstant);
+
+			waitFor(5*24*60.0); // wait 5 days
+
+			assertEquals("simTimeAtEnd", 5*24*60.0, sim.simTime(), 1e-6);
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+		});
+	}
+
+	@Test
+	public void testTimeConvertDefaultIsMinutes() throws Exception {
+		SimContext.of(sim -> {
+			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+			sim.setSimTimeStartInstant(startInstant);
+
+			waitFor(5*24*60.0); // wait 5 days
+
+			assertEquals("simTimeAtEnd", 5*24*60.0, sim.simTime(), 1e-6);
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+		});
 	}
 
 	private <R> R rethrowUnchecked(Callable<R> c) {
