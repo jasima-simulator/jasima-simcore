@@ -40,7 +40,7 @@ public class TestSimulationControlFlow {
 
 	@Test
 	public void testStraightExecution() {
-		sim.schedule("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 		sim.performRun();
 
 		assertEquals("simTime", 2.0, sim.simTime(), 1e-6);
@@ -50,8 +50,8 @@ public class TestSimulationControlFlow {
 
 	@Test(expected = IllegalStateException.class)
 	public void testCantRunTwice() {
-		sim.schedule("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("event2", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("event2", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
 		// normal execution first time
 		sim.init();
@@ -67,8 +67,8 @@ public class TestSimulationControlFlow {
 
 	@Test
 	public void testFixedRunLength() {
-		sim.schedule("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("never executed", 24.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("never executed", 24.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 		sim.setSimulationLength(23.0);
 
 		sim.performRun();
@@ -80,9 +80,9 @@ public class TestSimulationControlFlow {
 
 	@Test(expected = SimulationFailed.class)
 	public void testException() {
-		sim.schedule("incCounter", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-		sim.schedule("not executed", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("incCounter", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+		sim.scheduleAt("not executed", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
 		try {
 			sim.performRun();
@@ -105,9 +105,9 @@ public class TestSimulationControlFlow {
 			return true;
 		});
 
-		sim.schedule("incCounter", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-		sim.schedule("not executed", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("incCounter", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+		sim.scheduleAt("not executed", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
 		try {
 			sim.performRun();
@@ -131,9 +131,9 @@ public class TestSimulationControlFlow {
 			return false;
 		});
 
-		sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-		sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+		sim.scheduleAt("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
 		sim.performRun();
 
@@ -154,11 +154,11 @@ public class TestSimulationControlFlow {
 			return false;
 		});
 
-		sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-		sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-		sim.schedule("throwException", 5.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-		sim.schedule("incCounter2", 6.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+		sim.scheduleAt("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+		sim.scheduleAt("throwException", 5.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+		sim.scheduleAt("incCounter2", 6.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
 		sim.performRun();
 
@@ -178,9 +178,9 @@ public class TestSimulationControlFlow {
 				return true;
 			});
 
-			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.scheduleAt("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.scheduleAt("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
 
 			// main process is finished at that time
 		});
@@ -200,9 +200,9 @@ public class TestSimulationControlFlow {
 				return true;
 			});
 
-			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
+			sim.scheduleAt("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.scheduleAt("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
 
 			sim.currentProcess().suspend();
 			fail("should never be reached");
@@ -233,9 +233,9 @@ public class TestSimulationControlFlow {
 				return true;
 			});
 
-			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
+			sim.scheduleAt("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.scheduleAt("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
 
 			// main process is finished at that time
 		});
@@ -264,9 +264,9 @@ public class TestSimulationControlFlow {
 				return true;
 			});
 
-			sim.schedule("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
-			sim.schedule("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
-			sim.schedule("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
+			sim.scheduleAt("incCounter1", 2.0, SimEvent.EVENT_PRIO_NORMAL, this::incCounter);
+			sim.scheduleAt("throwException", 3.0, SimEvent.EVENT_PRIO_NORMAL, this::throwException);
+			sim.scheduleAt("incCounter2", 4.0, SimEvent.EVENT_PRIO_NORMAL, Assert::fail);
 
 			// main process is finished at that time
 		});

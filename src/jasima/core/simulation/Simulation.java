@@ -527,7 +527,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 		// schedule statistics reset
 		if (getStatsResetTime() > getInitialSimTime()) {
-			schedule(getStatsResetTime(), SimEvent.EVENT_PRIO_LOWEST, rootComponent::resetStats);
+			scheduleAt(getStatsResetTime(), SimEvent.EVENT_PRIO_LOWEST, rootComponent::resetStats);
 		}
 
 		// call once for each run
@@ -630,7 +630,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	/**
 	 * Schedules a call to {@code method} at a certain point in time. Instead of
 	 * calling this method it is usually better to use
-	 * {@link #schedule(String, double, int, Runnable)} instead, as the additional
+	 * {@link #scheduleAt(String, double, int, Runnable)} instead, as the additional
 	 * description parameter usually makes debugging easier.
 	 * 
 	 * @param time   The time when to call {@code method}.
@@ -638,8 +638,8 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 *               the same time).
 	 * @param method The method to call at the given moment.
 	 */
-	public void schedule(double time, int prio, Runnable method) {
-		schedule(null, time, prio, method);
+	public void scheduleAt(double time, int prio, Runnable method) {
+		scheduleAt(null, time, prio, method);
 	}
 
 	/**
@@ -652,14 +652,14 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 *                    events at the same time).
 	 * @param action      The method to call at the given moment.
 	 */
-	public void schedule(String description, double time, int prio, Runnable action) {
+	public void scheduleAt(String description, double time, int prio, Runnable action) {
 		SimEvent e = new SimEventMethodCall(time, prio, description, action);
 		schedule(e);
 	}
 
 	/**
 	 * Schedules a call to {@code method} at a certain point in time given as a Java
-	 * Instant. Usually using {@link #schedule(String, Instant, int, Runnable)}
+	 * Instant. Usually using {@link #scheduleAt(String, Instant, int, Runnable)}
 	 * should be preferred.
 	 * 
 	 * @param time   The time when to call {@code method}.
@@ -667,8 +667,8 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 *               the same time).
 	 * @param method The method to call at the given moment.
 	 */
-	public void schedule(Instant time, int prio, Runnable method) {
-		schedule(null, time, prio, method);
+	public void scheduleAt(Instant time, int prio, Runnable method) {
+		scheduleAt(null, time, prio, method);
 	}
 
 	/**
@@ -682,13 +682,13 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 *                    events at the same time).
 	 * @param method      The method to call at the given moment.
 	 */
-	public void schedule(String description, Instant time, int prio, Runnable method) {
-		schedule(description, toSimTime(time), prio, method);
+	public void scheduleAt(String description, Instant time, int prio, Runnable method) {
+		scheduleAt(description, toSimTime(time), prio, method);
 	}
 
 	/**
 	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
 	 * time instead of an absolute one.
 	 * <p>
 	 * Usually using {@link #scheduleIn(String, double, int, Runnable)} should be
@@ -705,7 +705,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/**
 	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
 	 * time instead of an absolute one.
 	 * 
 	 * @param description Some description that is added as an additional parameter
@@ -716,12 +716,12 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @param method      The method to call at the given moment.
 	 */
 	public void scheduleIn(String description, double time, int prio, Runnable method) {
-		schedule(description, simTime() + time, prio, method);
+		scheduleAt(description, simTime() + time, prio, method);
 	}
 
 	/**
 	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
 	 * time specified by a {@link Duration} instead of an absolute one.
 	 * <p>
 	 * Usually using {@link #scheduleIn(String, Duration, int, Runnable)} should be
@@ -739,7 +739,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/**
 	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #schedule(double, int, Runnable)} this method expects a relative
+	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
 	 * time specified by a {@link Duration} instead of an absolute one.
 	 * 
 	 * @param description Some description that is added as an additional parameter
@@ -751,7 +751,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @param method      The method to call at the given moment.
 	 */
 	public void scheduleIn(String description, Duration duration, int prio, Runnable method) {
-		schedule(description, simTime() + toSimTime(duration), prio, method);
+		scheduleAt(description, simTime() + toSimTime(duration), prio, method);
 	}
 
 	public void scheduleIn(long numUnits, TemporalUnit unit, int prio, Runnable method) {
@@ -759,7 +759,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	}
 
 	public void scheduleIn(String description, long numUnits, TemporalUnit unit, int prio, Runnable method) {
-		schedule(description, simTime() + toSimTime(numUnits, unit), prio, method);
+		scheduleAt(description, simTime() + toSimTime(numUnits, unit), prio, method);
 	}
 
 	/**

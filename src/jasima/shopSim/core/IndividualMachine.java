@@ -107,7 +107,7 @@ public class IndividualMachine {
 
 			// don't interrupt ongoing operation/downtime, postpone takeDown
 			// instead
-			shop.getSim().schedule(procFinished, WorkStation.TAKE_DOWN_PRIO, () -> {
+			shop.getSim().scheduleAt(procFinished, WorkStation.TAKE_DOWN_PRIO, () -> {
 				assert workStation.currMachine == null;
 				workStation.currMachine = IndividualMachine.this;
 				takeDown(downReason);
@@ -133,7 +133,7 @@ public class IndividualMachine {
 		state = MachineState.DOWN;
 
 		// schedule initial activation
-		workStation.getSim().schedule(relDate, WorkStation.ACTIVATE_PRIO, () -> {
+		workStation.getSim().scheduleAt(relDate, WorkStation.ACTIVATE_PRIO, () -> {
 			assert workStation.currMachine == null;
 			workStation.currMachine = IndividualMachine.this;
 			IndividualMachine.this.activate();

@@ -243,7 +243,7 @@ public class WorkStation extends SimComponentBase {
 	public void futureArrival(final Job f, final double arrivesAt) {
 		// execute asynchronously a little later so exactly concurrent job
 		// selections don't see each others results
-		getSim().schedule(shop.simTime(), LOOKAHEAD_PRIO, () -> addToQueue(f, arrivesAt));
+		getSim().scheduleAt(shop.simTime(), LOOKAHEAD_PRIO, () -> addToQueue(f, arrivesAt));
 	}
 
 	private void addToQueue(Job j, double arrivesAt) {
@@ -409,7 +409,7 @@ public class WorkStation extends SimComponentBase {
 	 */
 	public void selectAndStart() {
 		// execute asynchronously so all jobs arrived/departed before selection
-		getSim().schedule(shop.simTime(), SELECT_PRIO, this::selectAndStart0);
+		getSim().scheduleAt(shop.simTime(), SELECT_PRIO, this::selectAndStart0);
 	}
 
 	protected void selectAndStart0() {

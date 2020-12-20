@@ -3,7 +3,7 @@ package jasima.core.simulation.util;
 import jasima.core.simulation.SimEvent;
 
 /**
- * This class is used internally by {@link #schedule(double,int,Runnable)} to
+ * This class is used internally by {@link #scheduleAt(double,int,Runnable)} to
  * run a certain method at a particular simulation time.
  */
 public final class SimEventMethodCall extends SimEvent {

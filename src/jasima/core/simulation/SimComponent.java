@@ -177,10 +177,10 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 *               the same time.
 	 * @param method The method to call at the given moment.
 	 * 
-	 * @see Simulation#schedule(double, int, Runnable)
+	 * @see Simulation#scheduleAt(double, int, Runnable)
 	 */
 	default void schedule(double time, int prio, Runnable method) {
-		getSim().schedule(time, prio, method);
+		getSim().scheduleAt(time, prio, method);
 	}
 
 	/**
@@ -193,10 +193,10 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 *                    events at the same time.
 	 * @param method      The method to call at the given moment.
 	 * 
-	 * @see Simulation#schedule(double, int, Runnable)
+	 * @see Simulation#scheduleAt(double, int, Runnable)
 	 */
 	default void schedule(String description, double time, int prio, Runnable method) {
-		getSim().schedule(description, time, prio, method);
+		getSim().scheduleAt(description, time, prio, method);
 	}
 
 	/**
@@ -280,10 +280,10 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 *               the same time.
 	 * @param method The method to call at the given moment.
 	 * 
-	 * @see Simulation#schedule(Instant, int, Runnable)
+	 * @see Simulation#scheduleAt(Instant, int, Runnable)
 	 */
 	default void schedule(Instant time, int prio, Runnable method) {
-		getSim().schedule(time, prio, method);
+		getSim().scheduleAt(time, prio, method);
 	}
 
 	/**
@@ -296,10 +296,10 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 *                    events at the same time.
 	 * @param method      The method to call at the given moment.
 	 * 
-	 * @see Simulation#schedule(Instant, int, Runnable)
+	 * @see Simulation#scheduleAt(Instant, int, Runnable)
 	 */
 	default void schedule(String description, Instant time, int prio, Runnable method) {
-		getSim().schedule(description, time, prio, method);
+		getSim().scheduleAt(description, time, prio, method);
 	}
 
 	/**

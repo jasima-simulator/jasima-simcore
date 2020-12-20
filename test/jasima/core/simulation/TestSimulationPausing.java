@@ -44,9 +44,9 @@ public class TestSimulationPausing {
 		sim.setPrintLevel(MsgCategory.ALL);
 		sim.addPrintListener(System.out::println);
 
-		sim.schedule("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
-		sim.schedule("event2", 4.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
-		sim.schedule("event3", 6.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
+		sim.scheduleAt("event1", 2.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
+		sim.scheduleAt("event2", 4.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
+		sim.scheduleAt("event3", 6.0, SimEvent.EVENT_PRIO_NORMAL, TestSimulationPausing::sleepOneSecond);
 
 		sim.setSimulationLength(23.0);
 

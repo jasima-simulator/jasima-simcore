@@ -94,7 +94,7 @@ public class DowntimeSource {
 
 			// schedule next downtime
 			double nextFailure = calcDeactivateTime(shop);
-			shop.getSim().schedule(nextFailure, WorkStation.TAKE_DOWN_PRIO, () -> {
+			shop.getSim().scheduleAt(nextFailure, WorkStation.TAKE_DOWN_PRIO, () -> {
 				assert machine.workStation.currMachine == null;
 				machine.workStation.currMachine = machine;
 				machine.takeDown(DowntimeSource.this);
@@ -114,7 +114,7 @@ public class DowntimeSource {
 		machine.procFinished = whenReactivated;
 
 		// schedule reactivation
-		shop.getSim().schedule(whenReactivated, WorkStation.ACTIVATE_PRIO, () -> {
+		shop.getSim().scheduleAt(whenReactivated, WorkStation.ACTIVATE_PRIO, () -> {
 			assert machine.workStation.currMachine == null;
 			machine.workStation.currMachine = machine;
 			machine.activate();

@@ -56,7 +56,7 @@ public class TestSimProcessBasics {
 	public void testSuspendResumeByEvent() {
 		SimProcess<Void> p = new SimProcess<>(sim, () -> TestSimProcessBasics.suspendingProcess());
 		p.awakeIn(0.0);
-		sim.schedule(2.0, SimEvent.EVENT_PRIO_NORMAL, () -> p.resume());
+		sim.scheduleAt(2.0, SimEvent.EVENT_PRIO_NORMAL, () -> p.resume());
 
 		sim.performRun();
 		assertEquals(3.0, sim.simTime(), 1e-6);
