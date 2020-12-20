@@ -7,6 +7,9 @@ import static jasima.core.util.SimProcessUtil.pauseExecuting;
 import static jasima.core.util.SimProcessUtil.startExecuting;
 import static java.util.Objects.requireNonNull;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -291,6 +294,14 @@ public class SimProcess<R> implements Runnable {
 		waitUntil(sim.simTime() + deltaT);
 	}
 
+	public void waitFor(long amount, TemporalUnit u) throws MightBlock {
+		waitUntil(sim.simTime() + sim.toSimTime(amount, u));
+	}
+
+	public void waitFor(Duration d) throws MightBlock {
+		waitUntil(sim.simTime() + sim.toSimTime(d));
+	}
+
 	public void resume() {
 		requireAllowedState(state, ProcessState.PASSIVE);
 		scheduleReactivateAt(sim.simTime());
@@ -318,6 +329,10 @@ public class SimProcess<R> implements Runnable {
 		log.trace("process {} waiting until {}", getName(), tAbs);
 
 		yield();
+	}
+
+	public void waitUntil(Instant instant) throws MightBlock {
+		waitUntil(sim.toSimTime(instant));
 	}
 
 	public void suspend() throws MightBlock {

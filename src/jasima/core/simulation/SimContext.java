@@ -5,6 +5,8 @@ import static jasima.core.simulation.SimContext.I18nConsts.NO_CONTEXT;
 import static jasima.core.util.SimProcessUtil.simAction;
 import static jasima.core.util.StandardExtensionImpl.JASIMA_CORE_RES_BUNDLE;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 import java.util.Locale;
 import java.util.Map;
@@ -51,6 +53,10 @@ public class SimContext {
 
 	public static double toSimTime(long amount, TemporalUnit u) {
 		return requireSimContext().toSimTime(amount, u);
+	}
+
+	public static double toSimTime(Duration d) {
+		return requireSimContext().toSimTime(d);
 	}
 
 	public static String message(Enum<?> key) {
@@ -102,11 +108,19 @@ public class SimContext {
 	}
 
 	public static void waitFor(long amount, TemporalUnit u) throws MightBlock {
-		currentProcess().waitFor(toSimTime(amount, u));
+		currentProcess().waitFor(amount, u);
+	}
+
+	public static void waitFor(Duration d) throws MightBlock {
+		currentProcess().waitFor(d);
 	}
 
 	public static void waitUntil(double tAbs) throws MightBlock {
 		currentProcess().waitUntil(tAbs);
+	}
+
+	public static void waitUntil(Instant instant) throws MightBlock {
+		currentProcess().waitUntil(instant);
 	}
 
 	public static void suspend() throws MightBlock {
