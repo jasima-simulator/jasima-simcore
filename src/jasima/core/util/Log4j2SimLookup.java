@@ -49,7 +49,7 @@ public class Log4j2SimLookup implements StrLookup {
 			formatter = FastDateFormat.getInstance(params.substring(1), TimeZone.getTimeZone(s.getZoneId()),
 					s.getLocale());
 		}
-		return formatter.format(s.simTimeToInstant().toEpochMilli());
+		return formatter.format(s.simTimeAbs().toEpochMilli());
 	}
 
 	public String lookup(LogEvent event, String key) {

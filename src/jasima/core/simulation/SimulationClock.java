@@ -30,7 +30,7 @@ final class SimulationClock extends Clock {
 
 	@Override
 	public Instant instant() {
-		return sim.simTimeToInstant();
+		return sim.simTimeAbs();
 	}
 
 	@Override

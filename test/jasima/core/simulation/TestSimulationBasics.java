@@ -59,13 +59,13 @@ public class TestSimulationBasics {
 
 		// default is to assume time to be in minutes, i.e. simtime is at 360.0
 		// minutes
-		Instant instant = sim.simTimeToInstant();
+		Instant instant = sim.simTimeAbs();
 		LocalDateTime exp = LocalDateTime.of(Year.now(Clock.systemUTC()).getValue(), 1, 1, 6, 0);
 		assertEquals(exp.atOffset(ZoneOffset.UTC).toInstant(), instant);
 
 		// assume simtime to be in hours, i.e. simtime is at 360.0 hours
 		sim.setSimTimeToMillisFactor(60 * 60 * 1000);
-		Instant i2 = sim.simTimeToInstant();
+		Instant i2 = sim.simTimeAbs();
 		LocalDateTime e2 = LocalDateTime.of(Year.now(Clock.systemUTC()).getValue(), 1, 16, 0, 0);
 		assertEquals(e2.atOffset(ZoneOffset.UTC).toInstant(), i2);
 	}
@@ -85,7 +85,7 @@ public class TestSimulationBasics {
 		assertEquals("simTime at end", 360.0, sim.simTime(), 1e-6);
 		assertEquals("default simTimeToMillisFactor", 60 * 1000, sim.getSimTimeToMillisFactor());
 
-		Instant instant = sim.simTimeToInstant();
+		Instant instant = sim.simTimeAbs();
 		LocalDateTime exp = LocalDateTime.of(Year.now(Clock.systemUTC()).getValue(), 1, 1, 4, 0);
 		assertEquals(exp.atOffset(ZoneOffset.UTC).toInstant(), instant);
 	}

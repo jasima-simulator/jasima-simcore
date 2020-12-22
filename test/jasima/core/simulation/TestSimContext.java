@@ -1,13 +1,15 @@
 package jasima.core.simulation;
 
 import static jasima.core.simulation.SimContext.waitFor;
+import static jasima.core.simulation.Simulation.SIM_TIME;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -16,6 +18,7 @@ import java.util.concurrent.Future;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.Simulation.SimulationFailed;
 
 public class TestSimContext {
@@ -165,18 +168,80 @@ public class TestSimContext {
 		assertEquals(2.0, (Double) res1.get("simTime"), 1e-6);
 	}
 
+	@Test
+	public void testNestedSimulation3() throws Exception {
+		SimContext.of(outerSim -> {
+			outerSim.setSimTimeToMillisFactor(DAYS);
+			Instant outerStart = Instant.parse("2020-01-01T15:00:00Z");
+			outerSim.setSimTimeStartInstant(outerStart);
+
+			for (int n = 0; n < 5; n++) {
+				// create innerSim, init with state of outerSim
+				Map<String, Object> resInner = SimContext.of(innerSim -> {
+					innerSim.setSimTimeToMillisFactor(MINUTES);
+
+					Instant innerStartAbs = outerSim.simTimeAbs();
+					innerSim.setSimTimeStartInstant(innerStartAbs);
+
+					waitFor(1, DAYS); // simulate 1 day in innerSim (with simTime in minutes)
+					assertEquals("inner.simTimeAbsAtEnd", innerStartAbs.plus(1, DAYS), innerSim.simTimeAbs());
+				});
+
+				// inspect and use results from "innerSim"
+				assertEquals("inner.simTimeAtEnd", 1 * 24 * 60.0, (Double) resInner.get(SIM_TIME), 1e-6);
+
+				waitFor(1); // simulate 1 day in outerSim
+			}
+
+			assertEquals("simTimeAtEnd", 5.0, outerSim.simTime(), 1e-6);
+			assertEquals("simTimeAbsAtEnd", outerStart.plus(5, DAYS), outerSim.simTimeAbs());
+		});
+	}
+
+	@Test
+	public void testNestedSimulation3_methodRefs() throws Exception {
+		SimContext.of(this::runOuterSim);
+	}
+
+	private void runOuterSim(Simulation sim) throws MightBlock {
+		sim.setSimTimeToMillisFactor(DAYS);
+		Instant outerStart = Instant.parse("2020-01-01T15:00:00Z");
+		sim.setSimTimeStartInstant(outerStart);
+
+		for (int n = 0; n < 5; n++) {
+			// create innerSim, init with state of outerSim
+			Map<String, Object> resInner = SimContext.of(innerSim -> runInnerSim(innerSim, sim.simTimeAbs()));
+
+			// inspect and use results from "innerSim"
+			assertEquals("inner.simTimeAtEnd", 1 * 24 * 60.0, (Double) resInner.get(SIM_TIME), 1e-6);
+
+			waitFor(1); // simulate 1 day in outerSim
+		}
+
+		assertEquals("simTimeAtEnd", 5.0, sim.simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", outerStart.plus(5, DAYS), sim.simTimeAbs());
+	}
+
+	private void runInnerSim(Simulation sim, Instant innerStartAbs) throws MightBlock {
+		sim.setSimTimeToMillisFactor(MINUTES);
+		sim.setSimTimeStartInstant(innerStartAbs);
+
+		waitFor(1, DAYS); // simulate 1 day in innerSim (with simTime in minutes)
+		assertEquals("inner.simTimeAbsAtEnd", innerStartAbs.plus(1, DAYS), sim.simTimeAbs());
+	}
+
 	@Test(expected = SimulationFailed.class)
 	public void cantSetInitialSimTimeOnceRunning() throws Exception {
 		// triggers IllegalStateException which is then wrapped in a SimulationFailed
 		SimContext.of(sim -> {
-			sim.setInitialSimTime(0.0); 
+			sim.setInitialSimTime(0.0);
 		});
 	}
 
 	@Test
 	public void testTimeConvertInDays() throws Exception {
 		SimContext.of(sim -> {
-			sim.setSimTimeToMillisFactor(ChronoUnit.DAYS);
+			sim.setSimTimeToMillisFactor(DAYS);
 
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
 			sim.setSimTimeStartInstant(startInstant);
@@ -184,7 +249,7 @@ public class TestSimContext {
 			waitFor(5); // wait 5 days
 
 			assertEquals("simTimeAtEnd", 5.0, sim.simTime(), 1e-6);
-			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
 		});
 	}
 
@@ -196,22 +261,22 @@ public class TestSimContext {
 
 			waitFor(Duration.ofDays(5)); // wait 5 days
 
-			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
 		});
 	}
 
 	@Test
 	public void testTimeConvertInMinutes() throws Exception {
 		SimContext.of(sim -> {
-			sim.setSimTimeToMillisFactor(ChronoUnit.MINUTES);
+			sim.setSimTimeToMillisFactor(MINUTES);
 
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
 			sim.setSimTimeStartInstant(startInstant);
 
-			waitFor(5*24*60.0); // wait 5 days
+			waitFor(5 * 24 * 60.0); // wait 5 days
 
-			assertEquals("simTimeAtEnd", 5*24*60.0, sim.simTime(), 1e-6);
-			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+			assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
 		});
 	}
 
@@ -221,10 +286,10 @@ public class TestSimContext {
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
 			sim.setSimTimeStartInstant(startInstant);
 
-			waitFor(5*24*60.0); // wait 5 days
+			waitFor(5 * 24 * 60.0); // wait 5 days
 
-			assertEquals("simTimeAtEnd", 5*24*60.0, sim.simTime(), 1e-6);
-			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, ChronoUnit.DAYS), sim.simTimeToInstant());
+			assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
+			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
 		});
 	}
 

@@ -69,8 +69,7 @@ import jasima.core.random.continuous.DblStream;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.util.ProcessActivator;
 import jasima.core.simulation.util.SimComponentRoot;
-import jasima.core.simulation.util.SimCtx;
-import jasima.core.simulation.util.SimEventMethodCall;
+import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
@@ -100,7 +99,7 @@ import jasima.core.util.observer.ObservableValue;
  * 
  * @author Torsten Hildebrandt
  */
-public class Simulation implements ValueStore, SimCtx, ProcessActivator {
+public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	// result value name for simulation time at end of simulation run
 	public static final String SIM_TIME = "simTime";
@@ -609,6 +608,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * 
 	 * @param event Some future event to be executed by the main event loop.
 	 */
+	@Override
 	public SimEvent schedule(SimEvent event) {
 		if (event.getTime() == simTime && event.getPrio() <= currPrio) {
 			printFmt(MsgCategory.WARN, "Priority inversion (current: %d, scheduled: %d, event=%s).", currPrio,
@@ -625,141 +625,6 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 		events.insert(event);
 
 		return event;
-	}
-
-	/**
-	 * Schedules a call to {@code method} at a certain point in time. Instead of
-	 * calling this method it is usually better to use
-	 * {@link #scheduleAt(String, double, int, Runnable)} instead, as the additional
-	 * description parameter usually makes debugging easier.
-	 * 
-	 * @param time   The time when to call {@code method}.
-	 * @param prio   Priority of the event (to deterministically sequence events at
-	 *               the same time).
-	 * @param method The method to call at the given moment.
-	 */
-	public void scheduleAt(double time, int prio, Runnable method) {
-		scheduleAt(null, time, prio, method);
-	}
-
-	/**
-	 * Schedules a call to {@code method} at a certain point in time.
-	 * 
-	 * @param description Some description that is added as an additional parameter
-	 *                    to the Event object (makes debugging easier).
-	 * @param time        The time when to call {@code method}.
-	 * @param prio        Priority of the event (to deterministically sequence
-	 *                    events at the same time).
-	 * @param action      The method to call at the given moment.
-	 */
-	public void scheduleAt(String description, double time, int prio, Runnable action) {
-		SimEvent e = new SimEventMethodCall(time, prio, description, action);
-		schedule(e);
-	}
-
-	/**
-	 * Schedules a call to {@code method} at a certain point in time given as a Java
-	 * Instant. Usually using {@link #scheduleAt(String, Instant, int, Runnable)}
-	 * should be preferred.
-	 * 
-	 * @param time   The time when to call {@code method}.
-	 * @param prio   Priority of the event (to deterministically sequence events at
-	 *               the same time).
-	 * @param method The method to call at the given moment.
-	 */
-	public void scheduleAt(Instant time, int prio, Runnable method) {
-		scheduleAt(null, time, prio, method);
-	}
-
-	/**
-	 * Schedules a call to {@code method} at a certain point in time given as a Java
-	 * Instant.
-	 * 
-	 * @param description Some description that is added as an additional parameter
-	 *                    to the Event object (makes debugging easier).
-	 * @param time        The time when to call {@code method}.
-	 * @param prio        Priority of the event (to deterministically sequence
-	 *                    events at the same time).
-	 * @param method      The method to call at the given moment.
-	 */
-	public void scheduleAt(String description, Instant time, int prio, Runnable method) {
-		scheduleAt(description, toSimTime(time), prio, method);
-	}
-
-	/**
-	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
-	 * time instead of an absolute one.
-	 * <p>
-	 * Usually using {@link #scheduleIn(String, double, int, Runnable)} should be
-	 * preferred.
-	 * 
-	 * @param time   The time when to call {@code method}.
-	 * @param prio   Priority of the event (to deterministically sequence events at
-	 *               the same time).
-	 * @param method The method to call at the given moment.
-	 */
-	public void scheduleIn(double time, int prio, Runnable method) {
-		scheduleIn(null, time, prio, method);
-	}
-
-	/**
-	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
-	 * time instead of an absolute one.
-	 * 
-	 * @param description Some description that is added as an additional parameter
-	 *                    to the Event object (makes debugging easier).
-	 * @param time        The time when to call {@code method}.
-	 * @param prio        Priority of the event (to deterministically sequence
-	 *                    events at the same time).
-	 * @param method      The method to call at the given moment.
-	 */
-	public void scheduleIn(String description, double time, int prio, Runnable method) {
-		scheduleAt(description, simTime() + time, prio, method);
-	}
-
-	/**
-	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
-	 * time specified by a {@link Duration} instead of an absolute one.
-	 * <p>
-	 * Usually using {@link #scheduleIn(String, Duration, int, Runnable)} should be
-	 * preferred.
-	 * 
-	 * @param duration The duration from the current simulation time when to call
-	 *                 {@code method}.
-	 * @param prio     Priority of the event (to deterministically sequence events
-	 *                 at the same time).
-	 * @param method   The method to call at the given moment.
-	 */
-	public void scheduleIn(Duration duration, int prio, Runnable method) {
-		scheduleIn(null, duration, prio, method);
-	}
-
-	/**
-	 * Schedules a call to {@code method} in a certain amount of time. In contrast
-	 * to {@link #scheduleAt(double, int, Runnable)} this method expects a relative
-	 * time specified by a {@link Duration} instead of an absolute one.
-	 * 
-	 * @param description Some description that is added as an additional parameter
-	 *                    to the Event object (makes debugging easier).
-	 * @param duration    The duration from the current simulation time when to call
-	 *                    {@code method}.
-	 * @param prio        Priority of the event (to deterministically sequence
-	 *                    events at the same time).
-	 * @param method      The method to call at the given moment.
-	 */
-	public void scheduleIn(String description, Duration duration, int prio, Runnable method) {
-		scheduleAt(description, simTime() + toSimTime(duration), prio, method);
-	}
-
-	public void scheduleIn(long numUnits, TemporalUnit unit, int prio, Runnable method) {
-		scheduleIn(null, toSimTime(numUnits, unit), prio, method);
-	}
-
-	public void scheduleIn(String description, long numUnits, TemporalUnit unit, int prio, Runnable method) {
-		scheduleAt(description, simTime() + toSimTime(numUnits, unit), prio, method);
 	}
 
 	/**
@@ -895,23 +760,15 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	}
 
 	/** Returns the current simulation time. */
+	@Override
 	public double simTime() {
 		return simTime;
 	}
 
 	/**
-	 * Converts the current simulation time to a Java {@link Instant}.
-	 * 
-	 * @see #simTimeToInstant(double)
-	 */
-	public Instant simTimeToInstant() {
-		return simTimeToInstant(simTime());
-	}
-
-	/**
 	 * Converts the current simulation time to a Java {@link LocalDateTime}. This
 	 * converts the current simulation time to an {@code Instant} first (see
-	 * {@link #simTimeToInstant()}) and then converts it to the local time for this
+	 * {@link #simTimeAbs()}) and then converts it to the local time for this
 	 * simulation's zone id ({@link #getZoneId()}.
 	 * 
 	 * @see #simTimeToInstant(double)
@@ -922,9 +779,9 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 
 	/**
 	 * Converts a simulation time to a Java {@link LocalDateTime}. The simulation
-	 * time is converted to an {@code Instant} first (see
-	 * {@link #simTimeToInstant()}) and then converted to the local time for this
-	 * simulation's zone id (see {@link #getZoneId()}.
+	 * time is converted to an {@code Instant} first (see {@link #simTimeAbs()})
+	 * and then converted to the local time for this simulation's zone id (see
+	 * {@link #getZoneId()}.
 	 * 
 	 * @see #simTimeToInstant(double)
 	 */
@@ -953,9 +810,18 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @see #setSimTimeStartInstant(Instant)
 	 * @see #setSimTimeToMillisFactor(long)
 	 */
+	@Override
 	public Instant simTimeToInstant(double simTime) {
 		long simTimeMillis = Math.round((simTime - getInitialSimTime()) * simTimeToMillisFactor);
 		return getSimTimeStartInstant().plus(simTimeMillis, ChronoUnit.MILLIS);
+	}
+
+	/**
+	 * Converts the given simulation time span to a Java {@link Duration}.
+	 */
+	public Duration simTimeToDuration(double simTime) {
+		double millis = simTime * simTimeToMillisFactor;
+		return Duration.of(Math.round(millis), ChronoUnit.MILLIS);
 	}
 
 	/**
@@ -965,6 +831,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @param instant The instant to be converted to simulation time.
 	 * @return The instant converted to simulation time.
 	 */
+	@Override
 	public double toSimTime(Instant instant) {
 		double durationMillis = instant.toEpochMilli() - getSimTimeStartInstant().toEpochMilli();
 		return durationMillis / simTimeToMillisFactor + getInitialSimTime();
@@ -977,6 +844,7 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 * @param d The duration to be converted to simulation time.
 	 * @return The amount of simulation time.
 	 */
+	@Override
 	public double toSimTime(Duration d) {
 		double millis = d.toMillis();
 		return millis / simTimeToMillisFactor;
@@ -994,13 +862,9 @@ public class Simulation implements ValueStore, SimCtx, ProcessActivator {
 	 *                 {@link ChronoUnit}
 	 * @return The amount of simulation time.
 	 */
+	@Override
 	public double toSimTime(long numUnits, TemporalUnit u) {
 		return toSimTime(Duration.of(numUnits, u));
-	}
-
-	public Duration simTimeToDuration(double simTime) {
-		double millis = simTime * simTimeToMillisFactor;
-		return Duration.of(Math.round(millis), ChronoUnit.MILLIS);
 	}
 
 	/**

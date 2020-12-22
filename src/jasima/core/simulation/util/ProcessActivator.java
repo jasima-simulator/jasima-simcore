@@ -16,8 +16,10 @@ import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimCallable;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 
-public interface ProcessActivator extends SimCtx {
+public interface ProcessActivator {
 
+	Simulation getSim();
+	
 	static final Logger log = LogManager.getLogger(ProcessActivator.class);
 
 	public default SimProcess<Void> activate(SimRunnable r) {
