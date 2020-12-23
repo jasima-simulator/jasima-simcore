@@ -104,12 +104,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	// result value name for simulation time at end of simulation run
 	public static final String SIM_TIME = "simTime";
 
-	// constants for simTimeToMillisFactor used to convert simTime to an Instant
-	public static final long MILLIS_PER_MINUTE = 60 * 1000;
-	public static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
-	public static final long MILLIS_PER_DAY = 24 * MILLIS_PER_HOUR;
-	public static final long MILLIS_PER_WEEK = 7 * MILLIS_PER_DAY;
-
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
 	public static final Class<? extends EventHeap> queueImpl = TypeUtil.getClassFromSystemProperty(QUEUE_IMPL_KEY,
 			EventHeap.class, EventHeap.class);
@@ -231,7 +225,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	private double statsResetTime = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
-	private long simTimeToMillisFactor = MILLIS_PER_MINUTE; // simulation time in minutes
+	private long simTimeToMillisFactor = Duration.ofMinutes(1).toMillis(); // simulation time in minutes
 	private Instant simTimeStartInstant;
 	private ErrorHandler errorHandler = null;
 
