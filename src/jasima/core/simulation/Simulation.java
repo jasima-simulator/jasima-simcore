@@ -51,7 +51,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -760,6 +759,17 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	/**
+	 * Returns a Java {@link Clock} object using the simulation time and its time
+	 * zone.
+	 */
+	public Clock clock() {
+		if (clock != null) {
+			clock = new SimulationClock(this, zoneId);
+		}
+		return clock;
+	}
+
+	/**
 	 * Converts the current simulation time to a Java {@link LocalDateTime}. This
 	 * converts the current simulation time to an {@code Instant} first (see
 	 * {@link #simTimeAbs()}) and then converts it to the local time for this
@@ -773,8 +783,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	/**
 	 * Converts a simulation time to a Java {@link LocalDateTime}. The simulation
-	 * time is converted to an {@code Instant} first (see {@link #simTimeAbs()})
-	 * and then converted to the local time for this simulation's zone id (see
+	 * time is converted to an {@code Instant} first (see {@link #simTimeAbs()}) and
+	 * then converted to the local time for this simulation's zone id (see
 	 * {@link #getZoneId()}.
 	 * 
 	 * @see #simTimeToInstant(double)
@@ -790,7 +800,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * @see #simTimeToInstant(double)
 	 */
 	public LocalDateTime simTimeToLocalDateTime(Instant instant) {
-		return LocalDateTime.ofInstant(Objects.requireNonNull(instant), getZoneId());
+		return LocalDateTime.ofInstant(requireNonNull(instant), getZoneId());
 	}
 
 	/**
@@ -1037,7 +1047,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * @param printLevel
 	 */
 	public void setPrintLevel(MsgCategory printLevel) {
-		Objects.requireNonNull(printLevel);
+		requireNonNull(printLevel);
 		this.printLevel = printLevel;
 	}
 
@@ -1312,7 +1322,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		return valueStore;
 	}
 
-	// SimCtx implementation
+	// SimOperation implementation
 	@Override
 	public Simulation getSim() {
 		return this;
@@ -1324,13 +1334,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	public void setZoneId(ZoneId zone) {
 		this.zoneId = zone;
-	}
-
-	public Clock clock() {
-		if (clock != null) {
-			clock = new SimulationClock(this, zoneId);
-		}
-		return clock;
 	}
 
 	void processTerminated(SimProcess<?> simProcess) {
