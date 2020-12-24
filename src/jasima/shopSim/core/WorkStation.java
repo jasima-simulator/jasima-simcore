@@ -29,8 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.SimComponentBase;
+import jasima.core.simulation.SimEvent;
 import jasima.shopSim.core.IndividualMachine.MachineState;
 import jasima.shopSim.core.batchForming.BatchForming;
 import jasima.shopSim.core.batchForming.HighestJobBatchingMBS;
@@ -46,28 +46,8 @@ import jasima.shopSim.prioRules.meta.IgnoreFutureJobs;
  */
 public class WorkStation extends SimComponentBase {
 
-	/** Base class for workstation messages. */
-	public static class WorkStationMessage {
-
-		private final String name;
-
-		public WorkStationMessage(String name) {
-			super();
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-
-		// constants for default events thrown by a workstation
-
-		public static final WorkStationMessage WS_ACTIVATED = new WorkStationMessage("WS_JOB_ARRIVAL");
-		public static final WorkStationMessage WS_DEACTIVATED = new WorkStationMessage("WS_JOB_ARRIVAL");
-		public static final WorkStationMessage WS_JOB_ARRIVAL = new WorkStationMessage("WS_JOB_ARRIVAL");
-		public static final WorkStationMessage WS_JOB_SELECTED = new WorkStationMessage("WS_JOB_SELECTED");
-		public static final WorkStationMessage WS_JOB_COMPLETED = new WorkStationMessage("WS_JOB_COMPLETED");
+	public enum WorkStationMessage implements SimComponentEvent {
+		WS_ACTIVATED, WS_DEACTIVATED, WS_JOB_ARRIVAL, WS_JOB_SELECTED, WS_JOB_COMPLETED
 	}
 
 	public static final String DEF_SETUP_STR = "DEF_SETUP";

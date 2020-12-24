@@ -21,6 +21,7 @@
 package jasima.shopSim.core;
 
 import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponent.SimComponentEvent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
 import jasima.shopSim.core.Shop.ShopMessage;
 import jasima.shopSim.util.BasicJobStatCollector;
@@ -41,7 +42,7 @@ public interface ShopListener extends SimComponentLifeCycleListener, Cloneable {
 	 * Inform method to be notified of shop events.
 	 */
 	@Override
-	default void inform(SimComponent c, Object msg) {
+	default void inform(SimComponent c, SimComponentEvent msg) {
 		if (msg == ShopMessage.JOB_RELEASED) {
 			Shop shop = (Shop) c;
 			jobReleased(shop, shop.lastJobReleased);

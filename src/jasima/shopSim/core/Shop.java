@@ -41,25 +41,8 @@ import jasima.core.util.observer.NotifierListener;
  */
 public class Shop extends SimComponentContainerBase {
 
-	public static class ShopMessage {
-
-		private final String name;
-
-		public ShopMessage(String name) {
-			super();
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-
-		// constants for default events thrown by a shop (in addition to
-		// SimComponent events)
-		public static final ShopMessage JOB_RELEASED = new ShopMessage("JOB_RELEASED");
-		public static final ShopMessage JOB_FINISHED = new ShopMessage("JOB_FINISHED");
-
+	public enum ShopMessage implements SimComponentEvent {
+		JOB_RELEASED, JOB_FINISHED
 	}
 
 	// parameters
@@ -150,10 +133,11 @@ public class Shop extends SimComponentContainerBase {
 	 *                        machine using
 	 *                        {@link TypeUtil#cloneIfPossible(Object)}.
 	 */
-	public void installMachineListener(NotifierListener<SimComponent, Object> listener, boolean cloneIfPossible) {
+	public void installMachineListener(NotifierListener<SimComponent, SimComponentEvent> listener,
+			boolean cloneIfPossible) {
 		for (SimComponent sc : machines.getChildren()) {
 			WorkStation m = (WorkStation) sc;
-			NotifierListener<SimComponent, Object> ml = listener;
+			NotifierListener<SimComponent, SimComponentEvent> ml = listener;
 			if (cloneIfPossible)
 				ml = TypeUtil.cloneIfPossible(ml);
 

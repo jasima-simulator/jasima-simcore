@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponent.SimComponentEvent;
 import jasima.core.simulation.SimulationExperiment;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.observer.NotifierListener;
@@ -55,9 +56,9 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	private PR[] batchSequencingRules;
 	private BatchForming[] batchFormingRules;
 
-	private NotifierListener<SimComponent, Object>[] shopListener;
-	private NotifierListener<SimComponent, Object>[] machineListener;
-	private HashMap<String, NotifierListener<SimComponent, Object>[]> machListenerSpecific;
+	private NotifierListener<SimComponent, SimComponentEvent>[] shopListener;
+	private NotifierListener<SimComponent, SimComponentEvent>[] machineListener;
+	private HashMap<String, NotifierListener<SimComponent, SimComponentEvent>[]> machListenerSpecific;
 
 	// fields used during experiment execution
 	protected Shop shop;
@@ -117,14 +118,14 @@ public abstract class ShopExperiment extends SimulationExperiment {
 
 		// install shop listener
 		if (shopListener != null)
-			for (NotifierListener<SimComponent, Object> l : shopListener) {
-				NotifierListener<SimComponent, Object> c = TypeUtil.cloneIfPossible(l);
+			for (NotifierListener<SimComponent, SimComponentEvent> l : shopListener) {
+				NotifierListener<SimComponent, SimComponentEvent> c = TypeUtil.cloneIfPossible(l);
 				shop.addListener(c);
 			}
 
 		// install generic machine listener
 		if (machineListener != null)
-			for (NotifierListener<SimComponent, Object> l : machineListener) {
+			for (NotifierListener<SimComponent, SimComponentEvent> l : machineListener) {
 				shop.installMachineListener(l, true);
 			}
 
@@ -137,8 +138,8 @@ public abstract class ShopExperiment extends SimulationExperiment {
 							"Error installing machine listener: can't find a workstation named '" + machName + "'");
 				}
 
-				NotifierListener<SimComponent, Object>[] mls = machListenerSpecific.get(machName);
-				for (NotifierListener<SimComponent, Object> ml : mls) {
+				NotifierListener<SimComponent, SimComponentEvent>[] mls = machListenerSpecific.get(machName);
+				for (NotifierListener<SimComponent, SimComponentEvent> ml : mls) {
 					ml = TypeUtil.cloneIfPossible(ml);
 					ws.addListener(ml);
 				}
@@ -369,7 +370,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * 
 	 * @return The array of shop listeners; can be null.
 	 */
-	public NotifierListener<SimComponent, Object>[] getShopListener() {
+	public NotifierListener<SimComponent, SimComponentEvent>[] getShopListener() {
 		return shopListener;
 	}
 
@@ -378,7 +379,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * 
 	 * @param shopListener The listeners to install during experiment execution.
 	 */
-	public void setShopListener(NotifierListener<SimComponent, Object>[] shopListener) {
+	public void setShopListener(NotifierListener<SimComponent, SimComponentEvent>[] shopListener) {
 		this.shopListener = shopListener;
 	}
 
@@ -387,17 +388,18 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * 
 	 * @param l The listener to install during experiment execution.
 	 */
-	public void addShopListener(NotifierListener<SimComponent, Object> l) {
+	public void addShopListener(NotifierListener<SimComponent, SimComponentEvent> l) {
 		if (shopListener == null) {
 			@SuppressWarnings("unchecked")
-			final NotifierListener<SimComponent, Object>[] resArray = new NotifierListener[] { l };
+			final NotifierListener<SimComponent, SimComponentEvent>[] resArray = new NotifierListener[] { l };
 			shopListener = resArray;
 		} else {
-			ArrayList<NotifierListener<SimComponent, Object>> list = new ArrayList<>(Arrays.asList(shopListener));
+			ArrayList<NotifierListener<SimComponent, SimComponentEvent>> list = new ArrayList<>(
+					Arrays.asList(shopListener));
 			list.add(l);
 
 			@SuppressWarnings("unchecked")
-			final NotifierListener<SimComponent, Object>[] resArray = new NotifierListener[list.size()];
+			final NotifierListener<SimComponent, SimComponentEvent>[] resArray = new NotifierListener[list.size()];
 			shopListener = list.toArray(resArray);
 		}
 	}
@@ -407,7 +409,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * 
 	 * @return The array of workstation listeners. Can be null.
 	 */
-	public NotifierListener<SimComponent, Object>[] getMachineListener() {
+	public NotifierListener<SimComponent, SimComponentEvent>[] getMachineListener() {
 		return machineListener;
 	}
 
@@ -417,7 +419,7 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * 
 	 * @param machineListener The listeners to install during experiment execution.
 	 */
-	public void setMachineListener(NotifierListener<SimComponent, Object>[] machineListener) {
+	public void setMachineListener(NotifierListener<SimComponent, SimComponentEvent>[] machineListener) {
 		this.machineListener = machineListener;
 	}
 
@@ -427,17 +429,17 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * 
 	 * @param l The listener to install during experiment execution.
 	 */
-	public void addMachineListener(NotifierListener<SimComponent, Object> l) {
+	public void addMachineListener(NotifierListener<SimComponent, SimComponentEvent> l) {
 		if (this.machineListener == null) {
 			@SuppressWarnings("unchecked")
-			final NotifierListener<SimComponent, Object>[] resArray = new NotifierListener[] { l };
+			final NotifierListener<SimComponent, SimComponentEvent>[] resArray = new NotifierListener[] { l };
 			this.machineListener = resArray;
 		} else {
-			ArrayList<NotifierListener<SimComponent, Object>> list = new ArrayList<>(
+			ArrayList<NotifierListener<SimComponent, SimComponentEvent>> list = new ArrayList<>(
 					Arrays.asList(this.machineListener));
 			list.add(l);
 			@SuppressWarnings("unchecked")
-			final NotifierListener<SimComponent, Object>[] resArray = new NotifierListener[list.size()];
+			final NotifierListener<SimComponent, SimComponentEvent>[] resArray = new NotifierListener[list.size()];
 			machineListener = list.toArray(resArray);
 		}
 	}
@@ -448,20 +450,20 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * @param name The workstation's name.
 	 * @param l    The listener to install during experiment execution.
 	 */
-	public void addMachineListener(String name, NotifierListener<SimComponent, Object> l) {
+	public void addMachineListener(String name, NotifierListener<SimComponent, SimComponentEvent> l) {
 		if (machListenerSpecific == null)
 			machListenerSpecific = new HashMap<>();
 
 		// create new array using an intermediary list
-		NotifierListener<SimComponent, Object>[] listeners = machListenerSpecific.get(name);
-		ArrayList<NotifierListener<SimComponent, Object>> list = new ArrayList<>();
+		NotifierListener<SimComponent, SimComponentEvent>[] listeners = machListenerSpecific.get(name);
+		ArrayList<NotifierListener<SimComponent, SimComponentEvent>> list = new ArrayList<>();
 		if (listeners != null) {
 			list.addAll(Arrays.asList(listeners));
 		}
 		list.add(l);
 
 		@SuppressWarnings("unchecked")
-		final NotifierListener<SimComponent, Object>[] resArray = new NotifierListener[list.size()];
+		final NotifierListener<SimComponent, SimComponentEvent>[] resArray = new NotifierListener[list.size()];
 		machListenerSpecific.put(name, list.toArray(resArray));
 	}
 
@@ -472,10 +474,10 @@ public abstract class ShopExperiment extends SimulationExperiment {
 	 * @param name The workstation's name.
 	 * @return An array of all listeners for the given machine name.
 	 */
-	public NotifierListener<SimComponent, Object>[] getMachineListenerSpecific(String name) {
+	public NotifierListener<SimComponent, SimComponentEvent>[] getMachineListenerSpecific(String name) {
 		if (machListenerSpecific == null) {
 			@SuppressWarnings("unchecked")
-			final NotifierListener<SimComponent, Object>[] resArray = new NotifierListener[0];
+			final NotifierListener<SimComponent, SimComponentEvent>[] resArray = new NotifierListener[0];
 			return resArray;
 		} else {
 			return machListenerSpecific.get(name);

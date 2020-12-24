@@ -3,12 +3,14 @@ package jasima.core.simulation;
 import java.util.Map;
 
 import jasima.core.simulation.SimComponent.ProduceResultsMessage;
+import jasima.core.simulation.SimComponent.SimComponentEvent;
 import jasima.core.simulation.SimComponent.SimComponentLifeCycleMessage;
 import jasima.core.util.observer.NotifierListener;
 
-public interface SimComponentLifeCycleListener extends NotifierListener<SimComponent, Object> {
+public interface SimComponentLifeCycleListener extends NotifierListener<SimComponent, SimComponentEvent> {
 
-	default void inform(SimComponent o, Object msg) {
+	@Override
+	default void inform(SimComponent o, SimComponentEvent msg) {
 		if (msg == SimComponentLifeCycleMessage.INIT) {
 			init(o);
 		} else if (msg == SimComponentLifeCycleMessage.BEFORE_RUN) {

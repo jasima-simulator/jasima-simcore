@@ -27,6 +27,7 @@ import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_JOB_COMPLETE
 import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_JOB_SELECTED;
 
 import jasima.core.simulation.SimComponent;
+import jasima.core.simulation.SimComponent.SimComponentEvent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
 
 /**
@@ -38,7 +39,7 @@ import jasima.core.simulation.SimComponentLifeCycleListener;
  */
 public interface WorkStationListener extends SimComponentLifeCycleListener {
 
-	default void inform(SimComponent o, Object event) {
+	default void inform(SimComponent o, SimComponentEvent event) {
 		WorkStation m = (WorkStation) o;
 
 		if (event == WS_JOB_ARRIVAL) {

@@ -23,7 +23,7 @@ public class SimComponentBase implements SimComponent {
 	private String name;
 
 	// delegate Notifier functionality
-	private NotifierImpl<SimComponent, Object> notifierAdapter;
+	private NotifierImpl<SimComponent, SimComponentEvent> notifierAdapter;
 
 	// delegate ValueStore functionality
 	private ValueStoreImpl valueStore;
@@ -89,7 +89,7 @@ public class SimComponentBase implements SimComponent {
 		this.hierarchicalName = null;
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		if (getName() == null) {
@@ -112,7 +112,7 @@ public class SimComponentBase implements SimComponent {
 	// event notification
 
 	@Override
-	public NotifierImpl<SimComponent, Object> notifierImpl() {
+	public NotifierImpl<SimComponent, SimComponentEvent> notifierImpl() {
 		if (notifierAdapter == null) {
 			notifierAdapter = new NotifierImpl<>(this);
 		}

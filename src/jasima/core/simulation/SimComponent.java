@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import jasima.core.simulation.SimComponent.SimComponentEvent;
 import jasima.core.simulation.util.SimComponentRoot;
 import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.StringUtil;
@@ -16,38 +17,18 @@ import jasima.core.util.observer.Notifier;
  * @author Torsten Hildebrandt
  * @see Simulation
  */
-public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore, Cloneable, SimOperations {
+public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>, ValueStore, Cloneable, SimOperations {
+
+	interface SimComponentEvent {
+	}
 
 	/**
 	 * The separator used in {@link #getHierarchicalName()}.
 	 */
 	public static final char NAME_SEPARATOR = '.';
 
-	/**
-	 * Base class for messages send by a {@link SimComponent} to registered
-	 * listeners.
-	 * 
-	 * @author Torsten Hildebrandt
-	 * @see SimComponent#addListener(jasima.core.util.observer.NotifierListener)
-	 */
-	public static class SimComponentLifeCycleMessage {
-
-		private final String name;
-
-		public SimComponentLifeCycleMessage(String s) {
-			name = s;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-
-		public static final SimComponentLifeCycleMessage INIT = new SimComponentLifeCycleMessage("INIT");
-		public static final SimComponentLifeCycleMessage BEFORE_RUN = new SimComponentLifeCycleMessage("BEFORE_RUN");
-		public static final SimComponentLifeCycleMessage RESET_STATS = new SimComponentLifeCycleMessage("RESET_STATS");
-		public static final SimComponentLifeCycleMessage AFTER_RUN = new SimComponentLifeCycleMessage("AFTER_RUN");
-		public static final SimComponentLifeCycleMessage DONE = new SimComponentLifeCycleMessage("DONE");
+	public enum SimComponentLifeCycleMessage implements SimComponentEvent {
+		INIT, BEFORE_RUN, RESET_STATS, AFTER_RUN, DONE
 	}
 
 	/**
@@ -55,13 +36,17 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * 
 	 * @author Torsten Hildebrandt
 	 */
-	public static class ProduceResultsMessage extends SimComponentLifeCycleMessage {
+	public static class ProduceResultsMessage implements SimComponentEvent {
 
 		public final Map<String, Object> resultMap;
 
 		public ProduceResultsMessage(Map<String, Object> resultMap) {
-			super("ProduceResultsEvent");
 			this.resultMap = resultMap;
+		}
+
+		@Override
+		public String toString() {
+			return "ProduceResultsEvent";
 		}
 
 	}
@@ -164,7 +149,7 @@ public interface SimComponent extends Notifier<SimComponent, Object>, ValueStore
 	 * informs listeners of lifecycle events such as INIT, DONE, etc.
 	 */
 	@Override
-	Notifier<SimComponent, Object> notifierImpl();
+	Notifier<SimComponent, SimComponentEvent> notifierImpl();
 
 	// ValueStore, delegate implementation
 
