@@ -23,6 +23,7 @@ package jasima.core.experiment;
 import java.util.Map;
 
 import jasima.core.experiment.AbstractMultiExperiment.BaseExperimentCompleted;
+import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.util.observer.NotifierListener;
 
@@ -38,12 +39,12 @@ import jasima.core.util.observer.NotifierListener;
  * @author Torsten Hildebrandt
  */
 
-public interface ExperimentListener extends NotifierListener<Experiment, ExperimentMessage> {
+public interface ExperimentListener extends NotifierListener<Experiment, ExperimentEvent> {
 
 	// default implementations of all methods
 
 	@Override // this is the only method defined in the parent interface
-	default void inform(Experiment e, ExperimentMessage event) {
+	default void inform(Experiment e, ExperimentEvent event) {
 		if (event == ExperimentMessage.EXPERIMENT_STARTING) {
 			starting(e);
 		} else if (event == ExperimentMessage.EXPERIMENT_INITIALIZED) {
@@ -76,50 +77,8 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		}
 	}
 
-	default void handleOther(Experiment e, ExperimentMessage event) {
+	default void handleOther(Experiment e, ExperimentEvent event) {
 	}
-
-	default void print(Experiment e, ExpPrintMessage event) {
-	}
-
-	default void starting(Experiment e) {
-	}
-
-	default void initialized(Experiment e) {
-	}
-
-	default void beforeRun(Experiment e) {
-	}
-
-	default void runPerformed(Experiment e) {
-	}
-
-	default void afterRun(Experiment e) {
-	}
-
-	default void done(Experiment e) {
-	}
-
-	default void produceResults(Experiment e, Map<String, Object> res) {
-	}
-
-	default void finishing(Experiment e, Map<String, Object> results) {
-	}
-
-	default void finished(Experiment e, Map<String, Object> results) {
-	}
-
-	default void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment,
-			Map<String, Object> runResults) {
-	}
-
-	default void error(Experiment e, Throwable t) {
-	}
-
-	default void finalAction(Experiment e) {
-	}
-
-	// functional interfaces for all methods separately
 
 	/**
 	 * See parent interface {@link ExperimentListener}.
@@ -127,7 +86,10 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	@FunctionalInterface
 	public interface HandleOtherListener extends ExperimentListener {
 		@Override
-		void handleOther(Experiment e, ExperimentMessage event);
+		void handleOther(Experiment e, ExperimentEvent event);
+	}
+
+	default void print(Experiment e, ExpPrintMessage event) {
 	}
 
 	/**
@@ -139,6 +101,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		void print(Experiment e, ExpPrintMessage event);
 	}
 
+	default void starting(Experiment e) {
+	}
+
 	/**
 	 * See parent interface {@link ExperimentListener}.
 	 */
@@ -146,6 +111,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface StartingListener extends ExperimentListener {
 		@Override
 		void starting(Experiment e);
+	}
+
+	default void initialized(Experiment e) {
 	}
 
 	/**
@@ -157,6 +125,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		void initialized(Experiment e);
 	}
 
+	default void beforeRun(Experiment e) {
+	}
+
 	/**
 	 * See parent interface {@link ExperimentListener}.
 	 */
@@ -164,6 +135,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface BeforeRunListener extends ExperimentListener {
 		@Override
 		void beforeRun(Experiment e);
+	}
+
+	default void runPerformed(Experiment e) {
 	}
 
 	/**
@@ -175,6 +149,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		void runPerformed(Experiment e);
 	}
 
+	default void afterRun(Experiment e) {
+	}
+
 	/**
 	 * See parent interface {@link ExperimentListener}.
 	 */
@@ -182,6 +159,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface AfterRunListener extends ExperimentListener {
 		@Override
 		void afterRun(Experiment e);
+	}
+
+	default void done(Experiment e) {
 	}
 
 	/**
@@ -193,6 +173,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		void done(Experiment e);
 	}
 
+	default void produceResults(Experiment e, Map<String, Object> res) {
+	}
+
 	/**
 	 * See parent interface {@link ExperimentListener}.
 	 */
@@ -200,6 +183,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface ProduceResultsListener extends ExperimentListener {
 		@Override
 		void produceResults(Experiment e, Map<String, Object> res);
+	}
+
+	default void finishing(Experiment e, Map<String, Object> results) {
 	}
 
 	/**
@@ -211,6 +197,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		void finishing(Experiment e, Map<String, Object> results);
 	}
 
+	default void finished(Experiment e, Map<String, Object> results) {
+	}
+
 	/**
 	 * See parent interface {@link ExperimentListener}.
 	 */
@@ -218,6 +207,22 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface FinishedListener extends ExperimentListener {
 		@Override
 		void finished(Experiment e, Map<String, Object> results);
+	}
+
+	default void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment,
+			Map<String, Object> runResults) {
+	}
+
+	/**
+	 * See parent interface {@link ExperimentListener}.
+	 */
+	@FunctionalInterface
+	public interface MultiExperimentCompletedTaskListener extends ExperimentListener {
+		@Override
+		void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment, Map<String, Object> runResults);
+	}
+
+	default void error(Experiment e, Throwable t) {
 	}
 
 	/**
@@ -229,6 +234,9 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 		void error(Experiment e, Throwable t);
 	}
 
+	default void finalAction(Experiment e) {
+	}
+
 	/**
 	 * See parent interface {@link ExperimentListener}.
 	 */
@@ -236,14 +244,5 @@ public interface ExperimentListener extends NotifierListener<Experiment, Experim
 	public interface FinallyListener extends ExperimentListener {
 		@Override
 		void finalAction(Experiment e);
-	}
-
-	/**
-	 * See parent interface {@link ExperimentListener}.
-	 */
-	@FunctionalInterface
-	public interface MultiExperimentCompletedTaskListener extends ExperimentListener {
-		@Override
-		void multiExperimentCompletedTask(Experiment baseExp, Experiment runExperiment, Map<String, Object> runResults);
 	}
 }

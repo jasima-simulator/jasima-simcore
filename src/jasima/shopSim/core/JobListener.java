@@ -28,6 +28,7 @@ import static jasima.shopSim.core.Job.JobMessage.JOB_REMOVED_FROM_QUEUE;
 import static jasima.shopSim.core.Job.JobMessage.JOB_START_OPERATION;
 
 import jasima.core.util.observer.NotifierListener;
+import jasima.shopSim.core.Job.JobEvent;
 
 /**
  * This class can be used as a base class for classes collecting results based
@@ -35,10 +36,10 @@ import jasima.core.util.observer.NotifierListener;
  * 
  * @author Torsten Hildebrandt
  */
-public interface JobListener extends NotifierListener<Job, Object> {
+public interface JobListener extends NotifierListener<Job, JobEvent> {
 
 	@Override
-	default void inform(Job o, Object event) {
+	default void inform(Job o, JobEvent event) {
 		final Shop shop = o.getShop();
 		if (event == JOB_RELEASED) {
 			released(shop, o);
@@ -61,22 +62,64 @@ public interface JobListener extends NotifierListener<Job, Object> {
 	default void handleOther(Shop shop, Job j, Object event) {
 	}
 
+	@FunctionalInterface
+	public interface OtherListener extends JobListener {
+		@Override
+		void handleOther(Shop shop, Job j, Object event);
+	}
+
 	default void endOperation(Shop shop, Job j) {
+	}
+
+	@FunctionalInterface
+	public interface OperationEndedListener extends JobListener {
+		@Override
+		void endOperation(Shop shop, Job j);
 	}
 
 	default void operationStarted(Shop shop, Job j, int oldSetupState, int newSetupState, double setupTime) {
 	}
 
+	@FunctionalInterface
+	public interface OperationStartedListener extends JobListener {
+		@Override
+		void operationStarted(Shop shop, Job j, int oldSetupState, int newSetupState, double setupTime);
+	}
+
 	default void removedFromQueue(Shop shop, Job j) {
+	}
+
+	@FunctionalInterface
+	public interface RemovedListener extends JobListener {
+		@Override
+		void removedFromQueue(Shop shop, Job j);
 	}
 
 	default void arrivedInQueue(Shop shop, Job j) {
 	}
 
+	@FunctionalInterface
+	public interface ArrivedListener extends JobListener {
+		@Override
+		void arrivedInQueue(Shop shop, Job j);
+	}
+
 	default void finished(Shop shop, Job j) {
 	}
 
+	@FunctionalInterface
+	public interface FinishedListener extends JobListener {
+		@Override
+		void finished(Shop shop, Job j);
+	}
+
 	default void released(Shop shop, Job j) {
+	}
+
+	@FunctionalInterface
+	public interface ReleasedListener extends JobListener {
+		@Override
+		void released(Shop shop, Job j);
 	}
 
 }

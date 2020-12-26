@@ -25,6 +25,7 @@ import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.observer.Notifier;
 import jasima.core.util.observer.NotifierImpl;
+import jasima.shopSim.core.Job.JobEvent;
 
 /**
  * Main work unit in a shop.
@@ -32,36 +33,18 @@ import jasima.core.util.observer.NotifierImpl;
  * @author Torsten Hildebrandt
  */
 // TODO: PrioRuleTarget should be an interface
-public class Job extends PrioRuleTarget implements Cloneable, ValueStore, Notifier<Job, Object> {
+public class Job extends PrioRuleTarget implements Cloneable, ValueStore, Notifier<Job, JobEvent> {
 
-	/** Base class for job messages. */
-	public static class JobMessage {
+	public interface JobEvent {
+	}
 
-		private final String msgName;
-
-		public JobMessage(String name) {
-			super();
-			this.msgName = name;
-		}
-
-		@Override
-		public String toString() {
-			return msgName;
-		}
-
-		// constants for events thrown by a job
-
-		public static final JobMessage JOB_RELEASED = new JobMessage("JOB_RELEASED");
-		public static final JobMessage JOB_FINISHED = new JobMessage("JOB_FINISHED");
-		public static final JobMessage JOB_ARRIVED_IN_QUEUE = new JobMessage("JOB_ARRIVED_IN_QUEUE");
-		public static final JobMessage JOB_REMOVED_FROM_QUEUE = new JobMessage("JOB_REMOVED_FROM_QUEUE");
-		public static final JobMessage JOB_START_OPERATION = new JobMessage("JOB_START_OPERATION");
-		public static final JobMessage JOB_END_OPERATION = new JobMessage("JOB_END_OPERATION");
+	public enum JobMessage implements JobEvent {
+		JOB_RELEASED, JOB_FINISHED, JOB_ARRIVED_IN_QUEUE, JOB_REMOVED_FROM_QUEUE, JOB_START_OPERATION, JOB_END_OPERATION
 	}
 
 	private final Shop shop;
 	// delegate Notifier functionality
-	private NotifierImpl<Job, Object> notifierAdapter;
+	private NotifierImpl<Job, JobEvent> notifierAdapter;
 	// delegate ValueStore functionality
 	private ValueStoreImpl valueStore;
 
@@ -91,7 +74,7 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore, Notifi
 
 		this.shop = shop;
 
-		notifierAdapter = new NotifierImpl<Job, Object>(this);
+		notifierAdapter = new NotifierImpl<>(this);
 		valueStore = new ValueStoreImpl();
 	}
 
@@ -450,7 +433,7 @@ public class Job extends PrioRuleTarget implements Cloneable, ValueStore, Notifi
 	//
 
 	@Override
-	public Notifier<Job, Object> notifierImpl() {
+	public Notifier<Job, JobEvent> notifierImpl() {
 		return notifierAdapter;
 	}
 

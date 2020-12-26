@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import jasima.core.expExecution.ExperimentExecutor;
+import jasima.core.experiment.Experiment.ExperimentEvent;
 import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
 import jasima.core.random.RandomFactory;
 import jasima.core.run.ConsoleRunner;
@@ -80,8 +81,10 @@ import jasima.core.util.observer.ObservableValue;
  * @author Torsten Hildebrandt
  */
 public abstract class Experiment
-		implements Notifier<Experiment, ExperimentMessage>, ValueStore, Cloneable, Serializable {
+		implements Notifier<Experiment, ExperimentEvent>, ValueStore, Cloneable, Serializable {
 
+	public interface ExperimentEvent {}
+	
 	/**
 	 * Just an arbitrary default seed.
 	 */
@@ -102,7 +105,7 @@ public abstract class Experiment
 	private String name = null;
 	private long initialSeed = DEFAULT_SEED;
 	private MsgCategory logLevel = MsgCategory.INFO;
-	private NotifierImpl<Experiment, ExperimentMessage> notifierAdapter;
+	private NotifierImpl<Experiment, ExperimentEvent> notifierAdapter;
 	private ValueStoreImpl valueStore;
 
 	// fields used during run
@@ -660,7 +663,7 @@ public abstract class Experiment
 	//
 
 	@Override
-	public NotifierImpl<Experiment, ExperimentMessage> notifierImpl() {
+	public NotifierImpl<Experiment, ExperimentEvent> notifierImpl() {
 		if (notifierAdapter == null) {
 			notifierAdapter = new NotifierImpl<>(this);
 		}

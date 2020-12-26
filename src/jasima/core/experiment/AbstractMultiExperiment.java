@@ -49,16 +49,21 @@ public abstract class AbstractMultiExperiment extends Experiment {
 	/**
 	 * Complex event object triggered upon sub-experiment completion.
 	 */
-	public static class BaseExperimentCompleted extends ExperimentMessage {
+	public static class BaseExperimentCompleted implements ExperimentEvent {
 
 		public BaseExperimentCompleted(Experiment experimentRun, Map<String, Object> results) {
-			super("BaseExperimentCompleted#");
 			this.experimentRun = experimentRun;
 			this.results = results;
 		}
 
 		public final Experiment experimentRun;
 		public final Map<String, Object> results;
+
+		@Override
+		public String toString() {
+			return "BaseExperimentCompleted#";
+		}
+
 	}
 
 	// parameters
