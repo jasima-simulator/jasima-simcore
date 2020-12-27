@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import jasima.core.random.continuous.DblConst;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.util.Util;
 import jasima.core.util.i18n.I18n;
 
@@ -57,7 +57,7 @@ public class DblConstDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof DblConst) {
 				DblConst s = (DblConst) stream;
 				DblConstDef def = new DblConstDef();
@@ -96,7 +96,7 @@ public class DblConstDef extends DblStreamDef {
 	}
 
 	@Override
-	public DblStream createStream() {
+	public DblSequence createStream() {
 		return new DblConst(getValues() != null ? getValues().clone() : null);
 	}
 

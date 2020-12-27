@@ -22,7 +22,7 @@ package jasima.core.util.converter;
 
 import java.util.ArrayList;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.discrete.IntConst;
 import jasima.core.util.Util;
 import jasima.core.util.converter.ArgListTokenizer.TokenType;
@@ -42,7 +42,7 @@ public class IntConstFactory implements StreamFactory {
 	}
 
 	@Override
-	public DblStream stringToStream(ArgListTokenizer tk) {
+	public DblSequence stringToStream(ArgListTokenizer tk) {
 		TypeToStringConverter intConv = TypeToStringConverter.lookupConverter(int.class);
 		assert intConv != null;
 
@@ -81,7 +81,7 @@ public class IntConstFactory implements StreamFactory {
 	}
 
 	@Override
-	public String streamToString(DblStream s) {
+	public String streamToString(DblSequence s) {
 		TypeToStringConverter doubleConv = TypeToStringConverter.lookupConverter(Integer.class);
 		assert doubleConv != null;
 

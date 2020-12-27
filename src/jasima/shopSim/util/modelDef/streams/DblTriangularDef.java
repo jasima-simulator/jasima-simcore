@@ -25,7 +25,7 @@ import static jasima.core.util.i18n.I18n.defFormat;
 import java.util.List;
 import java.util.Locale;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.continuous.DblTriangular;
 import jasima.core.util.Util;
 
@@ -68,7 +68,7 @@ public class DblTriangularDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof DblTriangular) {
 				DblTriangular s = (DblTriangular) stream;
 				DblTriangularDef def = new DblTriangularDef();
@@ -99,7 +99,7 @@ public class DblTriangularDef extends DblStreamDef {
 	}
 
 	@Override
-	public DblStream createStream() {
+	public DblSequence createStream() {
 		return new DblTriangular(getMinValue(), getModeValue(), getMaxValue());
 	}
 

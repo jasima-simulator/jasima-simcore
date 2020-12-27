@@ -47,13 +47,13 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class DblTruncatedSimple extends DblStream {
+public class DblTruncatedSimple extends DblSequence {
 
 	// TODO: implement scaled truncation in a separate class
 
 	private static final long serialVersionUID = -3224445720493038341L;
 
-	private DblStream baseStream;
+	private DblSequence baseStream;
 	private double minValue;
 	private double maxValue;
 
@@ -61,7 +61,7 @@ public class DblTruncatedSimple extends DblStream {
 		this(null, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
 
-	public DblTruncatedSimple(DblStream baseStream, double min, double max) {
+	public DblTruncatedSimple(DblSequence baseStream, double min, double max) {
 		super();
 		setBaseStream(baseStream);
 		setMinValue(min);
@@ -99,7 +99,7 @@ public class DblTruncatedSimple extends DblStream {
 	}
 
 	@Override
-	public DblStream clone() {
+	public DblSequence clone() {
 		DblTruncatedSimple c = (DblTruncatedSimple) super.clone();
 
 		if (baseStream != null)
@@ -116,7 +116,7 @@ public class DblTruncatedSimple extends DblStream {
 
 	// ******************* getters / setters below **********************
 
-	public DblStream getBaseStream() {
+	public DblSequence getBaseStream() {
 		return baseStream;
 	}
 
@@ -125,7 +125,7 @@ public class DblTruncatedSimple extends DblStream {
 	 * 
 	 * @param baseStream The stream to truncate.
 	 */
-	public void setBaseStream(DblStream baseStream) {
+	public void setBaseStream(DblSequence baseStream) {
 		this.baseStream = baseStream;
 	}
 

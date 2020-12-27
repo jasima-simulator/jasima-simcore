@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.util.Util;
 import jasima.core.util.converter.ArgListTokenizer.TokenType;
 import jasima.core.util.converter.TypeConverterDblStream.StreamFactory;
@@ -44,7 +44,7 @@ public class DblDistributionFactory implements StreamFactory {
 	}
 
 	@Override
-	public DblStream stringToStream(ArgListTokenizer tk) {
+	public DblSequence stringToStream(ArgListTokenizer tk) {
 		TypeToStringConverter doubleConv = TypeToStringConverter.lookupConverter(Double.class);
 		assert doubleConv != null;
 
@@ -65,7 +65,7 @@ public class DblDistributionFactory implements StreamFactory {
 	}
 
 	@Override
-	public String streamToString(DblStream s) {
+	public String streamToString(DblSequence s) {
 		DblDistribution dist = (DblDistribution) s;
 		assert dist.getDistribution() instanceof ExponentialDistribution;
 

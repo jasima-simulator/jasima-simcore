@@ -41,7 +41,7 @@ import jasima.core.util.Pair;
  * @see <a href="http://mathworld.wolfram.com/BernoulliDistribution.html">
  *      Bernoulli distribution (MathWorld)</a>
  */
-public class IntBernoulli extends IntStream {
+public class IntBernoulli extends IntSequence {
 	private static final long serialVersionUID = 1515307949822420310L;
 
 	private double probabilityOfSuccess;

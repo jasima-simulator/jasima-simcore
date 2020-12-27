@@ -2,26 +2,26 @@ package jasima.core.random.discrete;
 
 import java.util.Random;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.util.Pair;
 
 /**
- * Turns an arbitrary {@link DblStream} into an {@link IntStream} by returning
+ * Turns an arbitrary {@link DblSequence} into an {@link IntSequence} by returning
  * its values rounded to the closest integer.
  * 
  * @author Torsten Hildebrandt
  */
-public class IntDiscretized extends IntStream {
+public class IntDiscretized extends IntSequence {
 
 	private static final long serialVersionUID = -5846263470745133816L;
 
-	private DblStream baseStream;
+	private DblSequence baseStream;
 
 	public IntDiscretized() {
 		this(null);
 	}
 
-	public IntDiscretized(DblStream baseStream) {
+	public IntDiscretized(DblSequence baseStream) {
 		super();
 
 		setBaseStream(baseStream);
@@ -80,11 +80,11 @@ public class IntDiscretized extends IntStream {
 
 	// getter/setter below
 
-	public DblStream getBaseStream() {
+	public DblSequence getBaseStream() {
 		return baseStream;
 	}
 
-	public void setBaseStream(DblStream baseStream) {
+	public void setBaseStream(DblSequence baseStream) {
 		this.baseStream = baseStream;
 
 		if (getRndGen() != null) {

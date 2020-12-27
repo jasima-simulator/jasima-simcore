@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 
 public class DblExponentialDef extends DblStreamDef {
 
@@ -58,7 +58,7 @@ public class DblExponentialDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof DblDistribution) {
 				DblDistribution s = (DblDistribution) stream;
 				if (s.getDistribution() instanceof ExponentialDistribution) {
@@ -86,7 +86,7 @@ public class DblExponentialDef extends DblStreamDef {
 	}
 
 	@Override
-	public DblStream createStream() {
+	public DblSequence createStream() {
 		return new DblDistribution(new ExponentialDistribution(getMean()));
 	}
 

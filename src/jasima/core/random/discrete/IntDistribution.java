@@ -33,7 +33,7 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class IntDistribution extends IntStream {
+public class IntDistribution extends IntSequence {
 
 	private static final long serialVersionUID = -2911819386618158493L;
 

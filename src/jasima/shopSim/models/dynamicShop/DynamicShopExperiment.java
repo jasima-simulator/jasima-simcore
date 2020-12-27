@@ -29,7 +29,7 @@ import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 import jasima.core.random.continuous.DblConst;
 import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.core.util.Pair;
@@ -69,12 +69,12 @@ public class DynamicShopExperiment extends ShopExperiment {
 	private static final double MINUTES_PER_DAY = 24 * 60;
 
 	private double utilLevel = 0.85d;
-	private DblStream dueDateFactor = new DblConst(4.0d);
+	private DblSequence dueDateFactor = new DblConst(4.0d);
 	private int numMachines = 10;
 	private Scenario scenario = Scenario.JOB_SHOP;
-	private DblStream weights = null;
+	private DblSequence weights = null;
 	private Pair<Integer, Integer> numOps = new Pair<Integer, Integer>(-1, -1);
-	private DblStream procTimes = new IntUniformRange(1, 49);
+	private DblSequence procTimes = new IntUniformRange(1, 49);
 	private int stopArrivalsAfterNumJobs = 2500;
 
 	protected JobSource src;
@@ -199,7 +199,7 @@ public class DynamicShopExperiment extends ShopExperiment {
 		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);
 		src.setNumOps(numOps);
 
-		DblStream procTimes2 = TypeUtil.cloneIfPossible(getProcTimes());
+		DblSequence procTimes2 = TypeUtil.cloneIfPossible(getProcTimes());
 		procTimes2.setName("procTimesStream");
 		src.setProcTimes(procTimes2);
 
@@ -249,18 +249,18 @@ public class DynamicShopExperiment extends ShopExperiment {
 		this.utilLevel = utilLevel;
 	}
 
-	public DblStream getDueDateFactor() {
+	public DblSequence getDueDateFactor() {
 		return dueDateFactor;
 	}
 
 	/**
 	 * Sets the due date tightness of jobs by specifying a due date factor. The
-	 * {@link DblStream} is used to calculate a job's due date as a multiple of a
+	 * {@link DblSequence} is used to calculate a job's due date as a multiple of a
 	 * job's processing time. If for instance a due date factor of 2 is returned for
 	 * a certain job then the due date is set to the job's release date plus twice
 	 * the raw processing time of all operations of this job.
 	 */
-	public void setDueDateFactor(DblStream dueDateFactor) {
+	public void setDueDateFactor(DblSequence dueDateFactor) {
 		this.dueDateFactor = dueDateFactor;
 	}
 
@@ -342,7 +342,7 @@ public class DynamicShopExperiment extends ShopExperiment {
 		this.stopArrivalsAfterNumJobs = stopAfterNumJobs;
 	}
 
-	public DblStream getWeights() {
+	public DblSequence getWeights() {
 		return weights;
 	}
 
@@ -350,14 +350,14 @@ public class DynamicShopExperiment extends ShopExperiment {
 	 * Sets the weights to be used for each job. The default setting is to assign a
 	 * weight of 1 for each job when this attribute is {@code null}.
 	 * 
-	 * @param weights A {@link DblStream} to determine job weight. Default: each job
+	 * @param weights A {@link DblSequence} to determine job weight. Default: each job
 	 *                gets a weight of 1.
 	 */
-	public void setWeights(DblStream weights) {
+	public void setWeights(DblSequence weights) {
 		this.weights = weights;
 	}
 
-	public DblStream getProcTimes() {
+	public DblSequence getProcTimes() {
 		return procTimes;
 	}
 
@@ -365,7 +365,7 @@ public class DynamicShopExperiment extends ShopExperiment {
 	 * Determines the processing times for each operation. This is a mandatory
 	 * setting.
 	 */
-	public void setProcTimes(DblStream procTimes) {
+	public void setProcTimes(DblSequence procTimes) {
 		this.procTimes = procTimes;
 	}
 

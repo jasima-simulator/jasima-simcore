@@ -24,7 +24,7 @@ import java.util.Random;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 
 /**
  * This class can be used to create a non-stationary arrival process, i.e., if
@@ -41,7 +41,7 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 
 	private static final long serialVersionUID = -4530103049458748815L;
 
-	private DblStream unitMeanDblStream;
+	private DblSequence unitMeanDblStream;
 	private UnivariateFunction inverseCumulativeExpectation;
 
 	public ArrivalsNonStationary() {
@@ -69,7 +69,7 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 	}
 
 	@Override
-	public DblStream clone() {
+	public DblSequence clone() {
 		ArrivalsNonStationary c = (ArrivalsNonStationary) super.clone();
 		if (unitMeanDblStream != null)
 			c.unitMeanDblStream = unitMeanDblStream.clone();
@@ -77,7 +77,7 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 		return c;
 	}
 
-	public DblStream getUnitMeanDblStream() {
+	public DblSequence getUnitMeanDblStream() {
 		return unitMeanDblStream;
 	}
 
@@ -87,7 +87,7 @@ public class ArrivalsNonStationary extends ArrivalProcess {
 	 * 
 	 * @param unitMeanDblStream
 	 */
-	public void setUnitMeanDblStream(DblStream unitMeanDblStream) {
+	public void setUnitMeanDblStream(DblSequence unitMeanDblStream) {
 		this.unitMeanDblStream = unitMeanDblStream;
 	}
 

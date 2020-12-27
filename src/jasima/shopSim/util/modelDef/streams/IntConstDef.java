@@ -25,9 +25,9 @@ import static jasima.core.util.i18n.I18n.defFormat;
 import java.util.Arrays;
 import java.util.List;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.discrete.IntConst;
-import jasima.core.random.discrete.IntStream;
+import jasima.core.random.discrete.IntSequence;
 import jasima.core.util.Util;
 
 public class IntConstDef extends IntStreamDef {
@@ -59,7 +59,7 @@ public class IntConstDef extends IntStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof IntConst) {
 				IntConst s = (IntConst) stream;
 				IntConstDef def = new IntConstDef();
@@ -88,7 +88,7 @@ public class IntConstDef extends IntStreamDef {
 	}
 
 	@Override
-	public IntStream createStream() {
+	public IntSequence createStream() {
 		return new IntConst(getValues() != null ? getValues().clone() : null);
 	}
 

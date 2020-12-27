@@ -35,7 +35,7 @@ import jasima.core.util.Util;
  * 
  * @author Torsten Hildebrandt
  */
-public class IntEmpirical extends IntStream {
+public class IntEmpirical extends IntSequence {
 
 	private static final long serialVersionUID = -8591371451392742035L;
 

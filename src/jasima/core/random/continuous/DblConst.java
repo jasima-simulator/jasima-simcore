@@ -33,7 +33,7 @@ import jasima.core.util.Util;
  * 
  * @author Torsten Hildebrandt
  */
-public class DblConst extends DblStream {
+public class DblConst extends DblSequence {
 
 	private static final long serialVersionUID = -2122011743105354569L;
 

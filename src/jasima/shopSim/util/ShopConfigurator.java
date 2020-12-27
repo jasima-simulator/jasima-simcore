@@ -20,7 +20,7 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.shopSim.core.DynamicJobSource;
@@ -127,9 +127,9 @@ public class ShopConfigurator {
 
 	private JobSource createDynamicSource(Shop shop, DynamicSourceDef sd) {
 		int route = sd.getRoute();
-		DblStream iats = sd.getIats().createStream();
-		DblStream dueDates = sd.getDueDates().createStream();
-		DblStream weights = sd.getWeights().createStream();
+		DblSequence iats = sd.getIats().createStream();
+		DblSequence dueDates = sd.getDueDates().createStream();
+		DblSequence weights = sd.getWeights().createStream();
 		final int numJobs = sd.getNumJobs();
 
 		DynamicJobSource ds = new DynamicJobSource() {

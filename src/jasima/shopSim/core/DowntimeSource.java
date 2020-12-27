@@ -21,7 +21,7 @@
 package jasima.shopSim.core;
 
 import jasima.core.random.RandomFactory;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimComponent;
 
 /**
@@ -43,8 +43,8 @@ import jasima.core.simulation.SimComponent;
 public class DowntimeSource {
 
 	private final IndividualMachine machine;
-	private DblStream timeBetweenFailures;
-	private DblStream timeToRepair;
+	private DblSequence timeBetweenFailures;
+	private DblSequence timeToRepair;
 	private String name;
 
 	public DowntimeSource(IndividualMachine machine) {
@@ -130,7 +130,7 @@ public class DowntimeSource {
 		return shop.simTime() + ensurePositiveNumber(timeToRepair);
 	}
 
-	protected double ensurePositiveNumber(DblStream dblStream) {
+	protected double ensurePositiveNumber(DblSequence dblStream) {
 		double ttr;
 		do {
 			ttr = dblStream.nextDbl();
@@ -146,19 +146,19 @@ public class DowntimeSource {
 
 	// boring getters and setters below
 
-	public DblStream getTimeBetweenFailures() {
+	public DblSequence getTimeBetweenFailures() {
 		return timeBetweenFailures;
 	}
 
-	public void setTimeBetweenFailures(DblStream timeBetweenFailures) {
+	public void setTimeBetweenFailures(DblSequence timeBetweenFailures) {
 		this.timeBetweenFailures = timeBetweenFailures;
 	}
 
-	public DblStream getTimeToRepair() {
+	public DblSequence getTimeToRepair() {
 		return timeToRepair;
 	}
 
-	public void setTimeToRepair(DblStream timeToRepair) {
+	public void setTimeToRepair(DblSequence timeToRepair) {
 		this.timeToRepair = timeToRepair;
 	}
 

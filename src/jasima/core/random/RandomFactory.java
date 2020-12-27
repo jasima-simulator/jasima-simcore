@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import jasima.core.experiment.Experiment;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.Simulation;
 import jasima.core.util.MersenneTwister;
 import jasima.core.util.MsgCategory;
@@ -169,7 +169,7 @@ public class RandomFactory implements Serializable {
 
 	/**
 	 * Initializes the random number generator of a DblStream if it is not already
-	 * set. As name of the stream {@link DblStream#getName()} is used. If it is
+	 * set. As name of the stream {@link DblSequence#getName()} is used. If it is
 	 * {@code null}, {@code defaultName} is used instead.
 	 * 
 	 * @param stream      The stream to initialize.
@@ -177,7 +177,7 @@ public class RandomFactory implements Serializable {
 	 *                    information.
 	 * @return The same as {@code stream}.
 	 */
-	public <T extends DblStream> T initRndGen(T stream, String defaultName) {
+	public <T extends DblSequence> T initRndGen(T stream, String defaultName) {
 		if (stream == null || stream.getRndGen() != null)
 			return stream;
 
@@ -199,12 +199,12 @@ public class RandomFactory implements Serializable {
 	/**
 	 * Initializes the random number generator of a DblStream if it is not already
 	 * set using the stream's name. This method is the same as
-	 * {@link #initRndGen(DblStream, String)}, just without a default name.
+	 * {@link #initRndGen(DblSequence, String)}, just without a default name.
 	 * 
-	 * @param stream The {@link DblStream} to configure.
+	 * @param stream The {@link DblSequence} to configure.
 	 * @return The stream with random number generator initialized.
 	 */
-	public DblStream initRndGen(DblStream stream) {
+	public DblSequence initRndGen(DblSequence stream) {
 		return initRndGen(stream, null);
 	}
 

@@ -33,14 +33,14 @@ import jasima.shopSim.util.modelDef.streams.DblStreamDef;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class DblStream implements Serializable, Cloneable {
+public abstract class DblSequence implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 7236623667061348954L;
 
 	protected Random rndGen;
 	private String name;
 
-	public DblStream() {
+	public DblSequence() {
 		super();
 	}
 
@@ -95,7 +95,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 
 	/**
 	 * Creates a {@link DblStreamDef} object from this stream. This method only
-	 * delegates to {@link DblStreamDef#createStreamDefFromStream(DblStream)} and
+	 * delegates to {@link DblStreamDef#createStreamDefFromStream(DblSequence)} and
 	 * therefore is final.
 	 */
 	public final DblStreamDef createStreamDefFromStream() {
@@ -108,13 +108,13 @@ public abstract class DblStream implements Serializable, Cloneable {
 	 * associated with this stream.
 	 */
 	@Override
-	public DblStream clone() {
+	public DblSequence clone() {
 		if (rndGen != null) {
 			throw new IllegalStateException("Only a DblStream without a rndGen set can be cloned.");
 		}
 		
 		try {
-			return (DblStream) super.clone();
+			return (DblSequence) super.clone();
 		} catch (CloneNotSupportedException cantHappen) {
 			throw new AssertionError(cantHappen);
 		}
@@ -145,7 +145,7 @@ public abstract class DblStream implements Serializable, Cloneable {
 	/**
 	 * Sets an optional name for this stream. The name can be used to, e.g.,
 	 * initialize the random number generator as in
-	 * {@link RandomFactory#initRndGen(DblStream, String)}.
+	 * {@link RandomFactory#initRndGen(DblSequence, String)}.
 	 * 
 	 * @param name The stream's name.
 	 */

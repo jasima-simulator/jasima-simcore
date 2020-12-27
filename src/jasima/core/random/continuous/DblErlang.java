@@ -23,7 +23,7 @@ import jasima.core.util.Pair;
  * @see <a href="http://mathworld.wolfram.com/ErlangDistribution.html">Erlang
  *      Distribution (MathWorld)</a>
  */
-public class DblErlang extends DblStream {
+public class DblErlang extends DblSequence {
 
 	private static final long serialVersionUID = -1862722756069025018L;
 

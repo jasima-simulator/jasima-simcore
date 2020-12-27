@@ -30,7 +30,7 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class DblUniformZeroOne extends DblStream {
+public class DblUniformZeroOne extends DblSequence {
 
 	private static final long serialVersionUID = -5917490656405705668L;
 

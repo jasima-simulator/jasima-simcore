@@ -36,7 +36,7 @@ import jasima.core.util.Pair;
  * @see <a href="http://mathworld.wolfram.com/TriangularDistribution.html">
  *      Triangular distribution (MathWorld)</a>
  */
-public class DblTriangular extends DblStream {
+public class DblTriangular extends DblSequence {
 
 	private static final long serialVersionUID = -8098960209631757070L;
 

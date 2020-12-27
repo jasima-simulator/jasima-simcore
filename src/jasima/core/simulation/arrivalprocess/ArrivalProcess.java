@@ -20,7 +20,7 @@
  *******************************************************************************/
 package jasima.core.simulation.arrivalprocess;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.util.Pair;
 
 /**
@@ -28,7 +28,7 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt, 2012-08-07
  */
-public abstract class ArrivalProcess extends DblStream {
+public abstract class ArrivalProcess extends DblSequence {
 
 	private static final long serialVersionUID = 99456277227340206L;
 

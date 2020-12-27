@@ -32,7 +32,7 @@ import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.RandomFactoryOld;
 import jasima.core.random.continuous.DblConst;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.continuous.DblUniformRange;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.statistics.SummaryStat;
@@ -372,10 +372,10 @@ public class TestMimacFab4Trace {
 		MimacExperiment e = new MimacExperiment();
 		e.setScenario(DataSet.FAB4r);
 
-		DblStream arrivals1 = new DblConst(new double[] { 315.00 });
-		DblStream arrivals2 = new DblConst(new double[] { 135.00 });
+		DblSequence arrivals1 = new DblConst(new double[] { 315.00 });
+		DblSequence arrivals2 = new DblConst(new double[] { 135.00 });
 
-		e.setInterArrivalTimes(new DblStream[] { arrivals1, arrivals2 });
+		e.setInterArrivalTimes(new DblSequence[] { arrivals1, arrivals2 });
 
 		e.setDueDateFactors(new DblUniformRange(2.0, 5.0));
 		e.setJobWeights(new IntUniformRange(1, 10));

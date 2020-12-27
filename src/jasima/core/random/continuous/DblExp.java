@@ -72,7 +72,7 @@ public final class DblExp extends DblDistribution {
 	}
 
 	@Override
-	public DblStream clone() {
+	public DblSequence clone() {
 		// default cloning behaviour is ok as 'dist' is immutable
 		return super.clone();
 	}

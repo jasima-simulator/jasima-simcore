@@ -22,7 +22,7 @@ package jasima.shopSim.util.modelDef.streams;
 
 import java.util.List;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.continuous.DblUniformRange;
 import jasima.core.util.Util;
 import jasima.core.util.i18n.I18n;
@@ -63,7 +63,7 @@ public class DblUniformDef extends DblStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof DblUniformRange) {
 				DblUniformRange s = (DblUniformRange) stream;
 				DblUniformDef def = new DblUniformDef();
@@ -91,7 +91,7 @@ public class DblUniformDef extends DblStreamDef {
 	}
 
 	@Override
-	public DblStream createStream() {
+	public DblSequence createStream() {
 		return new DblUniformRange(getMinValue(), getMaxValue());
 	}
 

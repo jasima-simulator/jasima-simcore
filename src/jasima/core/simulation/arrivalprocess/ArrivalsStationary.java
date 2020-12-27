@@ -23,14 +23,14 @@ package jasima.core.simulation.arrivalprocess;
 import java.util.Random;
 
 import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 
 /**
  * This class can be used to create a stationary arrival process which can be
  * described by a certain sequence of inter-arrival times (using, e.g.,
  * {@link DblDistribution}).
  * 
- * @see DblStream
+ * @see DblSequence
  * 
  * @author Torsten Hildebrandt, 2012-08-07
  */
@@ -38,13 +38,13 @@ public class ArrivalsStationary extends ArrivalProcess {
 
 	private static final long serialVersionUID = -7877781395872395477L;
 
-	private DblStream interArrivalTimes = null;
+	private DblSequence interArrivalTimes = null;
 
 	public ArrivalsStationary() {
 		this(null);
 	}
 
-	public ArrivalsStationary(DblStream interArrivalTimes) {
+	public ArrivalsStationary(DblSequence interArrivalTimes) {
 		super();
 		setInterArrivalTimes(interArrivalTimes);
 	}
@@ -76,18 +76,18 @@ public class ArrivalsStationary extends ArrivalProcess {
 	}
 
 	@Override
-	public DblStream clone() {
+	public DblSequence clone() {
 		ArrivalsStationary c = (ArrivalsStationary) super.clone();
 		if (interArrivalTimes != null)
 			c.interArrivalTimes = interArrivalTimes.clone();
 		return c;
 	}
 
-	public DblStream getInterArrivalTimes() {
+	public DblSequence getInterArrivalTimes() {
 		return interArrivalTimes;
 	}
 
-	public void setInterArrivalTimes(DblStream interArrivalTimes) {
+	public void setInterArrivalTimes(DblSequence interArrivalTimes) {
 		this.interArrivalTimes = interArrivalTimes;
 	}
 

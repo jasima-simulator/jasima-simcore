@@ -31,7 +31,7 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class DblUniformRange extends DblStream {
+public class DblUniformRange extends DblSequence {
 
 	private static final long serialVersionUID = 7183118564770349548L;
 

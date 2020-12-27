@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 
 import jasima.core.random.continuous.DblDistribution;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 import jasima.shopSim.core.DynamicJobSource;
 import jasima.shopSim.core.ShopExperiment;
@@ -101,9 +101,9 @@ public class MimacExperiment extends ShopExperiment {
 	};
 
 	private DataSet scenario;
-	private DblStream jobWeights;
-	private DblStream dueDateFactors;
-	private DblStream[] interArrivalTimes;
+	private DblSequence jobWeights;
+	private DblSequence dueDateFactors;
+	private DblSequence[] interArrivalTimes;
 	private boolean arrivalAtTimeZero = false;
 
 	@Override
@@ -114,7 +114,7 @@ public class MimacExperiment extends ShopExperiment {
 		getScenario().getShopDef().getShopConfigurator().configureMdl(shop);
 
 		// create job sources
-		DblStream[] iats = getInterArrivalTimes();
+		DblSequence[] iats = getInterArrivalTimes();
 		if (iats != null && shop.routes.length != iats.length) {
 			throw new RuntimeException("Number of routes (" + shop.routes.length + ") and inter-arrival streams ("
 					+ iats.length + ") doesn't match.");
@@ -161,7 +161,7 @@ public class MimacExperiment extends ShopExperiment {
 			c.dueDateFactors = dueDateFactors.clone();
 
 		if (interArrivalTimes != null) {
-			c.interArrivalTimes = new DblStream[interArrivalTimes.length];
+			c.interArrivalTimes = new DblSequence[interArrivalTimes.length];
 			for (int i = 0; i < interArrivalTimes.length; i++) {
 				c.interArrivalTimes[i] = interArrivalTimes[i].clone();
 			}
@@ -184,27 +184,27 @@ public class MimacExperiment extends ShopExperiment {
 		return scenario;
 	}
 
-	public void setInterArrivalTimes(DblStream[] interArrivalTimes) {
+	public void setInterArrivalTimes(DblSequence[] interArrivalTimes) {
 		this.interArrivalTimes = interArrivalTimes;
 	}
 
-	public DblStream[] getInterArrivalTimes() {
+	public DblSequence[] getInterArrivalTimes() {
 		return interArrivalTimes;
 	}
 
-	public void setJobWeights(DblStream jobWeights) {
+	public void setJobWeights(DblSequence jobWeights) {
 		this.jobWeights = jobWeights;
 	}
 
-	public DblStream getJobWeights() {
+	public DblSequence getJobWeights() {
 		return jobWeights;
 	}
 
-	public void setDueDateFactors(DblStream dueDateFactors) {
+	public void setDueDateFactors(DblSequence dueDateFactors) {
 		this.dueDateFactors = dueDateFactors;
 	}
 
-	public DblStream getDueDateFactors() {
+	public DblSequence getDueDateFactors() {
 		return dueDateFactors;
 	}
 

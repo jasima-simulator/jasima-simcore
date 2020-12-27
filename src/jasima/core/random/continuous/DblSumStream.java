@@ -31,17 +31,17 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class DblSumStream extends DblStream {
+public class DblSumStream extends DblSequence {
 
 	private static final long serialVersionUID = -1978211297841470708L;
 
-	private DblStream[] subStreams;
+	private DblSequence[] subStreams;
 
 	public DblSumStream() {
-		this((DblStream[]) null);
+		this((DblSequence[]) null);
 	}
 
-	public DblSumStream(DblStream... subStreams) {
+	public DblSumStream(DblSequence... subStreams) {
 		super();
 		this.subStreams = subStreams;
 	}
@@ -50,7 +50,7 @@ public class DblSumStream extends DblStream {
 	public void init() {
 		super.init();
 
-		for (DblStream s : subStreams) {
+		for (DblSequence s : subStreams) {
 			if (s.getRndGen() == null)
 				s.setRndGen(getRndGen());
 			s.init();
@@ -104,7 +104,7 @@ public class DblSumStream extends DblStream {
 
 	// ************* getter / setter below ****************
 
-	public DblStream[] getSubStreams() {
+	public DblSequence[] getSubStreams() {
 		return subStreams;
 	}
 
@@ -113,7 +113,7 @@ public class DblSumStream extends DblStream {
 	 * 
 	 * @param subStreams The sub-streams to use.
 	 */
-	public void setSubStreams(DblStream... subStreams) {
+	public void setSubStreams(DblSequence... subStreams) {
 		this.subStreams = subStreams;
 	}
 

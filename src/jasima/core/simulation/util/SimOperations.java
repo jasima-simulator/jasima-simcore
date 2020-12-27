@@ -8,7 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import jasima.core.random.RandomFactory;
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentContainer;
 import jasima.core.simulation.SimEvent;
@@ -286,12 +286,12 @@ public interface SimOperations {
 	}
 
 	/**
-	 * Initializes the random number generator associated with the {@link DblStream}
+	 * Initializes the random number generator associated with the {@link DblSequence}
 	 * {@code s}. This just delegates to the {@link RandomFactory} of a simulation.
 	 *
-	 * @see Simulation#initRndGen(DblStream, String)
+	 * @see Simulation#initRndGen(DblSequence, String)
 	 */
-	default <T extends DblStream> T initRndGen(T s, String streamName) {
+	default <T extends DblSequence> T initRndGen(T s, String streamName) {
 		return getSim().initRndGen(s, streamName);
 	}
 

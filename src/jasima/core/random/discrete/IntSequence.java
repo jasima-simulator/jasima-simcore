@@ -20,21 +20,19 @@
  *******************************************************************************/
 package jasima.core.random.discrete;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 
 /**
  * A stream of integer numbers, usually the sequence is produced by a pseudo
- * random number generator. This classes' nextInt()-method returns an int-value
- * in the interval [min(),max()], i.e. including both min() and max(). This is
- * an abstract base class.
+ * random number generator. This is an abstract base class.
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class IntStream extends DblStream {
+public abstract class IntSequence extends DblSequence {
 
 	private static final long serialVersionUID = -4799011636085252707L;
 
-	public IntStream() {
+	public IntSequence() {
 		super();
 	}
 
@@ -46,8 +44,8 @@ public abstract class IntStream extends DblStream {
 	}
 
 	@Override
-	public IntStream clone() {
-		return (IntStream) super.clone();
+	public IntSequence clone() {
+		return (IntSequence) super.clone();
 	}
 
 }

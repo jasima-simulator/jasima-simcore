@@ -39,7 +39,7 @@ import jasima.core.util.Pair;
  * @see <a href="http://mathworld.wolfram.com/NormalDistribution.html">Normal
  *      distribution (MathWorld)</a>
  */
-public class DblNormal extends DblStream {
+public class DblNormal extends DblSequence {
 
 	private static final long serialVersionUID = 8266321644360710699L;
 

@@ -31,7 +31,7 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class IntUniformAllInts extends IntStream {
+public class IntUniformAllInts extends IntSequence {
 
 	private static final long serialVersionUID = -2235431750818257710L;
 

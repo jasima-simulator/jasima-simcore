@@ -22,7 +22,7 @@ package jasima.core.util.converter;
 
 import java.util.HashMap;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.util.converter.ArgListTokenizer.TokenType;
 import jasima.core.util.i18n.I18n;
 
@@ -32,9 +32,9 @@ public class TypeConverterDblStream extends TypeToStringConverter {
 
 		public String[] getTypePrefixes();
 
-		public DblStream stringToStream(ArgListTokenizer tk);
+		public DblSequence stringToStream(ArgListTokenizer tk);
 
-		public String streamToString(DblStream s);
+		public String streamToString(DblSequence s);
 	}
 
 	public TypeConverterDblStream() {
@@ -43,7 +43,7 @@ public class TypeConverterDblStream extends TypeToStringConverter {
 
 	@Override
 	public Class<?>[] handledTypes() {
-		return new Class<?>[] { DblStream.class };
+		return new Class<?>[] { DblSequence.class };
 	}
 
 	@Override
@@ -54,13 +54,13 @@ public class TypeConverterDblStream extends TypeToStringConverter {
 		String prefix = tk.currTokenText().trim().toLowerCase(I18n.DEF_LOCALE);
 		StreamFactory fact = lookupFactory(prefix);
 
-		DblStream stream = fact.stringToStream(tk);
+		DblSequence stream = fact.stringToStream(tk);
 		return requiredType.cast(stream);
 	}
 
 	@Override
 	public String toString(Object o) {
-		DblStream s = (DblStream) o;
+		DblSequence s = (DblSequence) o;
 		StreamFactory fact = lookupFactory(s.getClass().getName());
 		return fact.streamToString(s);
 	}

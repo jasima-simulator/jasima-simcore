@@ -30,7 +30,7 @@ import jasima.core.util.Pair;
  * 
  * @author Torsten Hildebrandt
  */
-public class IntUniformRange extends IntStream {
+public class IntUniformRange extends IntSequence {
 
 	private static final long serialVersionUID = -7138352768070870971L;
 

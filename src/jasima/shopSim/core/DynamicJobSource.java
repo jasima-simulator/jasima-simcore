@@ -22,8 +22,8 @@ package jasima.shopSim.core;
 
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblConst;
-import jasima.core.random.continuous.DblStream;
-import jasima.core.random.discrete.IntStream;
+import jasima.core.random.continuous.DblSequence;
+import jasima.core.random.discrete.IntSequence;
 import jasima.core.simulation.SimComponentContainer;
 import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
 
@@ -47,12 +47,12 @@ import jasima.core.simulation.arrivalprocess.ArrivalsStationary;
  */
 public class DynamicJobSource extends JobSource {
 
-	private DblStream arrivalProcess = new ArrivalsStationary();
-	private DblStream dueDateFactors = new DblConst(1.0);
-	private DblStream jobWeights = new DblConst(1.0);
-	private IntStream machIdx = null;
-	private DblStream procTimes = null;
-	private IntStream numOps = null;
+	private DblSequence arrivalProcess = new ArrivalsStationary();
+	private DblSequence dueDateFactors = new DblConst(1.0);
+	private DblSequence jobWeights = new DblConst(1.0);
+	private IntSequence machIdx = null;
+	private DblSequence procTimes = null;
+	private IntSequence numOps = null;
 	private Route route = null;
 
 	@Override
@@ -70,7 +70,7 @@ public class DynamicJobSource extends JobSource {
 		init(getNumOps(), prefix + "numOpsStream", fact);
 	}
 
-	static protected void init(DblStream dblStream, String streamName, RandomFactory fact) {
+	static protected void init(DblSequence dblStream, String streamName, RandomFactory fact) {
 		if (dblStream == null)
 			return;
 		fact.initRndGen(dblStream, streamName);
@@ -131,19 +131,19 @@ public class DynamicJobSource extends JobSource {
 	//
 	//
 
-	public void setDueDateFactors(DblStream dueDateFactors) {
+	public void setDueDateFactors(DblSequence dueDateFactors) {
 		this.dueDateFactors = dueDateFactors;
 	}
 
-	public DblStream getDueDateFactors() {
+	public DblSequence getDueDateFactors() {
 		return dueDateFactors;
 	}
 
-	public void setJobWeights(DblStream jobWeights) {
+	public void setJobWeights(DblSequence jobWeights) {
 		this.jobWeights = jobWeights;
 	}
 
-	public DblStream getJobWeights() {
+	public DblSequence getJobWeights() {
 		return jobWeights;
 	}
 
@@ -155,35 +155,35 @@ public class DynamicJobSource extends JobSource {
 		this.route = route;
 	}
 
-	public void setMachIdx(IntStream machIdx) {
+	public void setMachIdx(IntSequence machIdx) {
 		this.machIdx = machIdx;
 	}
 
-	public IntStream getMachIdx() {
+	public IntSequence getMachIdx() {
 		return machIdx;
 	}
 
-	public void setProcTimes(DblStream procTimes) {
+	public void setProcTimes(DblSequence procTimes) {
 		this.procTimes = procTimes;
 	}
 
-	public DblStream getProcTimes() {
+	public DblSequence getProcTimes() {
 		return procTimes;
 	}
 
-	public void setNumOps(IntStream numOps) {
+	public void setNumOps(IntSequence numOps) {
 		this.numOps = numOps;
 	}
 
-	public IntStream getNumOps() {
+	public IntSequence getNumOps() {
 		return numOps;
 	}
 
-	public DblStream getArrivalProcess() {
+	public DblSequence getArrivalProcess() {
 		return arrivalProcess;
 	}
 
-	public void setArrivalProcess(DblStream arrivalProcess) {
+	public void setArrivalProcess(DblSequence arrivalProcess) {
 		this.arrivalProcess = arrivalProcess;
 	}
 

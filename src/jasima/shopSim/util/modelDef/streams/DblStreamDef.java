@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.shopSim.util.modelDef.PropertySupport;
 
 public abstract class DblStreamDef extends PropertySupport {
@@ -40,7 +40,7 @@ public abstract class DblStreamDef extends PropertySupport {
 
 		public DblStreamDef stringToStreamDef(String params, List<String> errors);
 
-		public DblStreamDef streamToStreamDef(DblStream stream);
+		public DblStreamDef streamToStreamDef(DblSequence stream);
 
 	}
 
@@ -48,7 +48,7 @@ public abstract class DblStreamDef extends PropertySupport {
 		super();
 	}
 
-	public abstract DblStream createStream();
+	public abstract DblSequence createStream();
 
 	public static DblStreamDef parseDblStream(String s, List<String> errors) {
 		StringTokenizer sst = new StringTokenizer(s, "()", false);
@@ -75,7 +75,7 @@ public abstract class DblStreamDef extends PropertySupport {
 		return res;
 	}
 
-	public static DblStreamDef createStreamDefFromStream(DblStream stream) {
+	public static DblStreamDef createStreamDefFromStream(DblSequence stream) {
 		for (StreamDefFact fact : streamFactoryReg.values()) {
 			DblStreamDef sd = fact.streamToStreamDef(stream);
 			if (sd != null)

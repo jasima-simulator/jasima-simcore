@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.discrete.IntEmpirical;
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
@@ -82,7 +82,7 @@ public class IntEmpDef extends IntStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof IntEmpirical) {
 				IntEmpirical s = (IntEmpirical) stream;
 				IntEmpDef def = new IntEmpDef();
@@ -144,7 +144,7 @@ public class IntEmpDef extends IntStreamDef {
 	}
 
 	@Override
-	public DblStream createStream() {
+	public DblSequence createStream() {
 		return new IntEmpirical(getProbs().clone(), getValues().clone());
 	}
 

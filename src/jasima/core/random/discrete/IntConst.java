@@ -33,7 +33,7 @@ import jasima.core.util.Util;
  * 
  * @author Torsten Hildebrandt
  */
-public class IntConst extends IntStream {
+public class IntConst extends IntSequence {
 
 	private static final long serialVersionUID = -3297743869123820992L;
 

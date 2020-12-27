@@ -24,7 +24,7 @@ import static jasima.core.util.i18n.I18n.defFormat;
 
 import java.util.List;
 
-import jasima.core.random.continuous.DblStream;
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.util.Util;
 
@@ -64,7 +64,7 @@ public class IntUniformDef extends IntStreamDef {
 		}
 
 		@Override
-		public DblStreamDef streamToStreamDef(DblStream stream) {
+		public DblStreamDef streamToStreamDef(DblSequence stream) {
 			if (stream instanceof IntUniformRange) {
 				IntUniformRange s = (IntUniformRange) stream;
 				IntUniformDef def = new IntUniformDef();
@@ -99,7 +99,7 @@ public class IntUniformDef extends IntStreamDef {
 	}
 
 	@Override
-	public DblStream createStream() {
+	public DblSequence createStream() {
 		return new IntUniformRange(getMinValue(), getMaxValue());
 	}
 
