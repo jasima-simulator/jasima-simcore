@@ -690,9 +690,9 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	/**
-	 * After calling end() the simulation is terminated (after handling the current
-	 * event). This method might also be called from an external thread.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void end() {
 		endRequested = true;
 		if (pauseRequests.get() > 0) {
@@ -702,6 +702,10 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isEndRequested() {
 		return endRequested;
 	}
@@ -919,29 +923,9 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	/**
-	 * Convenience method to add a new component to the root component of this
-	 * simulation.
+	 * {@inheritDoc}
 	 */
-	public void addComponent(SimComponent sc) {
-		getRootComponent().addChild(sc);
-		activate(sc);
-	}
-
-	/**
-	 * Convenience method to add multiple components at once.
-	 */
-	public void addComponents(SimComponent... scs) {
-		for (SimComponent sc : scs) {
-			addComponent(sc);
-		}
-	}
-
-	/**
-	 * Calls all lifecycle events on "sc" to be in sync with the simulation it is
-	 * added to. This should happen automatically if a component was added to the
-	 * simulation before the run, but has to be called when components are added
-	 * dynamically while the simulation is ongoing.
-	 */
+	@Override
 	public void activate(SimComponent sc) {
 		requireAllowedState(state.get(), INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED);
 		switch (state.get()) {

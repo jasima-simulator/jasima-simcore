@@ -131,6 +131,10 @@ public class SimContext {
 		out.error(() -> formatMsg(params));
 	}
 
+	public static void end() {
+		requireSimContext().end();
+	}
+
 	public static String formatMsg(Object... params) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(simTime());

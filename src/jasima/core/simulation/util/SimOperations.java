@@ -30,6 +30,50 @@ public interface SimOperations {
 	}
 
 	/**
+	 * Convenience method to add a new component to the root component of this
+	 * simulation.
+	 */
+	default void addComponent(SimComponent sc) {
+		getRootComponent().addChild(sc);
+		activate(sc);
+	}
+
+	/**
+	 * Calls all lifecycle events on "sc" to be in sync with the simulation it is
+	 * added to. This should happen automatically if a component was added to the
+	 * simulation before the run, but has to be called when components are added
+	 * dynamically while the simulation is ongoing.
+	 */
+	default void activate(SimComponent sc) {
+		getSim().activate(sc);
+	}
+
+	/**
+	 * Convenience method to add multiple components at once.
+	 */
+	default void addComponents(SimComponent... scs) {
+		for (SimComponent sc : scs) {
+			addComponent(sc);
+		}
+	}
+
+	/**
+	 * After calling end() the simulation is terminated (after handling the current
+	 * event). This method might also be called from an external thread.
+	 */
+	default void end() {
+		getSim().end();
+	}
+
+	/**
+	 * Returns true, if {@link #end()} was called and the simulation run ends after
+	 * processing the current event.
+	 */
+	default boolean isEndRequested() {
+		return getSim().isEndRequested();
+	}
+
+	/**
 	 * Returns the current simulation time.
 	 * 
 	 * @see Simulation#simTime()
@@ -286,8 +330,9 @@ public interface SimOperations {
 	}
 
 	/**
-	 * Initializes the random number generator associated with the {@link DblSequence}
-	 * {@code s}. This just delegates to the {@link RandomFactory} of a simulation.
+	 * Initializes the random number generator associated with the
+	 * {@link DblSequence} {@code s}. This just delegates to the
+	 * {@link RandomFactory} of a simulation.
 	 *
 	 * @see Simulation#initRndGen(DblSequence, String)
 	 */
