@@ -41,7 +41,7 @@ public class SimProcess<R> implements Runnable {
 
 		private static final long serialVersionUID = 3091300075872193106L;
 
-		private MightBlock() { // prevent instantiation, this class is just a maker
+		private MightBlock() { // prevent instantiation, this class is just a marker
 		}
 
 	}
