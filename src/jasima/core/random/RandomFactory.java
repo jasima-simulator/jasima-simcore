@@ -83,11 +83,20 @@ public class RandomFactory implements Serializable {
 	private Simulation sim;
 
 	/**
-	 * This constructor is usually not called directly, use static method
+	 * This constructor is usually not called directly, use static factory method
 	 * {@link #newInstance()} instead.
 	 */
 	public RandomFactory() {
 		super();
+	}
+
+	/**
+	 * Convenience constructor when creating instances directly.
+	 */
+	public RandomFactory(Simulation sim, long initialSeed) {
+		this();
+		setSim(sim);
+		setSeed(initialSeed);
 	}
 
 	/**

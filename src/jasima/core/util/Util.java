@@ -47,6 +47,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import javax.annotation.Nullable;
 
+import jasima.core.simulation.SimComponent;
 import jasima.core.statistics.SummaryStat;
 
 /**
@@ -75,7 +76,7 @@ public class Util {
 	 */
 	public static final ExecutorService DEF_POOL = Executors.newCachedThreadPool();
 
-	//TODO: make this list expandable using the plugin mechanism
+	// TODO: make this list expandable using the plugin mechanism
 	/**
 	 * Class search path containing all packaged in jasima-main.
 	 */
@@ -136,14 +137,32 @@ public class Util {
 	 * @param <T> The component type.
 	 */
 	public static <T> T[] initializedArray(int numElements, Class<T> componentType) {
+		T[] res = newGenericArray(componentType, numElements);
+		for (int i = 0; i < numElements; i++) {
+			res[i] = create(componentType);
+		}
+		return res;
+	}
+
+	public static <T extends SimComponent> T[] initializedCompArray(int numElements, Class<T> componentType,
+			String namePrefix) {
+		T[] res = newGenericArray(componentType, numElements);
+		for (int i = 0; i < numElements; i++) {
+			res[i] = create(componentType);
+			res[i].setName(namePrefix + (i + 1));
+		}
+		return res;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> T[] newGenericArray(Class<T> componentType, int n) {
+		return (T[]) Array.newInstance(componentType, n);
+	}
+
+	private static <T> T create(Class<T> componentType) {
 		try {
-			@SuppressWarnings("unchecked")
-			T[] res = (T[]) Array.newInstance(componentType, numElements);
-			for (int i = 0; i < numElements; i++) {
-				res[i] = componentType.newInstance();
-			}
-			return res;
-		} catch (Exception e) {
+			return componentType.newInstance();
+		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException(e);
 		}
 	}

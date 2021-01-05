@@ -58,8 +58,18 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 		super();
 		this.initialTime = initialTime;
 		this.initialValue = initialValue;
-
 		clear();
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param s The object to copy.
+	 */
+	public TimeWeightedSummaryStat(TimeWeightedSummaryStat s) {
+		super(s);
+		this.initialTime = s.initialTime;
+		this.initialValue = s.initialValue;
 	}
 
 	@Override
