@@ -17,6 +17,7 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.Simulation.SimulationFailed;
 import jasima.core.util.SimProcessUtil.SimAction;
@@ -133,6 +134,10 @@ public class SimContext {
 
 	public static void end() {
 		requireSimContext().end();
+	}
+
+	public static <T extends DblSequence> T initRndGen(T s, String streamName) {
+		return requireSimContext().initRndGen(s, streamName);
 	}
 
 	public static String formatMsg(Object... params) {

@@ -926,7 +926,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activate(SimComponent sc) {
+	public <T extends SimComponent> T activate(T sc) {
 		requireAllowedState(state.get(), INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED);
 		switch (state.get()) {
 		case INITIAL:
@@ -946,6 +946,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		default:
 			throw new AssertionError();
 		}
+		return sc;
 	}
 
 	/**
@@ -1110,9 +1111,9 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	/**
-	 * Initializes the random number generator associated with the {@link DblSequence}
-	 * {@code s}. This just delegates to the {@link RandomFactory} of this
-	 * simulation.
+	 * Initializes the random number generator associated with the
+	 * {@link DblSequence} {@code s}. This just delegates to the
+	 * {@link RandomFactory} of this simulation.
 	 */
 	public <T extends DblSequence> T initRndGen(T s, String streamName) {
 		return getRndStreamFactory().initRndGen(s, streamName);

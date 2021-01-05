@@ -32,10 +32,12 @@ public interface SimOperations {
 	/**
 	 * Convenience method to add a new component to the root component of this
 	 * simulation.
+	 * 
+	 * @return same as parameter {@code sc} to allow chaining
 	 */
-	default void addComponent(SimComponent sc) {
+	default <T extends SimComponent> T addComponent(T sc) {
 		getRootComponent().addChild(sc);
-		activate(sc);
+		return activate(sc);
 	}
 
 	/**
@@ -43,9 +45,11 @@ public interface SimOperations {
 	 * added to. This should happen automatically if a component was added to the
 	 * simulation before the run, but has to be called when components are added
 	 * dynamically while the simulation is ongoing.
+	 * 
+	 * @return same as parameter {@code sc} to allow chaining
 	 */
-	default void activate(SimComponent sc) {
-		getSim().activate(sc);
+	default <T extends SimComponent> T activate(T sc) {
+		return getSim().activate(sc);
 	}
 
 	/**
