@@ -3,6 +3,8 @@ package jasima.core.util.observer;
 import java.util.HashMap;
 import java.util.Map;
 
+import jasima.core.util.TypeRef;
+
 /**
  * Notifier inform {@link NotifierListener}s about events. This implements a
  * version of the Observer-pattern using Java Generics. Implementation can be
@@ -24,6 +26,10 @@ public interface Notifier<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> {
 	}
 
 	default <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(Class<T> eventType, T eventHandler) {
+		notifierImpl().addListener(eventType, eventHandler);
+	}
+
+	default <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(TypeRef<T> eventType, T eventHandler) {
 		notifierImpl().addListener(eventType, eventHandler);
 	}
 

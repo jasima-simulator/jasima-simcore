@@ -290,6 +290,13 @@ public class SimProcess<R> implements Runnable {
 		log.trace("process {} awake at {}", getName(), tAbs);
 	}
 
+	public void resume() {
+		awakeAt(sim.simTime());
+//		requireAllowedState(state, ProcessState.PASSIVE);
+//		scheduleReactivateAt(sim.simTime());
+		log.trace("process {} resumed", getName());
+	}
+
 	public void waitFor(double deltaT) throws MightBlock {
 		waitUntil(sim.simTime() + deltaT);
 	}
@@ -300,12 +307,6 @@ public class SimProcess<R> implements Runnable {
 
 	public void waitFor(Duration d) throws MightBlock {
 		waitUntil(sim.simTime() + sim.toSimTime(d));
-	}
-
-	public void resume() {
-		requireAllowedState(state, ProcessState.PASSIVE);
-		scheduleReactivateAt(sim.simTime());
-		log.trace("process {} resumed", getName());
 	}
 
 	public void cancel() {
@@ -384,6 +385,11 @@ public class SimProcess<R> implements Runnable {
 	}
 
 	private void scheduleReactivateAt(double t) {
+		scheduleReactivateAt(t, activateProcessEvent.getPrio());
+	}
+
+	private void scheduleReactivateAt(double t, int prio) {
+		activateProcessEvent.setPrio(prio);
 		activateProcessEvent.setTime(t);
 		sim.schedule(activateProcessEvent);
 	}
