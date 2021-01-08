@@ -34,11 +34,11 @@ import util.FileChecker;
  * 
  * @author Torsten Hildebrandt
  */
-public class TestHistogramValueStat {
+public class TestQuantileEstimator {
 
 	@Test
 	public void testBasicP2() throws Exception {
-		QuantileEstimator basicQE = new QuantileEstimator("BasicTest", 0.5);
+		QuantileEstimator basicQE = new QuantileEstimator(0.5);
 
 		PrintStream pStr = new PrintStream("basicPP.txt");
 
@@ -61,8 +61,8 @@ public class TestHistogramValueStat {
 	}
 
 	@Test
-	public void testQuantileList() throws Exception {
-		QuantileEstimator defQE = new QuantileEstimator("ExponentialQuantiles");
+	public void testQuantileListExponentialQuantiles() throws Exception {
+		QuantileEstimator defQE = new QuantileEstimator();
 
 		MersenneTwister mt = new MersenneTwister(123456L);
 
@@ -78,7 +78,7 @@ public class TestHistogramValueStat {
 
 	@Test
 	public void testHistogram() throws Exception {
-		QuantileEstimator histQE = new QuantileEstimator("HistogramTest");
+		QuantileEstimator histQE = new QuantileEstimator();
 		histQE.setCellCount(100);
 		for (int i = 0; i < 10000; ++i) {
 			histQE.value(i / 1000.0);
