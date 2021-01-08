@@ -122,14 +122,14 @@ public class TestStaticInsts {
 	public static void getResults(Map<String, Object> expRes, String prefix, ArrayList<String> res) {
 		res.add(prefix + "\tsimtime\t" + expRes.get("simTime"));
 		res.add(prefix + "\tcMax\t" + expRes.get("cMax"));
-		res.add(formatValueStat(prefix, (SummaryStat) expRes.get("flowMean")));
-		res.add(formatValueStat(prefix, (SummaryStat) expRes.get("tardMean")));
-		res.add(formatValueStat(prefix, (SummaryStat) expRes.get("lateMean")));
+		res.add(formatValueStat(prefix, "flowtimes", (SummaryStat) expRes.get("flowMean")));
+		res.add(formatValueStat(prefix, "tardiness", (SummaryStat) expRes.get("tardMean")));
+		res.add(formatValueStat(prefix, "lateness", (SummaryStat) expRes.get("lateMean")));
 	}
 
-	private static String formatValueStat(String prefix, SummaryStat stat) {
-		return String.format(Locale.ENGLISH, "%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", prefix, stat.getName(),
-				stat.mean(), stat.min(), stat.max(), stat.stdDev(), stat.sum(), stat.numObs());
+	private static String formatValueStat(String prefix, String name, SummaryStat stat) {
+		return String.format(Locale.ENGLISH, "%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", prefix, name, stat.mean(),
+				stat.min(), stat.max(), stat.stdDev(), stat.sum(), stat.numObs());
 	}
 
 }

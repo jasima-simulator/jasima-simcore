@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.shopSim.util;
 
-import static jasima.shopSim.util.BasicJobStatCollector.put;
-
 import java.util.Map;
 
 import jasima.core.simulation.SimComponent;
@@ -70,12 +68,12 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 
 	@Override
 	public void init(SimComponent sim) {
-		noProcTime = new SummaryStat("noProcTime");
-		lateness = new SummaryStat("lateness");
-		weightedFlowtime = new SummaryStat("weightedFlowtimes");
-		weightedTardiness = new SummaryStat("weightedTardiness");
-		conditionalTardiness = new SummaryStat("conditionalTardiness");
-		weightedConditionalTardiness = new SummaryStat("weightedConditionalTardiness");
+		noProcTime = new SummaryStat();
+		lateness = new SummaryStat();
+		weightedFlowtime = new SummaryStat();
+		weightedTardiness = new SummaryStat();
+		conditionalTardiness = new SummaryStat();
+		weightedConditionalTardiness = new SummaryStat();
 		numTardyWeighted = 0.0;
 
 		shop = null;
@@ -84,7 +82,6 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	@Override
 	public void done(SimComponent sim) {
 		weightedTardinessWithWIP = new SummaryStat(weightedTardiness);
-		weightedTardinessWithWIP.setName("weightedTardinessWithWIP");
 
 		if (shop != null)
 			for (SimComponent sc : shop.machines().getChildren()) {
@@ -148,13 +145,13 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 
 	@Override
 	public void produceResults(SimComponent sim, Map<String, Object> res) {
-		put(res, noProcTime);
-		put(res, weightedFlowtime);
-		put(res, lateness);
-		put(res, weightedTardiness);
-		put(res, weightedTardinessWithWIP);
-		put(res, conditionalTardiness);
-		put(res, weightedConditionalTardiness);
+		res.put("noProcTime", noProcTime);
+		res.put("weightedFlowtimes", weightedFlowtime);
+		res.put("lateness", lateness);
+		res.put("weightedTardiness", weightedTardiness);
+		res.put("weightedTardinessWithWIP", weightedTardinessWithWIP);
+		res.put("conditionalTardiness", conditionalTardiness);
+		res.put("weightedConditionalTardiness", weightedConditionalTardiness);
 
 		res.put("weightedNumTardy", numTardyWeighted);
 	}

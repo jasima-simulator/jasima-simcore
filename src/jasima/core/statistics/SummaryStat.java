@@ -44,7 +44,6 @@ public class SummaryStat implements Serializable, Cloneable {
 
 	protected static final double DEF_ERROR_PROB = 0.05;
 
-	private String name;
 	private double meanEst, varEst;
 	private double weightSum;
 	private int numObs;
@@ -53,13 +52,8 @@ public class SummaryStat implements Serializable, Cloneable {
 	protected double lastValue, lastWeight;
 
 	public SummaryStat() {
-		this((String) null);
-	}
-
-	public SummaryStat(String name) {
 		super();
 		clear();
-		setName(name);
 	}
 
 	/**
@@ -67,7 +61,7 @@ public class SummaryStat implements Serializable, Cloneable {
 	 * constructor.
 	 */
 	public SummaryStat(SummaryStat vs) {
-		this(vs.name);
+		this();
 		meanEst = vs.meanEst;
 		varEst = vs.varEst;
 		weightSum = vs.weightSum;
@@ -158,7 +152,7 @@ public class SummaryStat implements Serializable, Cloneable {
 	public double mean() {
 		if (numObs < 1)
 			return Double.NaN;
-		if (weightSum==0.0)
+		if (weightSum == 0.0)
 			return lastValue;
 		return meanEst;
 	}
@@ -364,24 +358,6 @@ public class SummaryStat implements Serializable, Cloneable {
 		if (numObs == 0)
 			return Double.NaN;
 		return lastWeight;
-	}
-
-	/**
-	 * Sets a descriptive name for this object.
-	 * 
-	 * @param name A name for this {@code SummaryStat}.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Returns the name of this object.
-	 * 
-	 * @return The name for this {@code SummaryStat}.
-	 */
-	public String getName() {
-		return name;
 	}
 
 	// ************* static utility methods *************

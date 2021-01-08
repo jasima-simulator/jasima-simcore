@@ -50,8 +50,8 @@ public class BasicJobStatCollector extends ShopListenerBase {
 
 	@Override
 	public void init(SimComponent c) {
-		flowtime = new SummaryStat("flowtime");
-		tardiness = new SummaryStat("tardiness");
+		flowtime = new SummaryStat();
+		tardiness = new SummaryStat();
 		numTardy = 0;
 		numFinished = 0;
 		cMax = 0.0;
@@ -80,17 +80,13 @@ public class BasicJobStatCollector extends ShopListenerBase {
 
 	@Override
 	public void produceResults(SimComponent c, Map<String, Object> res) {
-		put(res, flowtime);
-		put(res, tardiness);
+		res.put("flowtime", flowtime);
+		res.put("tardiness", tardiness);
 
 		res.put("tardPercentage", ((double) numTardy) / numFinished);
 		res.put("numTardy", numTardy);
 
 		res.put("cMax", cMax);
-	}
-
-	public static void put(Map<String, Object> res, SummaryStat ss) {
-		res.put(ss.getName(), ss);
 	}
 
 	@Override

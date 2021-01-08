@@ -2,7 +2,7 @@
   <m class="linked-hash-map">
     <entry>
       <string>runTime</string>
-      <double>0.048</double>
+      <double>0.058</double>
     </entry>
     <entry>
       <string>expAborted</string>
@@ -15,7 +15,6 @@
     <entry>
       <string>flowMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>flowtimes</name>
         <meanEst>1718.453897443763</meanEst>
         <varEst>1.4606707868234003E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -37,7 +36,6 @@
     <entry>
       <string>noProcMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>noProcTime</name>
         <meanEst>1467.9569985017697</meanEst>
         <varEst>1.4442172714485106E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -59,7 +57,6 @@
     <entry>
       <string>weightedFlowMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>weightedFlowtimes</name>
         <meanEst>1718.453897443763</meanEst>
         <varEst>1.4606707868234003E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -81,7 +78,6 @@
     <entry>
       <string>lateMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>lateness</name>
         <meanEst>716.4663016757926</meanEst>
         <varEst>1.40130173239222E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -103,7 +99,6 @@
     <entry>
       <string>tardMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>913.4986510749518</meanEst>
         <varEst>1.2891522360129656E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -125,7 +120,6 @@
     <entry>
       <string>weightedTardMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>weightedTardiness</name>
         <meanEst>913.4986510749518</meanEst>
         <varEst>1.2891522360129656E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -147,7 +141,6 @@
     <entry>
       <string>weightedTardWIPMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>weightedTardiness</name>
         <meanEst>913.4986510749518</meanEst>
         <varEst>1.2891522360129656E10</varEst>
         <weightSum>2741.0</weightSum>
@@ -169,7 +162,6 @@
     <entry>
       <string>condTardMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>conditionalTardiness</name>
         <meanEst>2022.5361894963241</meanEst>
         <varEst>1.0114603486604368E10</varEst>
         <weightSum>1238.0</weightSum>
@@ -191,7 +183,6 @@
     <entry>
       <string>weightedCondTardMean</string>
       <jasima.core.statistics.SummaryStat>
-        <name>weightedConditionalTardiness</name>
         <meanEst>2022.5361894963241</meanEst>
         <varEst>1.0114603486604368E10</varEst>
         <weightSum>1238.0</weightSum>
