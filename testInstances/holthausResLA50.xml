@@ -296,8 +296,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>153.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -312,8 +310,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>149.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -380,8 +376,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>187.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -396,8 +390,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>183.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -464,8 +456,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>149.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -480,8 +470,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>117.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -548,8 +536,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>117.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -564,8 +550,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>77.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -632,8 +616,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>307.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -648,8 +630,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>260.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -716,8 +696,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>32.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -732,8 +710,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>0.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -800,8 +776,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>313.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -816,8 +790,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>264.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -884,8 +856,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>199.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -900,8 +870,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>153.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -968,8 +936,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>229.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -984,8 +950,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>199.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1052,8 +1016,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>77.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1068,8 +1030,6 @@
         <lastValue>NaN</lastValue>
         <lastWeight>32.0</lastWeight>
         <lastTime>81812.59330435263</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>

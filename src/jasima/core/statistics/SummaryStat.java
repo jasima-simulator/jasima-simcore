@@ -158,6 +158,8 @@ public class SummaryStat implements Serializable, Cloneable {
 	public double mean() {
 		if (numObs < 1)
 			return Double.NaN;
+		if (weightSum==0.0)
+			return lastValue;
 		return meanEst;
 	}
 
@@ -177,12 +179,10 @@ public class SummaryStat implements Serializable, Cloneable {
 	 *         Returns NaN, if no values were added yet.
 	 */
 	public double variance() {
-		if (numObs < 1)
-			return Double.NaN;
 		if (numObs == 1)
 			return 0.0;
-		if (weightSum <= 1.0)
-			throw new IllegalStateException("weight sum is <=1.0: " + weightSum);
+		if (numObs < 1 || weightSum <= 1.0)
+			return Double.NaN;
 
 		return varEst / (weightSum - 1.0);
 	}
