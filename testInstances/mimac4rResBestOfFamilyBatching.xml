@@ -1,8 +1,8 @@
-<java.util.Collections_-UnmodifiableMap>
-  <m class="jasima.core.experiment.Experiment$UniqueNamesCheckingHashMap">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><java.util.Collections_-UnmodifiableMap>
+  <m class="linked-hash-map">
     <entry>
       <string>runTime</string>
-      <double>13.759</double>
+      <double>5.879</double>
     </entry>
     <entry>
       <string>expAborted</string>
@@ -227,31 +227,17 @@
       <double>2627425.162656715</double>
     </entry>
     <entry>
-      <string>numJobsFinished</string>
-      <int>5749</int>
-    </entry>
-    <entry>
-      <string>numJobsStarted</string>
-      <int>8306</int>
-    </entry>
-    <entry>
-      <string>numWIP</string>
-      <int>2557</int>
-    </entry>
-    <entry>
       <string>AME135.qLen</string>
       <jasima.core.statistics.TimeWeightedSummaryStat>
         <meanEst>0.015515601217656022</meanEst>
         <varEst>72942.35136035016</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>11501</numObs>
+        <numObs>11502</numObs>
         <max>4.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>614.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -260,14 +246,12 @@
         <meanEst>0.19691780821917781</meanEst>
         <varEst>415595.03424657596</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>11502</numObs>
+        <numObs>11503</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>524.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -328,14 +312,12 @@
         <meanEst>0.014259893455098923</meanEst>
         <varEst>47610.610492770145</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10347</numObs>
+        <numObs>10348</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1549.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -344,14 +326,12 @@
         <meanEst>0.10826293759512974</meanEst>
         <varEst>253712.57031012172</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10348</numObs>
+        <numObs>10349</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1494.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -412,14 +392,12 @@
         <meanEst>0.0</meanEst>
         <varEst>0.0</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10347</numObs>
+        <numObs>10348</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1245.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -428,14 +406,12 @@
         <meanEst>0.1673154490106553</meanEst>
         <varEst>366135.5604927713</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10348</numObs>
+        <numObs>10349</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1160.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -496,14 +472,12 @@
         <meanEst>1.1700511222881047</meanEst>
         <varEst>1.4205758813091177E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10359</numObs>
+        <numObs>10360</numObs>
         <max>20.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>54.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -512,14 +486,12 @@
         <meanEst>0.3939325865080985</meanEst>
         <varEst>627434.2215736242</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10355</numObs>
+        <numObs>10356</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>54.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -580,14 +552,12 @@
         <meanEst>0.01851217656012178</meanEst>
         <varEst>93979.38261034954</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>32193</numObs>
+        <numObs>32194</numObs>
         <max>8.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>644.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -596,14 +566,12 @@
         <meanEst>0.18374429223744368</meanEst>
         <varEst>394153.5561643837</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>32194</numObs>
+        <numObs>32195</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>614.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -664,14 +632,12 @@
         <meanEst>0.40154951152484497</meanEst>
         <varEst>5698344.222632342</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>100150</numObs>
+        <numObs>100151</numObs>
         <max>23.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>17.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -680,14 +646,12 @@
         <meanEst>0.6478248381607962</meanEst>
         <varEst>1549190.1870565224</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>100149</numObs>
+        <numObs>100150</numObs>
         <max>2.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>17.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>2.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -748,14 +712,12 @@
         <meanEst>0.2382845548151184</meanEst>
         <varEst>1688721.955013465</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>100138</numObs>
+        <numObs>100139</numObs>
         <max>10.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>17.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -764,14 +726,12 @@
         <meanEst>1.2192848219291776</meanEst>
         <varEst>3299944.83918493</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>100137</numObs>
+        <numObs>100138</numObs>
         <max>3.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>36.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>3.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -832,14 +792,12 @@
         <meanEst>0.12103006088280048</meanEst>
         <varEst>505205.3316251905</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8461</numObs>
+        <numObs>8462</numObs>
         <max>4.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>80.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -848,14 +806,12 @@
         <meanEst>0.21824803551875366</meanEst>
         <varEst>448378.4025827984</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>6557</numObs>
+        <numObs>6558</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>80.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -916,14 +872,12 @@
         <meanEst>0.18511061872428525</meanEst>
         <varEst>604780.874095642</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>13793</numObs>
+        <numObs>13794</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>63.65116777596995</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -932,14 +886,12 @@
         <meanEst>0.5674092509786404</meanEst>
         <varEst>645058.3492952072</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>12693</numObs>
+        <numObs>12694</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>76.51157186133787</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1000,14 +952,12 @@
         <meanEst>0.31482848035126204</meanEst>
         <varEst>1922085.6200485553</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>7356</numObs>
+        <numObs>7357</numObs>
         <max>6.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>272.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1016,14 +966,12 @@
         <meanEst>0.30477657433153893</meanEst>
         <varEst>556841.1753766716</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>4331</numObs>
+        <numObs>4332</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>272.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1084,14 +1032,12 @@
         <meanEst>2.2849918683041217</meanEst>
         <varEst>1.5818824106955376E8</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>6092</numObs>
+        <numObs>6093</numObs>
         <max>87.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>197.12620653724298</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1100,14 +1046,12 @@
         <meanEst>0.18571047420340064</meanEst>
         <varEst>397411.66296511434</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>1777</numObs>
+        <numObs>1778</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>197.12620653724298</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1168,14 +1112,12 @@
         <meanEst>1.152618951644125</meanEst>
         <varEst>2.6047661061396956E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>6344</numObs>
+        <numObs>6345</numObs>
         <max>31.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>433.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1184,14 +1126,12 @@
         <meanEst>0.26640176459029097</meanEst>
         <varEst>513594.93967859866</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2297</numObs>
+        <numObs>2298</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>433.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1252,14 +1192,12 @@
         <meanEst>0.17712296567975358</meanEst>
         <varEst>1777990.0228542176</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>6969</numObs>
+        <numObs>6970</numObs>
         <max>8.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>879.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1268,14 +1206,12 @@
         <meanEst>0.14215753424657543</meanEst>
         <varEst>320481.3667808212</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>3560</numObs>
+        <numObs>3561</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>669.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1336,14 +1272,12 @@
         <meanEst>0.010627092846270917</meanEst>
         <varEst>51027.20655098933</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>11300</numObs>
+        <numObs>11301</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>20.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1352,14 +1286,12 @@
         <meanEst>0.2110429365842019</meanEst>
         <varEst>437572.0271395667</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>11095</numObs>
+        <numObs>11096</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>20.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1420,14 +1352,12 @@
         <meanEst>0.0</meanEst>
         <varEst>0.0</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>7793</numObs>
+        <numObs>7794</numObs>
         <max>8.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>2731.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1436,14 +1366,12 @@
         <meanEst>0.2773363774733622</meanEst>
         <varEst>526706.1546423123</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>5208</numObs>
+        <numObs>5209</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>2451.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1504,14 +1432,12 @@
         <meanEst>1.5209982491128378</meanEst>
         <varEst>1.8368348447910797E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20693</numObs>
+        <numObs>20694</numObs>
         <max>22.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1160.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1520,14 +1446,12 @@
         <meanEst>0.56099885844749</meanEst>
         <varEst>647221.5779965767</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20694</numObs>
+        <numObs>20695</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1000.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1588,14 +1512,12 @@
         <meanEst>0.4241107367821227</meanEst>
         <varEst>7003004.8311266145</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>7415</numObs>
+        <numObs>7416</numObs>
         <max>15.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>191.12620653724298</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1604,14 +1526,12 @@
         <meanEst>0.15618003280309622</meanEst>
         <varEst>346338.4176518603</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>3285</numObs>
+        <numObs>3286</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>191.12620653724298</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1672,14 +1592,12 @@
         <meanEst>0.30144427067557267</meanEst>
         <varEst>2235544.2635174147</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>7793</numObs>
+        <numObs>7794</numObs>
         <max>9.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>3041.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1688,14 +1606,12 @@
         <meanEst>0.30705098934550945</meanEst>
         <varEst>559161.3451674271</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>5208</numObs>
+        <numObs>5209</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>2731.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1756,14 +1672,12 @@
         <meanEst>0.5841347220565046</meanEst>
         <varEst>6427426.96123491</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20771</numObs>
+        <numObs>20772</numObs>
         <max>17.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>433.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1772,14 +1686,12 @@
         <meanEst>0.2133904109589042</meanEst>
         <varEst>441122.79143835587</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20772</numObs>
+        <numObs>20773</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>379.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1840,14 +1752,12 @@
         <meanEst>0.15653814401583235</meanEst>
         <varEst>1888747.005575901</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>94977</numObs>
+        <numObs>94978</numObs>
         <max>15.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>69.65116777596995</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1856,14 +1766,12 @@
         <meanEst>0.10842009132420026</meanEst>
         <varEst>254036.08021918035</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>94978</numObs>
+        <numObs>94979</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>63.65116777596995</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1924,14 +1832,12 @@
         <meanEst>1.2379581375198547</meanEst>
         <varEst>1.479035708197767E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>56397</numObs>
+        <numObs>56398</numObs>
         <max>23.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>59.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -1940,14 +1846,12 @@
         <meanEst>0.4607982638292567</meanEst>
         <varEst>652961.3523597916</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>56397</numObs>
+        <numObs>56398</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>59.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2008,14 +1912,12 @@
         <meanEst>0.2739641657282937</meanEst>
         <varEst>2971505.7474587685</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>33423</numObs>
+        <numObs>33424</numObs>
         <max>17.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>120.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2024,14 +1926,12 @@
         <meanEst>0.19076484018264875</meanEst>
         <varEst>405693.8626712365</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>33424</numObs>
+        <numObs>33425</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>90.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2092,14 +1992,12 @@
         <meanEst>0.0</meanEst>
         <varEst>0.0</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10347</numObs>
+        <numObs>10348</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1494.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2108,14 +2006,12 @@
         <meanEst>0.08857876712328787</meanEst>
         <varEst>212165.19169520497</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10348</numObs>
+        <numObs>10349</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>1449.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2176,14 +2072,12 @@
         <meanEst>0.21006316590563198</meanEst>
         <varEst>3414119.4695144477</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20725</numObs>
+        <numObs>20726</numObs>
         <max>23.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>950.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2192,14 +2086,12 @@
         <meanEst>0.12418683409436813</meanEst>
         <varEst>285833.0122644597</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20726</numObs>
+        <numObs>20727</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>921.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2260,14 +2152,12 @@
         <meanEst>0.02837299136332346</meanEst>
         <varEst>94351.31044267055</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>100145</numObs>
+        <numObs>100146</numObs>
         <max>4.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>17.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2276,14 +2166,12 @@
         <meanEst>1.0619990532838042</meanEst>
         <varEst>2531163.5760240005</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>100145</numObs>
+        <numObs>100146</numObs>
         <max>3.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>17.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>3.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2344,14 +2232,12 @@
         <meanEst>1255.4028158725584</meanEst>
         <varEst>1.3360408757490532E12</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>132920</numObs>
+        <numObs>132921</numObs>
         <max>2547.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>59.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2360,14 +2246,12 @@
         <meanEst>0.999275052261531</meanEst>
         <varEst>1903.7815133555443</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>85707</numObs>
+        <numObs>85708</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>59.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2428,14 +2312,12 @@
         <meanEst>0.01079414003044141</meanEst>
         <varEst>85432.8026297563</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>11505</numObs>
+        <numObs>11506</numObs>
         <max>8.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>54.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2444,14 +2326,12 @@
         <meanEst>0.07441704718417004</meanEst>
         <varEst>181014.40691628624</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>11506</numObs>
+        <numObs>11507</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>20.837343284860253</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2512,14 +2392,12 @@
         <meanEst>0.09987633181126326</meanEst>
         <varEst>626011.9598078384</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10379</numObs>
+        <numObs>10380</numObs>
         <max>9.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>2163.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2528,14 +2406,12 @@
         <meanEst>0.1164958143074583</meanEst>
         <varEst>270485.6899539573</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>10380</numObs>
+        <numObs>10381</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>2104.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2596,14 +2472,12 @@
         <meanEst>0.014377702180924707</meanEst>
         <varEst>38025.345586501426</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20693</numObs>
+        <numObs>20694</numObs>
         <max>2.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>619.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2612,14 +2486,12 @@
         <meanEst>0.17715753424657538</meanEst>
         <varEst>383090.7667808226</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20694</numObs>
+        <numObs>20695</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>574.8373432848603</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2680,14 +2552,12 @@
         <meanEst>0.4950842185199538</meanEst>
         <varEst>4709638.014059773</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>35611</numObs>
+        <numObs>35612</numObs>
         <max>15.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>348.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2696,14 +2566,12 @@
         <meanEst>0.3782534246575346</meanEst>
         <varEst>618047.1832191814</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>35612</numObs>
+        <numObs>35613</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>278.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2764,14 +2632,12 @@
         <meanEst>0.2577397260273979</meanEst>
         <varEst>1747742.5739726017</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20697</numObs>
+        <numObs>20698</numObs>
         <max>11.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>249.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>0.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2780,14 +2646,12 @@
         <meanEst>0.21656773211567684</meanEst>
         <varEst>445882.6409436826</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>20698</numObs>
+        <numObs>20699</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
         <lastWeight>159.83734328486025</lastWeight>
         <lastTime>2628000.0</lastTime>
-        <initialTime>0.0</initialTime>
-        <initialValue>1.0</initialValue>
       </jasima.core.statistics.TimeWeightedSummaryStat>
     </entry>
     <entry>
@@ -2841,6 +2705,18 @@
         <lastValue>0.0</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
+    </entry>
+    <entry>
+      <string>numJobsFinished</string>
+      <int>5749</int>
+    </entry>
+    <entry>
+      <string>numJobsStarted</string>
+      <int>8306</int>
+    </entry>
+    <entry>
+      <string>numWIP</string>
+      <int>2557</int>
     </entry>
   </m>
 </java.util.Collections_-UnmodifiableMap>

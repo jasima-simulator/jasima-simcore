@@ -20,7 +20,10 @@
  *******************************************************************************/
 package jasima.core.statistics;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.notANumber;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Random;
 
@@ -94,8 +97,6 @@ public class TestSummaryStat {
 
 	@Test
 	public void testWeights1() {
-		// this method will fail using the numerically unstable version to
-		// compute the variance
 		SummaryStat s = new SummaryStat();
 		s.values(2, 2, 4, 5, 5, 5);
 
@@ -135,6 +136,93 @@ public class TestSummaryStat {
 		assertEquals(42.0, s.sum(), 1e-10);
 		assertEquals(42.0 / 12.0, s.mean(), 1e-10);
 		assertEquals(1.90909090, s.variance(), 1e-6);
+	}
+
+	@Test
+	public void testEmpty() {
+		SummaryStat s = new SummaryStat();
+		assertEquals("numObs", 0, s.numObs());
+		assertThat("mean", s.mean(), is(notANumber()));
+		assertThat("min", s.min(), is(notANumber()));
+		assertThat("max", s.max(), is(notANumber()));
+		assertThat("lastValue", s.lastValue(), is(notANumber()));
+		assertThat("lastWeight", s.lastWeight(), is(notANumber()));
+		assertThat("weightSum", s.weightSum(), is(notANumber()));
+		assertThat("variance", s.variance(), is(notANumber()));
+	}
+
+	@Test
+	public void testSingleValue() {
+		SummaryStat s = new SummaryStat();
+		s.value(3);
+		assertEquals("numObs", 1, s.numObs());
+		assertEquals("mean", 3.0, s.mean(), 1e-6);
+		assertEquals("min", 3.0, s.min(), 1e-6);
+		assertEquals("max", 3.0, s.max(), 1e-6);
+		assertEquals("lastValue", 3.0, s.lastValue(), 1e-6);
+		assertEquals("lastWeight", 1.0, s.lastWeight(), 1e-6);
+		assertEquals("weightSum", 1.0, s.weightSum(), 1e-6);
+		assertEquals("variance", 0.0, s.variance(), 1e-6);
+	}
+
+	@Test
+	public void testSingleValueSmallWeight() {
+		SummaryStat s = new SummaryStat();
+		s.value(3, 0.1);
+		assertEquals("numObs", 1, s.numObs());
+		assertEquals("mean", 3.0, s.mean(), 1e-6);
+		assertEquals("min", 3.0, s.min(), 1e-6);
+		assertEquals("max", 3.0, s.max(), 1e-6);
+		assertEquals("lastValue", 3.0, s.lastValue(), 1e-6);
+		assertEquals("lastWeight", 0.1, s.lastWeight(), 1e-6);
+		assertEquals("weightSum", 0.1, s.weightSum(), 1e-6);
+	}
+
+	@Test
+	public void testSingleValueZeroWeight() {
+		SummaryStat s = new SummaryStat();
+		s.value(3, 0.0);
+		assertEquals("numObs", 1, s.numObs());
+		assertEquals("mean", 3.0, s.mean(), 1e-6);
+		assertEquals("min", 3.0, s.min(), 1e-6);
+		assertEquals("max", 3.0, s.max(), 1e-6);
+		assertEquals("lastValue", 3.0, s.lastValue(), 1e-6);
+		assertEquals("lastWeight", 0.0, s.lastWeight(), 1e-6);
+		assertEquals("weightSum", 0.0, s.weightSum(), 1e-6);
+	}
+
+	@Test
+	public void testTwoValuesZeroWeight() {
+		SummaryStat s = new SummaryStat();
+		s.value(3, 0.0);
+		s.value(4, 0.0);
+		assertEquals("numObs", 2, s.numObs());
+		assertEquals("mean", 4.0, s.mean(), 1e-6);
+		assertEquals("min", 3.0, s.min(), 1e-6);
+		assertEquals("max", 4.0, s.max(), 1e-6);
+		assertEquals("lastValue", 4.0, s.lastValue(), 1e-6);
+		assertEquals("lastWeight", 0.0, s.lastWeight(), 1e-6);
+		assertEquals("weightSum", 0.0, s.weightSum(), 1e-6);
+	}
+
+	@Test
+	public void testZeroThenSmallWeight() {
+		SummaryStat s = new SummaryStat();
+		s.value(3, 0.0);
+		s.value(4, 0.1);
+		assertEquals("numObs", 2, s.numObs());
+		assertEquals("mean", 4.0, s.mean(), 1e-6);
+		assertEquals("min", 3.0, s.min(), 1e-6);
+		assertEquals("max", 4.0, s.max(), 1e-6);
+		assertEquals("lastValue", 4.0, s.lastValue(), 1e-6);
+		assertEquals("lastWeight", 0.1, s.lastWeight(), 1e-6);
+		assertEquals("weightSum", 0.1, s.weightSum(), 1e-6);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testSingleValueNegativeWeight() {
+		SummaryStat s = new SummaryStat();
+		s.value(3, -1.0);
 	}
 
 	@Test

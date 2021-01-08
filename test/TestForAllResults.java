@@ -68,7 +68,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
 		// remove default BasicJobStatCollector
-		NotifierListener[] l = e.getShopListener();
+		NotifierListener<?,?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -95,7 +95,7 @@ public class TestForAllResults extends ExperimentTest {
 				new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener[] l = e.getShopListener();
+		NotifierListener<?,?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -123,7 +123,7 @@ public class TestForAllResults extends ExperimentTest {
 				new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener[] l = e.getShopListener();
+		NotifierListener<?,?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -151,7 +151,7 @@ public class TestForAllResults extends ExperimentTest {
 				new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener[] l = e.getShopListener();
+		NotifierListener<?,?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -175,7 +175,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
-		NotifierListener[] l = e.getShopListener();
+		NotifierListener<?,?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -202,7 +202,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
-		NotifierListener[] l = e.getShopListener();
+		NotifierListener<?,?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());

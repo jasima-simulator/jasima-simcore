@@ -62,8 +62,8 @@ public class MachineStatCollector implements WorkStationListener, Cloneable {
 	public void init(SimComponent c) {
 		WorkStation m = (WorkStation) c;
 
-		aveMachinesBusy = new TimeWeightedSummaryStat(m.numBusy(), m.shop().simTime());
-		aniq = new TimeWeightedSummaryStat();
+		aveMachinesBusy = new TimeWeightedSummaryStat().value(m.numBusy(), m.shop().simTime());
+		aniq = new TimeWeightedSummaryStat().value(m.numJobsWaiting(), m.shop().simTime());
 		stationDelay = new SummaryStat();
 		capacityUtilized = new SummaryStat();
 		aveBatchSize = new SummaryStat();

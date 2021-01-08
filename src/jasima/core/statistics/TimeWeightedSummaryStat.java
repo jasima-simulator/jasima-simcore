@@ -33,32 +33,14 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 
 	private static final long serialVersionUID = -2192851354158356984L;
 
-	private double lastTime = 0.0d;
-
-	private final double initialTime;
-	private final double initialValue;
+	private double lastTime;
 
 	/**
 	 * Constructs a new instance with {@code lastTime} and {@code lastValue}
 	 * initialized with 0.
 	 */
 	public TimeWeightedSummaryStat() {
-		this(0.0d, 0.0d);
-	}
-
-	/**
-	 * Constructs a new instance initializing {@code lastTime} with the given
-	 * parameter {@code initialTime}.
-	 * 
-	 * @param initialValue Initial value of the underlying state variable at time
-	 *                     {@code initialTime}.
-	 * @param initialTime  The first point in time to consider.
-	 */
-	public TimeWeightedSummaryStat(double initialValue, double initialTime) {
-		super();
-		this.initialTime = initialTime;
-		this.initialValue = initialValue;
-		clear();
+		super(); // calls clear() so lastTime is initialized properly
 	}
 
 	/**
@@ -68,16 +50,13 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 */
 	public TimeWeightedSummaryStat(TimeWeightedSummaryStat s) {
 		super(s);
-		this.initialTime = s.initialTime;
-		this.initialValue = s.initialValue;
+		this.lastTime = s.lastTime;
 	}
 
 	@Override
 	public void clear() {
 		super.clear();
-
-		lastTime = initialTime;
-		lastValue = initialValue;
+		lastTime = Double.NaN;
 	}
 
 	/**
@@ -92,14 +71,16 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 */
 	@Override
 	public TimeWeightedSummaryStat value(double value, double time) {
-		if (time < lastTime())
-			throw new IllegalArgumentException(
-					defFormat("negative time span (lastTime=%f, time=%f).", lastTime(), time));
-		super.value(lastValue, time - lastTime());
-
+		if (numObs() == 0) {
+			super.value(value, 0.0);
+		} else {
+			if (time < lastTime())
+				throw new IllegalArgumentException(
+						defFormat("negative time span (lastTime=%f, time=%f).", lastTime(), time));
+			super.value(lastValue, time - lastTime());
+		}
 		lastTime = time;
 		lastValue = value;
-
 		return this;
 	}
 
@@ -116,6 +97,26 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 		throw new UnsupportedOperationException("Use method TimeWeightedSummaryStat.value(double,double) instead.");
 	}
 
+	@Override
+	public double min() {
+		return Math.min(super.min(), lastValue);
+	}
+
+	@Override
+	public double max() {
+		return Math.max(super.max(), lastValue);
+	}
+
+	@Override
+	public double variance() {
+		return Double.NaN;
+	}
+
+	@Override
+	public double variancePopulation() {
+		return Double.NaN;
+	}
+
 	/**
 	 * Returns the current value of the attribute {@code lastTime}.
 	 * 
@@ -125,6 +126,11 @@ public class TimeWeightedSummaryStat extends SummaryStat {
 	 */
 	public double lastTime() {
 		return lastTime;
+	}
+
+	@Override
+	public TimeWeightedSummaryStat clone() {
+		return (TimeWeightedSummaryStat) super.clone();
 	}
 
 }

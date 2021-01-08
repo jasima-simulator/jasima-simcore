@@ -28,8 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ jasima.core.statistics.TestHistogramValueStat.class, jasima.core.statistics.TestSummaryStat.class,
-		TestErlangGamma.class })
+@SuiteClasses({ TestHistogramValueStat.class, TestSummaryStat.class, TestErlangGamma.class,
+		TestTimeWeightedSummaryStat.class })
 public class AllTests {
 
 }
