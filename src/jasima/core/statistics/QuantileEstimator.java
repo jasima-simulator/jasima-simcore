@@ -63,7 +63,7 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	 * @param name the name of this {@link SummaryStat}
 	 */
 	public QuantileEstimator(String name) {
-		super(name);
+		super();
 		p2_n_increment = new double[] { 0, 0.05, 0.1, 0.3, 0.5, 0.7, 0.9, 0.95, 1 };
 		initMarkers();
 	}
@@ -77,7 +77,7 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	 * @param quantiles a list of quantiles to be estimated
 	 */
 	public QuantileEstimator(String name, double... quantiles) {
-		super(name);
+		super();
 		setQuantileList(quantiles);
 	}
 

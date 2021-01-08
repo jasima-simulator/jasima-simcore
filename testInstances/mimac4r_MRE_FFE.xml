@@ -2,7 +2,7 @@
   <m class="linked-hash-map">
     <entry>
       <string>runTime</string>
-      <double>2.144</double>
+      <double>3.421</double>
     </entry>
     <entry>
       <string>expAborted</string>
@@ -2481,13 +2481,13 @@
     <entry>
       <string>baseExperiment.baseExperiment.runTime</string>
       <jasima.core.statistics.SummaryStat>
-        <meanEst>0.80525</meanEst>
-        <varEst>0.04065287244897954</varEst>
+        <meanEst>1.3040357142857144</meanEst>
+        <varEst>0.08981079081632658</varEst>
         <weightSum>4.0</weightSum>
         <numObs>4</numObs>
-        <max>0.9631428571428571</max>
-        <min>0.6827142857142858</min>
-        <lastValue>0.7811428571428571</lastValue>
+        <max>1.454</max>
+        <min>1.0565714285714285</min>
+        <lastValue>1.3785714285714288</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
@@ -2520,13 +2520,13 @@
     <entry>
       <string>baseExperiment.runTime</string>
       <jasima.core.statistics.SummaryStat>
-        <meanEst>1.7185</meanEst>
-        <varEst>0.888917</varEst>
+        <meanEst>2.61975</meanEst>
+        <varEst>2.30856075</varEst>
         <weightSum>4.0</weightSum>
         <numObs>4</numObs>
-        <max>2.14</max>
-        <min>0.994</min>
-        <lastValue>1.605</lastValue>
+        <max>3.416</max>
+        <min>1.367</min>
+        <lastValue>2.826</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
     </entry>
@@ -3144,7 +3144,6 @@
     <entry>
       <string>tardMean.rep7.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>10035.91219896557</meanEst>
         <varEst>6.445892440153722E10</varEst>
         <weightSum>8213.0</weightSum>
@@ -3158,7 +3157,6 @@
     <entry>
       <string>tardMean.rep2.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8702.364277685265</meanEst>
         <varEst>5.260821431962574E10</varEst>
         <weightSum>8209.0</weightSum>
@@ -3172,7 +3170,6 @@
     <entry>
       <string>tardMean.rep2.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8965.412041202218</meanEst>
         <varEst>3.9098287557889984E10</varEst>
         <weightSum>8215.0</weightSum>
@@ -3186,7 +3183,6 @@
     <entry>
       <string>tardMean.rep7.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9207.67959714979</meanEst>
         <varEst>6.2223871288245285E10</varEst>
         <weightSum>8219.0</weightSum>
@@ -3200,7 +3196,6 @@
     <entry>
       <string>tardMean.rep7.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8909.77576964616</meanEst>
         <varEst>3.646864875485158E10</varEst>
         <weightSum>8225.0</weightSum>
@@ -3240,7 +3235,6 @@
     <entry>
       <string>tardMean.rep7.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9028.464679823644</meanEst>
         <varEst>3.309045625474986E10</varEst>
         <weightSum>8225.0</weightSum>
@@ -3254,7 +3248,6 @@
     <entry>
       <string>tardMean.rep4.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9076.994939071865</meanEst>
         <varEst>7.346476128889247E10</varEst>
         <weightSum>8175.0</weightSum>
@@ -3268,7 +3261,6 @@
     <entry>
       <string>tardMean.rep4.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8919.861715457972</meanEst>
         <varEst>3.442177083403554E10</varEst>
         <weightSum>8177.0</weightSum>
@@ -3282,7 +3274,6 @@
     <entry>
       <string>tardMean.rep4.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>10955.851659562579</meanEst>
         <varEst>8.464363622713264E10</varEst>
         <weightSum>8164.0</weightSum>
@@ -3296,7 +3287,6 @@
     <entry>
       <string>tardMean.rep4.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8809.061855133294</meanEst>
         <varEst>3.692962943013828E10</varEst>
         <weightSum>8179.0</weightSum>
@@ -3310,7 +3300,6 @@
     <entry>
       <string>tardMean.rep3.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>10397.747411743487</meanEst>
         <varEst>6.608748141416782E10</varEst>
         <weightSum>8174.0</weightSum>
@@ -3337,7 +3326,6 @@
     <entry>
       <string>tardMean.rep6.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8642.041229238977</meanEst>
         <varEst>3.9391661830130424E10</varEst>
         <weightSum>8055.0</weightSum>
@@ -3364,7 +3352,6 @@
     <entry>
       <string>tardMean.rep6.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>10717.51079008806</meanEst>
         <varEst>7.03387486681349E10</varEst>
         <weightSum>8050.0</weightSum>
@@ -3378,7 +3365,6 @@
     <entry>
       <string>tardMean.rep1.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9172.634199486967</meanEst>
         <varEst>4.278741302882748E10</varEst>
         <weightSum>8293.0</weightSum>
@@ -3392,7 +3378,6 @@
     <entry>
       <string>tardMean.rep6.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8776.342887736475</meanEst>
         <varEst>3.567149386089048E10</varEst>
         <weightSum>8057.0</weightSum>
@@ -3406,7 +3391,6 @@
     <entry>
       <string>tardMean.rep6.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9120.688377845374</meanEst>
         <varEst>8.922994883645953E10</varEst>
         <weightSum>8050.0</weightSum>
@@ -3420,7 +3404,6 @@
     <entry>
       <string>tardMean.rep1.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9179.731334968003</meanEst>
         <varEst>6.4725063201308815E10</varEst>
         <weightSum>8295.0</weightSum>
@@ -3434,7 +3417,6 @@
     <entry>
       <string>tardMean.rep1.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9199.699340953945</meanEst>
         <varEst>5.133147515472315E10</varEst>
         <weightSum>8295.0</weightSum>
@@ -3448,7 +3430,6 @@
     <entry>
       <string>tardMean.rep1.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9949.850307848053</meanEst>
         <varEst>7.491535469819734E10</varEst>
         <weightSum>8291.0</weightSum>
@@ -3462,7 +3443,6 @@
     <entry>
       <string>tardMean.rep3.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9014.797990531148</meanEst>
         <varEst>4.439914830775396E10</varEst>
         <weightSum>8176.0</weightSum>
@@ -3476,7 +3456,6 @@
     <entry>
       <string>tardMean.rep3.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9048.062777390965</meanEst>
         <varEst>5.409837263669915E10</varEst>
         <weightSum>8165.0</weightSum>
@@ -3490,7 +3469,6 @@
     <entry>
       <string>tardMean.rep3.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8978.146243560484</meanEst>
         <varEst>3.6434396606923706E10</varEst>
         <weightSum>8178.0</weightSum>
@@ -3504,7 +3482,6 @@
     <entry>
       <string>tardMean.rep5.conf4</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9016.203984875307</meanEst>
         <varEst>3.615589761143214E10</varEst>
         <weightSum>8200.0</weightSum>
@@ -3518,7 +3495,6 @@
     <entry>
       <string>tardMean.rep5.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9806.354686544459</meanEst>
         <varEst>6.673079378912738E10</varEst>
         <weightSum>8197.0</weightSum>
@@ -3532,7 +3508,6 @@
     <entry>
       <string>tardMean.rep5.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8998.254771567428</meanEst>
         <varEst>4.1078074243119774E10</varEst>
         <weightSum>8202.0</weightSum>
@@ -3546,7 +3521,6 @@
     <entry>
       <string>tardMean.rep5.conf3</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>9105.924498733777</meanEst>
         <varEst>6.18413379839059E10</varEst>
         <weightSum>8199.0</weightSum>
@@ -3560,7 +3534,6 @@
     <entry>
       <string>tardMean.rep2.conf1</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>10028.38325277117</meanEst>
         <varEst>7.223564747564377E10</varEst>
         <weightSum>8211.0</weightSum>
@@ -3574,7 +3547,6 @@
     <entry>
       <string>tardMean.rep2.conf2</string>
       <jasima.core.statistics.SummaryStat>
-        <name>tardiness</name>
         <meanEst>8917.905993509512</meanEst>
         <varEst>4.5430756989474045E10</varEst>
         <weightSum>8212.0</weightSum>

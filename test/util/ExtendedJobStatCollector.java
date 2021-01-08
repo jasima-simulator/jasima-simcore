@@ -69,14 +69,14 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 
 	@Override
 	public void init(SimComponent c) {
-		flowtime = new SummaryStat("flowtimes");
-		noProcTime = new SummaryStat("noProcTime");
-		tardiness = new SummaryStat("tardiness");
-		lateness = new SummaryStat("lateness");
-		weightedFlowtime = new SummaryStat("weightedFlowtimes");
-		weightedTardiness = new SummaryStat("weightedTardiness");
-		conditionalTardiness = new SummaryStat("conditionalTardiness");
-		weightedConditionalTardiness = new SummaryStat("weightedConditionalTardiness");
+		flowtime = new SummaryStat();
+		noProcTime = new SummaryStat();
+		tardiness = new SummaryStat();
+		lateness = new SummaryStat();
+		weightedFlowtime = new SummaryStat();
+		weightedTardiness = new SummaryStat();
+		conditionalTardiness = new SummaryStat();
+		weightedConditionalTardiness = new SummaryStat();
 		numTardyWeighted = 0.0;
 		numTardy = 0;
 		numFinished = 0;
@@ -106,8 +106,8 @@ public class ExtendedJobStatCollector extends ShopListenerBase {
 	}
 
 	/**
-	 * Updates statistics after simulation ended with data from a job that is
-	 * still processed on the shop floor.
+	 * Updates statistics after simulation ended with data from a job that is still
+	 * processed on the shop floor.
 	 */
 	protected void storeWIPJob(PrioRuleTarget job) {
 		for (int i = 0; i < job.numJobsInBatch(); i++) {

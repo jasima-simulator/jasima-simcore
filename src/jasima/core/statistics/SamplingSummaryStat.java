@@ -61,27 +61,19 @@ public class SamplingSummaryStat extends SummaryStat {
 	private double threshold;
 
 	public SamplingSummaryStat() {
-		this(null, DEF_NUM_SAMPLES, null);
-	}
-
-	public SamplingSummaryStat(String name) {
-		this(name, DEF_NUM_SAMPLES, null);
+		this(DEF_NUM_SAMPLES, null);
 	}
 
 	public SamplingSummaryStat(int numSamples) {
-		this(null, numSamples, null);
+		this(numSamples, null);
 	}
 
 	public SamplingSummaryStat(Random rnd) {
-		this(null, DEF_NUM_SAMPLES, rnd);
+		this(DEF_NUM_SAMPLES, rnd);
 	}
 
 	public SamplingSummaryStat(int numSamples, Random rnd) {
-		this(null, numSamples, rnd);
-	}
-
-	public SamplingSummaryStat(String name, int numSamples, Random rnd) {
-		super(name);
+		super();
 		setNumSamples(numSamples);
 		setRnd(rnd);
 	}
