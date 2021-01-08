@@ -1,8 +1,8 @@
-<java.util.Collections_-UnmodifiableMap>
-  <m class="jasima.core.experiment.Experiment$UniqueNamesCheckingHashMap">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><java.util.Collections_-UnmodifiableMap>
+  <m class="linked-hash-map">
     <entry>
       <string>runTime</string>
-      <double>3.705</double>
+      <double>1.013</double>
     </entry>
     <entry>
       <string>expAborted</string>
@@ -149,7 +149,7 @@
       <jasima.core.statistics.SummaryStat>
         <name>weightedTardiness</name>
         <meanEst>10864.992432240122</meanEst>
-        <varEst>6.7585255299592766E10</varEst>
+        <varEst>6.7585255299592735E10</varEst>
         <weightSum>8306.0</weightSum>
         <numObs>8306</numObs>
         <max>37193.00889490149</max>
@@ -164,7 +164,7 @@
     </entry>
     <entry>
       <string>weightedTardWIPVariance</string>
-      <double>8137899.494231519</double>
+      <double>8137899.494231516</double>
     </entry>
     <entry>
       <string>condTardMean</string>
@@ -227,24 +227,12 @@
       <double>2627166.5862974185</double>
     </entry>
     <entry>
-      <string>numJobsFinished</string>
-      <int>8256</int>
-    </entry>
-    <entry>
-      <string>numJobsStarted</string>
-      <int>8306</int>
-    </entry>
-    <entry>
-      <string>numWIP</string>
-      <int>50</int>
-    </entry>
-    <entry>
       <string>AME135.qLen</string>
       <jasima.core.statistics.TimeWeightedSummaryStat>
         <meanEst>0.43359163970161974</meanEst>
         <varEst>2502817.755962576</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>16523</numObs>
+        <numObs>16524</numObs>
         <max>10.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -258,7 +246,7 @@
         <meanEst>0.2829109589041077</meanEst>
         <varEst>533148.5311643839</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>16524</numObs>
+        <numObs>16525</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -324,7 +312,7 @@
         <meanEst>0.1408687214611876</meanEst>
         <varEst>526554.9767089029</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14811</numObs>
+        <numObs>14812</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -338,7 +326,7 @@
         <meanEst>0.15497526636225256</meanEst>
         <varEst>344157.44839231484</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14812</numObs>
+        <numObs>14813</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -404,7 +392,7 @@
         <meanEst>0.0</meanEst>
         <varEst>0.0</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14811</numObs>
+        <numObs>14812</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -418,7 +406,7 @@
         <meanEst>0.23950722983257244</meanEst>
         <varEst>478673.1618626338</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14812</numObs>
+        <numObs>14813</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -484,7 +472,7 @@
         <meanEst>1.5183524400018653</meanEst>
         <varEst>1.0488138829870358E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14827</numObs>
+        <numObs>14828</numObs>
         <max>15.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -498,7 +486,7 @@
         <meanEst>0.5639363501467317</meanEst>
         <varEst>646257.1121454173</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14823</numObs>
+        <numObs>14824</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -564,7 +552,7 @@
         <meanEst>0.6567773746750201</meanEst>
         <varEst>5493950.5558742955</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>46133</numObs>
+        <numObs>46134</numObs>
         <max>13.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -578,7 +566,7 @@
         <meanEst>0.2633105022831037</meanEst>
         <varEst>509774.39863013953</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>46134</numObs>
+        <numObs>46135</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -644,7 +632,7 @@
         <meanEst>0.679206471362826</meanEst>
         <varEst>6271106.367681476</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>136985</numObs>
+        <numObs>136986</numObs>
         <max>17.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -658,7 +646,7 @@
         <meanEst>0.8860535872926799</meanEst>
         <varEst>1940457.8128685427</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>136975</numObs>
+        <numObs>136976</numObs>
         <max>2.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -724,7 +712,7 @@
         <meanEst>0.21670796250958282</meanEst>
         <varEst>877329.6806849929</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>136965</numObs>
+        <numObs>136966</numObs>
         <max>6.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -738,7 +726,7 @@
         <meanEst>1.6677192698279324</meanEst>
         <varEst>3652891.2212286033</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>136965</numObs>
+        <numObs>136966</numObs>
         <max>3.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -804,7 +792,7 @@
         <meanEst>0.8038295990457073</meanEst>
         <varEst>4593261.354014653</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8899</numObs>
+        <numObs>8900</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -818,7 +806,7 @@
         <meanEst>0.09875380517503822</meanEst>
         <varEst>233895.91871194777</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2968</numObs>
+        <numObs>2969</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -884,7 +872,7 @@
         <meanEst>1.995882422320921</meanEst>
         <varEst>5317589.859987566</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8936</numObs>
+        <numObs>8937</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -898,7 +886,7 @@
         <meanEst>0.1331487823439878</meanEst>
         <varEst>303324.2438261047</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2980</numObs>
+        <numObs>2981</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -964,7 +952,7 @@
         <meanEst>1.2625674005148646</meanEst>
         <varEst>6820081.218453611</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8911</numObs>
+        <numObs>8912</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -978,7 +966,7 @@
         <meanEst>0.20907534246575385</meanEst>
         <varEst>434573.55308219243</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2972</numObs>
+        <numObs>2973</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1044,7 +1032,7 @@
         <meanEst>0.4034652118996887</meanEst>
         <varEst>2920766.9559281827</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8925</numObs>
+        <numObs>8926</numObs>
         <max>9.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1058,7 +1046,7 @@
         <meanEst>0.3105783866057845</meanEst>
         <varEst>562705.9208523587</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2970</numObs>
+        <numObs>2971</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1124,7 +1112,7 @@
         <meanEst>0.5904679517902622</meanEst>
         <varEst>3506344.7124028653</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8910</numObs>
+        <numObs>8911</numObs>
         <max>10.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1138,7 +1126,7 @@
         <meanEst>0.34320297325060145</meanEst>
         <varEst>592389.8116338971</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2959</numObs>
+        <numObs>2960</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1204,7 +1192,7 @@
         <meanEst>0.39168976951368445</meanEst>
         <varEst>2876080.5329435775</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8905</numObs>
+        <numObs>8906</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1218,7 +1206,7 @@
         <meanEst>0.11858447488584481</meanEst>
         <varEst>274684.3342465744</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2970</numObs>
+        <numObs>2971</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1284,7 +1272,7 @@
         <meanEst>1.2747422193994362</meanEst>
         <varEst>6042651.877132003</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>9920</numObs>
+        <numObs>9921</numObs>
         <max>9.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1298,7 +1286,7 @@
         <meanEst>0.06289954337899538</meanEst>
         <varEst>154902.70547945195</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>3308</numObs>
+        <numObs>3309</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1364,7 +1352,7 @@
         <meanEst>0.0</meanEst>
         <varEst>0.0</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8911</numObs>
+        <numObs>8912</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1378,7 +1366,7 @@
         <meanEst>0.15821917808219185</meanEst>
         <varEst>350012.46575342474</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2972</numObs>
+        <numObs>2973</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1444,7 +1432,7 @@
         <meanEst>3.767943175585759</meanEst>
         <varEst>3.474301462162015E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29618</numObs>
+        <numObs>29619</numObs>
         <max>20.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1458,7 +1446,7 @@
         <meanEst>0.8028327297194005</meanEst>
         <varEst>415992.26376651414</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29615</numObs>
+        <numObs>29616</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1524,7 +1512,7 @@
         <meanEst>0.47642325891647436</meanEst>
         <varEst>2269551.8264306365</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>9955</numObs>
+        <numObs>9956</numObs>
         <max>9.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1538,7 +1526,7 @@
         <meanEst>0.15766111632518323</meanEst>
         <varEst>349009.1451674084</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>3317</numObs>
+        <numObs>3318</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1604,7 +1592,7 @@
         <meanEst>0.07911627087709866</meanEst>
         <varEst>607338.1373386857</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>8911</numObs>
+        <numObs>8912</numObs>
         <max>5.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1618,7 +1606,7 @@
         <meanEst>0.1751712328767121</meanEst>
         <varEst>379709.9229452044</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>2972</numObs>
+        <numObs>2973</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1684,7 +1672,7 @@
         <meanEst>0.7221071115799068</meanEst>
         <varEst>5575644.839467151</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29721</numObs>
+        <numObs>29722</numObs>
         <max>10.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1698,7 +1686,7 @@
         <meanEst>0.3053424657534266</meanEst>
         <varEst>557420.9917808197</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29722</numObs>
+        <numObs>29723</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1764,7 +1752,7 @@
         <meanEst>0.20747599059937546</meanEst>
         <varEst>1758633.7240841584</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>122375</numObs>
+        <numObs>122376</numObs>
         <max>13.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1778,7 +1766,7 @@
         <meanEst>0.13969634703196424</meanEst>
         <varEst>315836.39768493467</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>122376</numObs>
+        <numObs>122377</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1844,7 +1832,7 @@
         <meanEst>2.00826148326219</meanEst>
         <varEst>1.853111367040607E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>74251</numObs>
+        <numObs>74252</numObs>
         <max>19.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1858,7 +1846,7 @@
         <meanEst>0.532598934550989</meanEst>
         <varEst>654207.2492770245</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>74252</numObs>
+        <numObs>74253</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1924,7 +1912,7 @@
         <meanEst>0.6286730618179963</meanEst>
         <varEst>5078208.9289162895</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>47960</numObs>
+        <numObs>47961</numObs>
         <max>14.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -1938,7 +1926,7 @@
         <meanEst>0.2737088006794578</meanEst>
         <varEst>522426.14629326685</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>47955</numObs>
+        <numObs>47956</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2004,7 +1992,7 @@
         <meanEst>0.0</meanEst>
         <varEst>0.0</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14811</numObs>
+        <numObs>14812</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2018,7 +2006,7 @@
         <meanEst>0.12679794520547988</meanEst>
         <varEst>290972.7547089044</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14812</numObs>
+        <numObs>14813</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2084,7 +2072,7 @@
         <meanEst>0.2170905978341718</meanEst>
         <varEst>1706626.9215478392</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29651</numObs>
+        <numObs>29652</numObs>
         <max>9.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2098,7 +2086,7 @@
         <meanEst>0.1776826484018266</meanEst>
         <varEst>383981.0873287642</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29652</numObs>
+        <numObs>29653</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2164,7 +2152,7 @@
         <meanEst>0.9981316210872877</meanEst>
         <varEst>7705549.151344612</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>136971</numObs>
+        <numObs>136972</numObs>
         <max>17.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2178,7 +2166,7 @@
         <meanEst>1.491113105444365</meanEst>
         <varEst>3270455.2628365536</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>136971</numObs>
+        <numObs>136972</numObs>
         <max>3.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2244,7 +2232,7 @@
         <meanEst>12.327086910294456</meanEst>
         <varEst>6.925397735746229E7</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>146333</numObs>
+        <numObs>146334</numObs>
         <max>39.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2258,7 +2246,7 @@
         <meanEst>0.5980898021308954</meanEst>
         <varEst>631714.4108066994</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>48356</numObs>
+        <numObs>48357</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2324,7 +2312,7 @@
         <meanEst>0.025546202405092193</meanEst>
         <varEst>205262.2011709651</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>16533</numObs>
+        <numObs>16534</numObs>
         <max>6.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2338,7 +2326,7 @@
         <meanEst>0.10694216133942183</meanEst>
         <varEst>250988.547208524</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>16534</numObs>
+        <numObs>16535</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2404,7 +2392,7 @@
         <meanEst>0.33585594504652555</meanEst>
         <varEst>2376068.9744510115</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14841</numObs>
+        <numObs>14842</numObs>
         <max>8.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2418,7 +2406,7 @@
         <meanEst>0.1665829528158299</meanEst>
         <varEst>364853.31491628685</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>14842</numObs>
+        <numObs>14843</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2484,7 +2472,7 @@
         <meanEst>0.05695660635671293</meanEst>
         <varEst>244395.38665587822</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29611</numObs>
+        <numObs>29612</numObs>
         <max>4.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2498,7 +2486,7 @@
         <meanEst>0.2535102739725999</meanEst>
         <varEst>497330.1177226038</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29612</numObs>
+        <numObs>29613</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2564,7 +2552,7 @@
         <meanEst>0.8299990747029752</meanEst>
         <varEst>5883930.630062898</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>44531</numObs>
+        <numObs>44532</numObs>
         <max>11.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2578,7 +2566,7 @@
         <meanEst>0.4801179604261805</meanEst>
         <varEst>655961.1634322722</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>44532</numObs>
+        <numObs>44533</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2644,7 +2632,7 @@
         <meanEst>0.7560147370331126</meanEst>
         <varEst>5265577.927361472</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29621</numObs>
+        <numObs>29622</numObs>
         <max>8.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2658,7 +2646,7 @@
         <meanEst>0.3099505327245053</meanEst>
         <varEst>562079.7935692573</varEst>
         <weightSum>2628000.0</weightSum>
-        <numObs>29622</numObs>
+        <numObs>29623</numObs>
         <max>1.0</max>
         <min>0.0</min>
         <lastValue>NaN</lastValue>
@@ -2717,6 +2705,18 @@
         <lastValue>360.0</lastValue>
         <lastWeight>1.0</lastWeight>
       </jasima.core.statistics.SummaryStat>
+    </entry>
+    <entry>
+      <string>numJobsFinished</string>
+      <int>8256</int>
+    </entry>
+    <entry>
+      <string>numJobsStarted</string>
+      <int>8306</int>
+    </entry>
+    <entry>
+      <string>numWIP</string>
+      <int>50</int>
     </entry>
   </m>
 </java.util.Collections_-UnmodifiableMap>
