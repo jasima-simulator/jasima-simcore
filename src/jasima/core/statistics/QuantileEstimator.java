@@ -59,13 +59,9 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	/**
 	 * Creates a QuantileEstimator and optimizes the marker positions to estimates
 	 * the quantiles 0.1, 0.5 (the median) and 0.9 well.
-	 * 
-	 * @param name the name of this {@link SummaryStat}
 	 */
-	public QuantileEstimator(String name) {
-		super();
-		p2_n_increment = new double[] { 0, 0.05, 0.1, 0.3, 0.5, 0.7, 0.9, 0.95, 1 };
-		initMarkers();
+	public QuantileEstimator() {
+		this(0, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 1.0);
 	}
 
 	/**
@@ -73,10 +69,9 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	 * the given quantiles well.
 	 * 
 	 * @see #setQuantileList(double...)
-	 * @param name      the name of this {@link SummaryStat}
 	 * @param quantiles a list of quantiles to be estimated
 	 */
-	public QuantileEstimator(String name, double... quantiles) {
+	public QuantileEstimator(double... quantiles) {
 		super();
 		setQuantileList(quantiles);
 	}

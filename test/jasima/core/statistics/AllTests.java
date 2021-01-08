@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ TestHistogramValueStat.class, TestSummaryStat.class, TestErlangGamma.class,
+@SuiteClasses({ TestQuantileEstimator.class, TestSummaryStat.class, TestErlangGamma.class,
 		TestTimeWeightedSummaryStat.class })
 public class AllTests {
 
