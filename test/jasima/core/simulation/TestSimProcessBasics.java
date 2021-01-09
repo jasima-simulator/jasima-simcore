@@ -2,6 +2,7 @@ package jasima.core.simulation;
 
 import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.activateCallable;
+import static jasima.core.simulation.SimContext.end;
 import static jasima.core.simulation.SimContext.suspend;
 import static jasima.core.simulation.SimContext.waitFor;
 import static org.junit.Assert.assertEquals;
@@ -159,6 +160,28 @@ public class TestSimProcessBasics {
 		});
 		assertEquals("all processes suspended at time 1", 1.0, (Double) res.get("simTime"), 1e-6);
 		assertEquals("unfinished processes should be accessible after run", 11, simRef.get().numRunnableProcesses());
+		assertEquals("all Threads were cleared", 0,
+				simRef.get().runnableProcesses().stream().filter(p -> p.executor != null).count());
+	}
+
+	@Test
+	public void testScheduledProcessesAreClearedAfterExecution() throws Exception {
+		AtomicReference<Simulation> simRef = new AtomicReference<>(null);
+		Map<String, Object> res = SimContext.of("simulation1", sim -> {
+			simRef.set(sim);
+			sim.setPrintLevel(MsgCategory.ALL);
+			sim.addPrintListener(System.out::println);
+
+			activate("scheduled", () -> {
+				waitFor(10.0);
+				fail("Mustn't be reached");
+			});
+
+			waitFor(1.0);
+			end();
+		});
+		assertEquals("sim finished at time 1", 1.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("unfinished processes should be accessible after run", 1+1, simRef.get().numRunnableProcesses());
 		assertEquals("all Threads were cleared", 0,
 				simRef.get().runnableProcesses().stream().filter(p -> p.executor != null).count());
 	}

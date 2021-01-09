@@ -1,54 +1,48 @@
 package jasima.core.simulation.generic;
 
-import jasima.core.util.observer.ObservableValue;
-import jasima.core.util.observer.ObservableValues;
+import static jasima.core.simulation.generic.Q.leave;
+
+import jasima.core.simulation.SimContext;
+import jasima.core.simulation.SimProcess;
+import jasima.core.simulation.SimProcess.MightBlock;
 
 public class Resource {
 
-	private ObservableValue<Boolean> canSeize;
-	
-	public Resource(String string, int i) {
-		canSeize = ObservableValues.observable(true);
+	private Q<SimProcess<?>> seizedBy;
+
+	public Resource(String string, int numResources) {
+		seizedBy = new Q<>();
+		setCapacity(numResources);
 	}
 
 	public Resource(String string) {
 		this(string, 1);
 	}
-	
-	public void seize() {
+
+	public void seize() throws MightBlock {
+		SimProcess<?> p = SimContext.currentProcess();
+		seizedBy.put(p);
 	}
 
 	public boolean trySeize() {
-		return false;
-	}
-
-	public ObservableValue<Boolean>  canSeize() {
-		return canSeize;
+		SimProcess<?> p = SimContext.currentProcess();
+		return seizedBy.tryPut(p);
 	}
 
 	public void release() {
+		leave(seizedBy);
 	}
 
-	// private Channel<?> waiting;
-//	private Semaphore server;
-//	private ConditionQueue allBusy;
-//
-//	public Resource() {
-//		super();
-//	}
-//	
-//	public void seize() {
-//		SimProcess<?> p = SimProcess.current();
-//		
-//		while (waiting.isFull()) {
-//			allBusy.await();
-//		}
-//		
-//		
-//	}
-//	
-//	public void release() {
-//		
-//	}
+	public int numAvailable() {
+		return seizedBy.numAvailable();
+	}
+
+	public int getCapacity() {
+		return seizedBy.getCapacity();
+	}
+
+	public void setCapacity(int numResources) {
+		seizedBy.setCapacity(numResources);
+	}
 
 }

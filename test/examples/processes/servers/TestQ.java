@@ -4,7 +4,10 @@ import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.trace;
 import static jasima.core.simulation.SimContext.waitFor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
@@ -12,7 +15,11 @@ import org.junit.Test;
 import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.generic.Q;
+import jasima.core.simulation.generic.Q.QListener.ItemAdded;
+import jasima.core.simulation.generic.Q.QListener.ItemRemoved;
 import jasima.core.util.SimProcessUtil.SimAction;
+import jasima.core.util.TypeRef;
 
 public class TestQ {
 
@@ -131,9 +138,9 @@ public class TestQ {
 			for (int n = 0; n < numServer; n++) {
 				activate("server" + (n + 1), serverProc);
 			}
-			assertEquals("numWaiting", 0, q.numWaiting());
+			assertEquals("numWaiting", 0, q.numWaitingTake());
 			waitFor(0.001); // activate only scheduled activation event
-			assertEquals("numWaiting", numServer, q.numWaiting());
+			assertEquals("numWaiting", numServer, q.numWaitingTake());
 
 			for (int n = 0; n < numServer * jobsPerServer; n++) {
 				q.put("item" + n);
@@ -145,6 +152,98 @@ public class TestQ {
 			assertEquals("numJobs2", numServer, q.numItems());
 		});
 		assertEquals("number of served items", numServer * jobsPerServer, numTaken.get());
+	}
+
+	@Test
+	public void testEventParamsItemAdded() {
+		AtomicInteger checksSuccessful = new AtomicInteger(0);
+		SimContext.of(sim -> {
+			Q<Integer> queue = new Q<>();
+			queue.addListener(new TypeRef<ItemAdded<Integer>>() {
+			}, (q, item) -> {
+				if (q == queue)
+					checksSuccessful.incrementAndGet();
+				if (item == 23)
+					checksSuccessful.incrementAndGet();
+			});
+			queue.put(23);
+		});
+		assertEquals("successful checks", 2, checksSuccessful.get());
+	}
+
+	@Test
+	public void testEventParamsItemRemoved() {
+		AtomicInteger checksSuccessful = new AtomicInteger(0);
+		SimContext.of(sim -> {
+			Q<Integer> queue = new Q<>();
+			queue.addListener(new TypeRef<ItemRemoved<Integer>>() {
+			}, (q, item) -> {
+				if (q == queue)
+					checksSuccessful.incrementAndGet();
+				if (item == 23)
+					checksSuccessful.incrementAndGet();
+			});
+			queue.put(23);
+			queue.tryTake();
+		});
+		assertEquals("successful checks", 2, checksSuccessful.get());
+	}
+
+	@Test
+	public void testRestrictedCapacityNoBlocking() {
+		SimContext.of(sim -> {
+			Q<String> q = new Q<String>();
+			assertEquals("numAvailable", Integer.MAX_VALUE, q.numAvailable());
+			q.setCapacity(1);
+			assertEquals("numAvailable", 1, q.numAvailable());
+			assertTrue("1st put", q.tryPut("item1"));
+			assertFalse("2nd put", q.tryPut("item2"));
+			assertEquals("numAvailable", 0, q.numAvailable());
+			assertEquals("take", "item1", q.tryTake());
+			assertEquals("numAvailable", 1, q.numAvailable());
+			assertTrue("2nd put now succeeds", q.tryPut("item2"));
+		});
+	}
+
+	@Test
+	public void testRestrictedCapacityBlocking() {
+		SimContext.of(sim -> {
+			double startTime = sim.simTime();
+
+			Q<String> q = new Q<String>();
+			q.setCapacity(1);
+			
+			sim.scheduleAt(0.5, 0, () -> assertEquals("item1", q.tryTake()));
+
+			q.put("item1");
+			assertEquals("first put immediately", 0, sim.simTime() - startTime, 1e-6);
+
+			q.put("item2");
+			assertEquals("2nd put blocks until first item taken", 0.5, sim.simTime() - startTime, 1e-6);
+		});
+	}
+
+	@Test
+	public void testRestrictedCapacityBlocking__CapacityIncrease() {
+		AtomicBoolean lifecycleFinished = new AtomicBoolean(false);
+		SimContext.of(sim -> {
+			double startTime = sim.simTime();
+
+			Q<String> q = new Q<String>();
+			q.setCapacity(1);
+			
+			sim.scheduleAt(0.5, 0, () -> q.setCapacity(-1));
+
+			q.put("item1");
+			assertEquals("first put immediately", 0, sim.simTime() - startTime, 1e-6);
+
+			q.put("item2");
+			assertEquals("2nd put blocks until capacity increased", 0.5, sim.simTime() - startTime, 1e-6);
+
+			lifecycleFinished.set(true);
+		});
+		
+		assertTrue("lifecycle finished", lifecycleFinished.get());
 	}
 
 }

@@ -1,9 +1,9 @@
-package examples.processes.servers;
+package jasima.core.simulation.generic;
 
-import examples.processes.servers.Q.QEvents;
 import jasima.core.simulation.SimComponentLifeCycleListener.ResultsListener;
 import jasima.core.simulation.SimContext;
 import jasima.core.simulation.Simulation;
+import jasima.core.simulation.generic.Q.QEvents;
 import jasima.core.statistics.TimeWeightedSummaryStat;
 
 public class QStatCollector<ITEM> {

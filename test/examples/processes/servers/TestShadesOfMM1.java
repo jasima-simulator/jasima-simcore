@@ -12,16 +12,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import examples.processes.servers.Q.QListener.ItemAdded;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblExp;
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.run.ConsoleRunner;
 import jasima.core.simulation.SimComponentBase;
 import jasima.core.simulation.SimContext;
+import jasima.core.simulation.SimProcess;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.SimulationExperiment;
+import jasima.core.simulation.generic.Q;
+import jasima.core.simulation.generic.Q.QListener.ItemAdded;
+import jasima.core.simulation.generic.Resource;
 import jasima.core.util.ConsolePrinter;
+import jasima.core.util.MsgCategory;
+import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.TypeRef;
 
 public class TestShadesOfMM1 {
@@ -63,6 +68,56 @@ public class TestShadesOfMM1 {
 					numServed.incrementAndGet();
 					trace("procFinished", job);
 				}
+			});
+		});
+		ConsolePrinter.printResults(null, res);
+
+		assertEquals("numCreated", 10, numCreated.get());
+		assertEquals("numServed", 6, numServed.get());
+		assertEquals("simTime", 14.716741001406954, (Double) res.get("simTime"), 1e-6);
+	}
+
+	@Test
+	public void testTransactionOriented() {
+		AtomicInteger numServed = new AtomicInteger(0);
+		AtomicInteger numCreated = new AtomicInteger(0);
+
+		Map<String, Object> res = SimContext.of(sim -> {
+			sim.setPrintLevel(MsgCategory.ALL);
+			sim.addPrintListener(System.out::println);
+
+			RandomFactory rf = new RandomFactory(sim, 23);
+			int numJobs = 10;
+			double trafficIntensity = 0.85;
+
+			// the queue
+			Q<SimProcess<?>> q = new Q<>();
+			Resource server = new Resource("server", 1);
+
+			DblSequence iats = rf.initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
+			DblSequence serviceTimes = rf.initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
+			
+			SimAction jobLifecycle = s -> {
+				trace("created job");
+				numCreated.incrementAndGet();
+				Q.enter(q);
+				server.seize();
+				Q.leave(q);
+				trace("procStarted");
+				waitFor(serviceTimes.nextDbl());
+				numServed.incrementAndGet();
+				trace("procFinished");
+				server.release();
+			};
+
+			// source as SimProcess from lambda
+			activate(() -> {
+				for (int n = 0; n < numJobs; n++) {
+					waitFor(iats.nextDbl());
+					activate(jobLifecycle);
+				}
+				waitFor(1.0);
+				end();
 			});
 		});
 		ConsolePrinter.printResults(null, res);
@@ -259,11 +314,11 @@ public class TestShadesOfMM1 {
 	public void testExperimentEventOriented2() {
 		MM1Experiment exp = new MM1Experiment();
 		exp.setInitialSeed(23);
-		exp.setNumJobs(10000);
+		exp.setNumJobs(10);
 
 		Map<String, Object> res = ConsoleRunner.runWithArgs(exp);
 
-		assertEquals("numCreated", 10000, (int) res.get("numCreated"));
+		assertEquals("numCreated", 10, (int) res.get("numCreated"));
 		assertEquals("numServed", 6, (int) res.get("numServed"));
 		assertEquals("simTime", 14.716741001406954, (Double) res.get("simTime"), 1e-6);
 	}

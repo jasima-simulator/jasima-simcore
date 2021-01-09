@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.generic.Q;
+import jasima.core.simulation.generic.QStatCollector;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.statistics.TimeWeightedSummaryStat;
 import jasima.core.util.ConsolePrinter;
