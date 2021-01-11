@@ -24,7 +24,6 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 	public static void enter(Q<SimProcess<?>> q) throws MightBlock {
 		SimProcess<?> proc = SimContext.currentProcess();
 		q.put(proc);
-		proc.suspend();
 	}
 
 	public static void leave(Q<SimProcess<?>> q) {

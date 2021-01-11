@@ -101,7 +101,9 @@ public class TestShadesOfMM1 {
 				trace("created job");
 				numCreated.incrementAndGet();
 				Q.enter(q);
+				trace("entered queue");
 				server.seize();
+				trace("seized server");
 				Q.leave(q);
 				trace("procStarted");
 				waitFor(serviceTimes.nextDbl());

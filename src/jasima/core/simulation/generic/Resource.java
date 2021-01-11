@@ -1,5 +1,6 @@
 package jasima.core.simulation.generic;
 
+import static jasima.core.simulation.generic.Q.enter;
 import static jasima.core.simulation.generic.Q.leave;
 
 import jasima.core.simulation.SimContext;
@@ -20,8 +21,7 @@ public class Resource {
 	}
 
 	public void seize() throws MightBlock {
-		SimProcess<?> p = SimContext.currentProcess();
-		seizedBy.put(p);
+		enter(seizedBy);
 	}
 
 	public boolean trySeize() {

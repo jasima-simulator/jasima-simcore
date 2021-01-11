@@ -4,12 +4,15 @@ import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.activateCallable;
 import static jasima.core.simulation.SimContext.end;
 import static jasima.core.simulation.SimContext.suspend;
+import static jasima.core.simulation.SimContext.trace;
 import static jasima.core.simulation.SimContext.waitFor;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,15 +22,21 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.SimProcess.ProcessState;
+import jasima.core.simulation.Simulation.SimulationFailed;
+import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 
 public class TestSimProcessBasics {
 	@Rule
-	public Timeout globalTimeout = new Timeout(5000);
+	public Timeout globalTimeout = new Timeout(50000);
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	private Simulation sim;
 
@@ -165,23 +174,23 @@ public class TestSimProcessBasics {
 	}
 
 	@Test
-	public void testScheduledProcessesAreClearedAfterExecution() throws Exception {
+	public void testEndOfUnactivatedProcess() throws Exception {
+		AtomicBoolean lifecycleFinished = new AtomicBoolean(false);
 		AtomicReference<Simulation> simRef = new AtomicReference<>(null);
 		Map<String, Object> res = SimContext.of("simulation1", sim -> {
 			simRef.set(sim);
-			sim.setPrintLevel(MsgCategory.ALL);
-			sim.addPrintListener(System.out::println);
 
-			activate("scheduled", () -> {
-				waitFor(10.0);
-				fail("Mustn't be reached");
+			activate("someProcess", () -> {
+				fail("Won't be reached");
 			});
-
-			waitFor(1.0);
 			end();
+
+			lifecycleFinished.set(true);
 		});
-		assertEquals("sim finished at time 1", 1.0, (Double) res.get("simTime"), 1e-6);
-		assertEquals("unfinished processes should be accessible after run", 1+1, simRef.get().numRunnableProcesses());
+		assertTrue("lifecycle finished", lifecycleFinished.get());
+
+		assertEquals("sim finished at time 0.0", 0.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("unfinished processes should be accessible after run", 1 + 1, simRef.get().numRunnableProcesses());
 		assertEquals("all Threads were cleared", 0,
 				simRef.get().runnableProcesses().stream().filter(p -> p.executor != null).count());
 	}
@@ -213,7 +222,7 @@ public class TestSimProcessBasics {
 					waitFor(0.5);
 				});
 
-				// wait for it's end in simulation time
+				// wait for its end in simulation time
 				waitFor(1.0);
 
 				// sleep for some wall time so thread can go to thread-pool again
@@ -240,7 +249,7 @@ public class TestSimProcessBasics {
 		sim.setMainProcessActions(sim -> {
 			checkProcessName("theSimulation.simMain");
 
-			SimContext.activate("process", () -> {
+			activate("process", () -> {
 				checkProcessName("process");
 			});
 		});
@@ -250,6 +259,64 @@ public class TestSimProcessBasics {
 
 	private void checkProcessName(String expected) {
 		assertEquals(expected, SimContext.currentProcess().getName());
+	}
+
+	@Test
+	public void testRuntimeExceptionInChild() throws MightBlock {
+		expectedException.expect(SimulationFailed.class);
+		expectedException.expectCause(isA(RuntimeException.class));
+
+		SimContext.of("theSimulation", sim -> {
+			activate("process", () -> {
+				waitFor(1.0);
+				throw new RuntimeException("something went wrong");
+			});
+		});
+	}
+
+	@Test
+	public void testRuntimeExceptionInChildWhileJoining() throws MightBlock {
+		expectedException.expect(SimulationFailed.class);
+		expectedException.expectCause(isA(RuntimeException.class));
+
+		AtomicReference<Simulation> simRef = new AtomicReference<>(null);
+		SimContext.of("theSimulation", sim -> {
+			simRef.set(sim);
+			SimProcess<Void> p1 = activate("process1", () -> {
+				waitFor(1.0);
+				throw new RuntimeException("something went wrong");
+			});
+			activate("process2", () -> {
+				p1.join();
+				fail("should never be reached");
+			});
+		});
+		assertEquals("unfinished processes should be accessible after run", 1 + 2, simRef.get().numRunnableProcesses());
+		assertEquals("all Threads were cleared", 0,
+				simRef.get().runnableProcesses().stream().filter(p -> p.executor != null).count());
+	}
+
+	@Test
+	public void testRuntimeExceptionInMainProcess() throws MightBlock {
+		expectedException.expect(SimulationFailed.class);
+		expectedException.expectCause(isA(RuntimeException.class));
+		SimContext.of("theSimulation", sim -> {
+			waitFor(1.0);
+			throw new RuntimeException("something went wrong");
+		});
+	}
+
+	@Test
+	public void testRuntimeExceptionInEvent() throws MightBlock {
+		expectedException.expect(SimulationFailed.class);
+		expectedException.expectCause(isA(RuntimeException.class));
+		SimContext.of("theSimulation", sim -> {
+			sim.scheduleAt(0.5, 0, () -> {
+				throw new RuntimeException("something went wrong");
+			});
+			waitFor(1.0);
+			fail();
+		});
 	}
 
 	public static void suspendingProcess() throws MightBlock {
@@ -275,7 +342,7 @@ public class TestSimProcessBasics {
 			sim.trace("generator", i);
 
 			String name = "sub" + i;
-			new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess(name), name).awakeIn(0.0);
+			new SimProcess<>(sim, () -> simpleProcess(name), name).awakeIn(0.0);
 		}
 	}
 
@@ -295,24 +362,35 @@ public class TestSimProcessBasics {
 	int numWaits, numProcesses;
 
 	@Test
-	@Ignore
+//	@Ignore
 	public void testManyProcesses() throws Exception {
-		for (int n = 10; n <= 20; n++) {
-			long t = System.currentTimeMillis();
-			numWaits = numProcesses = 0;
-			int i = n;
-			Map<String, Object> res = SimContext.of(sim -> {
-				SimProcess<Integer> fibProcess = activateCallable(s -> fibonacci(i));
-				fibProcess.join();
-				System.out.println("done. Result is: " + fibProcess.get());
-			});
-			t = (System.currentTimeMillis() - t);
-			System.err.println(i + "\t" + numWaits + "\t" + numProcesses + "\t" + res.get("simTime") + "\t" + t + "ms");
-		}
+		fibTest(30);
+//		fibTest(22);
+		fibTest(20);
+//		fibTest(21);
+//		fibTest(22);
+////		fibTest(18);
+//		for (int n = 1; n <= 20; n++) {
+//			fibTest(n);
+//		}
 		System.out.println("all done.");
 	}
 
-	public int fibonacci(int n) throws MightBlock {
+	private void fibTest(int n) {
+		long t = System.currentTimeMillis();
+		numWaits = numProcesses = 0;
+		int i = n;
+		Map<String, Object> res = SimContext.of("sim1", sim -> {
+			SimProcess<Integer> fibProcess = activate("fib("+i+")", s -> fibonacci("fib"+i,i));
+			fibProcess.join();
+			System.out.println("done with fib(" + i + "). Result is: " + fibProcess.get());
+		});
+		t = (System.currentTimeMillis() - t);
+		System.err.println(i + "\tnumWaits: " + numWaits + "\tnumProcesses: " + numProcesses + "\tsimTime: "
+				+ res.get("simTime") + "\truntime: " + t + "ms");
+	}
+
+	public int fibonacci(String ctx, int n) throws MightBlock {
 		numProcesses++;
 
 		int res;
@@ -321,11 +399,17 @@ public class TestSimProcessBasics {
 			numWaits++;
 			res = 1;
 		} else {
-			SimProcess<Integer> s1Calc = activateCallable(() -> fibonacci(n - 1));
+			String ctx1 = ctx+"-"+(n-1);
+			SimProcess<Integer> s1Calc = activateCallable(ctx1,() -> fibonacci(ctx1, n - 1));
 			s1Calc.join(); // wait until finished
 
-			SimProcess<Integer> s2Calc = activateCallable(() -> fibonacci(n - 2));
+			trace("first join");
+			
+			String ctx2 = ctx+"-"+(n-2);
+			SimProcess<Integer> s2Calc = activateCallable(ctx2,() -> fibonacci(ctx2, n - 2));
 			s2Calc.join(); // wait until finished
+
+			trace("second join");
 
 			res = s1Calc.get() + s2Calc.get();
 		}
@@ -364,9 +448,9 @@ public class TestSimProcessBasics {
 		AtomicLong procRes = new AtomicLong();
 		long t = System.currentTimeMillis();
 		Map<String, Object> res = SimContext.of(sim -> {
-			SimProcess<Long> fibProcess = activateCallable(s -> ack(3, 4));
-			fibProcess.join();
-			Long l = fibProcess.get();
+			SimProcess<Long> ackProcess = activate(s -> ack(3, 4));
+			ackProcess.join();
+			Long l = ackProcess.get();
 			procRes.set(l);
 			System.out.println("done. Result is: " + l);
 		});

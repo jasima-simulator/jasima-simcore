@@ -1,11 +1,9 @@
 package examples.processes.servers;
 
 import static jasima.core.simulation.SimContext.waitFor;
-import static java.util.stream.IntStream.rangeClosed;
 
 import java.util.Map;
 
-import examples.processes.servers.Q.QListener;
 import jasima.core.random.continuous.DblNormal;
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.random.discrete.IntUniformRange;
@@ -13,9 +11,10 @@ import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimEntity;
 import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.generic.Q;
+import jasima.core.simulation.generic.QStatCollector;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
-import jasima.core.util.Util;
 
 public class ParallelServersSingleQueue extends SimEntity {
 
