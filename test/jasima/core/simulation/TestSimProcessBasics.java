@@ -28,12 +28,11 @@ import org.junit.rules.Timeout;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.SimProcess.ProcessState;
 import jasima.core.simulation.Simulation.SimulationFailed;
-import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 
 public class TestSimProcessBasics {
 	@Rule
-	public Timeout globalTimeout = new Timeout(50000);
+	public Timeout globalTimeout = new Timeout(5000);
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -242,8 +241,8 @@ public class TestSimProcessBasics {
 		sim.setName("theSimulation");
 
 		SimComponentContainerBase cs = new SimComponentContainerBase("a");
-		cs.addChild(new SimEntity("b", () -> checkProcessName("a.b.lifecycle")));
-		cs.addChild(new SimEntity("c", () -> checkProcessName("a.c.lifecycle")));
+		cs.addChild(new SimEntity("b", () -> checkProcessName(".a.b.lifecycle")));
+		cs.addChild(new SimEntity("c", () -> checkProcessName(".a.c.lifecycle")));
 		sim.addComponent(cs);
 
 		sim.setMainProcessActions(sim -> {
@@ -362,17 +361,12 @@ public class TestSimProcessBasics {
 	int numWaits, numProcesses;
 
 	@Test
-//	@Ignore
+	@Ignore
 	public void testManyProcesses() throws Exception {
 		fibTest(30);
-//		fibTest(22);
-		fibTest(20);
-//		fibTest(21);
-//		fibTest(22);
-////		fibTest(18);
-//		for (int n = 1; n <= 20; n++) {
-//			fibTest(n);
-//		}
+		for (int n = 1; n <= 20; n++) {
+			fibTest(n);
+		}
 		System.out.println("all done.");
 	}
 
@@ -381,7 +375,7 @@ public class TestSimProcessBasics {
 		numWaits = numProcesses = 0;
 		int i = n;
 		Map<String, Object> res = SimContext.of("sim1", sim -> {
-			SimProcess<Integer> fibProcess = activate("fib("+i+")", s -> fibonacci("fib"+i,i));
+			SimProcess<Integer> fibProcess = activate("fib(" + i + ")", s -> fibonacci("fib" + i, i));
 			fibProcess.join();
 			System.out.println("done with fib(" + i + "). Result is: " + fibProcess.get());
 		});
@@ -399,14 +393,14 @@ public class TestSimProcessBasics {
 			numWaits++;
 			res = 1;
 		} else {
-			String ctx1 = ctx+"-"+(n-1);
-			SimProcess<Integer> s1Calc = activateCallable(ctx1,() -> fibonacci(ctx1, n - 1));
+			String ctx1 = ctx + "-" + (n - 1);
+			SimProcess<Integer> s1Calc = activateCallable(ctx1, () -> fibonacci(ctx1, n - 1));
 			s1Calc.join(); // wait until finished
 
 			trace("first join");
-			
-			String ctx2 = ctx+"-"+(n-2);
-			SimProcess<Integer> s2Calc = activateCallable(ctx2,() -> fibonacci(ctx2, n - 2));
+
+			String ctx2 = ctx + "-" + (n - 2);
+			SimProcess<Integer> s2Calc = activateCallable(ctx2, () -> fibonacci(ctx2, n - 2));
 			s2Calc.join(); // wait until finished
 
 			trace("second join");
@@ -443,7 +437,7 @@ public class TestSimProcessBasics {
 	}
 
 	@Test
-//	@Ignore
+	@Ignore
 	public void testManyProcesses2() throws Exception {
 		AtomicLong procRes = new AtomicLong();
 		long t = System.currentTimeMillis();
