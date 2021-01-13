@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListener;
+import jasima.core.util.TypeRef;
 
 /**
  * Example implementation of {@link Notifier} functionality. A
@@ -74,6 +75,17 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 */
 	@Override
 	public <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(Class<T> listenerType, T eventHandler) {
+		addListener(eventHandler);
+	}
+
+	/**
+	 * Adds a new listener. This is the same as
+	 * {@link #addListener(Class, NotifierListener)}, only adding {@code TypeRef} as
+	 * a super type token. This can be used when the listener is a parameterized
+	 * type.
+	 */
+	@Override
+	public <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(TypeRef<T> listenerType, T eventHandler) {
 		addListener(eventHandler);
 	}
 

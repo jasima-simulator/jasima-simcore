@@ -142,13 +142,14 @@ public class SimProcess<R> implements Runnable {
 
 	@Override
 	public void run() {
+		log.trace("process started: {}", getName());
+		requireAllowedState(state, ProcessState.RUNNING);
+
+		executor = currentExecutor();
+		String oldName = executor.getName();
+		executor.setName(getName());
+
 		try {
-			log.trace("process started: {}", getName());
-
-			requireAllowedState(state, ProcessState.RUNNING);
-
-			executor = currentExecutor();
-			executor.setName(getName());
 			SimContext.setThreadContext(sim);
 			assert sim.currentProcess() == this;
 
@@ -165,11 +166,15 @@ public class SimProcess<R> implements Runnable {
 				}
 			}
 
-//			log.trace("actions finished");
+			log.trace("actions finished");
 
 			runCompleteCallbacks();
 
+			log.trace("callbacks run");
+
 			yield();
+
+			log.trace("yielded");
 
 			sim.processTerminated(this);
 		} catch (TerminateProcess tp) {
@@ -180,6 +185,7 @@ public class SimProcess<R> implements Runnable {
 			t.printStackTrace();
 			throw t;
 		} finally {
+			executor.setName(oldName);
 			executor = null;
 			SimContext.setThreadContext(null);
 			log.trace("process finished: {}", getName());
@@ -244,7 +250,7 @@ public class SimProcess<R> implements Runnable {
 	void terminateWaiting() {
 		// this method is called once from the main simulation thread when simulation is
 		// terminating
-		log.trace("trying to terminate " + getName());
+		log.trace("trying to terminate " + getName() + " in state " + state + ", executor=" + executor);
 		assert sim.state() == SimExecState.TERMINATING;
 		this.start(); // will throw TerminateProcess
 	}
@@ -290,6 +296,13 @@ public class SimProcess<R> implements Runnable {
 		log.trace("process {} awake at {}", getName(), tAbs);
 	}
 
+	public void resume() {
+		awakeAt(sim.simTime());
+//		requireAllowedState(state, ProcessState.PASSIVE);
+//		scheduleReactivateAt(sim.simTime());
+		log.trace("process {} resumed", getName());
+	}
+
 	public void waitFor(double deltaT) throws MightBlock {
 		waitUntil(sim.simTime() + deltaT);
 	}
@@ -300,12 +313,6 @@ public class SimProcess<R> implements Runnable {
 
 	public void waitFor(Duration d) throws MightBlock {
 		waitUntil(sim.simTime() + sim.toSimTime(d));
-	}
-
-	public void resume() {
-		requireAllowedState(state, ProcessState.PASSIVE);
-		scheduleReactivateAt(sim.simTime());
-		log.trace("process {} resumed", getName());
 	}
 
 	public void cancel() {
@@ -384,6 +391,11 @@ public class SimProcess<R> implements Runnable {
 	}
 
 	private void scheduleReactivateAt(double t) {
+		scheduleReactivateAt(t, activateProcessEvent.getPrio());
+	}
+
+	private void scheduleReactivateAt(double t, int prio) {
+		activateProcessEvent.setPrio(prio);
 		activateProcessEvent.setTime(t);
 		sim.schedule(activateProcessEvent);
 	}

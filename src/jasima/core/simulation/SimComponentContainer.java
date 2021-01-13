@@ -162,4 +162,11 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 		addChild(newValue);
 	}
 
+	// cloning
+
+	/**
+	 * {@inheritDoc}
+	 */
+	SimComponentContainer clone();
+
 }

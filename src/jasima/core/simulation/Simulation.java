@@ -266,7 +266,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	private Clock clock;
 
-	final ObservableValue<SimExecState> state;
+	volatile ObservableValue<SimExecState> state;
 
 	private AtomicInteger pauseRequests;
 
@@ -402,7 +402,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	private void terminateRunningProcesses() {
 		for (SimProcess<?> p : runnableProcesses()) {
-			if (p != mainProcess()) {
+			if (p != mainProcess() && p.executor!=null) {
 				p.terminateWaiting();
 				while (p.executor != null)
 					; // active wait until finished (should be very quick)

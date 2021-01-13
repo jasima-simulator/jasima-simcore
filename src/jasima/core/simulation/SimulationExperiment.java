@@ -13,10 +13,12 @@ import java.util.function.Consumer;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.simulation.Simulation.SimPrintMessage;
+import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.ValueStore;
 import jasima.core.util.SimProcessUtil.SimAction;
 
-public class SimulationExperiment extends Experiment {
+public class SimulationExperiment extends Experiment implements SimOperations {
 
 	private static final long serialVersionUID = 5208352155973550329L;
 
@@ -28,7 +30,7 @@ public class SimulationExperiment extends Experiment {
 	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
 	private List<Consumer<Simulation>> initActions = null;
-	private SimComponent rootComponent = null;
+	private SimComponentContainer rootComponent = null;
 	private SimAction mainProcess = null;
 
 	// fields used during run
@@ -146,17 +148,17 @@ public class SimulationExperiment extends Experiment {
 	/**
 	 * Returns the simulation object created in {@code init()}.
 	 */
-	public Simulation sim() {
+	public Simulation getSim() {
 		return sim;
 	}
 
-	/**
-	 * Returns the current simulation time. This is the same as calling
-	 * {@code sim().simTime()} directly.
-	 */
-	protected double simTime() {
-		return sim.simTime();
-	}
+//	/**
+//	 * Returns the current simulation time. This is the same as calling
+//	 * {@code sim().simTime()} directly.
+//	 */
+//	protected double simTime() {
+//		return sim.simTime();
+//	}
 
 	/**
 	 * Sets the maximum simulation time. A value of 0.0 means no such limit.
@@ -235,11 +237,12 @@ public class SimulationExperiment extends Experiment {
 		setSimTimeToMillisFactor(Duration.of(1, u).toMillis());
 	}
 
-	public SimComponent getRootComponent() {
+	@Override
+	public SimComponentContainer getRootComponent() {
 		return rootComponent;
 	}
 
-	public void setRootComponent(SimComponent rootComponent) {
+	public void setRootComponent(SimComponentContainer rootComponent) {
 		this.rootComponent = rootComponent;
 	}
 

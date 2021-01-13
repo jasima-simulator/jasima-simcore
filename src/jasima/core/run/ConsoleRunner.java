@@ -119,7 +119,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 					ExperimentListener.super.beforeRun(e);
 
 					SimulationExperiment se = (SimulationExperiment) e;
-					se.sim().getRootComponent().addListener(t);
+					se.getSim().getRootComponent().addListener(t);
 				}
 			});
 		}

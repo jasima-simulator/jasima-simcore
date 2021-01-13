@@ -80,11 +80,11 @@ import jasima.core.util.observer.ObservableValue;
  * 
  * @author Torsten Hildebrandt
  */
-public abstract class Experiment
-		implements Notifier<Experiment, ExperimentEvent>, ValueStore, Cloneable, Serializable {
+public abstract class Experiment implements Notifier<Experiment, ExperimentEvent>, ValueStore, Cloneable, Serializable {
 
-	public interface ExperimentEvent {}
-	
+	public interface ExperimentEvent {
+	}
+
 	/**
 	 * Just an arbitrary default seed.
 	 */
@@ -707,10 +707,10 @@ public abstract class Experiment
 
 	protected Object readResolve() throws ObjectStreamException {
 		// initial transient state when deserializing
-		this.state = observable(ExperimentState.INITIAL); 
+		this.state = observable(ExperimentState.INITIAL);
 		return this;
 	}
-	
+
 	// ******************* static methods ************************
 
 	public static void main(String... args) throws Exception {
