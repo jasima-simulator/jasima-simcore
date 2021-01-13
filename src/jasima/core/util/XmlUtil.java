@@ -64,16 +64,17 @@ public class XmlUtil {
 	}
 
 	/**
-	 * Loads an object from a String containing xml. Format is assumed to be the XML
-	 * bean format produced by jasima gui.
+	 * Loads an object from a String containing xml. Format defaults to
+	 * {@code FileFormat.XSTREAM}.
 	 * 
 	 * @param xmlString A String containing xml data.
 	 * @see #loadXML(FileFormat,String)
+	 * @see #saveXML(Object)
 	 * 
 	 * @return The object contained in {@code xmlString}.
 	 */
 	public static Object loadXML(String xmlString) {
-		return loadXML(FileFormat.JASIMA_BEAN, xmlString);
+		return loadXML(FileFormat.XSTREAM, xmlString);
 	}
 
 	/**
