@@ -27,7 +27,7 @@ import jasima.core.simulation.generic.Resource;
 import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil.SimAction;
-import jasima.core.util.TypeRef;
+import jasima.core.util.TypeHint;
 
 public class TestShadesOfMM1 {
 
@@ -96,20 +96,14 @@ public class TestShadesOfMM1 {
 
 			DblSequence iats = rf.initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
 			DblSequence serviceTimes = rf.initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
-			
+
 			SimAction jobLifecycle = s -> {
-				trace("created job");
-				numCreated.incrementAndGet();
 				Q.enter(q);
-				trace("entered queue");
 				server.seize();
-				trace("seized server");
 				Q.leave(q);
-				trace("procStarted");
 				waitFor(serviceTimes.nextDbl());
-				numServed.incrementAndGet();
-				trace("procFinished");
 				server.release();
+				numServed.incrementAndGet();
 			};
 
 			// source as SimProcess from lambda
@@ -117,8 +111,8 @@ public class TestShadesOfMM1 {
 				for (int n = 0; n < numJobs; n++) {
 					waitFor(iats.nextDbl());
 					activate(jobLifecycle);
+					numCreated.incrementAndGet();
 				}
-				waitFor(1.0);
 				end();
 			});
 		});
@@ -149,8 +143,7 @@ public class TestShadesOfMM1 {
 			iats = rf.initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
 			serviceTimes = rf.initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
 			q = new Q<>();
-			q.addListener(new TypeRef<ItemAdded<Integer>>() {
-			}, (q, item) -> checkStartService());
+			q.addListener(new TypeHint<ItemAdded<Integer>>(), (q, item) -> checkStartService());
 
 			scheduleIn(iats.nextDbl(), getSim().currentPrio(), this::createNext);
 		}
@@ -226,8 +219,7 @@ public class TestShadesOfMM1 {
 			iats = initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
 			serviceTimes = initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
 			q = new Q<>();
-			q.addListener(new TypeRef<ItemAdded<Integer>>() {
-			}, (q, item) -> checkStartService());
+			q.addListener(new TypeHint<ItemAdded<Integer>>(), (q, item) -> checkStartService());
 
 			scheduleIn(iats.nextDbl(), getSim().currentPrio(), this::createNext);
 		}

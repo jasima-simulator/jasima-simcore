@@ -3,7 +3,7 @@ package jasima.core.util.observer;
 import java.util.HashMap;
 import java.util.Map;
 
-import jasima.core.util.TypeRef;
+import jasima.core.util.TypeHint;
 
 /**
  * Notifier inform {@link NotifierListener}s about events. This implements a
@@ -29,7 +29,7 @@ public interface Notifier<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> {
 		notifierImpl().addListener(eventType, eventHandler);
 	}
 
-	default <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(TypeRef<T> eventType, T eventHandler) {
+	default <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(TypeHint<T> eventType, T eventHandler) {
 		notifierImpl().addListener(eventType, eventHandler);
 	}
 

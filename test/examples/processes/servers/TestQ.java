@@ -19,7 +19,7 @@ import jasima.core.simulation.generic.Q;
 import jasima.core.simulation.generic.Q.QListener.ItemAdded;
 import jasima.core.simulation.generic.Q.QListener.ItemRemoved;
 import jasima.core.util.SimProcessUtil.SimAction;
-import jasima.core.util.TypeRef;
+import jasima.core.util.TypeHint;
 
 public class TestQ {
 
@@ -159,8 +159,7 @@ public class TestQ {
 		AtomicInteger checksSuccessful = new AtomicInteger(0);
 		SimContext.of(sim -> {
 			Q<Integer> queue = new Q<>();
-			queue.addListener(new TypeRef<ItemAdded<Integer>>() {
-			}, (q, item) -> {
+			queue.addListener(new TypeHint<ItemAdded<Integer>>(), (q, item) -> {
 				if (q == queue)
 					checksSuccessful.incrementAndGet();
 				if (item == 23)
@@ -176,8 +175,7 @@ public class TestQ {
 		AtomicInteger checksSuccessful = new AtomicInteger(0);
 		SimContext.of(sim -> {
 			Q<Integer> queue = new Q<>();
-			queue.addListener(new TypeRef<ItemRemoved<Integer>>() {
-			}, (q, item) -> {
+			queue.addListener(new TypeHint<ItemRemoved<Integer>>(), (q, item) -> {
 				if (q == queue)
 					checksSuccessful.incrementAndGet();
 				if (item == 23)
@@ -212,7 +210,7 @@ public class TestQ {
 
 			Q<String> q = new Q<String>();
 			q.setCapacity(1);
-			
+
 			sim.scheduleAt(0.5, 0, () -> assertEquals("item1", q.tryTake()));
 
 			q.put("item1");
@@ -231,7 +229,7 @@ public class TestQ {
 
 			Q<String> q = new Q<String>();
 			q.setCapacity(1);
-			
+
 			sim.scheduleAt(0.5, 0, () -> q.setCapacity(-1));
 
 			q.put("item1");
@@ -242,7 +240,7 @@ public class TestQ {
 
 			lifecycleFinished.set(true);
 		});
-		
+
 		assertTrue("lifecycle finished", lifecycleFinished.get());
 	}
 

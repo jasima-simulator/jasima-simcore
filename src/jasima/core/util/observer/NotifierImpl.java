@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListener;
-import jasima.core.util.TypeRef;
+import jasima.core.util.TypeHint;
 
 /**
  * Example implementation of {@link Notifier} functionality. A
@@ -85,7 +85,7 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * type.
 	 */
 	@Override
-	public <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(TypeRef<T> listenerType, T eventHandler) {
+	public <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(TypeHint<T> listenerType, T eventHandler) {
 		addListener(eventHandler);
 	}
 
