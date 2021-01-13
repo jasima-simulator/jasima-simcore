@@ -61,7 +61,7 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 	 * the quantiles 0.1, 0.5 (the median) and 0.9 well.
 	 */
 	public QuantileEstimator() {
-		this(0, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 1.0);
+		this(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95);
 	}
 
 	/**
@@ -90,7 +90,9 @@ public class QuantileEstimator extends SummaryStat implements Iterable<QuantileE
 		// first, fill in all except for the mean
 		p2_n_increment[0] = 0.0;
 		for (int i = 0; i < quantiles.length; ++i) {
-			assert quantiles[i] > 0.0 && quantiles[i] < 1.0;
+			if (!(quantiles[i] >= 0.0 && quantiles[i] <= 1.0)) {
+				throw new IllegalArgumentException("invalid quantile value: " + quantiles[i]);
+			}
 			// first quantile at 2, one value inbetween:
 			p2_n_increment[i * 2 + 2] = quantiles[i];
 		}
