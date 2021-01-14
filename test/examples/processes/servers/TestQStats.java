@@ -10,7 +10,7 @@ import org.junit.Test;
 import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.generic.Q;
-import jasima.core.simulation.generic.QStatCollector;
+import jasima.core.simulation.generic.QLengthStatsCollector;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.statistics.TimeWeightedSummaryStat;
 import jasima.core.util.ConsolePrinter;
@@ -19,41 +19,41 @@ public class TestQStats {
 
 	@Test
 	public void testNoop() throws MightBlock {
-		Map<String, Object> res = SimContext.of(sim -> {
-			Q<String> q = new Q<String>();
-			QStatCollector<String> qColl = new QStatCollector<>(q, sim);
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
+			Q<String> q = new Q<>("q");
+			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 		});
 		ConsolePrinter.printResults(null, res);
 
-		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("qStats");
+		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 		checkCountMeanMinMaxWeightSum(stats, 2, 0.0, 0.0, 0.0, 0.0);
 		assertEquals("last value", 0.0, stats.lastValue(), 1e-6);
 	}
 
 	@Test
 	public void testNoopWithDelay() throws MightBlock {
-		Map<String, Object> res = SimContext.of(sim -> {
-			Q<String> q = new Q<String>();
-			QStatCollector<String> qColl = new QStatCollector<>(q, sim);
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
+			Q<String> q = new Q<>("q1");
+			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 			waitFor(1.0);
 		});
 		ConsolePrinter.printResults(null, res);
 
-		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("qStats");
+		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q1.numItems");
 		checkCountMeanMinMaxWeightSum(stats, 2, 0.0, 0.0, 0.0, 1.0);
 		assertEquals("last value", 0.0, stats.lastValue(), 1e-6);
 	}
 
 	@Test
 	public void testAverageInv() throws MightBlock {
-		Map<String, Object> res = SimContext.of(sim -> {
-			Q<String> q = new Q<String>();
-			QStatCollector<String> qColl = new QStatCollector<>(q, sim);
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
+			Q<String> q = new Q<>("q");
+			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 			waitFor(100.0);
 			q.put("item");
 			waitFor(100.0);
 		});
-		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("qStats");
+		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 
 		ConsolePrinter.printResults(null, res);
 
@@ -64,15 +64,15 @@ public class TestQStats {
 
 	@Test
 	public void testCreationDuringSim() throws MightBlock {
-		Map<String, Object> res = SimContext.of(sim -> {
-			Q<String> q = new Q<String>();
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
+			Q<String> q = new Q<String>("q");
 			waitFor(100.0);
-			QStatCollector<String> qColl = new QStatCollector<>(q, sim);
+			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 			waitFor(100.0);
 			q.put("item");
 			waitFor(100.0);
 		});
-		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("qStats");
+		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 
 		ConsolePrinter.printResults(null, res);
 
@@ -83,14 +83,14 @@ public class TestQStats {
 
 	@Test
 	public void testCreationDuringSim2() throws MightBlock {
-		Map<String, Object> res = SimContext.of(sim -> {
-			Q<String> q = new Q<String>();
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
+			Q<String> q = new Q<String>("q");
 			q.put("item");
 			waitFor(100.0);
-			QStatCollector<String> qColl = new QStatCollector<>(q, sim);
+			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 			waitFor(100.0);
 		});
-		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("qStats");
+		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 
 		ConsolePrinter.printResults(null, res);
 
@@ -101,9 +101,9 @@ public class TestQStats {
 
 	@Test
 	public void testStats() throws MightBlock {
-		Map<String, Object> res = SimContext.of(sim -> {
-			Q<String> q = new Q<String>();
-			QStatCollector<String> qColl = new QStatCollector<>(q, sim);
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
+			Q<String> q = new Q<String>("daQueue");
+			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 
 			waitFor(1.0);
 			q.put("test1");
@@ -112,7 +112,7 @@ public class TestQStats {
 			waitFor(1.0);
 			q.take();
 		});
-		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("qStats");
+		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("daQueue.numItems");
 
 		ConsolePrinter.printResults(null, res);
 

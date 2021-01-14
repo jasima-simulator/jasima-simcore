@@ -1,6 +1,7 @@
 package jasima.core.simulation.generic;
 
 import static jasima.core.simulation.SimContext.currentProcess;
+import static jasima.core.simulation.SimContext.trace;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -32,6 +33,31 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 		if (!removed) {
 			throw new IllegalStateException();
 		}
+	}
+
+	public static <T> QListener<T> traceQEvents(Q<T> q1) {
+		return q1.addListener(new QListener<T>() {
+
+			@Override
+			public void itemAdded(Q<T> q, T item) {
+				addTraceEntry("queue.added", q, item);
+			}
+
+			@Override
+			public void itemRemoved(Q<T> q, T item) {
+				addTraceEntry("queue.removed", q, item);
+			}
+
+			@Override
+			public void handleOther(Q<T> q, QEvent event) {
+				addTraceEntry("queue.other", q, event);
+			}
+
+			private void addTraceEntry(String event, Q<?> q, Object item) {
+				trace(event, item, q, q.numItems(), q.numWaitingPut(), q.numWaitingTake());
+			}
+
+		});
 	}
 
 	public static interface QEvent {
@@ -75,6 +101,13 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 		}
 	}
 
+// parameters
+
+	private int capacity = -1;
+	private String name = null;
+
+	// fields used during run
+
 	private Deque<T> items = new ArrayDeque<>();
 	private List<SimProcess<?>> awaitingTake = new ArrayList<>();
 	private List<SimProcess<?>> awaitingPut = new ArrayList<>();
@@ -83,7 +116,15 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 
 	private T lastAdded = null, lastRemoved = null;
 	private NotifierImpl<Q<T>, QEvent> notifierImpl = new NotifierImpl<>(this);
-	private int capacity = -1;
+
+	public Q() {
+		super();
+	}
+
+	public Q(String name) {
+		this();
+		setName(name);
+	}
 
 	public void put(T t) throws MightBlock {
 		SimProcess<?> p = currentProcess();
@@ -193,6 +234,19 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 	@Override
 	public Notifier<Q<T>, QEvent> notifierImpl() {
 		return notifierImpl;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return getName() != null ? getName() : super.toString();
 	}
 
 }

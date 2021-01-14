@@ -38,7 +38,7 @@ public class TestShadesOfMM1 {
 		AtomicInteger numServed = new AtomicInteger(0);
 		AtomicInteger numCreated = new AtomicInteger(0);
 
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			RandomFactory rf = new RandomFactory(sim, 23);
 			int numJobs = 10;
 			double trafficIntensity = 0.85;
@@ -82,7 +82,7 @@ public class TestShadesOfMM1 {
 		AtomicInteger numServed = new AtomicInteger(0);
 		AtomicInteger numCreated = new AtomicInteger(0);
 
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			sim.setPrintLevel(MsgCategory.ALL);
 			sim.addPrintListener(System.out::println);
 

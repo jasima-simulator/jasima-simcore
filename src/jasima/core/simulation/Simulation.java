@@ -373,13 +373,13 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	public void run() {
 		requireAllowedState(state.get(), SimExecState.BEFORE_RUN);
 
-		execFailure = null;
-
 		mainProcess = new SimProcess<>(this, getMainProcessActions(), "simMain");
 		currEvent = mainProcess.activateProcessEvent;
 		setCurrentProcess(mainProcess);
 		setEventLoopProcess(mainProcess);
 
+		execFailure = null;
+		
 		state.set(SimExecState.RUNNING);
 		resetStats();
 
@@ -928,6 +928,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	@Override
 	public <T extends SimComponent> T activate(T sc) {
 		requireAllowedState(state.get(), INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED);
+		sc.setSim(this);
 		switch (state.get()) {
 		case INITIAL:
 			break; // do nothing

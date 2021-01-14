@@ -18,7 +18,7 @@ public class TestResource {
 	@Test
 	public void testSeizeRelease() {
 		AtomicBoolean lifecycleFinished = new AtomicBoolean(false);
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			double startTime = sim.simTime();
 
 			assertEquals("available at start", 1, r.numAvailable());
@@ -36,7 +36,7 @@ public class TestResource {
 	@Test
 	public void testSeizeReleaseNoBlocking() {
 		AtomicBoolean lifecycleFinished = new AtomicBoolean(false);
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			double startTime = sim.simTime();
 
 			assertEquals("available at start", 1, r.numAvailable());

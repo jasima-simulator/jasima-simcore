@@ -39,7 +39,7 @@ public class TestComponentNames {
 		
 		SimComponent cmp = c.getByHierarchicalName("main.sub1");
 		assertEquals("sub1", cmp.getName());
-		assertEquals(".main.sub1", cmp.getHierarchicalName());
+		assertEquals("main.sub1", cmp.getHierarchicalName());
 	}
 
 	@Test
@@ -48,14 +48,14 @@ public class TestComponentNames {
 		
 		SimComponent cmp = c.getByHierarchicalName("main.sub2.b");
 		assertEquals("b",cmp.getName());
-		assertEquals(".main.sub2.b",cmp.getHierarchicalName());
+		assertEquals("main.sub2.b",cmp.getHierarchicalName());
 	}
 
 	@Test
 	public void testGetComponentByHierarchicalNameFromSimulation() {
 		SimComponentContainerBase c = createTree();
 		
-		SimContext.of(sim->{
+		SimContext.simulationOf(sim->{
 			sim.addComponent(c);
 			
 			SimComponent cmp = sim.getComponentByHierarchicalName(".main.sub2.b");

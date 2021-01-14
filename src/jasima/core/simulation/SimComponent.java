@@ -120,9 +120,9 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 		if (p != null) {
 			sb.append(p.getHierarchicalName()).append(NAME_SEPARATOR);
 		} else {
-			if (!(this instanceof SimComponentRoot)) {
-				sb.append(NAME_SEPARATOR);
-			}
+//			if (!(this instanceof SimComponentRoot)) {
+//				sb.append(NAME_SEPARATOR);
+//			}
 		}
 		sb.append(this.toString());
 

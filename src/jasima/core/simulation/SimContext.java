@@ -129,7 +129,8 @@ public class SimContext {
 	}
 
 	public static void trace(Object... params) {
-		out.error(() -> formatMsg(params));
+		requireSimContext().trace(params);
+//		out.error(() -> formatMsg(params));
 	}
 
 	public static void end() {
@@ -150,19 +151,19 @@ public class SimContext {
 		return sb.toString();
 	}
 
-	public static Map<String, Object> of(SimRunnable r) {
-		return of(null, simAction(r));
+	public static Map<String, Object> simulationOf(SimRunnable r) {
+		return simulationOf(null, simAction(r));
 	}
 
-	public static Map<String, Object> of(String name, SimRunnable r) {
-		return of(name, simAction(r));
+	public static Map<String, Object> simulationOf(String name, SimRunnable r) {
+		return simulationOf(name, simAction(r));
 	}
 
-	public static Map<String, Object> of(SimAction a) {
-		return of(null, a);
+	public static Map<String, Object> simulationOf(SimAction a) {
+		return simulationOf(null, a);
 	}
 
-	public static Map<String, Object> of(String name, SimAction a) {
+	public static Map<String, Object> simulationOf(String name, SimAction a) {
 		Map<String, Object> res;
 		if (currentSimulation() != null) {
 			// execute in a new thread, current thread waits until finished

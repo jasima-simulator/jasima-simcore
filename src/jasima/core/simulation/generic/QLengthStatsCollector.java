@@ -1,18 +1,19 @@
 package jasima.core.simulation.generic;
 
 import jasima.core.simulation.SimComponentLifeCycleListener.ResultsListener;
-import jasima.core.simulation.SimContext;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.generic.Q.QEvents;
 import jasima.core.statistics.TimeWeightedSummaryStat;
 
-public class QStatCollector<ITEM> {
-	private final Q<ITEM> q;
+public class QLengthStatsCollector {
+	// TODO: make this a SimComponent, so we can use lifecycle events?
+
+	private final Q<?> q;
 	private final Simulation sim;
 
 	private final TimeWeightedSummaryStat numItems;
 
-	public QStatCollector(Q<ITEM> q, Simulation sim) {
+	public QLengthStatsCollector(Q<?> q, Simulation sim) {
 		super();
 
 		this.q = q;
@@ -26,19 +27,21 @@ public class QStatCollector<ITEM> {
 			}
 		});
 
-		recordValue();
+		recordValue(); // record initial value
 
 		sim.getRootComponent().addListener(ResultsListener.class, (sc, res) -> {
-			TimeWeightedSummaryStat stats = new TimeWeightedSummaryStat(numItems);
-			stats.value(q.numItems(), sim.simTime()); // properly "close" stats
-			res.put("qStats", stats);
+			res.put(q.toString() + ".numItems", statsNumItems());
 		});
 	}
 
 	private void recordValue() {
-		SimContext.trace(numItems.mean(), q.numItems(), numItems);
 		numItems.value(q.numItems(), sim.simTime());
-		SimContext.trace(numItems.mean(),numItems);
+	}
+
+	public TimeWeightedSummaryStat statsNumItems() {
+		TimeWeightedSummaryStat stats = new TimeWeightedSummaryStat(numItems);
+		stats.value(q.numItems(), sim.simTime()); // properly "close" stats
+		return stats;
 	}
 
 }

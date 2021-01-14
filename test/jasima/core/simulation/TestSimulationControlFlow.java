@@ -172,7 +172,7 @@ public class TestSimulationControlFlow {
 	public void testErrorWithProcesses1() {
 		boolean[] wasCalled = { false };
 
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			sim.setErrorHandler(e -> {
 				wasCalled[0] = e instanceof IllegalStateException;
 				return true;
@@ -194,7 +194,7 @@ public class TestSimulationControlFlow {
 	public void testErrorWithProcesses2() {
 		boolean[] wasCalled = { false };
 
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			sim.setErrorHandler(e -> {
 				wasCalled[0] = e instanceof IllegalStateException;
 				return true;
@@ -217,7 +217,7 @@ public class TestSimulationControlFlow {
 	public void testEventErrorWithProcess() {
 		boolean[] wasCalled = { false };
 
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			SimContext.activate(s -> {
 				SimProcess<?> p = s.currentProcess();
 				p.setLocalErrorHandler(e -> {
@@ -249,7 +249,7 @@ public class TestSimulationControlFlow {
 	public void testEventErrorWithFinishedProcess() {
 		boolean[] wasCalled = { false };
 
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			SimContext.activate(s -> {
 				SimProcess<?> p = s.currentProcess();
 				p.setLocalErrorHandler(e -> {

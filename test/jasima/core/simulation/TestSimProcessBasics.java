@@ -156,7 +156,7 @@ public class TestSimProcessBasics {
 	@Test
 	public void testSuspendedProcessesAreClearedAfterExecution() throws Exception {
 		AtomicReference<Simulation> simRef = new AtomicReference<>(null);
-		Map<String, Object> res = SimContext.of("simulation1", sim -> {
+		Map<String, Object> res = SimContext.simulationOf("simulation1", sim -> {
 			simRef.set(sim);
 
 			for (int i = 0; i < 10; i++) {
@@ -176,7 +176,7 @@ public class TestSimProcessBasics {
 	public void testEndOfUnactivatedProcess() throws Exception {
 		AtomicBoolean lifecycleFinished = new AtomicBoolean(false);
 		AtomicReference<Simulation> simRef = new AtomicReference<>(null);
-		Map<String, Object> res = SimContext.of("simulation1", sim -> {
+		Map<String, Object> res = SimContext.simulationOf("simulation1", sim -> {
 			simRef.set(sim);
 
 			activate("someProcess", () -> {
@@ -196,7 +196,7 @@ public class TestSimProcessBasics {
 
 	@Test
 	public void testMainSuspended() throws Exception {
-		Map<String, Object> res = SimContext.of("simulation1", sim -> {
+		Map<String, Object> res = SimContext.simulationOf("simulation1", sim -> {
 			waitFor(1.0);
 			suspend();
 			fail("Mustn't be reached");
@@ -208,7 +208,7 @@ public class TestSimProcessBasics {
 	public void testThreadReuse() throws Exception {
 		AtomicReference<Thread> t = new AtomicReference<>(null);
 
-		SimContext.of("simulation1", sim -> {
+		SimContext.simulationOf("simulation1", sim -> {
 			for (int i = 0; i < 20; i++) {
 				// start process in parallel to main process
 				activate("process" + i, () -> {
@@ -265,7 +265,7 @@ public class TestSimProcessBasics {
 		expectedException.expect(SimulationFailed.class);
 		expectedException.expectCause(isA(RuntimeException.class));
 
-		SimContext.of("theSimulation", sim -> {
+		SimContext.simulationOf("theSimulation", sim -> {
 			activate("process", () -> {
 				waitFor(1.0);
 				throw new RuntimeException("something went wrong");
@@ -279,7 +279,7 @@ public class TestSimProcessBasics {
 		expectedException.expectCause(isA(RuntimeException.class));
 
 		AtomicReference<Simulation> simRef = new AtomicReference<>(null);
-		SimContext.of("theSimulation", sim -> {
+		SimContext.simulationOf("theSimulation", sim -> {
 			simRef.set(sim);
 			SimProcess<Void> p1 = activate("process1", () -> {
 				waitFor(1.0);
@@ -299,7 +299,7 @@ public class TestSimProcessBasics {
 	public void testRuntimeExceptionInMainProcess() throws MightBlock {
 		expectedException.expect(SimulationFailed.class);
 		expectedException.expectCause(isA(RuntimeException.class));
-		SimContext.of("theSimulation", sim -> {
+		SimContext.simulationOf("theSimulation", sim -> {
 			waitFor(1.0);
 			throw new RuntimeException("something went wrong");
 		});
@@ -309,7 +309,7 @@ public class TestSimProcessBasics {
 	public void testRuntimeExceptionInEvent() throws MightBlock {
 		expectedException.expect(SimulationFailed.class);
 		expectedException.expectCause(isA(RuntimeException.class));
-		SimContext.of("theSimulation", sim -> {
+		SimContext.simulationOf("theSimulation", sim -> {
 			sim.scheduleAt(0.5, 0, () -> {
 				throw new RuntimeException("something went wrong");
 			});
@@ -374,7 +374,7 @@ public class TestSimProcessBasics {
 		long t = System.currentTimeMillis();
 		numWaits = numProcesses = 0;
 		int i = n;
-		Map<String, Object> res = SimContext.of("sim1", sim -> {
+		Map<String, Object> res = SimContext.simulationOf("sim1", sim -> {
 			SimProcess<Integer> fibProcess = activate("fib(" + i + ")", s -> fibonacci("fib" + i, i));
 			fibProcess.join();
 			System.out.println("done with fib(" + i + "). Result is: " + fibProcess.get());
@@ -441,7 +441,7 @@ public class TestSimProcessBasics {
 	public void testManyProcesses2() throws Exception {
 		AtomicLong procRes = new AtomicLong();
 		long t = System.currentTimeMillis();
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			SimProcess<Long> ackProcess = activate(s -> ack(3, 4));
 			ackProcess.join();
 			Long l = ackProcess.get();
@@ -500,11 +500,11 @@ public class TestSimProcessBasics {
 	static Logger log = LogManager.getLogger(TestSimProcessBasics.class);
 
 	public static void main(String... args) throws Exception {
-		Map<String, Object> res = SimContext.of(sim -> {
+		Map<String, Object> res = SimContext.simulationOf(sim -> {
 			log.warn("Hello world.");
 			waitFor(1);
 		});
-		Map<String, Object> res2 = SimContext.of(() -> {
+		Map<String, Object> res2 = SimContext.simulationOf(() -> {
 			log.warn("Hello world.");
 			waitFor(1);
 		});

@@ -12,14 +12,14 @@ import jasima.core.simulation.SimEntity;
 import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.generic.Q;
-import jasima.core.simulation.generic.QStatCollector;
+import jasima.core.simulation.generic.QLengthStatsCollector;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.ConsolePrinter;
 
 public class ParallelServersSingleQueue extends SimEntity {
 
 	public static void main(String[] args) throws Exception {
-		Map<String, Object> res = SimContext.of(sim -> sim.activate(new ParallelServersSingleQueue()));
+		Map<String, Object> res = SimContext.simulationOf(sim -> sim.activate(new ParallelServersSingleQueue()));
 		ConsolePrinter.printResults(null, res);
 	}
 
@@ -83,7 +83,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 		}
 
 		q = new Q<>();
-		new QStatCollector(q, getSim());
+		new QLengthStatsCollector(q, getSim());
 		trace("simulation start");
 
 		scheduleProcess(SimEvent.EVENT_PRIO_NORMAL, () -> {

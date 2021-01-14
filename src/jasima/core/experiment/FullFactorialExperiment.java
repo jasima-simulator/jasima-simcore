@@ -28,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import jasima.core.util.MsgCategory;
 import jasima.core.util.i18n.I18n;
 
@@ -52,9 +54,14 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	private ArrayList<String> factorNames;
 
 	public FullFactorialExperiment() {
+		this(null);
+	}
+
+	public FullFactorialExperiment(@Nullable Experiment baseExperiment) {
 		super();
 		setAbortUponBaseExperimentAbort(false);
 		factors = new LinkedHashMap<String, List<Object>>();
+		setBaseExperiment(baseExperiment);
 	}
 
 	/**

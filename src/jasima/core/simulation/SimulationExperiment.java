@@ -15,7 +15,6 @@ import jasima.core.experiment.Experiment;
 import jasima.core.simulation.Simulation.SimPrintMessage;
 import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.MsgCategory;
-import jasima.core.util.ValueStore;
 import jasima.core.util.SimProcessUtil.SimAction;
 
 public class SimulationExperiment extends Experiment implements SimOperations {
@@ -30,7 +29,7 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 	private long simTimeToMillisFactor = 60 * 1000; // simulation time in minutes
 	private Instant simTimeStartInstant = null; // beginning of current year will be used if not set explicitly
 	private List<Consumer<Simulation>> initActions = null;
-	private SimComponentContainer rootComponent = null;
+	private SimComponent modelRoot = null;
 	private SimAction mainProcess = null;
 
 	// fields used during run
@@ -84,8 +83,8 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 		}
 		sim.setSimTimeToMillisFactor(getSimTimeToMillisFactor());
 
-		if (getRootComponent() != null) {
-			sim.addComponent(getRootComponent());
+		if (getModelRoot() != null) {
+			sim.addComponent(getModelRoot());
 		}
 
 		// forward simulation print events to experiment print events
@@ -151,14 +150,6 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 	public Simulation getSim() {
 		return sim;
 	}
-
-//	/**
-//	 * Returns the current simulation time. This is the same as calling
-//	 * {@code sim().simTime()} directly.
-//	 */
-//	protected double simTime() {
-//		return sim.simTime();
-//	}
 
 	/**
 	 * Sets the maximum simulation time. A value of 0.0 means no such limit.
@@ -229,7 +220,7 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 
 	/**
 	 * Specifies the time unit of the (double-valued) simulation time. The default
-	 * value is ChronoUnit.MINUTES. 
+	 * value is ChronoUnit.MINUTES.
 	 *
 	 * @see Simulation#setSimTimeToMillisFactor(long)
 	 */
@@ -237,13 +228,12 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 		setSimTimeToMillisFactor(Duration.of(1, u).toMillis());
 	}
 
-	@Override
-	public SimComponentContainer getRootComponent() {
-		return rootComponent;
+	public SimComponent getModelRoot() {
+		return modelRoot;
 	}
 
-	public void setRootComponent(SimComponentContainer rootComponent) {
-		this.rootComponent = rootComponent;
+	public void setModelRoot(SimComponent rootComponent) {
+		this.modelRoot = rootComponent;
 	}
 
 	public SimAction getMainProcess() {
@@ -263,9 +253,9 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 			c.initActions = new ArrayList<>(initActions);
 		}
 
-		if (rootComponent != null) {
+		if (modelRoot != null) {
 			// attempts a deep clone of rootComponent
-			c.rootComponent = rootComponent.clone();
+			c.modelRoot = modelRoot.clone();
 		}
 
 		return c;

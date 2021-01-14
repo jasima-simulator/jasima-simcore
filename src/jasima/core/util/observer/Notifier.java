@@ -2,6 +2,7 @@ package jasima.core.util.observer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import jasima.core.util.TypeHint;
 
@@ -21,8 +22,8 @@ public interface Notifier<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> {
 		return notifierImpl().numListener();
 	}
 
-	default void addListener(NotifierListener<SUBJECT, MESSAGE> l) {
-		notifierImpl().addListener(l);
+	default <T extends NotifierListener<SUBJECT, MESSAGE>> T addListener(T l) {
+		return notifierImpl().addListener(l);
 	}
 
 	default <T extends NotifierListener<SUBJECT, MESSAGE>> void addListener(Class<T> eventType, T eventHandler) {
@@ -47,6 +48,13 @@ public interface Notifier<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> {
 
 	default void fire(MESSAGE msg) {
 		notifierImpl().fire(msg);
+	}
+
+	default<T extends NotifierListener<SUBJECT, MESSAGE>> void fire(TypeHint<T> hint, Consumer<T> forwarder) {
+		for (int i=0; i<numListener(); i++) {
+			T l = (T) getListener(i);
+			forwarder.accept(l);
+		}
 	}
 
 	final static Map<Notifier<?, ?>, NotifierImpl<?, ?>> adapters = new HashMap<>();

@@ -7,7 +7,7 @@ import jasima.core.simulation.SimContext;
 public class Environment {
 
 	public static void main(String... args) throws Exception {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			Environment e = new Environment(X_DIM, Y_DIM);
 
 			for (int i = 0; i < 10; i++) {

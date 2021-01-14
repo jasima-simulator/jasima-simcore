@@ -27,7 +27,7 @@ public class TestSimContext {
 
 	@Test
 	public void testSequentialSimulation() {
-		Map<String, Object> res1 = SimContext.of("sim1", sim -> {
+		Map<String, Object> res1 = SimContext.simulationOf("sim1", sim -> {
 			// default locale is "en-GB"
 			waitFor(2.0);
 			String localizedMsg = SimContext.message("Test");
@@ -35,7 +35,7 @@ public class TestSimContext {
 		});
 		assertEquals(2.0, (Double) res1.get("simTime"), 1e-6);
 
-		Map<String, Object> res2 = SimContext.of("sim2", sim -> {
+		Map<String, Object> res2 = SimContext.simulationOf("sim2", sim -> {
 			sim.setLocale(Locale.GERMANY);
 			waitFor(3.0);
 			System.out.println(SimContext.message("Test"));
@@ -68,10 +68,10 @@ public class TestSimContext {
 
 	@Test
 	public void testNestedSimulation1() throws Exception {
-		Map<String, Object> res1 = SimContext.of("outer", sim -> {
+		Map<String, Object> res1 = SimContext.simulationOf("outer", sim -> {
 			waitFor(1.0);
 
-			Map<String, Object> res = SimContext.of("inner", s -> {
+			Map<String, Object> res = SimContext.simulationOf("inner", s -> {
 				waitFor(3.0);
 			});
 			assertEquals(3.0, (Double) res.get("simTime"), 1e-6);
@@ -85,10 +85,10 @@ public class TestSimContext {
 	@Test
 	public void testNestedSimulationWithError() throws Exception {
 		try {
-			Map<String, Object> res1 = SimContext.of("outer", sim -> {
+			Map<String, Object> res1 = SimContext.simulationOf("outer", sim -> {
 				waitFor(1.0);
 
-				Map<String, Object> res = SimContext.of("inner", s -> {
+				Map<String, Object> res = SimContext.simulationOf("inner", s -> {
 					waitFor(3.0);
 					throw new IllegalStateException();
 				});
@@ -106,13 +106,13 @@ public class TestSimContext {
 
 	@Test
 	public void testNestedSimulationInSubprocess() throws Exception {
-		Map<String, Object> res1 = SimContext.of("outer", sim -> {
+		Map<String, Object> res1 = SimContext.simulationOf("outer", sim -> {
 			waitFor(1.0);
 
 			SimContext.activate("sub-process", s -> {
 				waitFor(1.0);
 
-				Map<String, Object> res = SimContext.of("inner", ss -> {
+				Map<String, Object> res = SimContext.simulationOf("inner", ss -> {
 					waitFor(3.0);
 				});
 				assertEquals(3.0, (Double) res.get("simTime"), 1e-6);
@@ -127,13 +127,13 @@ public class TestSimContext {
 	@Test
 	public void testNestedSimulationInSubprocessWithError() throws Exception {
 		try {
-			Map<String, Object> res1 = SimContext.of("outer", sim -> {
+			Map<String, Object> res1 = SimContext.simulationOf("outer", sim -> {
 				waitFor(1.0);
 
 				SimContext.activate("sub-process", () -> {
 					waitFor(1.0);
 
-					Map<String, Object> res = SimContext.of("inner", s2 -> {
+					Map<String, Object> res = SimContext.simulationOf("inner", s2 -> {
 						waitFor(3.0);
 						throw new IllegalStateException();
 					});
@@ -152,7 +152,7 @@ public class TestSimContext {
 
 	@Test
 	public void testNestedSimulation2() throws Exception {
-		Map<String, Object> res1 = SimContext.of("outer", () -> {
+		Map<String, Object> res1 = SimContext.simulationOf("outer", () -> {
 			waitFor(1.0);
 
 			Future<Map<String, Object>> f = SimContext.async("inner", s -> {
@@ -170,14 +170,14 @@ public class TestSimContext {
 
 	@Test
 	public void testNestedSimulation3() throws Exception {
-		SimContext.of(outerSim -> {
+		SimContext.simulationOf(outerSim -> {
 			outerSim.setSimTimeToMillisFactor(DAYS);
 			Instant outerStart = Instant.parse("2020-01-01T15:00:00Z");
 			outerSim.setSimTimeStartInstant(outerStart);
 
 			for (int n = 0; n < 5; n++) {
 				// create innerSim, init with state of outerSim
-				Map<String, Object> resInner = SimContext.of(innerSim -> {
+				Map<String, Object> resInner = SimContext.simulationOf(innerSim -> {
 					innerSim.setSimTimeToMillisFactor(MINUTES);
 
 					Instant innerStartAbs = outerSim.simTimeAbs();
@@ -200,7 +200,7 @@ public class TestSimContext {
 
 	@Test
 	public void testNestedSimulation3_methodRefs() throws Exception {
-		SimContext.of(this::runOuterSim);
+		SimContext.simulationOf(this::runOuterSim);
 	}
 
 	private void runOuterSim(Simulation sim) throws MightBlock {
@@ -210,7 +210,7 @@ public class TestSimContext {
 
 		for (int n = 0; n < 5; n++) {
 			// create innerSim, init with state of outerSim
-			Map<String, Object> resInner = SimContext.of(innerSim -> runInnerSim(innerSim, sim.simTimeAbs()));
+			Map<String, Object> resInner = SimContext.simulationOf(innerSim -> runInnerSim(innerSim, sim.simTimeAbs()));
 
 			// inspect and use results from "innerSim"
 			assertEquals("inner.simTimeAtEnd", 1 * 24 * 60.0, (Double) resInner.get(SIM_TIME), 1e-6);
@@ -233,14 +233,14 @@ public class TestSimContext {
 	@Test(expected = SimulationFailed.class)
 	public void cantSetInitialSimTimeOnceRunning() throws Exception {
 		// triggers IllegalStateException which is then wrapped in a SimulationFailed
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			sim.setInitialSimTime(0.0);
 		});
 	}
 
 	@Test
 	public void testTimeConvertInDays() throws Exception {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			sim.setSimTimeToMillisFactor(DAYS);
 
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
@@ -255,7 +255,7 @@ public class TestSimContext {
 
 	@Test
 	public void testWaitForDuration() throws Exception {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
 			sim.setSimTimeStartInstant(startInstant);
 
@@ -267,7 +267,7 @@ public class TestSimContext {
 
 	@Test
 	public void testTimeConvertInMinutes() throws Exception {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			sim.setSimTimeToMillisFactor(MINUTES);
 
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
@@ -282,7 +282,7 @@ public class TestSimContext {
 
 	@Test
 	public void testTimeConvertDefaultIsMinutes() throws Exception {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
 			sim.setSimTimeStartInstant(startInstant);
 

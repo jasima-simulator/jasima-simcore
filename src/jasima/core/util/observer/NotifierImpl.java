@@ -63,8 +63,9 @@ public class NotifierImpl<SUBJECT extends Notifier<SUBJECT, MESSAGE>, MESSAGE> i
 	 * Adds a new listener.
 	 */
 	@Override
-	public synchronized void addListener(NotifierListener<SUBJECT, MESSAGE> l) {
+	public synchronized <T extends NotifierListener<SUBJECT, MESSAGE>> T addListener(T l) {
 		listeners.add(requireNonNull(l));
+		return l;
 	}
 
 	/**

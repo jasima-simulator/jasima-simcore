@@ -25,7 +25,7 @@ public class TestQ {
 
 	@Test
 	public void testBasicFunctionalityNoBlocking() throws MightBlock {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			double startTime = sim.simTime();
 
 			Q<String> q = new Q<String>();
@@ -48,7 +48,7 @@ public class TestQ {
 	@Test
 	public void testBasicFunctionality() throws MightBlock {
 		AtomicInteger numTaken = new AtomicInteger(0);
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			sim.setSimulationLength(2.9);
 
 			Q<String> q = new Q<String>();
@@ -84,7 +84,7 @@ public class TestQ {
 
 		AtomicInteger numTaken = new AtomicInteger(0);
 
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			sim.setSimulationLength(jobsPerServer * numServer * iat); // every server 2 items
 			waitFor(1.0); // start simTime at 1.0
 
@@ -121,7 +121,7 @@ public class TestQ {
 
 		AtomicInteger numTaken = new AtomicInteger(0);
 
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			sim.setSimulationLength(jobsPerServer * numServer * iat); // every server 2 items
 			waitFor(1.0); // start simTime at 1.0
 
@@ -157,7 +157,7 @@ public class TestQ {
 	@Test
 	public void testEventParamsItemAdded() {
 		AtomicInteger checksSuccessful = new AtomicInteger(0);
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			Q<Integer> queue = new Q<>();
 			queue.addListener(new TypeHint<ItemAdded<Integer>>(), (q, item) -> {
 				if (q == queue)
@@ -173,7 +173,7 @@ public class TestQ {
 	@Test
 	public void testEventParamsItemRemoved() {
 		AtomicInteger checksSuccessful = new AtomicInteger(0);
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			Q<Integer> queue = new Q<>();
 			queue.addListener(new TypeHint<ItemRemoved<Integer>>(), (q, item) -> {
 				if (q == queue)
@@ -189,7 +189,7 @@ public class TestQ {
 
 	@Test
 	public void testRestrictedCapacityNoBlocking() {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			Q<String> q = new Q<String>();
 			assertEquals("numAvailable", Integer.MAX_VALUE, q.numAvailable());
 			q.setCapacity(1);
@@ -205,7 +205,7 @@ public class TestQ {
 
 	@Test
 	public void testRestrictedCapacityBlocking() {
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			double startTime = sim.simTime();
 
 			Q<String> q = new Q<String>();
@@ -224,7 +224,7 @@ public class TestQ {
 	@Test
 	public void testRestrictedCapacityBlocking__CapacityIncrease() {
 		AtomicBoolean lifecycleFinished = new AtomicBoolean(false);
-		SimContext.of(sim -> {
+		SimContext.simulationOf(sim -> {
 			double startTime = sim.simTime();
 
 			Q<String> q = new Q<String>();
