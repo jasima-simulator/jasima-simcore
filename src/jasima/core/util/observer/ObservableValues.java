@@ -130,6 +130,9 @@ public final class ObservableValues {
 		return derived(() -> operation.apply(v.get()), v);
 	}
 
+	public static final ObservableValue<Boolean> TRUE = new ConstValue<>(Boolean.TRUE);
+	public static final ObservableValue<Boolean> FALSE = new ConstValue<>(Boolean.FALSE);
+
 	/**
 	 * prevent instantiation
 	 */
