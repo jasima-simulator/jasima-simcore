@@ -44,8 +44,8 @@ public class SimEntity extends SimComponentBase {
 	}
 
 	@Override
-	public void beforeRun() {
-		super.beforeRun();
+	public void simStart() {
+		super.simStart();
 
 		lifecycleProcess.awakeIn(0.0);
 	}

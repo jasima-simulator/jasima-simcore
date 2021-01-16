@@ -13,9 +13,9 @@ public interface SimComponentLifeCycleListener extends NotifierListener<SimCompo
 	default void inform(SimComponent o, SimComponentEvent msg) {
 		if (msg == SimComponentLifeCycleMessage.INIT) {
 			init(o);
-		} else if (msg == SimComponentLifeCycleMessage.BEFORE_RUN) {
+		} else if (msg == SimComponentLifeCycleMessage.SIM_START) {
 			simStart(o);
-		} else if (msg == SimComponentLifeCycleMessage.AFTER_RUN) {
+		} else if (msg == SimComponentLifeCycleMessage.SIM_END) {
 			simEnd(o);
 		} else if (msg == SimComponentLifeCycleMessage.DONE) {
 			done(o);

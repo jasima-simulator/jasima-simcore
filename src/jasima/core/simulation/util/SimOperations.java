@@ -33,11 +33,11 @@ public interface SimOperations {
 	 * Convenience method to add a new component to the root component of this
 	 * simulation.
 	 * 
-	 * @return same as parameter {@code sc} to allow chaining
+	 * @return the context this method is invoked in to allow chaining
 	 */
-	default <T extends SimComponent> T addComponent(T sc) {
+	default <T extends SimComponent> SimOperations addComponent(T sc) {
 		getRootComponent().addChild(sc);
-		return activate(sc);
+		return this;
 	}
 
 	/**

@@ -18,7 +18,7 @@ public class SimComponentBase implements SimComponent {
 
 	private transient SimComponentContainer parent;
 	private transient String hierarchicalName;
-	private transient Simulation sim;
+	transient Simulation sim;
 
 	private String name;
 
@@ -41,6 +41,8 @@ public class SimComponentBase implements SimComponent {
 
 	@Override
 	public Simulation getSim() {
+		if (sim == null)
+			throw new IllegalStateException("no simulation.");
 		return sim;
 	}
 
@@ -62,7 +64,7 @@ public class SimComponentBase implements SimComponent {
 
 	@Override
 	public String getHierarchicalName() {
-		// cache the name for performance reasons
+		// cache the full name for performance reasons
 		if (hierarchicalName == null) {
 			hierarchicalName = SimComponent.super.getHierarchicalName();
 		}

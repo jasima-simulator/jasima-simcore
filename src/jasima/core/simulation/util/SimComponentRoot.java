@@ -15,14 +15,14 @@ public class SimComponentRoot extends SimComponentContainerBase {
 	}
 
 	@Override
-	public void beforeRun() {
-		super.beforeRun();
+	public void simStart() {
+		super.simStart();
 		trace("sim_start");
 	}
 
 	@Override
-	public void afterRun() {
-		super.afterRun();
+	public void simEnd() {
+		super.simEnd();
 		trace("sim_end");
 	}
 }

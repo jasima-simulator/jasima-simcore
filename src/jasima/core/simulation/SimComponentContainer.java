@@ -83,29 +83,29 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 	 */
 	@Override
 	default @Nullable SimComponent getByHierarchicalName(String hierarchicalName) {
-		// first part of hierarchicalName matching our name?
-		String thisName = hierarchicalName;
-
-		int dotPos;
-		dotPos = hierarchicalName.indexOf(NAME_SEPARATOR);
-		if (dotPos >= 0) {
-			thisName = hierarchicalName.substring(0, dotPos);
-			hierarchicalName = hierarchicalName.substring(dotPos + 1);
+		// first segment of hierarchicalName matching our name?
+		String thisName;
+		int endThisName = hierarchicalName.indexOf(NAME_SEPARATOR);
+		if (endThisName >= 0) {
+			thisName = hierarchicalName.substring(0, endThisName);
+			hierarchicalName = hierarchicalName.substring(endThisName + 1);
+		} else {
+			thisName = hierarchicalName;
+			hierarchicalName = "";
 		}
-
 		if (!StringUtil.equals(thisName, getName())) {
-			return null; // no match
+			return null;
+		}
+		if (hierarchicalName.length()==0) {
+			return this;
 		}
 
-		// find child if required
-		String childName = hierarchicalName;
-		dotPos = hierarchicalName.indexOf(NAME_SEPARATOR);
-		if (dotPos >= 0) {
-			childName = hierarchicalName.substring(0, dotPos);
-		}
+		// next segment matching a child?
+		int childNameEnd = hierarchicalName.indexOf(NAME_SEPARATOR);
+		String childName = (childNameEnd >= 0) ? hierarchicalName.substring(0, childNameEnd) : hierarchicalName;
+
 		SimComponent comp = getChildByName(childName);
-
-		return comp.getByHierarchicalName(hierarchicalName);
+		return comp != null ? comp.getByHierarchicalName(hierarchicalName) : null;
 	}
 
 	// code below is forwarding lifecycle events to children
@@ -118,10 +118,10 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 	}
 
 	@Override
-	default void beforeRun() {
-		SimComponent.super.beforeRun();
+	default void simStart() {
+		SimComponent.super.simStart();
 
-		getChildren().forEach(c -> c.beforeRun());
+		getChildren().forEach(c -> c.simStart());
 	}
 
 	@Override
@@ -132,10 +132,10 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 	}
 
 	@Override
-	default void afterRun() {
-		SimComponent.super.afterRun();
+	default void simEnd() {
+		SimComponent.super.simEnd();
 
-		getChildren().forEach(c -> c.afterRun());
+		getChildren().forEach(c -> c.simEnd());
 	}
 
 	@Override

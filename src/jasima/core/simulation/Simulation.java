@@ -504,7 +504,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			schedule(simEndEvent);
 		}
 
-		rootComponent.beforeRun();
+		rootComponent.simStart();
 	}
 
 	/**
@@ -532,7 +532,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * the {@link #run()} method.
 	 */
 	public void afterRun() {
-		rootComponent.afterRun();
+		rootComponent.simEnd();
 	}
 
 	/**
@@ -937,12 +937,12 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			break;
 		case BEFORE_RUN:
 			sc.init();
-			sc.beforeRun();
+			sc.simStart();
 			break;
 		case RUNNING:
 		case PAUSED:
 			sc.init();
-			sc.beforeRun();
+			sc.simStart();
 			break;
 		default:
 			throw new AssertionError();

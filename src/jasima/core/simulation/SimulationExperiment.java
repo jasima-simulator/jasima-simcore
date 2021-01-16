@@ -145,9 +145,12 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 	}
 
 	/**
-	 * Returns the simulation object created in {@code init()}.
+	 * Returns the simulation object created in {@code init()}. Raises an
+	 * {@link IllegalStateException} if not simulation was set before.
 	 */
 	public Simulation getSim() {
+		if (sim == null)
+			throw new IllegalStateException("no simulation.");
 		return sim;
 	}
 

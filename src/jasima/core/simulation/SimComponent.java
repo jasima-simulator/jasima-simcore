@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import jasima.core.simulation.SimComponent.SimComponentEvent;
-import jasima.core.simulation.util.SimComponentRoot;
 import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.StringUtil;
 import jasima.core.util.ValueStore;
@@ -28,7 +27,7 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	public static final char NAME_SEPARATOR = '.';
 
 	public enum SimComponentLifeCycleMessage implements SimComponentEvent {
-		INIT, BEFORE_RUN, RESET_STATS, AFTER_RUN, DONE
+		INIT, SIM_START, RESET_STATS, SIM_END, DONE
 	}
 
 	/**
@@ -89,16 +88,16 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 		fire(SimComponentLifeCycleMessage.INIT);
 	}
 
-	default void beforeRun() {
-		fire(SimComponentLifeCycleMessage.BEFORE_RUN);
+	default void simStart() {
+		fire(SimComponentLifeCycleMessage.SIM_START);
 	}
 
 	default void resetStats() {
 		fire(SimComponentLifeCycleMessage.RESET_STATS);
 	}
 
-	default void afterRun() {
-		fire(SimComponentLifeCycleMessage.AFTER_RUN);
+	default void simEnd() {
+		fire(SimComponentLifeCycleMessage.SIM_END);
 	}
 
 	default void done() {
@@ -139,6 +138,11 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	 */
 	default SimComponent getByHierarchicalName(String hierarchicalName) {
 		return StringUtil.equals(hierarchicalName, getName()) ? this : null;
+	}
+
+	@Override // inherited from SimOperations
+	default <T extends SimComponent> SimOperations addComponent(T sc) {
+		throw new UnsupportedOperationException();
 	}
 
 	// event notification, delegate to adapter

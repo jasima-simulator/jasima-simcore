@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jasima.core.simulation.Simulation;
@@ -33,7 +34,8 @@ import jasima.shopSim.core.WorkStation;
 /**
  * 
  * @author Torsten Hildebrandt
- */
+*/
+@Ignore
 public class JobShopTests {
 
 	@Test
@@ -59,7 +61,6 @@ public class JobShopTests {
 
 		Simulation s = new Simulation();
 
-		// js.setLengthSimulation(30);
 		s.setSimulationLength(8 * 365.0f);
 		s.addComponent(js);
 

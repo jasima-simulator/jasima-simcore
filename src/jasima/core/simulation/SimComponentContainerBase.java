@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-/** Simple implementation of a {@link SimComponentContainer}.
+import jasima.core.simulation.util.SimOperations;
+
+/**
+ * Simple implementation of a {@link SimComponentContainer}.
  * 
  * @author Torsten Hildebrandt
  */
@@ -22,11 +26,15 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 		this(null);
 	}
 
-	public SimComponentContainerBase(String name) {
+	public SimComponentContainerBase(String name, SimComponent... children) {
 		super(name);
 
 		components = new ArrayList<>();
 		componentsByName = null; // lazy initialization in getComponentByName()
+
+		if (children != null && children.length > 0) {
+			Stream.of(children).forEach(this::addChild);
+		}
 	}
 
 	@Override
@@ -69,13 +77,23 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 					getHierarchicalName(), sc.getName()));
 		}
 
-		components.add(sc);
-		sc.setParent(this);
-		sc.setSim(getSim());
-
-		// map was initalized by calling getComponentByName
+		// map was initalized by calling getChildByName
 		componentsByName.put(sc.getName(), sc);
 
+		components.add(sc);
+		sc.setParent(this);
+		sc.setSim(sim); // no getSim() here because it throws an exception on null
+		
+		if (sim!=null) {
+			sim.activate(sc);
+		}
+
+		return this;
+	}
+
+	@Override // inherited from SimOperations
+	public <T extends SimComponent> SimOperations addComponent(T sc) {
+		addChild(sc);
 		return this;
 	}
 

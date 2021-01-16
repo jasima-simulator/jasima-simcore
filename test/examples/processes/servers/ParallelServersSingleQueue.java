@@ -47,7 +47,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 
 	public class Server extends SimEntity {
 		private SummaryStat services = new SummaryStat();
-		
+
 		public Server(String name) {
 			super(name);
 		}
@@ -58,7 +58,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 				Customer c = q.take();
 				double serviceStart = simTime();
 				waitFor(serviceTimes.nextDbl());
-				services.value(simTime()-serviceStart);
+				services.value(simTime() - serviceStart);
 				c.getLifecycleProcess().resume();
 			}
 		}
@@ -66,9 +66,9 @@ public class ParallelServersSingleQueue extends SimEntity {
 		@Override
 		public void produceResults(Map<String, Object> res) {
 			super.produceResults(res);
-			res.put(getHierarchicalName()+".serviceTimes", new SummaryStat(services));
+			res.put(getHierarchicalName() + ".serviceTimes", new SummaryStat(services));
 		}
-		
+
 	}
 
 	@Override
@@ -79,7 +79,8 @@ public class ParallelServersSingleQueue extends SimEntity {
 
 		servers = new Server[getNumServers()];
 		for (int i = 0; i < getNumServers(); i++) {
-			servers[i] = addComponent(new Server("server" + (i + 1)));
+			servers[i] = new Server("server" + (i + 1));
+			addComponent(servers[i]);
 		}
 
 		q = new Q<>();
