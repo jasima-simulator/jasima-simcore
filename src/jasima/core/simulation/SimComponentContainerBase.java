@@ -45,6 +45,13 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
+	public void init() {
+		super.init();
+
+		components.forEach(c -> c.init());
+	}
+
+	@Override
 	public List<SimComponent> getChildren() {
 		return Collections.unmodifiableList(components);
 	}
@@ -83,8 +90,8 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 		components.add(sc);
 		sc.setParent(this);
 		sc.setSim(sim); // no getSim() here because it throws an exception on null
-		
-		if (sim!=null) {
+
+		if (sim != null) {
 			sim.activate(sc);
 		}
 

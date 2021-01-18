@@ -19,6 +19,7 @@ public class SimComponentBase implements SimComponent {
 	private transient SimComponentContainer parent;
 	private transient String hierarchicalName;
 	transient Simulation sim;
+	private transient boolean initialized;
 
 	private String name;
 
@@ -34,6 +35,7 @@ public class SimComponentBase implements SimComponent {
 
 	public SimComponentBase(String name) {
 		super();
+		initialized = false;
 		if (name != null) {
 			setName(name);
 		}
@@ -144,6 +146,14 @@ public class SimComponentBase implements SimComponent {
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void init() {
+		if (initialized)
+			throw new IllegalStateException("Component already initialized: " + toString());
+		initialized = true;
+		fire(SimComponentLifeCycleMessage.INIT);
 	}
 
 }

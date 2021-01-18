@@ -84,9 +84,7 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 
 	// default implementations of lifecycle messages/events
 
-	default void init() {
-		fire(SimComponentLifeCycleMessage.INIT);
-	}
+	void init();
 
 	default void simStart() {
 		fire(SimComponentLifeCycleMessage.SIM_START);

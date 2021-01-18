@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jasima.core.simulation.Simulation;
@@ -34,8 +33,7 @@ import jasima.shopSim.core.WorkStation;
 /**
  * 
  * @author Torsten Hildebrandt
-*/
-@Ignore
+ */
 public class JobShopTests {
 
 	@Test
@@ -76,15 +74,15 @@ public class JobShopTests {
 
 		for (int i = 0; i < js.NUM_JOB_TYPES; i++) {
 			/*
-			 * average job total delay = average delay for job type for each
-			 * task times the number of tasks
+			 * average job total delay = average delay for job type for each task times the
+			 * number of tasks
 			 */
 			double ajtd = js.jobTypeDelay[i].mean() * js.route[i].length;
 			assertEquals("avDelay", new double[] { 25.274267d, 17.918234d, 40.184708d }[i], ajtd, 0.0001d);
 			/*
-			 * oajtd is a weighted average of the total time a job waits in
-			 * queue. Total waits (ojtd) are multiplied by the probability job
-			 * being of a particular type. Oajtd would be the typical total wait
+			 * oajtd is a weighted average of the total time a job waits in queue. Total
+			 * waits (ojtd) are multiplied by the probability job being of a particular
+			 * type. Oajtd would be the typical total wait
 			 */
 			oajtd += (js.probDistribJobType[i] - sumProbs) * ajtd;
 			sumProbs = js.probDistribJobType[i];

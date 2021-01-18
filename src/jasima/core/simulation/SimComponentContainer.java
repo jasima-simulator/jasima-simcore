@@ -111,13 +111,6 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 	// code below is forwarding lifecycle events to children
 
 	@Override
-	default void init() {
-		SimComponent.super.init();
-
-		getChildren().forEach(c -> c.init());
-	}
-
-	@Override
 	default void simStart() {
 		SimComponent.super.simStart();
 

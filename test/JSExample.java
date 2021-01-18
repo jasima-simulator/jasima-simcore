@@ -107,6 +107,8 @@ public class JSExample extends Shop {
 		}, false);
 		installMachineListener(new MachineStatCollector(), true);
 
+		super.init();
+
 		addJobSource(new JobSource() {
 			@Override
 			public Job createNextJob() {
@@ -135,12 +137,7 @@ public class JSExample extends Shop {
 			}
 		});
 
-		super.init();
-
-		jobTypeDelay = new SummaryStat[NUM_JOB_TYPES];
-		for (int i = 0; i < NUM_JOB_TYPES; i++) {
-			jobTypeDelay[i] = new SummaryStat();
-		}
+		jobTypeDelay = Util.initializedArray(NUM_JOB_TYPES, SummaryStat.class);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package jasima.core.simulation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,8 @@ import java.util.Objects;
 
 import org.junit.Test;
 import org.junit.rules.Timeout;
+
+import jasima.core.simulation.Simulation.SimulationFailed;
 
 public class TestComponentHierarchy {
 //	@Rule
@@ -148,14 +151,12 @@ public class TestComponentHierarchy {
 			container.addComponent(new EventTracer("t"));
 		});
 		se.setModelRoot(new SimComponentContainerBase("base"));
-		
+
 		Map<String, Object> res = se.runExperiment();
 
-		assertEquals("LifecycleCalls",
-				Arrays.asList("INIT", "SIM_START", "SIM_END", "DONE", "PRODUCE_RESULTS"),
+		assertEquals("LifecycleCalls", Arrays.asList("INIT", "SIM_START", "SIM_END", "DONE", "PRODUCE_RESULTS"),
 				res.get(".base.t.lifecycleCalls"));
-		assertEquals("EventCalls",
-				Arrays.asList("INIT", "SIM_START", "SIM_END", "DONE", "ProduceResultsEvent"),
+		assertEquals("EventCalls", Arrays.asList("INIT", "SIM_START", "SIM_END", "DONE", "ProduceResultsEvent"),
 				res.get(".base.t.eventCalls"));
 	}
 
@@ -231,6 +232,33 @@ public class TestComponentHierarchy {
 			return eventCalls;
 		}
 
+	}
+
+	@Test
+	public void component__initializedTwice__raiseException() {
+		SimComponentBase c = new SimComponentBase();
+		c.init();
+		try {
+			c.init();
+			fail();
+		} catch (IllegalStateException expected) {
+		}
+	}
+
+	@Test
+	public void component__alreadyInitializedIsAddedToContainer__raiseException() {
+		SimComponentBase c = new SimComponentBase();
+		c.init();
+
+		try {
+			SimContext.simulationOf(sim -> {
+				SimComponentContainerBase b = new SimComponentContainerBase("test");
+				sim.addComponent(b);
+				b.addChild(c);
+			});
+		} catch (SimulationFailed sf) {
+			assertTrue(sf.getCause() instanceof IllegalStateException);
+		}
 	}
 
 }
