@@ -27,6 +27,7 @@ import static java.util.Arrays.asList;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -328,19 +329,28 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 		}
 	}
 
-	private void printBanner(Experiment exp) {
-		System.out.println(DOTS);
-		System.out.println(Util.getIdString());
-		System.out.println();
-		if (exp != null) {
-			System.out.println(exp.getClass().getSimpleName() + ": " + exp.toString());
-			System.out.println();
+	public static void printBanner(Experiment exp) {
+		PrintWriter pw = new PrintWriter(System.out, true);
+		try {
+			printBanner(pw, exp);
+		} finally {
+			pw.flush();
 		}
-		System.out.println(Util.getJavaEnvString());
-		System.out.println(Util.getOsEnvString());
-		System.out.println(Util.getWorkingDirString());
-		System.out.println(DOTS);
-		System.out.println();
+	}
+
+	public static void printBanner(PrintWriter out, Experiment exp) {
+		out.println(DOTS);
+		out.println(Util.getIdString());
+		out.println();
+		if (exp != null) {
+			out.println(exp.getClass().getSimpleName() + ": " + exp.toString());
+			out.println();
+		}
+		out.println(Util.getJavaEnvString());
+		out.println(Util.getOsEnvString());
+		out.println(Util.getWorkingDirString());
+		out.println(DOTS);
+		out.println();
 	}
 
 	private void printUsageAndExit() {
