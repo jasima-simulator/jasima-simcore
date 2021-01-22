@@ -72,6 +72,10 @@ public class SimComponentBase implements SimComponent {
 		}
 		return hierarchicalName;
 	}
+	
+	public boolean isInitialized() {
+		return initialized;
+	}
 
 	@Override
 	public String getName() {
