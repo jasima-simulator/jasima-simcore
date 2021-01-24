@@ -140,7 +140,7 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 
 	@Override // inherited from SimOperations
 	default <T extends SimComponent> SimOperations addComponent(T sc) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("Can only add components to a container.");
 	}
 
 	// event notification, delegate to adapter
