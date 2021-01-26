@@ -66,6 +66,16 @@ public class TestFFEFactorSetting {
 	}
 
 	@Test
+	public void test_complexSubProperty() {
+		FullFactorialExperiment ffe = new FullFactorialExperiment(new ExpTestControlFlow());
+		ffe.addFactors("complex.test", 1, 2, 3);
+
+		Map<String, Object> res = ffe.runExperiment();
+
+		assertEquals("numTasks", 3, res.get("numTasks"));
+	}
+
+	@Test
 	public void testInts1() {
 		FullFactorialExperiment ffe = createFFE();
 

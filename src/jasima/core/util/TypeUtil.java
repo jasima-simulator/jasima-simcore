@@ -36,6 +36,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -402,6 +403,29 @@ public class TypeUtil {
 	 */
 	public static PropertyDescriptor[] findWritableProperties(Object o) {
 		return findWritableProperties(o.getClass());
+	}
+
+	/**
+	 * Returns a map with all values of the given properties. .
+	 * 
+	 * @param o   The object to get the values from.
+	 * @param pds The properties to use.
+	 * @return A map containing the names and values of the given properties.
+	 */
+	public static Map<String, Object> getPropertyValues(Object o, PropertyDescriptor[] pds) {
+		Map<String, Object> props = new LinkedHashMap<String, Object>();
+		for (PropertyDescriptor pd : pds) {
+			getPropertyValue(o, pd, props);
+		}
+		return props;
+	}
+
+	private static void getPropertyValue(Object o, PropertyDescriptor pd, Map<String, Object> props) {
+		try {
+			props.put(pd.getName(), pd.getReadMethod().invoke(o));
+		} catch (Exception e) {
+			throw new RuntimeException("error getting property value '" + pd.getName() + "'", e);
+		}
 	}
 
 	/**

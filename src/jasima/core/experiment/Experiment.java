@@ -508,18 +508,8 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 	 * @return A map of all Java Bean properties and their values.
 	 */
 	public Map<String, Object> getPropsWithValues() {
-		Map<String, Object> props = new LinkedHashMap<String, Object>();
-
 		PropertyDescriptor[] pds = TypeUtil.findWritableProperties(this);
-		for (PropertyDescriptor pd : pds) {
-			try {
-				props.put(pd.getName(), pd.getReadMethod().invoke(this));
-			} catch (Exception e) {
-				throw new RuntimeException(pd.getName(), e);
-			}
-		}
-
-		return props;
+		return TypeUtil.getPropertyValues(this, pds);
 	}
 
 	/**
