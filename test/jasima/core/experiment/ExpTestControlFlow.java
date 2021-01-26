@@ -2,12 +2,26 @@ package jasima.core.experiment;
 
 public class ExpTestControlFlow extends Experiment {
 	private static final long serialVersionUID = 1L;
+	
+	public static class ComplexPropertyHolder {
+		private int test;
+
+		public int getTest() {
+			return test;
+		}
+
+		public void setTest(int test) {
+			this.test = test;
+		}
+		
+	}
 
 	private boolean fail = true;
 	private boolean abort = false;
 	private long runtimeMillis = -1;
 	private int dummy = 23;
 	private int nonNegativeProperty = 0;
+	private ComplexPropertyHolder complex = new ComplexPropertyHolder();
 
 	@Override
 	protected void performRun() {
@@ -77,5 +91,13 @@ public class ExpTestControlFlow extends Experiment {
 			throw new IllegalArgumentException();
 		}
 		this.nonNegativeProperty = nonNegativeProperty;
+	}
+
+	public ComplexPropertyHolder getComplex() {
+		return complex;
+	}
+
+	public void setComplex(ComplexPropertyHolder complex) {
+		this.complex = complex;
 	}
 }
