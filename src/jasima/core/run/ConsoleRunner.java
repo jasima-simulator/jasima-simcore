@@ -296,6 +296,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 	private void parseArgs(String[] args) {
 		// create parser and parse command line
 		OptionParser optsParser = new OptionParser();
+		optsParser.allowsUnrecognizedOptions();
 		createGenericOptions(optsParser);
 		if (expToRun != null) {
 			createAdditionalOptions(optsParser);

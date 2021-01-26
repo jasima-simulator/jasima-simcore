@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jasima.core.experiment.ExpTestControlFlow;
@@ -117,6 +118,14 @@ public class ConsoleRunnerTest {
 	public void testNormalExecutionFromTemplateExperiment() {
 		Map<String, Object> res = runWithArgs(new ExpTestControlFlow(), "--dummy=23", "--fail=false");
 
+		assertThat("result value", res.get("results"), is(23 * 23));
+	}
+
+	@Test
+	@Ignore
+	public void testNormalExecutionFromComplexProperty() {
+		ConsoleRunnerOverride cr = new ConsoleRunnerOverride(new ExpTestControlFlow());
+		Map<String, Object> res = cr.runWith("--dummy=23", "--fail=false", "--complex.test=23");
 		assertThat("result value", res.get("results"), is(23 * 23));
 	}
 
