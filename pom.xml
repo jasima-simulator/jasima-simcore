@@ -22,7 +22,8 @@
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
 		<log4j2.version>2.13.3</log4j2.version>
-		<versionName>${project.version} (${maven.build.timestamp}, ${git.branch}@${git.commit.id.abbrev})</versionName>
+		<versionName>${project.version} (${maven.build.timestamp},
+			${git.branch}@${git.commit.id.abbrev})</versionName>
 		<jasima-cli.main.class>jasima.core.run.ConsoleRunner</jasima-cli.main.class>
 	</properties>
 
@@ -64,8 +65,7 @@
 			<version>3.0.2</version>
 		</dependency>
 		<dependency>
-			<!-- Hamcrest has to be before junit; it is not a test dep because of 
-				ExperimentTest -->
+			<!-- Hamcrest has to be before junit; it is not a test dep because of ExperimentTest -->
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<version>2.2</version>
