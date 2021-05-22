@@ -31,7 +31,7 @@ import jasima.core.simulation.Simulation.SimulationFailed;
 import jasima.core.util.MsgCategory;
 
 public class TestSimProcessBasics {
-	@Rule
+//	@Rule
 	public Timeout globalTimeout = new Timeout(5000);
 
 	@Rule
@@ -361,10 +361,11 @@ public class TestSimProcessBasics {
 	int numWaits, numProcesses;
 
 	@Test
-	@Ignore
 	public void testManyProcesses() throws Exception {
-		fibTest(30);
-		for (int n = 1; n <= 20; n++) {
+//		fibTest(20);
+		for (int n = 1; n <= 30; n++) {
+//			String msg = "starting fibTest("+n+")...";
+			System.out.println("starting fibTest("+n+")...");
 			fibTest(n);
 		}
 		System.out.println("all done.");
@@ -374,7 +375,7 @@ public class TestSimProcessBasics {
 		long t = System.currentTimeMillis();
 		numWaits = numProcesses = 0;
 		int i = n;
-		Map<String, Object> res = SimContext.simulationOf("sim1", sim -> {
+		Map<String, Object> res = SimContext.simulationOf("sim"+n, sim -> {
 			SimProcess<Integer> fibProcess = activate("fib(" + i + ")", s -> fibonacci("fib" + i, i));
 			fibProcess.join();
 			System.out.println("done with fib(" + i + "). Result is: " + fibProcess.get());

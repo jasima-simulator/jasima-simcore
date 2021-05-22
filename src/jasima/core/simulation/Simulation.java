@@ -379,7 +379,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		setEventLoopProcess(mainProcess);
 
 		execFailure = null;
-		
+
 		state.set(SimExecState.RUNNING);
 		resetStats();
 
@@ -402,7 +402,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	private void terminateRunningProcesses() {
 		for (SimProcess<?> p : runnableProcesses()) {
-			if (p != mainProcess() && p.executor!=null) {
+			if (p != mainProcess() && p.executor != null) {
 				p.terminateWaiting();
 				while (p.executor != null)
 					; // active wait until finished (should be very quick)
@@ -425,6 +425,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			return;
 		}
 
+		// determine next event
 		SimEvent evt = events.extract();
 		currEvent = evt;
 
@@ -436,6 +437,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		}
 		numEventsProcessed++;
 
+		// run event handler
 		evt.handle();
 	}
 

@@ -52,7 +52,7 @@ public final class SimProcessUtil {
 	}
 
 	public static void continueWith(Thread executor) {
-		LockSupport.unpark((Thread) requireNonNull(executor));
+		LockSupport.unpark(requireNonNull(executor));
 	}
 
 	public static void startExecuting(Runnable r) {

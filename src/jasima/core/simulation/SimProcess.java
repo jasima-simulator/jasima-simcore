@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +43,10 @@ public class SimProcess<R> implements Runnable {
 
 		private static final long serialVersionUID = 3091300075872193106L;
 
-		private MightBlock() { // prevent instantiation, this class is just a marker
+		/**
+		 * Privte contstuctor to prevent instantiation, this class is just a marker.
+		 */
+		private MightBlock() {
 		}
 
 	}
@@ -140,6 +145,10 @@ public class SimProcess<R> implements Runnable {
 		return shouldRethrow;
 	}
 
+	/**
+	 * Don't call this method directly. It is just an internal method and only
+	 * public to implement {@link Runnable}.
+	 */
 	@Override
 	public void run() {
 		log.trace("process started: {}", getName());
@@ -194,6 +203,7 @@ public class SimProcess<R> implements Runnable {
 
 	private void yield() {
 		assert sim.currentProcess() == this;
+		assert sim.getEventLoopProcess() == this;
 		assert SimContext.currentSimulation() == sim;
 		sim.setCurrentProcess(null);
 
@@ -250,6 +260,7 @@ public class SimProcess<R> implements Runnable {
 	void terminateWaiting() {
 		// this method is called once from the main simulation thread when simulation is
 		// terminating
+		System.out.println(getName());
 		log.trace("trying to terminate " + getName() + " in state " + state + ", executor=" + executor);
 		assert sim.state() == SimExecState.TERMINATING;
 		this.start(); // will throw TerminateProcess
@@ -342,7 +353,13 @@ public class SimProcess<R> implements Runnable {
 		waitUntil(sim.toSimTime(instant));
 	}
 
-	public void suspend() throws MightBlock {
+	/**
+	 * Puts the current process into PASSIVE state, waiting re-activation by some
+	 * other component or event.
+	 * 
+	 * @return {@code this} to allow chaining of calls.
+	 */
+	public SimProcess<R> suspend() throws MightBlock {
 		requireAllowedState(state, ProcessState.RUNNING);
 
 		assert sim.currentEvent() == activateProcessEvent;
@@ -352,8 +369,16 @@ public class SimProcess<R> implements Runnable {
 		log.trace("process suspended: {}", getName());
 
 		yield();
+
+		return this;
 	}
 
+	/**
+	 * Blocks the calling process (puts it into PASSIVE state) until the process,
+	 * this method is called on, has finished.
+	 * 
+	 * @return {@code this} to allow chaining of calls.
+	 */
 	public SimProcess<R> join() throws MightBlock {
 		if (hasFinished()) {
 			return this;
@@ -367,8 +392,10 @@ public class SimProcess<R> implements Runnable {
 			throw new IllegalStateException("A process can't wait for its own completion.");
 		}
 
+		// schedule re-activation of "current"
 		addCompletionNotifier(p -> current.scheduleReactivateAt(sim.simTime()));
 
+		// put current process in passive state
 		current.state = ProcessState.PASSIVE;
 		log.trace("process {} joining {}", current.getName(), getName());
 		current.yield();
@@ -376,7 +403,18 @@ public class SimProcess<R> implements Runnable {
 		return this;
 	}
 
-	public R get() {
+	/**
+	 * Returns the result of any computation this process might have completed. This
+	 * method might only be called after the process has finished. If the process
+	 * terminated with an Exception, then this Exception is re-thrown wrapped in a
+	 * RuntimeException.
+	 * 
+	 * @throws IllegalStateException If the process has not finished yet.
+	 * @throws RuntimeException      Wraps any unhandled exception that might have
+	 *                               occurred.
+	 * @return The result of this computation.
+	 */
+	public @Nullable R get() {
 		if (!hasFinished()) {
 			throw new IllegalStateException("Process not finished yet.");
 		}
@@ -386,6 +424,10 @@ public class SimProcess<R> implements Runnable {
 		return execResult;
 	}
 
+	/**
+	 * Returns true if the process has finished (either normally or withn an
+	 * unhandled Exception).
+	 */
 	public boolean hasFinished() {
 		return state == ProcessState.TERMINATED || state == ProcessState.ERROR;
 	}
@@ -414,6 +456,7 @@ public class SimProcess<R> implements Runnable {
 				completionNotifiers.forEach(callback -> callback.accept(this));
 			}
 		} finally {
+			// notifiers are executed exactly once
 			completionNotifiers = null;
 		}
 	}
