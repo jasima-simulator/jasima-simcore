@@ -1331,7 +1331,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		}
 	}
 
-	void processActivated(SimProcess<?> simProcess) {
+	void processNew(SimProcess<?> simProcess) {
 		synchronized (runnableProcesses) {
 			runnableProcesses.add(simProcess);
 		}

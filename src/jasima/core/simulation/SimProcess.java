@@ -27,10 +27,47 @@ import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimCallable;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 
+/**
+ * Process abstraction for the process-oriented simulation world view. A process
+ * is similar to a Java Thread, but its execution can be interrupted/paused
+ * until certain events occur or a certain point in simulation time is reached.
+ * <p>
+ * Behaviour of a SimProcess can be specified by either specifying a
+ * {@link SimAction}/{@link SimCallable} or alternatively by sub-classing and
+ * overriding the method {@link #doRun()}.
+ * <p>
+ * A {@link SimProcess} can be in one of the following states
+ * ({@see ProcessState}):
+ * <dl>
+ * <dt>PASSIVE</dt>
+ * <dd>A process that could be started or resumed by another process or event.
+ * This is the initial state of a SimProcess.</dd>
+ * <dt>SCHEDULED</dt>
+ * <dd>A process that is scheduled for (re-)activation at a certain point in
+ * simulation time.</dd>
+ * <dt>RUNNING</dt>
+ * <dd>A process that is currently executing its lifecycle. At each point in
+ * time only a single process can be in state RUNNING.</dd>
+ * <dt>TERMINATED</dt>
+ * <dd>A process that has completed executing its lifecycle actions
+ * normally.</dd>
+ * <dt>ERROR</dt>
+ * <dd>A processed that finished execution with an unhandled
+ * {@code Exception}.</dd>
+ * </dl>
+ * 
+ * @author torsten.hildebrandt@simplan.de
+ * @since 3.0
+ *
+ * @param <R> The return type of the process. Can be {@link Void}.
+ */
 public class SimProcess<R> implements Runnable {
 
 	private static final Logger log = LogManager.getLogger(SimProcess.class);
 
+	/**
+	 * Possible states of a SimProcess.
+	 */
 	public static enum ProcessState {
 		PASSIVE, SCHEDULED, RUNNING, TERMINATED, ERROR;
 	}
@@ -44,7 +81,7 @@ public class SimProcess<R> implements Runnable {
 		private static final long serialVersionUID = 3091300075872193106L;
 
 		/**
-		 * Privte contstuctor to prevent instantiation, this class is just a marker.
+		 * Private constructor to prevent instantiation, this class is just a marker.
 		 */
 		private MightBlock() {
 		}
@@ -111,7 +148,7 @@ public class SimProcess<R> implements Runnable {
 		this.state = ProcessState.PASSIVE;
 		this.activateProcessEvent = new SimEventMethodCall(sim.simTime(), sim.currentPrio() + 1, "ActivateProcess",
 				this::activateProcess);
-		this.sim.processActivated(this);
+		this.sim.processNew(this);
 	}
 
 	/**
@@ -131,7 +168,7 @@ public class SimProcess<R> implements Runnable {
 		}
 	}
 
-	protected boolean handleError(Exception e, boolean skipLocal) {
+	private boolean handleError(Exception e, boolean skipLocal) {
 		boolean shouldRethrow = true;
 
 		if (localErrorHandler != null && !skipLocal) {
@@ -237,6 +274,10 @@ public class SimProcess<R> implements Runnable {
 		}
 	}
 
+	/**
+	 * Activate the current process. This method is called internally by the
+	 * activateProcessEvent.
+	 */
 	void activateProcess() {
 		requireAllowedState(state, ProcessState.PASSIVE, ProcessState.SCHEDULED);
 
@@ -296,36 +337,55 @@ public class SimProcess<R> implements Runnable {
 		return this == sim.mainProcess();
 	}
 
+	/**
+	 * Resumes execution of a PASSIVE process after the current event finished.
+	 */
+	public void resume() {
+		awakeAt(sim.simTime());
+		log.trace("process {} resuming", getName());
+	}
+
+	/**
+	 * Awakes a PASSIVE process after a certain amount of time.
+	 */
 	public void awakeIn(double deltaT) {
 		awakeAt(sim.simTime() + deltaT);
 	}
 
+	/**
+	 * Awakes a PASSIVE process after a certain amount of time.
+	 */
+	public void awakeIn(long amount, TemporalUnit u) {
+		awakeIn(sim.simTime() + sim.toSimTime(amount, u));
+	}
+
+	/**
+	 * Awakes a PASSIVE process after a certain amount of time.
+	 */
+	public void awakeIn(Duration d) {
+		awakeIn(sim.simTime() + sim.toSimTime(d));
+	}
+
+	/**
+	 * Awakes a PASSIVE process at a certain time.
+	 */
 	public void awakeAt(double tAbs) {
 		requireAllowedState(state, ProcessState.PASSIVE);
 		scheduleReactivateAt(tAbs);
 		state = ProcessState.SCHEDULED;
-		log.trace("process {} awake at {}", getName(), tAbs);
+		log.trace("process {} awaking at {}", getName(), tAbs);
 	}
 
-	public void resume() {
-		awakeAt(sim.simTime());
-//		requireAllowedState(state, ProcessState.PASSIVE);
-//		scheduleReactivateAt(sim.simTime());
-		log.trace("process {} resumed", getName());
+	/**
+	 * Awakes a PASSIVE process at a certain time.
+	 */
+	public void awakeAt(Instant instant) {
+		awakeAt(sim.toSimTime(instant));
 	}
 
-	public void waitFor(double deltaT) throws MightBlock {
-		waitUntil(sim.simTime() + deltaT);
-	}
-
-	public void waitFor(long amount, TemporalUnit u) throws MightBlock {
-		waitUntil(sim.simTime() + sim.toSimTime(amount, u));
-	}
-
-	public void waitFor(Duration d) throws MightBlock {
-		waitUntil(sim.simTime() + sim.toSimTime(d));
-	}
-
+	/**
+	 * Cancels execution of a SCHEDULED process and puts it into PASSIVE state.
+	 */
 	public void cancel() {
 		requireAllowedState(state, ProcessState.SCHEDULED);
 
@@ -335,9 +395,36 @@ public class SimProcess<R> implements Runnable {
 		log.trace("waiting process canceled: {}", getName());
 	}
 
+	/**
+	 * Pauses execution of the currently RUNNING process for a certain amount of
+	 * time.
+	 */
+	public void waitFor(double deltaT) throws MightBlock {
+		waitUntil(sim.simTime() + deltaT);
+	}
+
+	/**
+	 * Pauses execution of the currently RUNNING process for a certain amount of
+	 * time.
+	 */
+	public void waitFor(long amount, TemporalUnit u) throws MightBlock {
+		waitUntil(sim.simTime() + sim.toSimTime(amount, u));
+	}
+
+	/**
+	 * Pauses execution of the currently RUNNING process for a certain amount of
+	 * time.
+	 */
+	public void waitFor(Duration d) throws MightBlock {
+		waitUntil(sim.simTime() + sim.toSimTime(d));
+	}
+
+	/**
+	 * Pauses execution of the currently RUNNING process until a certain absolute
+	 * time.
+	 */
 	public void waitUntil(double tAbs) throws MightBlock {
 		requireAllowedState(state, ProcessState.RUNNING);
-
 		assert sim.currentEvent() == activateProcessEvent;
 		assert sim.currentProcess() == this;
 
@@ -349,6 +436,10 @@ public class SimProcess<R> implements Runnable {
 		yield();
 	}
 
+	/**
+	 * Pauses execution of the currently RUNNING process until a certain absolute
+	 * time.
+	 */
 	public void waitUntil(Instant instant) throws MightBlock {
 		waitUntil(sim.toSimTime(instant));
 	}
