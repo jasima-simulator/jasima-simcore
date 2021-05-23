@@ -1,4 +1,4 @@
-package jasima.core.simulation;
+package jasima.core.util;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,9 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jasima.core.simulation.Simulation;
+
 /**
  * Manage series (identified by their name) of non-negative consecutive
- * integers.
+ * integers. This class is usually instantiated via the static method
+ * {@link #getFor(Simulation)} to access a single instance for a given
+ * simulation. Internally the simulation's {@link ValueStore} is used to store
+ * the instance.
  * 
  * @author Torsten Hildebrandt
  */
