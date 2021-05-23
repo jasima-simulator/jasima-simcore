@@ -9,9 +9,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jasima.core.simulation.Simulation;
 
 /**
- * Manage series (identified by their name) of non-negative consecutive
- * integers. This class is usually instantiated via the static method
- * {@link #getFor(Simulation)} to access a single instance for a given
+ * Manage series (identified by their name) of positive (i.e., starting with 1)
+ * consecutive integers. This class is usually instantiated via the static
+ * method {@link #getFor(Simulation)} to access a single instance for a given
  * simulation. Internally the simulation's {@link ValueStore} is used to store
  * the instance.
  * 
@@ -107,12 +107,7 @@ public class SequenceNumberService {
 	 * Gets or creates a counter associated with "key".
 	 */
 	private AtomicInteger requireCounter(String key) {
-		AtomicInteger v = values.get(requireNonNull(key));
-		if (v == null) {
-			v = new AtomicInteger(0);
-			values.put(key, v);
-		}
-		return v;
+		return values.computeIfAbsent(requireNonNull(key), k -> new AtomicInteger(0));
 	}
 
 }
