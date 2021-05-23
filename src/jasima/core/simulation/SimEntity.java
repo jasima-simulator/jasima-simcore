@@ -62,6 +62,9 @@ public class SimEntity extends SimComponentBase {
 	}
 
 	/**
+	 * Defines the behaviour of the {@link SimEntity}, potentially using
+	 * blocking/process-oriented operations. This method can be overridden, the
+	 * implementation here only delegates to {@link #lifecycleActions} if set.
 	 * 
 	 * @throws MightBlock
 	 */
