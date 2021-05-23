@@ -23,10 +23,8 @@ package jasima.core.simulation;
 import java.util.Arrays;
 import java.util.Objects;
 
-import jasima.core.simulation.Simulation.EventQueue;
-
 /**
- * An implementation of {@link jasima.core.simulation.Simulation.EventQueue}
+ * An implementation of {@link jasima.core.simulation.EventQueue}
  * using an array-based heap.
  * 
  * @author Torsten Hildebrandt

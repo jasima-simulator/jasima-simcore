@@ -69,7 +69,6 @@ import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.util.ProcessActivator;
 import jasima.core.simulation.util.SimComponentRoot;
 import jasima.core.simulation.util.SimOperations;
-import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimAction;
@@ -108,7 +107,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			EventHeap.class, EventHeap.class);
 
 	@FunctionalInterface
-	public static interface ErrorHandler extends Predicate<Exception> {
+	public interface ErrorHandler extends Predicate<Exception> {
 		boolean test(Exception e);
 	}
 
@@ -119,98 +118,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		SimulationFailed(String msg, Throwable cause) {
 			super(msg, cause);
 		}
-	}
-
-	/**
-	 * {@link SimPrintMessage}s are produced whenever {@code print()} or
-	 * {@code trace()} is called during a simulation to produce status/debug
-	 * messages. They are passed to print listeners registered with a simulation for
-	 * further processing.
-	 * 
-	 * @see ConsolePrinter
-	 * @see TraceFileProducer
-	 */
-	public static class SimPrintMessage {
-
-		private static final Object[] EMPTY = new Object[0];
-
-		private final Simulation sim;
-		private final MsgCategory category;
-		private final double simTime;
-		private final Object[] params;
-		private String message;
-
-		public SimPrintMessage(Simulation sim, MsgCategory category, String message) {
-			this(sim, category, requireNonNull(message), EMPTY);
-		}
-
-		public SimPrintMessage(Simulation sim, MsgCategory category, Object... params) {
-			this(sim, category, null, requireNonNull(params));
-		}
-
-		protected SimPrintMessage(Simulation sim, MsgCategory category, String msg, Object... params) {
-			super();
-			this.sim = sim;
-			this.simTime = sim.simTime();
-			this.category = category;
-			this.params = params;
-
-			this.message = msg;
-		}
-
-		public Simulation getSim() {
-			return sim;
-		}
-
-		public MsgCategory getCategory() {
-			return category;
-		}
-
-		public double getSimTime() {
-			return simTime;
-		}
-
-		public Object[] getParams() {
-			return params;
-		}
-
-		public String getMessage() {
-			// lazy creation of message only when needed
-			if (message == null) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(getSimTime());
-				for (Object o : getParams()) {
-					sb.append('\t').append(String.valueOf(o));
-				}
-				message = sb.toString();
-			}
-
-			return message;
-		}
-
-		@Override
-		public String toString() {
-			return getMessage();
-		}
-	}
-
-	/** Public interface of event queue implementations. */
-	public static interface EventQueue {
-
-		/** Insert an event in the queue. */
-		public void insert(SimEvent e);
-
-		/** Extract the (chronologically) next event from the queue. */
-		public SimEvent extract();
-
-		/**
-		 * Removes the given element from the queue.
-		 * 
-		 * @param element the element to remove (mustn't be null)
-		 * @return {@code true} if the element was contained in the heap and
-		 *         successfully removed, {@code false} otherwise
-		 */
-		public boolean remove(SimEvent element);
 	}
 
 	public static enum SimExecState {

@@ -20,8 +20,6 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
-import jasima.core.simulation.Simulation.EventQueue;
-
 /**
  * Abstract base class for all simulation events. Events are sequenced by an
  * {@link EventQueue} according to their time, priority and event number (to

@@ -31,8 +31,8 @@ import java.util.function.Consumer;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentLifeCycleListener;
+import jasima.core.simulation.SimPrintMessage;
 import jasima.core.simulation.Simulation;
-import jasima.core.simulation.Simulation.SimPrintMessage;
 
 /**
  * Produces a detailed log of all trace messages of a {@link Simulation} in a

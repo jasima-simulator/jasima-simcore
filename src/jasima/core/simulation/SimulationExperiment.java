@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import jasima.core.experiment.Experiment;
-import jasima.core.simulation.Simulation.SimPrintMessage;
 import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil.SimAction;

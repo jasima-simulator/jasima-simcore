@@ -1,7 +1,7 @@
 package jasima.core.util;
 
 import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
-import jasima.core.simulation.Simulation.SimPrintMessage;
+import jasima.core.simulation.SimPrintMessage;
 
 /**
  * Enum for message categories for {@link SimPrintMessage}s and
