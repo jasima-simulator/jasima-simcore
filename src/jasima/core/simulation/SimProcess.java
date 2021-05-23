@@ -34,7 +34,7 @@ import jasima.core.util.SimProcessUtil.SimRunnable;
  * <p>
  * Behaviour of a SimProcess can be specified by either specifying a
  * {@link SimAction}/{@link SimCallable} or alternatively by sub-classing and
- * overriding the method {@link #doRun()}.
+ * overriding the method {@link #lifecycle()}.
  * <p>
  * A {@link SimProcess} can be in one of the following states
  * ({@see ProcessState}):
@@ -160,7 +160,7 @@ public class SimProcess<R> implements Runnable {
 	 * @return The process's return value, if any (return null if not needed).
 	 * @throws Exception If there is any uncaught exception during execution.
 	 */
-	protected R doRun() throws Exception {
+	protected R lifecycle() throws Exception {
 		if (action != null) {
 			return action.call(sim);
 		} else {
@@ -200,7 +200,7 @@ public class SimProcess<R> implements Runnable {
 			assert sim.currentProcess() == this;
 
 			try {
-				execResult = doRun();
+				execResult = lifecycle();
 				execFailure = null;
 				state = ProcessState.TERMINATED;
 			} catch (Exception e) {

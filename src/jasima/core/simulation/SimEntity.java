@@ -5,6 +5,17 @@ import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 
+/**
+ * A {@code SimEntity} is a {@link SimComponent} with a single
+ * {@link SimProcess} modelling its main lifecycle actions using the
+ * process-oriented modelling world view. The behaviour of {@code SimEntity}s
+ * can be defined either by specifying a {@link SimAction}
+ * {@code lifecycleActions} or by subclassing and overriding the method
+ * {@link #lifecycle()}.
+ * 
+ * @author Torsten Hildebrandt
+ * @since 3.0
+ */
 public class SimEntity extends SimComponentBase {
 
 	private final SimAction lifecycleActions;
@@ -50,6 +61,10 @@ public class SimEntity extends SimComponentBase {
 		lifecycleProcess.awakeIn(0.0);
 	}
 
+	/**
+	 * 
+	 * @throws MightBlock
+	 */
 	protected void lifecycle() throws MightBlock {
 		if (lifecycleActions != null) {
 			lifecycleActions.run(getSim());
