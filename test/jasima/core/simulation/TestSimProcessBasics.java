@@ -29,6 +29,7 @@ import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.SimProcess.ProcessState;
 import jasima.core.simulation.Simulation.SimulationFailed;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.SimProcessUtil;
 
 public class TestSimProcessBasics {
 //	@Rule
@@ -319,6 +320,31 @@ public class TestSimProcessBasics {
 		});
 	}
 
+	@Test
+	public void testProcessChain() throws MightBlock {
+		int N = 500;
+		long t = System.currentTimeMillis();
+
+		SimContext.simulationOf("daSim", sim -> {
+			SimProcess<Void> p = activate("process", () -> {
+				waitFor(1.0);
+			});
+			for (int n = 0; n < N; n++) {
+				SimProcess<Void> pOld = p;
+				p = activate("process" + n, () -> {
+					pOld.join();
+					waitFor(1.0);
+				});
+			}
+			p.join();
+			assertEquals("main process finished", 1.0 + N, sim.simTime(), 1e-6);
+		});
+
+		System.out.println("  threads created: " + SimProcessUtil.numThreadsCreated());
+		t = (System.currentTimeMillis() - t);
+		System.out.println("  time [ms] " + t);
+	}
+
 	public static void suspendingProcess() throws MightBlock {
 		waitFor(1.0);
 		suspend();
@@ -362,15 +388,13 @@ public class TestSimProcessBasics {
 	int numWaits, numProcesses;
 
 	@Test
-	@Ignore
 	public void testManyProcesses() throws Exception {
 //		fibTest(20);
-		for (int n = 1; n <= 30; n++) {
-//			String msg = "starting fibTest("+n+")...";
-			System.out.println("starting fibTest("+n+")...");
+		for (int n = 1; n <= 25; n++) {
+			System.out.println("starting fibTest(" + n + ")...");
 			fibTest(n);
+			System.out.println("  threads created: " + SimProcessUtil.numThreadsCreated());
 			System.out.println();
-			Thread.currentThread().sleep(500);
 		}
 		System.out.println("all done.");
 	}
@@ -379,7 +403,7 @@ public class TestSimProcessBasics {
 		long t = System.currentTimeMillis();
 		numWaits = numProcesses = 0;
 		int i = n;
-		Map<String, Object> res = SimContext.simulationOf("sim"+n, sim -> {
+		Map<String, Object> res = SimContext.simulationOf("sim" + n, sim -> {
 			System.out.println(Thread.currentThread().getName());
 			SimProcess<Integer> fibProcess = activateCallable("fib(" + i + ")", s -> fibonacci("fib" + i, i));
 			fibProcess.join();
@@ -417,52 +441,30 @@ public class TestSimProcessBasics {
 		return res;
 	}
 
-	static int w, p, j;
-
-	public static int fib(int n) throws MightBlock {
-		p++;
-
-		int res;
-		if (n == 1 || n == 2) {
-			waitFor(1.0);
-			w++;
-			res = 1;
-		} else {
-			SimProcess<Integer> s1Calc = activateCallable(() -> fib(n - 1));
-			j++;
-			s1Calc.join(); // wait until finished
-
-			SimProcess<Integer> s2Calc = activateCallable(() -> fib(n - 2));
-			j++;
-			s2Calc.join(); // wait until finished
-
-			res = s1Calc.get() + s2Calc.get();
-		}
-
-		return res;
-	}
-
 	@Test
-	@Ignore
 	public void testManyProcesses2() throws Exception {
+		numWaits = numProcesses = 0;
+
 		AtomicLong procRes = new AtomicLong();
 		long t = System.currentTimeMillis();
 		Map<String, Object> res = SimContext.simulationOf(sim -> {
-			SimProcess<Long> ackProcess = activateCallable(s -> ack(3, 4));
+			SimProcess<Long> ackProcess = activateCallable(s -> ack(3, 7));
 			ackProcess.join();
 			Long l = ackProcess.get();
 			procRes.set(l);
-			System.out.println("done. Result is: " + l);
+			System.out.println("done. Result is: " + l + "; simevents: " + sim.numEventsProcessed());
 		});
 		t = (System.currentTimeMillis() - t);
-		System.err.println("\t" + numWaits + "\t" + numProcesses + "\t" + procRes.get() + "\t" + res.get("simTime")
-				+ "\t" + t + "ms");
+		System.err.println("\twaits: " + numWaits + "\tprocesses: " + numProcesses + "\tres: " + procRes.get()
+				+ "\ttMax: " + res.get("simTime") + "\t" + t + "ms" + "\tdepth: " + dMax);
+		System.out.println("  threads created: " + SimProcessUtil.numThreadsCreated());
 	}
 
 	static int d;
 	static int dMax;
 
-	public static long ackermann(int m, long n) throws MightBlock {
+	private long ackermann(int m, long n) throws MightBlock {
+		numProcesses++;
 		long res;
 
 		if (++d > dMax) {
@@ -472,6 +474,7 @@ public class TestSimProcessBasics {
 		if (m == 0) {
 			res = n + 1;
 			waitFor(res);
+			numWaits++;
 		} else if (n == 0) {
 			res = activateCallable(() -> ackermann(m - 1, 1)).join().get();
 		} else {
@@ -484,7 +487,8 @@ public class TestSimProcessBasics {
 		return res;
 	}
 
-	static long ack(int n, long m) throws MightBlock {
+	private long ack(int n, long m) throws MightBlock {
+		numProcesses++;
 		if (++d > dMax) {
 			dMax = d;
 		}
@@ -500,6 +504,7 @@ public class TestSimProcessBasics {
 		}
 		--d;
 		waitFor(m + 1);
+		numWaits++;
 		return m + 1;
 	}
 
@@ -514,31 +519,6 @@ public class TestSimProcessBasics {
 			log.warn("Hello world.");
 			waitFor(1);
 		});
-//		d = dMax = 0;
-//		System.out.println(ack(3, 9) + "\t" + d + "\t" + dMax);
-//		d = dMax = 0;
-//		System.out.println(ackermann(3, 9) + "\t" + d + "\t" + dMax);
-//		for (int n = 10; n < 11; n++) {
-//			long t = System.currentTimeMillis();
-//			w = p = j = 0;
-//			int i = n;
-//			Map<String, Object> res = SimContext.of(sim -> {
-//				SimProcess<Integer> fibProcess = activateCallable(s -> fib(i));
-//				fibProcess.join();
-//				System.out.println("done. Result is: " + fibProcess.get());
-//			});
-//			t = (System.currentTimeMillis() - t);
-//			System.err.println(n + "\tw=" + w + "\tp=" + p + "\tj=" + j + "\t" + res.get("simTime") + "\t" + t + "ms");
-//		}
-//		d = dMax = 0;
-//		System.out.println(ack(3, 9) + "\t" + d + "\t" + dMax);
-//		d = dMax = 0;
-//		System.out.println(ackermann(3, 9) + "\t" + d + "\t" + dMax);
-//		for (int m = 0; m <= 3; m++) {
-//			for (int n = 0; n <= 20; n++) {
-//				System.out.println(m + "\t" + n + "\t" + ack(m, n));
-//			}
-//		}
 	}
 
 }

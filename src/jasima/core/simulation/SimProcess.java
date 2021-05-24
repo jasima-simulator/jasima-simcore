@@ -1,9 +1,7 @@
 package jasima.core.simulation;
 
 import static jasima.core.util.ComponentStates.requireAllowedState;
-import static jasima.core.util.SimProcessUtil.continueWith;
 import static jasima.core.util.SimProcessUtil.currentExecutor;
-import static jasima.core.util.SimProcessUtil.pauseExecuting;
 import static jasima.core.util.SimProcessUtil.startExecuting;
 import static java.util.Objects.requireNonNull;
 
@@ -217,7 +215,7 @@ public class SimProcess<R> implements Runnable {
 				}
 			}
 
-			log.trace("actions finished");
+			log.trace("actions finished, " + (completionNotifiers == null ? "null" : "" + completionNotifiers.size()));
 
 			runCompleteCallbacks();
 
@@ -293,7 +291,9 @@ public class SimProcess<R> implements Runnable {
 		if (current != this) {
 			// switch Threads if we are running in the context of another process
 			sim.setEventLoopProcess(this);
+
 			this.start();
+
 			current.pause();
 		} else {
 			// Thread stays the same
@@ -319,7 +319,8 @@ public class SimProcess<R> implements Runnable {
 			// resume
 			reactivated = true;
 			wasSignaled = true;
-			continueWith(executor);
+
+			SimProcessUtil.continueWith(executor);
 		}
 	}
 
@@ -329,10 +330,11 @@ public class SimProcess<R> implements Runnable {
 			return; // do nothing
 		}
 
-		wasSignaled = false;
 		while (!wasSignaled) { // guard against spurious wakeups
-			pauseExecuting(executor);
+			SimProcessUtil.pauseExecuting(executor);
 		}
+		wasSignaled = false;
+
 		if (sim.state() == SimExecState.TERMINATING) {
 			throw new TerminateProcess();
 		}
@@ -489,7 +491,9 @@ public class SimProcess<R> implements Runnable {
 		}
 
 		// schedule re-activation of "current"
-		addCompletionNotifier(p -> current.scheduleReactivateAt(sim.simTime()));
+		addCompletionNotifier(p -> {
+			current.scheduleReactivateAt(sim.simTime());
+		});
 
 		// put current process in passive state
 		current.state = ProcessState.PASSIVE;
@@ -538,7 +542,7 @@ public class SimProcess<R> implements Runnable {
 		sim.schedule(activateProcessEvent);
 	}
 
-	public void addCompletionNotifier(Consumer<SimProcess<R>> callback) {
+	public synchronized void addCompletionNotifier(Consumer<SimProcess<R>> callback) {
 		if (completionNotifiers == null) {
 			completionNotifiers = new ArrayList<>();
 		}
@@ -546,7 +550,7 @@ public class SimProcess<R> implements Runnable {
 		completionNotifiers.add(callback);
 	}
 
-	private void runCompleteCallbacks() {
+	private synchronized void runCompleteCallbacks() {
 		try {
 			if (completionNotifiers != null) {
 				completionNotifiers.forEach(callback -> callback.accept(this));

@@ -26,6 +26,10 @@ public final class SimProcessUtil {
 	private static final int threadStackSize = Integer
 			.parseInt(System.getProperty(SimProcess.class.getName() + ".threadStackSize", "" + DEF_THREAD_STACK_SIZE));
 	private static AtomicInteger threadNumber = new AtomicInteger(0);
+	
+	public static int numThreadsCreated() {
+		return threadNumber.get();
+	}
 
 	private static Thread newWorkerThread(Runnable r) {
 		// lazy init of ThreadGroup simThreads using double check idiom
