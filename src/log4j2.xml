@@ -28,11 +28,11 @@
     </Appenders>
 
     <Loggers>
-        <Root level="info" additivity="false">
+        <Root level="info">
             <appender-ref ref="console" />
 <!--             <appender-ref ref="Routing" /> -->
         </Root>
-        <Logger name="jasima.core.*" level="debug">
+        <Logger name="jasima.core" level="info" additivity="false">
             <appender-ref ref="console" />
 <!--             <appender-ref ref="Routing" level="info" /> -->
         </Logger>

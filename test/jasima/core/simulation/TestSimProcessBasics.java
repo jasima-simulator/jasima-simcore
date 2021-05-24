@@ -55,7 +55,7 @@ public class TestSimProcessBasics {
 
 	@Test
 	public void testBasicExecution() {
-		new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess("p1")).awakeIn(0.0);
+		new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess("p1"), "p1").awakeIn(0.0);
 		sim.performRun();
 
 		assertEquals(3.6, sim.simTime(), 1e-6);
@@ -74,6 +74,7 @@ public class TestSimProcessBasics {
 	@Test
 	public void testSuspendResumeByProcess() {
 		SimProcess<Void> p = new SimProcess<>(sim, () -> TestSimProcessBasics.suspendingProcess());
+//		p.awakeIn(0.0);
 		new SimProcess<>(sim, () -> {
 			SimProcess<?> simProcess = SimContext.currentProcess();
 			simProcess.waitFor(2.0);
@@ -189,7 +190,7 @@ public class TestSimProcessBasics {
 		assertTrue("lifecycle finished", lifecycleFinished.get());
 
 		assertEquals("sim finished at time 0.0", 0.0, (Double) res.get("simTime"), 1e-6);
-		assertEquals("unfinished processes should be accessible after run", 1 + 1, simRef.get().numRunnableProcesses());
+		assertEquals("unfinished processes should be accessible after run", 1, simRef.get().numRunnableProcesses());
 		assertEquals("all Threads were cleared", 0,
 				simRef.get().runnableProcesses().stream().filter(p -> p.executor != null).count());
 	}
@@ -361,12 +362,15 @@ public class TestSimProcessBasics {
 	int numWaits, numProcesses;
 
 	@Test
+	@Ignore
 	public void testManyProcesses() throws Exception {
 //		fibTest(20);
 		for (int n = 1; n <= 30; n++) {
 //			String msg = "starting fibTest("+n+")...";
 			System.out.println("starting fibTest("+n+")...");
 			fibTest(n);
+			System.out.println();
+			Thread.currentThread().sleep(500);
 		}
 		System.out.println("all done.");
 	}
@@ -376,7 +380,8 @@ public class TestSimProcessBasics {
 		numWaits = numProcesses = 0;
 		int i = n;
 		Map<String, Object> res = SimContext.simulationOf("sim"+n, sim -> {
-			SimProcess<Integer> fibProcess = activate("fib(" + i + ")", s -> fibonacci("fib" + i, i));
+			System.out.println(Thread.currentThread().getName());
+			SimProcess<Integer> fibProcess = activateCallable("fib(" + i + ")", s -> fibonacci("fib" + i, i));
 			fibProcess.join();
 			System.out.println("done with fib(" + i + "). Result is: " + fibProcess.get());
 		});
@@ -443,7 +448,7 @@ public class TestSimProcessBasics {
 		AtomicLong procRes = new AtomicLong();
 		long t = System.currentTimeMillis();
 		Map<String, Object> res = SimContext.simulationOf(sim -> {
-			SimProcess<Long> ackProcess = activate(s -> ack(3, 4));
+			SimProcess<Long> ackProcess = activateCallable(s -> ack(3, 4));
 			ackProcess.join();
 			Long l = ackProcess.get();
 			procRes.set(l);

@@ -148,16 +148,14 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	private SimAction mainProcessActions = null;
 
-	// ////////////// attributes/fields used during a simulation
+	// ////////////// attributes/fields used during a simulation run
 
 	private double simTime;
 	private int currPrio;
 	private SimEvent currEvent;
 	private long numEventsProcessed;
-	private SimProcess<?> currentProcess;
-	private SimProcess<?> eventLoopProcess;
 
-	private boolean endRequested;
+	private Clock clock; // optionally access simulation time as Java Clock
 
 	private boolean awakePausedWorker;
 	private Thread pausedWorkerThread;
@@ -171,19 +169,19 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	private int eventNum;
 	private int numAppEvents;
 
-	private Clock clock;
-
-	volatile ObservableValue<SimExecState> state;
+	ObservableValue<SimExecState> state;
+	private volatile boolean endRequested;
 
 	private AtomicInteger pauseRequests;
 
-	private SimProcess<?> mainProcess;
-
 	private Exception execFailure;
 
-	private Set<SimProcess<?>> runnableProcesses;
-
 	private SimEvent simEndEvent;
+
+	private SimProcess<?> mainProcess;
+	private Set<SimProcess<?>> runnableProcesses;
+	private SimProcess<?> currentProcess;
+	private SimProcess<?> eventLoopProcess;
 
 	public Simulation() {
 		super();
@@ -240,7 +238,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 */
 	public void init() {
 		requireAllowedState(state.get(), INITIAL);
-
 		state.set(SimExecState.INIT);
 		simTime = getInitialSimTime();
 		initComponentTree(null, rootComponent);
@@ -459,16 +456,21 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * @return The results produced by the simulation and its components.
 	 */
 	public Map<String, Object> performRun() {
-		init();
-		beforeRun();
-		run();
-		afterRun();
-		done();
+		SimContext.setThreadContext(this);
+		try {
+			init();
+			beforeRun();
+			run();
+			afterRun();
+			done();
 
-		Map<String, Object> res = new LinkedHashMap<>();
-		produceResults(res);
+			Map<String, Object> res = new LinkedHashMap<>();
+			produceResults(res);
 
-		return res;
+			return res;
+		} finally {
+			SimContext.setThreadContext(null);
+		}
 	}
 
 	/**
@@ -1245,7 +1247,9 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	public int numRunnableProcesses() {
-		return runnableProcesses.size();
+		synchronized (runnableProcesses) {
+			return runnableProcesses.size();
+		}
 	}
 
 	public List<SimProcess<?>> runnableProcesses() {

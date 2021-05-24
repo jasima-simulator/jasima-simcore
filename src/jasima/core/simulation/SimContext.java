@@ -80,11 +80,11 @@ public class SimContext {
 		return requireSimContext().activate(name, r);
 	}
 
-	public static <T> SimProcess<T> activate(SimAction a) {
+	public static SimProcess<Void> activate(SimAction a) {
 		return requireSimContext().activate(a);
 	}
 
-	public static <T> SimProcess<T> activate(String name, SimAction a) {
+	public static SimProcess<Void> activate(String name, SimAction a) {
 		return requireSimContext().activate(name, a);
 	}
 
@@ -219,7 +219,7 @@ public class SimContext {
 	}
 
 	static void setThreadContext(Simulation sim) {
-		if (sim != null && currentSim.get() != null) {
+		if (sim != null && currentSim.get() != null && sim!=currentSim.get()) {
 			throw new IllegalStateException(); // old context not properly cleared?
 		}
 		currentSim.set(sim);
