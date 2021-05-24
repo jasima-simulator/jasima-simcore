@@ -14,9 +14,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.Simulation.SimulationFailed;
@@ -26,8 +23,6 @@ import jasima.core.util.SimProcessUtil.SimRunnable;
 import jasima.core.util.i18n.I18n;
 
 public class SimContext {
-
-	private static final Logger out = LogManager.getLogger("jasima");
 
 	private static ThreadLocal<Simulation> currentSim = new ThreadLocal<>();
 
@@ -219,7 +214,7 @@ public class SimContext {
 	}
 
 	static void setThreadContext(Simulation sim) {
-		if (sim != null && currentSim.get() != null && sim!=currentSim.get()) {
+		if (sim != null && currentSim.get() != null && sim != currentSim.get()) {
 			throw new IllegalStateException(); // old context not properly cleared?
 		}
 		currentSim.set(sim);
