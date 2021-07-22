@@ -1,9 +1,12 @@
 package jasima.core.util.observer;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import jasima.core.util.observer.ObservableValue.ObservableListener;
 
 /**
  * Static factory methods to ease the creation of {@link ObservableValue}s and
@@ -83,6 +86,43 @@ public final class ObservableValues {
 	 */
 	public static <T, T2 extends T> DerivedObservable<Boolean> isEqual(T2 v1, ObservableValue<? extends T> v2) {
 		return isEqual(v2, v1);
+	}
+
+	/**
+	 * Runs the given action when the value of the given observable becomes true.
+	 * This can happen either immediately if the condition is already true when
+	 * calling this method, or at a later point when the condition changes later.
+	 * 
+	 * @param ov     The observable that should be true.
+	 * @param action The action to run when "ov" is true.
+	 * @return The listener registered with "ov" triggering the execution of
+	 *         "action", or null if ov was already true.
+	 */
+	public static ObservableListener<Boolean> whenTrueExecuteOnce(ObservableValue<Boolean> ov, Runnable action) {
+		Objects.requireNonNull(ov);
+		Objects.requireNonNull(action);
+
+		boolean currentValue = ov.get().booleanValue();
+
+		// already true?
+		if (currentValue) {
+			action.run();
+			return null;
+		}
+
+		// currently false, so install listener and run action once it becomes true
+		AtomicReference<ObservableListener<Boolean>> listener = new AtomicReference<>();
+		listener.set(ov.addListener((ob, evt) -> {
+			if (ov.get().booleanValue()) {
+				try {
+					action.run();
+				} finally {
+					boolean removeRes = ov.removeListener(listener.get()); // remove the listener
+					assert removeRes;
+				}
+			}
+		}));
+		return listener.get();
 	}
 
 	/**

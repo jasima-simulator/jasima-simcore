@@ -114,7 +114,7 @@ public class ObservableValue<VALUE> {
 			currentValue = newValue;
 			versionId++;
 
-			if (numListener() > 0) {
+			if (numListener() > 0 && !isStale()) {
 				fireEvent(EventType.VALUE_CHANGED);
 			}
 		}
@@ -173,9 +173,10 @@ public class ObservableValue<VALUE> {
 	 * This method stores the listener via a strong reference.
 	 * 
 	 * @param l The listener.
+	 * @return the listener (same as l).
 	 */
-	public void addListener(ObservableListener<VALUE> l) {
-		addListener(l, () -> l);
+	public ObservableListener<VALUE> addListener(ObservableListener<VALUE> l) {
+		return addListener(l, () -> l);
 	}
 
 	/**
@@ -184,18 +185,21 @@ public class ObservableValue<VALUE> {
 	 * collected automatically when there are no further references to it.
 	 * 
 	 * @param l The listener.
+	 * @return the listener (same as l).
 	 */
-	public void addWeakListener(ObservableListener<VALUE> l) {
+	public ObservableListener<VALUE> addWeakListener(ObservableListener<VALUE> l) {
 		WeakReference<ObservableListener<VALUE>> weakRef = new WeakReference<>(l);
-		addListener(l, weakRef::get);
+		return addListener(l, weakRef::get);
 	}
 
-	private void addListener(ObservableListener<VALUE> l, Supplier<ObservableListener<VALUE>> e) {
+	private ObservableListener<VALUE> addListener(ObservableListener<VALUE> l, Supplier<ObservableListener<VALUE>> e) {
 		Objects.requireNonNull(l);
 		initListenerList();
 
 		supplierLookup.put(l, e);
 		listenerRefs.add(e);
+
+		return l;
 	}
 
 	/**
@@ -219,7 +223,7 @@ public class ObservableValue<VALUE> {
 			if (stillContains) {
 				removeWhileFiring.add(l);
 			}
-			
+
 			return stillContains;
 		} else {
 			Supplier<ObservableListener<VALUE>> supp = supplierLookup.remove(l);
@@ -245,14 +249,14 @@ public class ObservableValue<VALUE> {
 	 */
 	protected void fireEvent(EventType event) {
 		firingInProgress++;
-		
+
 		for (Supplier<ObservableListener<VALUE>> s : listenerRefs) {
 			ObservableListener<VALUE> l = s.get();
 			if (l != null) {
 				l.onEvent(this, event);
 			}
 		}
-		
+
 		if (--firingInProgress == 0 && removeWhileFiring != null) {
 			for (ObservableListener<VALUE> l : removeWhileFiring) {
 				boolean removeRes = removeListener(l);

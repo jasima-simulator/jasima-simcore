@@ -21,6 +21,8 @@ import jasima.core.util.SimProcessUtil.SimAction;
 import jasima.core.util.SimProcessUtil.SimCallable;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 import jasima.core.util.i18n.I18n;
+import jasima.core.util.observer.ObservableValue;
+import jasima.core.util.observer.ObservableValues;
 
 public class SimContext {
 
@@ -117,6 +119,17 @@ public class SimContext {
 
 	public static void waitUntil(Instant instant) throws MightBlock {
 		currentProcess().waitUntil(instant);
+	}
+
+	public static boolean waitCondition(ObservableValue<Boolean> triggerCondition) throws MightBlock {
+		if (!triggerCondition.get()) {
+			SimProcess<?> p = currentProcess();
+			ObservableValues.whenTrueExecuteOnce(triggerCondition, () -> p.resume());
+			p.suspend(); // wait until condition is true
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public static void suspend() throws MightBlock {
