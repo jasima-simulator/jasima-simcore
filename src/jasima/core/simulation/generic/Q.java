@@ -6,10 +6,12 @@ import static jasima.core.simulation.SimContext.trace;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import org.apache.commons.math3.exception.NotPositiveException;
 
 import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimProcess;
@@ -101,7 +103,7 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 		}
 	}
 
-// parameters
+	// parameters
 
 	private int capacity = -1;
 	private String name = null;
@@ -129,22 +131,58 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 	public void put(T t) throws MightBlock {
 		SimProcess<?> p = currentProcess();
 
-		awaitingPut.add(p);
-		while (numAvailable() <= 0) {
-			p.suspend();
+		if (numAvailable() <= 0) {
+			// no empty space, we have to wait until we get one
+			awaitingPut.add(p);
+			while (numAvailable() <= 0) {
+				p.suspend();
+			}
+			awaitingPut.remove(p);
 		}
-		awaitingPut.remove(p);
 
 		boolean putRes = tryPut(t);
 		assert putRes;
 	}
 
 	public boolean tryPut(T t) {
+		if (t == null)
+			throw new NullPointerException();
+
 		if (numAvailable() <= 0) {
 			return false;
 		}
 
-		items.addLast(Objects.requireNonNull(t));
+		items.addLast(t);
+		itemAdded(t);
+
+		return true;
+	}
+
+	public void putFront(T t) throws MightBlock {
+		SimProcess<?> p = currentProcess();
+
+		if (numAvailable() <= 0) {
+			// no empty space, we have to wait until we get one
+			awaitingPut.add(p);
+			while (numAvailable() <= 0) {
+				p.suspend();
+			}
+			awaitingPut.remove(p);
+		}
+
+		boolean putRes = tryPutFront(t);
+		assert putRes;
+	}
+
+	public boolean tryPutFront(T t) {
+		if (t == null)
+			throw new NullPointerException();
+
+		if (numAvailable() <= 0) {
+			return false;
+		}
+
+		items.addFirst(t);
 		itemAdded(t);
 
 		return true;
@@ -153,11 +191,14 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 	public T take() throws MightBlock {
 		SimProcess<?> p = currentProcess();
 
-		awaitingTake.add(p);
-		while (numItems() == 0) {
-			p.suspend();
+		if (numItems() == 0) {
+			// nothing to take, we have to wait
+			awaitingTake.add(p);
+			while (numItems() == 0) {
+				p.suspend();
+			}
+			awaitingTake.remove(p);
 		}
-		awaitingTake.remove(p);
 
 		T res = tryTake();
 		assert res != null;
@@ -171,6 +212,34 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 		}
 
 		T res = items.removeFirst();
+		itemRemoved(res);
+		return res;
+	}
+
+	public T takeLast() throws MightBlock {
+		SimProcess<?> p = currentProcess();
+
+		if (numItems() == 0) {
+			// nothing to take, we have to wait
+			awaitingTake.add(p);
+			while (numItems() == 0) {
+				p.suspend();
+			}
+			awaitingTake.remove(p);
+		}
+
+		T res = tryTakeLast();
+		assert res != null;
+
+		return res;
+	}
+
+	public @Nullable T tryTakeLast() {
+		while (numItems() == 0) {
+			return null;
+		}
+
+		T res = items.removeLast();
 		itemRemoved(res);
 		return res;
 	}
@@ -207,6 +276,19 @@ public class Q<T> implements Notifier<Q<T>, QEvent> {
 		return items.size();
 	}
 
+	public T get(int n) {
+		if (n<0)
+			throw new NotPositiveException(n);
+		
+		T res = null;
+		Iterator<T> it = items.iterator();
+		for (int i=0; i<=n; i++) {
+			res = it.next();
+		}
+		
+		return res;
+	}
+	
 	public int numAvailable() {
 		return (capacity < 0) ? Integer.MAX_VALUE : Math.max(capacity - items.size(), 0);
 	}
