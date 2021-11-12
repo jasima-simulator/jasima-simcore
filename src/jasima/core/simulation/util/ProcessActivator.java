@@ -56,8 +56,9 @@ public interface ProcessActivator {
 			throw new IllegalStateException(); // should not occur
 		}
 
+		SimProcess<T> p = new SimProcess<>(getSim(), a, name);
+
 		FutureTask<SimProcess<T>> f = new FutureTask<>(() -> {
-			SimProcess<T> p = new SimProcess<>(getSim(), a, name);
 			p.awakeIn(0.0);
 			return p;
 		});
@@ -70,12 +71,16 @@ public interface ProcessActivator {
 			f.run();
 		}
 
-		try {
-			return f.get();
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("there was a problem activating a process", e);
-			throw new RuntimeException(e);
+		if (ctxSim!=null) {
+			try {
+				f.get();
+			} catch (InterruptedException | ExecutionException e) {
+				log.error("there was a problem activating a process", e);
+				throw new RuntimeException(e);
+			}
 		}
+			
+		return p;
 	}
 
 }

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.simulation.util.SimOperations;
 
 /**
@@ -91,7 +92,7 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 		sc.setParent(this);
 		sc.setSim(sim); // no getSim() here because it throws an exception on null
 
-		if (sim != null) {
+		if (sim != null && sim.state() != SimExecState.INITIAL) {
 			sim.activate(sc);
 		}
 

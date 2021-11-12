@@ -289,6 +289,10 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 		checkInitialEventTime();
 
+		// dummy event so we have enough time to process runInSimThread list
+		scheduleIn(0.0, currentPrio() + 1, () -> {
+		});
+
 		// we have to call run() to initialize 'mainProcess' properly in order to start
 		// executing the main event loop
 		mainProcess.activateProcess();
@@ -838,7 +842,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 */
 	@Override
 	public <T extends SimComponent> T activate(T sc) {
-		requireAllowedState(state.get(), INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED);
+		requireAllowedState(state.get(), INIT, BEFORE_RUN, RUNNING, PAUSED);
 		sc.setSim(this);
 		switch (state.get()) {
 		case INITIAL:
