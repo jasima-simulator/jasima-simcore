@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -33,7 +32,7 @@ import jasima.core.util.SimProcessUtil;
 
 public class TestSimProcessBasics {
 //	@Rule
-	public Timeout globalTimeout = new Timeout(5000);
+	public Timeout globalTimeout = new Timeout(10000);
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -243,8 +242,19 @@ public class TestSimProcessBasics {
 		sim.setName("theSimulation");
 
 		SimComponentContainerBase cs = new SimComponentContainerBase("a");
-		cs.addChild(new SimEntity("b", () -> checkProcessName(".a.b.lifecycle")));
-		cs.addChild(new SimEntity("c", () -> checkProcessName(".a.c.lifecycle")));
+		cs.addChild(new SimEntity("b") {
+			@Override
+			protected void lifecycle() throws MightBlock {
+				checkProcessName(".a.b.lifecycle");
+			}
+		});
+		cs.addChild(new SimEntity("c") {
+			@Override
+			protected void lifecycle() throws MightBlock {
+				checkProcessName(".a.c.lifecycle");
+			}
+		});
+
 		sim.addComponent(cs);
 
 		sim.setMainProcessActions(sim -> {

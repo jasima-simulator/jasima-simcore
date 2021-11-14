@@ -69,6 +69,11 @@ public class SimContext {
 		return I18n.formattedMessage(locale(), key, params);
 	}
 
+	public static SimProcess<Void> activate(SimEntity e) {
+		// TODO: create a version with a name?
+		return requireSimContext().activate(e).getLifecycleProcess();
+	}
+
 	public static SimProcess<Void> activate(SimRunnable r) {
 		return requireSimContext().activate(r);
 	}
@@ -165,6 +170,14 @@ public class SimContext {
 
 	public static Map<String, Object> simulationOf(String name, SimRunnable r) {
 		return simulationOf(name, simAction(r));
+	}
+
+	public static Map<String, Object> simulationOf(SimEntity e) {
+		return simulationOf(null, e);
+	}
+
+	public static Map<String, Object> simulationOf(String name, SimEntity e) {
+		return simulationOf(null, sim -> sim.activate(e));
 	}
 
 	public static Map<String, Object> simulationOf(SimAction a) {

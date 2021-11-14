@@ -18,7 +18,7 @@ public class SimComponentBase implements SimComponent {
 
 	private transient SimComponentContainer parent;
 	private transient String hierarchicalName;
-	transient Simulation sim;
+	protected transient Simulation sim;
 	private transient boolean initialized;
 
 	private String name;
@@ -86,11 +86,12 @@ public class SimComponentBase implements SimComponent {
 	 * Sets a name for this component.
 	 */
 	@Override
-	public void setName(String name) {
+	public SimComponent setName(String name) {
 		if (!isValidName(name)) {
 			throw new IllegalArgumentException(String.format("Component name '%s' is not valid.", name));
 		}
 		setNameInternal(name);
+		return this;
 	}
 
 	protected void setNameInternal(String name) {

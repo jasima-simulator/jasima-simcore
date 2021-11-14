@@ -1,11 +1,13 @@
 package examples.processes.servers;
 
+import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.waitFor;
 
 import java.util.Map;
 
 import jasima.core.random.continuous.DblNormal;
 import jasima.core.random.continuous.DblSequence;
+import jasima.core.random.continuous.DblTruncatedSimple;
 import jasima.core.random.discrete.IntUniformRange;
 import jasima.core.simulation.SimContext;
 import jasima.core.simulation.SimEntity;
@@ -19,7 +21,7 @@ import jasima.core.util.ConsolePrinter;
 public class ParallelServersSingleQueue extends SimEntity {
 
 	public static void main(String[] args) throws Exception {
-		Map<String, Object> res = SimContext.simulationOf(sim -> sim.activate(new ParallelServersSingleQueue()));
+		Map<String, Object> res = SimContext.simulationOf(sim -> sim.addComponent(new ParallelServersSingleQueue()));
 		ConsolePrinter.printResults(null, res);
 	}
 
@@ -40,7 +42,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 		protected void lifecycle() throws MightBlock {
 			double entered = simTime();
 			q.put(this);
-			getLifecycleProcess().suspend();
+			suspend();
 			flowtimes.value(simTime() - entered);
 		}
 	}
@@ -59,7 +61,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 				double serviceStart = simTime();
 				waitFor(serviceTimes.nextDbl());
 				services.value(simTime() - serviceStart);
-				c.getLifecycleProcess().resume();
+				c.resume();
 			}
 		}
 
@@ -74,22 +76,22 @@ public class ParallelServersSingleQueue extends SimEntity {
 	@Override
 	protected void lifecycle() throws MightBlock {
 		DblSequence arrivals = initRndGen(new IntUniformRange(1, 3), "arrivals");
-		serviceTimes = initRndGen(new DblNormal(8.0, 2.0), "services");
+		serviceTimes = initRndGen(new DblTruncatedSimple(new DblNormal(8.0, 2.0), 0.0, 100.0), "services");
 		getSim().setSimulationLength(100 * 60.0);
 
 		servers = new Server[getNumServers()];
 		for (int i = 0; i < getNumServers(); i++) {
 			servers[i] = new Server("server" + (i + 1));
-			addComponent(servers[i]);
+			getSim().addComponent(servers[i]);
 		}
 
-		q = new Q<>();
+		q = new Q<>("customersWaiting");
 		new QLengthStatsCollector(q, getSim());
 		trace("simulation start");
 
 		scheduleProcess(SimEvent.EVENT_PRIO_NORMAL, () -> {
 			activate(new Customer());
-			return arrivals.nextDbl();
+			return simTime() + arrivals.nextDbl();
 		});
 	}
 

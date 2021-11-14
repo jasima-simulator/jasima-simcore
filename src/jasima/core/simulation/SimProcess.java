@@ -108,6 +108,10 @@ public class SimProcess<R> implements Runnable {
 	private volatile boolean wasSignaled;
 	private boolean reactivated;
 
+	public SimProcess(Simulation sim) {
+		this(sim, (SimCallable<R>) null, null);
+	}
+
 	public SimProcess(Simulation sim, SimRunnable r) {
 		this(sim, SimProcessUtil.simCallable(r), null);
 	}
@@ -393,44 +397,49 @@ public class SimProcess<R> implements Runnable {
 	/**
 	 * Cancels execution of a SCHEDULED process and puts it into PASSIVE state.
 	 */
-	public void cancel() {
+	public SimProcess<R> cancel() {
 		requireAllowedState(state, ProcessState.SCHEDULED);
 
 		sim.unschedule(activateProcessEvent);
 		state = ProcessState.PASSIVE;
 
 		log.trace("waiting process canceled: {}", getName());
+		
+		return this;
 	}
 
 	/**
 	 * Pauses execution of the currently RUNNING process for a certain amount of
 	 * time.
 	 */
-	public void waitFor(double deltaT) throws MightBlock {
+	public SimProcess<R> waitFor(double deltaT) throws MightBlock {
 		waitUntil(sim.simTime() + deltaT);
+		return this;
 	}
 
 	/**
 	 * Pauses execution of the currently RUNNING process for a certain amount of
 	 * time.
 	 */
-	public void waitFor(long amount, TemporalUnit u) throws MightBlock {
+	public SimProcess<R> waitFor(long amount, TemporalUnit u) throws MightBlock {
 		waitUntil(sim.simTime() + sim.toSimTime(amount, u));
+		return this;
 	}
 
 	/**
 	 * Pauses execution of the currently RUNNING process for a certain amount of
 	 * time.
 	 */
-	public void waitFor(Duration d) throws MightBlock {
+	public SimProcess<R> waitFor(Duration d) throws MightBlock {
 		waitUntil(sim.simTime() + sim.toSimTime(d));
+		return this;
 	}
 
 	/**
 	 * Pauses execution of the currently RUNNING process until a certain absolute
 	 * time.
 	 */
-	public void waitUntil(double tAbs) throws MightBlock {
+	public SimProcess<R> waitUntil(double tAbs) throws MightBlock {
 		requireAllowedState(state, ProcessState.RUNNING);
 		assert sim.currentEvent() == activateProcessEvent;
 		assert sim.currentProcess() == this;
@@ -441,14 +450,16 @@ public class SimProcess<R> implements Runnable {
 		log.trace("process {} waiting until {}", getName(), tAbs);
 
 		yield();
+		return this;
 	}
 
 	/**
 	 * Pauses execution of the currently RUNNING process until a certain absolute
 	 * time.
 	 */
-	public void waitUntil(Instant instant) throws MightBlock {
+	public SimProcess<R> waitUntil(Instant instant) throws MightBlock {
 		waitUntil(sim.toSimTime(instant));
+		return this;
 	}
 
 	/**
@@ -467,7 +478,6 @@ public class SimProcess<R> implements Runnable {
 		log.trace("process suspended: {}", getName());
 
 		yield();
-
 		return this;
 	}
 

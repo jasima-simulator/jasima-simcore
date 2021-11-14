@@ -76,7 +76,7 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	 */
 	String getName();
 
-	void setName(String name);
+	SimComponent setName(String name);
 
 	default boolean isValidName(String name) {
 		return name != null && name.length() > 0 && name.indexOf(NAME_SEPARATOR) < 0;

@@ -30,7 +30,7 @@ public class QLengthStatsCollector {
 		recordValue(); // record initial value
 
 		sim.getRootComponent().addListener(ResultsListener.class, (sc, res) -> {
-			res.put(q.toString() + ".numItems", statsNumItems());
+			res.put(q.toString() + ".qLength", statsNumItems());
 		});
 	}
 

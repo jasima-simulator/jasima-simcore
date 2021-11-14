@@ -33,6 +33,37 @@ public class Resource {
 		leave(seizedBy);
 	}
 
+	public void seize(int numResources) throws MightBlock {
+		if (numResources<1)
+			throw new IllegalArgumentException();
+		
+		for (int i=0; i<numResources; i++) {
+			seize();
+		}
+	}
+
+	public boolean trySeize(int numResources) {
+		if (numResources<1)
+			throw new IllegalArgumentException();
+
+		if (numAvailable()<numResources)
+			return false;
+		
+		for (int i=0; i<numResources; i++) {
+			trySeize();
+		}
+		return true;
+	}
+
+	public void release(int numResources) {
+		if (numResources<1)
+			throw new IllegalArgumentException();
+		
+		for (int i=0; i<numResources; i++) {
+			release();
+		}
+	}
+
 	public int numAvailable() {
 		return seizedBy.numAvailable();
 	}

@@ -838,10 +838,14 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Calls all lifecycle events on "sc" to be in sync with the simulation it is
+	 * added to. This should happen automatically if a component was added to the
+	 * simulation before the run, but has to be called when components are added
+	 * dynamically while the simulation is ongoing.
+	 * 
+	 * @return same as parameter {@code sc} to allow chaining
 	 */
-	@Override
-	public <T extends SimComponent> T activate(T sc) {
+	<T extends SimComponent> T activate(T sc) {
 		requireAllowedState(state.get(), INIT, BEFORE_RUN, RUNNING, PAUSED);
 		sc.setSim(this);
 		switch (state.get()) {

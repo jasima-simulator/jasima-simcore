@@ -675,10 +675,13 @@ public class WorkStation extends SimComponentBase {
 		return getName();
 	}
 
-	public void setName(String name) {
+	@Override
+	public WorkStation setName(String name) {
 		this.name = name;
+		return this;
 	}
 
+	@Override
 	public String getName() {
 		return name == null ? "m" + index : name;
 	}
