@@ -300,6 +300,13 @@ public interface SimOperations {
 	default double toSimTime(long numUnits, TemporalUnit u) {
 		return getSim().toSimTime(numUnits, u);
 	}
+	
+	/**
+	 * @see Simulation#addResult(String, Object)
+	 */
+	default void addResult(String name, Object value) {
+		getSim().addResult(name, value);
+	}
 
 	// event tracing
 

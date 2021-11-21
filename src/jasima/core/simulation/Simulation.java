@@ -63,6 +63,7 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
+import jasima.core.experiment.Experiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimProcess.MightBlock;
@@ -124,7 +125,33 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED, TERMINATING, FINISHED, ERROR
 	}
 
-	// /////////// simulation parameters
+	///////////// static methods, delegating to SimContext
+
+	public static Map<String, Object> of(SimRunnable r) {
+		return SimContext.simulationOf(r);
+	}
+
+	public static Map<String, Object> of(String name, SimRunnable r) {
+		return SimContext.simulationOf(name, r);
+	}
+
+	public static Map<String, Object> of(SimEntity e) {
+		return SimContext.simulationOf(e);
+	}
+
+	public static Map<String, Object> of(String name, SimEntity e) {
+		return SimContext.simulationOf(name, e);
+	}
+
+	public static Map<String, Object> of(SimAction a) {
+		return SimContext.simulationOf(a);
+	}
+
+	public static Map<String, Object> of(String name, SimAction a) {
+		return SimContext.simulationOf(name, a);
+	}
+
+	///////////// simulation parameters
 
 	private double simulationLength = 0.0d;
 	private double initialSimTime = 0.0d;
@@ -182,6 +209,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	private Set<SimProcess<?>> runnableProcesses;
 	private SimProcess<?> currentProcess;
 	private SimProcess<?> eventLoopProcess;
+	
+	private Map<String, Object> additionalResults;
 
 	public Simulation() {
 		super();
@@ -240,6 +269,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		requireAllowedState(state.get(), INITIAL);
 		state.set(SimExecState.INIT);
 		simTime = getInitialSimTime();
+		additionalResults = new LinkedHashMap<String, Object>();
 		initComponentTree(null, rootComponent);
 		rootComponent.init();
 	}
@@ -462,13 +492,18 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	public Map<String, Object> performRun() {
 		SimContext.setThreadContext(this);
 		try {
+			long runTimeReal = System.currentTimeMillis();
+
 			init();
 			beforeRun();
 			run();
 			afterRun();
 			done();
 
+			runTimeReal =  System.currentTimeMillis() - runTimeReal;
+			
 			Map<String, Object> res = new LinkedHashMap<>();
+			res.put(Experiment.RUNTIME, runTimeReal / 1000.0);
 			produceResults(res);
 
 			return res;
@@ -833,8 +868,19 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * Populates the given HashMap with results produced in the simulation run.
 	 */
 	public void produceResults(Map<String, Object> res) {
+		res.putAll(additionalResults);
 		res.put(SIM_TIME, simTime());
 		rootComponent.produceResults(res);
+	}
+	
+	/** Adds a certain result to the simulation's result Map.
+	 * 
+	 * @param name Name of the result.
+	 * @param value Result value.
+	 */
+	@Override
+	public void addResult(String name, Object value) {
+		additionalResults.put(name, value);
 	}
 
 	/**

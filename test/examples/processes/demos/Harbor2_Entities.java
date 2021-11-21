@@ -1,6 +1,5 @@
 package examples.processes.demos;
 
-import static jasima.core.simulation.SimContext.*;
 import static jasima.core.simulation.SimContext.waitFor;
 
 import jasima.core.random.continuous.DblExp;
@@ -8,6 +7,7 @@ import jasima.core.random.continuous.DblNormal;
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimEntity;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.Simulation;
 import jasima.core.simulation.generic.Resource;
 import jasima.core.util.ConsolePrinter;
 
@@ -18,14 +18,16 @@ public class Harbor2_Entities extends SimEntity {
 	private DblSequence next;
 	private DblSequence discharge;
 	int n;
+	int wip;
 
 	class Boat extends SimEntity {
 		@Override
 		public void lifecycle() throws MightBlock {
 			System.out.println("n: " + ++n + " " + simTime());
-//			new Boat().awakeIn(next.nextDbl());
+			wip++;
+			new Boat().awakeIn(next.nextDbl()); // schedule next arrival
 
-			jetties.seize(1); 
+			jetties.seize(1);
 
 			tugs.seize(2);
 			waitFor(2.0);
@@ -38,6 +40,7 @@ public class Harbor2_Entities extends SimEntity {
 			tugs.release(1);
 
 			jetties.release(1);
+			wip--;
 		}
 	}
 
@@ -45,21 +48,20 @@ public class Harbor2_Entities extends SimEntity {
 	protected void lifecycle() throws MightBlock {
 		jetties = new Resource("jetties", 2);
 		tugs = new Resource("tugs", 3);
+
 		next = initRndGen(new DblExp(0.1), "iat");
 		discharge = initRndGen(new DblNormal(14.0, 3), "discharge");
-		scheduleProcess(0, () -> {
-			activate(new Boat());
-			return simTime()+next.nextDbl();
-		});
 
-//		new Boat().awakeAt(0.0);
+		new Boat().awakeAt(0.0); // schedule first arrival
 		waitFor(28.0 * 24.0);
+
 		waitFor(0.0);
 		end();
+		System.out.println("wip: " + wip);
 	}
 
 	public static void main(String... args) throws Exception {
-		ConsolePrinter.printResults(null, simulationOf("harbor2", new Harbor2_Entities()));
+		ConsolePrinter.printResults(null, Simulation.of("harbor2", new Harbor2_Entities()));
 	}
 
 }

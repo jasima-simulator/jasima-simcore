@@ -31,7 +31,7 @@ import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
 
 public class TestSimProcessBasics {
-//	@Rule
+	@Rule
 	public Timeout globalTimeout = new Timeout(10000);
 
 	@Rule

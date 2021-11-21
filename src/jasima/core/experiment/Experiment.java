@@ -260,13 +260,12 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 		}
 
 		try {
+			runTimeReal = System.currentTimeMillis();
+			aborted = 0;
+			resultMap = new LinkedHashMap<>();
+			isCancelled = false;
+			error = null;
 			try {
-				runTimeReal = System.currentTimeMillis();
-				aborted = 0;
-				resultMap = new LinkedHashMap<>();
-				isCancelled = false;
-				error = null;
-
 				starting();
 				if (numListener() > 0)
 					fire(ExperimentMessage.EXPERIMENT_STARTING);
@@ -290,17 +289,17 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 				done();
 				if (numListener() > 0)
 					fire(ExperimentMessage.EXPERIMENT_DONE);
+
+				checkCancelledOrInterrupted();
+
+				if (numListener() > 0)
+					fire(ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS);
+
+				produceResults();
 			} finally {
 				runTimeReal = System.currentTimeMillis() - runTimeReal;
 				addStandardResults();
 			}
-
-			checkCancelledOrInterrupted();
-
-			if (numListener() > 0)
-				fire(ExperimentMessage.EXPERIMENT_COLLECTING_RESULTS);
-
-			produceResults();
 
 			if (numListener() > 0)
 				fire(ExperimentMessage.EXPERIMENT_FINISHING);

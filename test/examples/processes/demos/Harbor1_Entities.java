@@ -1,9 +1,10 @@
 package examples.processes.demos;
 
-import static jasima.core.simulation.SimContext.*;
+import static jasima.core.simulation.SimContext.waitFor;
 
 import jasima.core.simulation.SimEntity;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.Simulation;
 import jasima.core.simulation.generic.Resource;
 import jasima.core.util.ConsolePrinter;
 
@@ -38,7 +39,7 @@ public class Harbor1_Entities extends SimEntity {
 	}
 
 	public static void main(String... args) throws Exception {
-		ConsolePrinter.printResults(null, simulationOf("harbor1", new Harbor1_Entities()));
+		ConsolePrinter.printResults(null, Simulation.of("harbor1", new Harbor1_Entities()));
 	}
 
 }

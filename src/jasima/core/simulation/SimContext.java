@@ -129,7 +129,7 @@ public class SimContext {
 	public static boolean waitCondition(ObservableValue<Boolean> triggerCondition) throws MightBlock {
 		if (!triggerCondition.get()) {
 			SimProcess<?> p = currentProcess();
-			ObservableValues.whenTrueExecuteOnce(triggerCondition, () -> p.resume());
+			ObservableValues.whenTrueExecuteOnce(triggerCondition, p::resume);
 			p.suspend(); // wait until condition is true
 			return false;
 		} else {
@@ -148,6 +148,55 @@ public class SimContext {
 
 	public static void end() {
 		requireSimContext().end();
+	}
+	public static void addResult(String name, Object value) {
+		requireSimContext().addResult(name, value);
+	}
+
+	// schedule simulation events, delegated to the simulation
+
+	public static SimEvent schedule(SimEvent event) {
+		return requireSimContext().schedule(event);
+	}
+
+	public static void scheduleAt(double time, int prio, Runnable method) {
+		requireSimContext().scheduleAt(time, prio, method);
+	}
+
+	public static void scheduleAt(String description, double time, int prio, Runnable action) {
+		requireSimContext().scheduleAt(description, time, prio, action);
+	}
+
+	public static void scheduleAt(Instant time, int prio, Runnable method) {
+		requireSimContext().scheduleAt(time, prio, method);
+	}
+
+	public static void scheduleAt(String description, Instant time, int prio, Runnable method) {
+		requireSimContext().scheduleAt(description, time, prio, method);
+	}
+
+	public static void scheduleIn(double time, int prio, Runnable method) {
+		requireSimContext().scheduleIn(time, prio, method);
+	}
+
+	public static void scheduleIn(String description, double time, int prio, Runnable method) {
+		requireSimContext().scheduleIn(description, time, prio, method);
+	}
+
+	public static void scheduleIn(Duration duration, int prio, Runnable method) {
+		requireSimContext().scheduleIn(duration, prio, method);
+	}
+
+	public static void scheduleIn(String description, Duration duration, int prio, Runnable method) {
+		requireSimContext().scheduleIn(description, duration, prio, method);
+	}
+
+	public static void scheduleIn(long numUnits, TemporalUnit unit, int prio, Runnable method) {
+		requireSimContext().scheduleIn(numUnits, unit, prio, method);
+	}
+
+	public static void scheduleIn(String description, long numUnits, TemporalUnit unit, int prio, Runnable method) {
+		requireSimContext().scheduleIn(description, numUnits, unit, prio, method);
 	}
 
 	public static <T extends DblSequence> T initRndGen(T s, String streamName) {
