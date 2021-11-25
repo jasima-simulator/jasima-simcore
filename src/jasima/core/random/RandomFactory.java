@@ -26,6 +26,9 @@ import static jasima.core.util.i18n.I18n.defFormat;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
 
 import jasima.core.experiment.Experiment;
 import jasima.core.random.continuous.DblSequence;
@@ -109,7 +112,24 @@ public class RandomFactory implements Serializable {
 	 * @return The new {@link Random} instance.
 	 */
 	public Random createInstance(final String name) {
-		long seed = getSeed(name);
+		Consumer<String> warningReceiver = getSim() == null ? null : msg -> getSim().print(MsgCategory.WARN, msg);
+		return createInstance(name, warningReceiver);
+	}
+
+	/**
+	 * Create a new random instance. The seed of this new instance (and hence the
+	 * stream of pseudo-random numbers) is determined by the given {@code name} and
+	 * the seed of the {@code RandomFactory}.
+	 * 
+	 * @param name            A unique name of the Random instance (indirectly
+	 *                        setting its seed).
+	 * @param warningReceiver used to issue a warning message in case of a hash
+	 *                        collision
+	 * @return The new {@link Random} instance.
+	 */
+	public Random createInstance(final String name, @Nullable Consumer<String> warningReceiver) {
+		long seed = getSeed(name, warningReceiver);
+
 		if (getSim() != null) {
 			getSim().print(MsgCategory.DEBUG,
 					defFormat("created random stream '%s' with initial seed %d.", name, seed));
@@ -138,13 +158,16 @@ public class RandomFactory implements Serializable {
 	/**
 	 * Compute a (hopefully unique) seed which only depends on 'name' and this
 	 * RandomFactory's seed.
+	 * 
+	 * @param warningReceiver used to issue a warning message in case of a hash
+	 *                        collision
 	 */
-	protected long getSeed(final String name) {
+	protected long getSeed(final String name, @Nullable Consumer<String> warningReceiver) {
 		int hashCode = name.hashCode();
 		// extend hash to 64 bit
-		long l = ((long) hashCode) << 32 | (~hashCode);
+		long nameHash = ((long) hashCode) << 32 | (~hashCode);
 
-		seedStream.setSeed(l ^ hashMask);
+		seedStream.setSeed(nameHash ^ hashMask);
 		long seed = seedStream.nextLong();
 
 		// seed already used?
@@ -153,10 +176,12 @@ public class RandomFactory implements Serializable {
 			if (s.equals(name))
 				throw new IllegalArgumentException("Already created stream '" + name + "', please use unique names.");
 
-			if (getSim() != null)
-				getSim().print(MsgCategory.WARN, defFormat(
+			if (warningReceiver != null) {
+				String warningMsg = defFormat(
 						"Collision for random streams named '%s' and '%s'. If possible use different stream names to avoid problems with comparability/reproducability of results.",
-						name, s));
+						name, s);
+				warningReceiver.accept(warningMsg);
+			}
 
 			seed = seedStream.nextLong();
 		}

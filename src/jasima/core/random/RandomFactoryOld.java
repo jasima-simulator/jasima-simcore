@@ -20,9 +20,12 @@
  *******************************************************************************/
 package jasima.core.random;
 
-import java.util.Random;
+import static jasima.core.util.i18n.I18n.defFormat;
 
-import jasima.core.util.MsgCategory;
+import java.util.Random;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
 
 /**
  * Use {@link RandomFactory} instead.
@@ -45,7 +48,7 @@ public class RandomFactoryOld extends RandomFactory {
 	}
 
 	@Override
-	protected long getSeed(final String name) {
+	protected long getSeed(final String name, @Nullable Consumer<String> warningReceiver) {
 		if (seeds == null) {
 			seeds = new long[SEED_TAB_SIZE];
 			for (int i = 0; i < seeds.length; i++) {
@@ -61,10 +64,12 @@ public class RandomFactoryOld extends RandomFactory {
 		seeds[idx] = 0;
 
 		if (res == 0) {
-			if (getSim() != null)
-				getSim().print(MsgCategory.WARN,
+			if (warningReceiver != null) {
+				String warningMsg = defFormat(
 						"Collision for random stream name '%s', if possible use unique stream names to avoid problems with comparability/reproducability of results.",
 						name);
+				warningReceiver.accept(warningMsg);
+			}
 			res = seedStream.nextLong();
 		}
 
