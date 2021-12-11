@@ -22,12 +22,10 @@
 import java.io.File;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import jasima.core.experiment.FullFactorialExperiment;
 import jasima.core.experiment.MultipleReplicationExperiment;
-import jasima.core.random.RandomFactory;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.FileFormat;
 import jasima.core.util.XmlUtil;
@@ -68,7 +66,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<?,?>[] l = e.getShopListener();
+		NotifierListener<?, ?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -95,7 +93,7 @@ public class TestForAllResults extends ExperimentTest {
 				new AdaptiveLAThreshold(0.0).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<?,?>[] l = e.getShopListener();
+		NotifierListener<?, ?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -123,7 +121,7 @@ public class TestForAllResults extends ExperimentTest {
 				new AdaptiveLAThreshold(0.5).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<?,?>[] l = e.getShopListener();
+		NotifierListener<?, ?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 
@@ -151,7 +149,7 @@ public class TestForAllResults extends ExperimentTest {
 				new AdaptiveLAThreshold(1.0).setFinalTieBreaker(new SPT().setFinalTieBreaker(new TieBreakerFASFS())));
 
 		// remove default BasicJobStatCollector
-		NotifierListener<?,?>[] l = e.getShopListener();
+		NotifierListener<?, ?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -175,7 +173,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
-		NotifierListener<?,?>[] l = e.getShopListener();
+		NotifierListener<?, ?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -202,7 +200,7 @@ public class TestForAllResults extends ExperimentTest {
 		e.setInitialSeed(42);
 		e.setSequencingRule(new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
 		// remove default BasicJobStatCollector
-		NotifierListener<?,?>[] l = e.getShopListener();
+		NotifierListener<?, ?>[] l = e.getShopListener();
 		assert l.length == 1 && l[0] instanceof BasicJobStatCollector;
 		e.setShopListener(null);
 		e.addShopListener(new ExtendedJobStatCollector());
@@ -220,9 +218,9 @@ public class TestForAllResults extends ExperimentTest {
 
 		FullFactorialExperiment ffe = new FullFactorialExperiment();
 		ffe.setBaseExperiment(mre);
-		ffe.addFactor("baseExperiment.sequencingRule", new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
-		ffe.addFactor("baseExperiment.sequencingRule", new FCFS().setFinalTieBreaker(new TieBreakerFASFS()));
-		ffe.addFactors("baseExperiment.utilLevel", 0.8, 0.9);
+		ffe.addFactorValue("baseExperiment.sequencingRule", new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		ffe.addFactorValue("baseExperiment.sequencingRule", new FCFS().setFinalTieBreaker(new TieBreakerFASFS()));
+		ffe.addFactor("baseExperiment.utilLevel", 0.8, 0.9);
 		ffe.addKeepResultName("tardMean");
 		ffe.addKeepResultName("flowMean");
 
@@ -397,8 +395,8 @@ public class TestForAllResults extends ExperimentTest {
 
 		FullFactorialExperiment ffe = new FullFactorialExperiment();
 		ffe.setBaseExperiment(mre);
-		ffe.addFactors("baseExperiment.sequencingRule", pr1, pr2);
-		ffe.addFactors("baseExperiment.batchForming", batchForming, batchForming2);
+		ffe.addFactor("baseExperiment.sequencingRule", pr1, pr2);
+		ffe.addFactor("baseExperiment.batchForming", batchForming, batchForming2);
 		ffe.addKeepResultName("tardMean");
 
 		ffe.runExperiment();

@@ -64,11 +64,11 @@ public abstract class AbstractMultiConfExperiment extends AbstractMultiExperimen
 	 * Allows finer control of the way a base experiment is configured than the
 	 * usual mechanism using JavaBean properties. If an object implementing
 	 * ComplexFactorSetter is passed as a value when calling
-	 * {@link FullFactorialExperiment#addFactor(String, Object) addFactor(String,
+	 * {@link FullFactorialExperiment#addFactorValue(String, Object) addFactor(String,
 	 * Object)} then instead of setting a bean property the method
 	 * {@link #configureExperiment(Experiment)} is called.
 	 * 
-	 * @see FullFactorialExperiment#addFactor(String, Object)
+	 * @see FullFactorialExperiment#addFactorValue(String, Object)
 	 */
 	@FunctionalInterface
 	public interface ComplexFactorSetter extends Serializable {

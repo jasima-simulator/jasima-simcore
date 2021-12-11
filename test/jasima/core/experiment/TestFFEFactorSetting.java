@@ -68,7 +68,7 @@ public class TestFFEFactorSetting {
 	@Test
 	public void test_complexSubProperty() {
 		FullFactorialExperiment ffe = new FullFactorialExperiment(new ExpTestControlFlow());
-		ffe.addFactors("complex.test", 1, 2, 3);
+		ffe.addFactor("complex.test", 1, 2, 3);
 
 		Map<String, Object> res = ffe.runExperiment();
 
@@ -126,7 +126,7 @@ public class TestFFEFactorSetting {
 	public void testNumber() {
 		FullFactorialExperiment ffe = createFFE();
 
-		ffe.addFactors("number", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
+		ffe.addFactor("number", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
 				new BigDecimal("23.3"), null);
 
 		SummaryStat field = runAndGetResult(ffe);
@@ -139,7 +139,7 @@ public class TestFFEFactorSetting {
 	public void testBoolFail() {
 		FullFactorialExperiment ffe = createFFE();
 
-		ffe.addFactors("bool1", true, false, null);
+		ffe.addFactor("bool1", true, false, null);
 
 		try {
 			ffe.runExperiment();
@@ -166,9 +166,9 @@ public class TestFFEFactorSetting {
 		FullFactorialExperiment ffe = createFFE();
 		ffe.setAbortUponBaseExperimentAbort(false);
 
-		ffe.addFactors("exceptionWhenSetToTrue", false, true);
-		ffe.addFactors("exceptionDuringExecution", false, true);
-		ffe.addFactors("bool1", true, false, null);
+		ffe.addFactor("exceptionWhenSetToTrue", false, true);
+		ffe.addFactor("exceptionDuringExecution", false, true);
+		ffe.addFactor("bool1", true, false, null);
 
 		Map<String, Object> res = ConsoleRunner.runWithArgs(ffe);
 
@@ -187,9 +187,9 @@ public class TestFFEFactorSetting {
 		FullFactorialExperiment ffe = createFFE();
 		ffe.setAbortUponBaseExperimentAbort(true);
 
-		ffe.addFactors("exceptionWhenSetToTrue", false, true);
-		ffe.addFactors("exceptionDuringExecution", false, true);
-		ffe.addFactors("bool1", true, false, null);
+		ffe.addFactor("exceptionWhenSetToTrue", false, true);
+		ffe.addFactor("exceptionDuringExecution", false, true);
+		ffe.addFactor("bool1", true, false, null);
 
 		Map<String, Object> res = ConsoleRunner.runWithArgs(ffe);
 
@@ -228,47 +228,47 @@ public class TestFFEFactorSetting {
 	}
 
 	private void addBoolFactors(FullFactorialExperiment ffe) {
-		ffe.addFactors("bool1", true, false, 0, 1, "0", "1", "true", "false", "yes", "no");
-		ffe.addFactors("bool2", true, false, 0, 1, "0", "1", "true", "false", "yes", "no", null);
+		ffe.addFactor("bool1", true, false, 0, 1, "0", "1", "true", "false", "yes", "no");
+		ffe.addFactor("bool2", true, false, 0, 1, "0", "1", "true", "false", "yes", "no", null);
 	}
 
 	private void addIntFactors1(FullFactorialExperiment ffe) {
-		ffe.addFactors("int1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
-		ffe.addFactors("int2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
+		ffe.addFactor("int1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
+		ffe.addFactor("int2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
 				new ObjectWithNumber(29));
 
-		ffe.addFactors("byte1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
-		ffe.addFactors("byte2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
+		ffe.addFactor("byte1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
+		ffe.addFactor("byte2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
 				new ObjectWithNumber(29));
 	}
 
 	private void addIntFactors2(FullFactorialExperiment ffe) {
-		ffe.addFactors("short1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
-		ffe.addFactors("short2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
+		ffe.addFactor("short1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
+		ffe.addFactor("short2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
 				new ObjectWithNumber(29));
 
-		ffe.addFactors("long1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
-		ffe.addFactors("long2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
+		ffe.addFactor("long1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), "28", new ObjectWithNumber(29));
+		ffe.addFactor("long2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), null, "28",
 				new ObjectWithNumber(29));
 	}
 
 	private void addFloatFactors(FullFactorialExperiment ffe) {
-		ffe.addFactors("float1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
+		ffe.addFactor("float1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
 				new BigDecimal("23.3"), "28.6", new ObjectWithNumber(29.3));
-		ffe.addFactors("float2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
+		ffe.addFactor("float2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
 				new BigDecimal("23.3"), null, "28.6", new ObjectWithNumber(29.3));
 
-		ffe.addFactors("double1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
+		ffe.addFactor("double1", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
 				new BigDecimal("23.3"), "28.6", new ObjectWithNumber(29.3));
-		ffe.addFactors("double2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
+		ffe.addFactor("double2", (byte) 23, (short) 24, 25, 26l, new BigInteger("27"), 23.1f, 23.2d,
 				new BigDecimal("23.3"), null, "28.6", new ObjectWithNumber(29.3));
 	}
 
 	private void addCharFactors(FullFactorialExperiment ffe) {
-		ffe.addFactors("char1", 'a', "b");
-		ffe.addFactors("char2", 'a', "b", null);
+		ffe.addFactor("char1", 'a', "b");
+		ffe.addFactor("char2", 'a', "b", null);
 
-		ffe.addFactors("string", 'a', "b", null, 23, new Object(), new BigDecimal(48));
+		ffe.addFactor("string", 'a', "b", null, 23, new Object(), new BigDecimal(48));
 	}
 
 }

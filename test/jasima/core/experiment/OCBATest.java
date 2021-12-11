@@ -63,8 +63,8 @@ public class OCBATest {
 		ocbaExperiment.setBaseExperiment(he);
 
 		// define configurations to test
-		ocbaExperiment.addFactor("sequencingRule", new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
-		ocbaExperiment.addFactor("sequencingRule", new PTPlusWINQPlusNPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		ocbaExperiment.addFactorValue("sequencingRule", new SPT().setFinalTieBreaker(new TieBreakerFASFS()));
+		ocbaExperiment.addFactorValue("sequencingRule", new PTPlusWINQPlusNPT().setFinalTieBreaker(new TieBreakerFASFS()));
 
 		// define objective function
 		ocbaExperiment.setObjective("flowMean");
@@ -250,7 +250,7 @@ public class OCBATest {
 		exp.setPcsLevel(pcsLevel);
 		exp.setBaseExperiment(new TestExp());
 //exp.setAllowParallelExecution(false);
-		exp.addFactors("mean", means);
+		exp.addFactor("mean", means);
 
 		exp.setDetailedResults(true);
 		exp.setProblemType(type);

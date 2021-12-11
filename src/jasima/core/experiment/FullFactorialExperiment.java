@@ -65,7 +65,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	}
 
 	/**
-	 * Clears all configurations previously added using addFactor.
+	 * Clears all configurations previously added using
+	 * {@link #addFactorValue(...)}.
 	 */
 	public void clearFactors() {
 		factors.clear();
@@ -81,7 +82,7 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 *              can be arbitrary.
 	 * @param value The value to test for factor {@code name}.
 	 */
-	public void addFactor(String name, Object value) {
+	public void addFactorValue(String name, Object value) {
 		List<Object> values = factors.get(name);
 		if (values == null) {
 			values = new ArrayList<Object>();
@@ -98,8 +99,8 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * Adds a new value for the factor "name". This allows putting in a Java 8
 	 * method reference or lambda expression as a factor setter.
 	 */
-	public void addFactor(String name, ComplexFactorSetter value) {
-		addFactor(name, (Object) value);
+	public void addFactorValue(String name, ComplexFactorSetter value) {
+		addFactorValue(name, (Object) value);
 	}
 
 	/**
@@ -125,48 +126,48 @@ public class FullFactorialExperiment extends AbstractMultiConfExperiment {
 	 * addFactor(&quot;color&quot;, ColorEnum.BLUE);
 	 * </pre>
 	 * 
-	 * @see #addFactor(String, Object)
+	 * @see #addFactorValue(String, Object)
 	 * @param factorName name of the factor.
 	 * @param enumClass  The enumeration, of which all members will be used as a
 	 *                   value.
 	 * @param <E>        Any enumeration type.
 	 */
-	public <E extends Enum<?>> void addFactors(String factorName, Class<E> enumClass) {
+	public <E extends Enum<?>> void addFactor(String factorName, Class<E> enumClass) {
 		for (Object enumValue : enumClass.getEnumConstants()) {
-			addFactor(factorName, enumValue);
+			addFactorValue(factorName, enumValue);
 		}
 	}
 
 	/**
 	 * Convenience method to add all elements in {@code values} as a possible value
 	 * for a factor/property {@code factorName}. This method is equivalent to
-	 * repeatedly calling {@link #addFactor(String, Object)} for each element in
-	 * {@code values}.
+	 * repeatedly calling {@link #addFactorValue(String, Object)} for each element
+	 * in {@code values}.
 	 * 
-	 * @see #addFactor(String, Object)
+	 * @see #addFactorValue(String, Object)
 	 * 
 	 * @param factorName Name of the factor.
 	 * @param values     Values to use for this factor.
 	 */
-	public void addFactors(String factorName, Object... values) {
+	public void addFactor(String factorName, Object... values) {
 		for (Object o : values) {
-			addFactor(factorName, o);
+			addFactorValue(factorName, o);
 		}
 	}
 
 	/**
 	 * Convenience method to add all elements in {@code values} as a possible value
 	 * for a factor/property {@code factorName}. This method is equivalent to
-	 * repeatedly calling {@link #addFactor(String, Object)} for each element in
-	 * {@code values}.
+	 * repeatedly calling {@link #addFactorValue(String, Object)} for each element
+	 * in {@code values}.
 	 * 
-	 * @see #addFactor(String, Object)
+	 * @see #addFactorValue(String, Object)
 	 * @param factorName Name of the factor.
 	 * @param values     A collection of values to use for this factor.
 	 */
-	public void addFactors(String factorName, Collection<?> values) {
+	public void addFactor(String factorName, Collection<?> values) {
 		for (Object o : values) {
-			addFactor(factorName, o);
+			addFactorValue(factorName, o);
 		}
 	}
 

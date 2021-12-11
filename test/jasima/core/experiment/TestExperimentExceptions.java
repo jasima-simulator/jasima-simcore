@@ -173,7 +173,7 @@ public class TestExperimentExceptions {
 	public void testFFEShouldRunDespiteSubExperimentsFailing() throws Exception {
 		FullFactorialExperiment e = new FullFactorialExperiment();
 		e.setBaseExperiment(new ExpTestControlFlow());
-		e.addFactors("fail", true, false);
+		e.addFactor("fail", true, false);
 		e.setAbortUponBaseExperimentAbort(false);
 
 		// execute with Executor
@@ -200,7 +200,7 @@ public class TestExperimentExceptions {
 	public void testFFEShouldFailOnFirstAbortingSubExperiment() throws Exception {
 		FullFactorialExperiment e = new FullFactorialExperiment();
 		e.setBaseExperiment(new ExpTestControlFlow());
-		e.addFactors("fail", true, false);
+		e.addFactor("fail", true, false);
 
 		e.setAbortUponBaseExperimentAbort(true);
 

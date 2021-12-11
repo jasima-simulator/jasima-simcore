@@ -168,7 +168,7 @@ public class ExcelExperimentReader {
 			FullFactorialExperiment ffe = new FullFactorialExperiment();
 			ffe.setBaseExperiment(mainExp);
 			for (Entry<String, List<Object>> e : factors.entrySet()) {
-				ffe.addFactors(e.getKey(), e.getValue());
+				ffe.addFactor(e.getKey(), e.getValue());
 			}
 			return ffe;
 		} else {

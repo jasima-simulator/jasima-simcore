@@ -88,7 +88,7 @@ public class TestMimacFab4Trace {
 		// ffe.addFactor("batchForming.mbsRel", 5.0 / 8.0);
 
 		PR pr = createPR_FIFO(createPRStack(new FCFS(), true));
-		ffe.addFactor("sequencingRule", pr);
+		ffe.addFactorValue("sequencingRule", pr);
 
 		ffe.runExperiment();
 		ffe.printResults();
@@ -119,7 +119,7 @@ public class TestMimacFab4Trace {
 		// ffe.addFactor("batchForming.mbsRel", 5.0 / 8.0);
 
 		PR pr = createPR_SPT(createPRStack(new SPT(), true));
-		ffe.addFactor("sequencingRule", pr);
+		ffe.addFactorValue("sequencingRule", pr);
 
 		ffe.runExperiment();
 		ffe.printResults();
