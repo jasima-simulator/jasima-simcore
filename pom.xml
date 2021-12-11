@@ -64,7 +64,8 @@
 			<version>3.0.2</version>
 		</dependency>
 		<dependency>
-			<!-- Hamcrest has to be before junit; it is not a test dep because of ExperimentTest -->
+			<!-- Hamcrest has to be before junit; it is not a test dep because of 
+				ExperimentTest -->
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<version>2.2</version>
@@ -114,34 +115,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>2.3</versionRange>
-										<goals>
-											<goal>copy-dependencies</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -237,6 +210,15 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<testFailureIgnore>true</testFailureIgnore>
+					<test>AllTests</test>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.8</version>
@@ -328,10 +310,10 @@
 		<system>Bitbucket</system>
 	</issueManagement>
 	<scm>
-		<connection>scm:git:ssh://git@bitbucket.org/jasimaSolutions/jasima.git</connection>
-		<url>https://bitbucket.org/jasimaSolutions/jasima</url>
+		<connection>scm:git:ssh://git@github.com:jasima-simulator/jasima-simcore.git</connection>
+		<url>https://github.com/jasima-simulator/jasima-simcore</url>
 		<tag>HEAD</tag>
-		<developerConnection>scm:git:ssh://git@bitbucket.org/jasimaSolutions/jasima.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 	</scm>
 
 	<profiles>
