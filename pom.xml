@@ -21,9 +21,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
-		<log4j2.version>2.13.3</log4j2.version>
-		<versionName>${project.version} (${maven.build.timestamp},
-			${git.branch}@${git.commit.id.abbrev})</versionName>
+		<log4j2.version>2.15.0</log4j2.version>
+		<versionName>${project.version} (${maven.build.timestamp}, ${git.branch}@${git.commit.id.abbrev})</versionName>
 		<jasima-cli.main.class>jasima.core.run.ConsoleRunner</jasima-cli.main.class>
 	</properties>
 
@@ -31,7 +30,7 @@
 	<inceptionYear>2011</inceptionYear>
 	<organization>
 		<name>SimPlan AG</name>
-		<url>http://simplan.de/</url>
+		<url>https://simplan.de/</url>
 	</organization>
 	<licenses>
 		<license>
