@@ -359,8 +359,8 @@
 		</site>
 	</distributionManagement>
 	<issueManagement>
-		<url>https://bitbucket.org/jasimaSolutions/jasima/issues</url>
-		<system>Bitbucket</system>
+		<url>https://github.com/jasima-simulator/jasima-simcore/issues</url>
+		<system>GitHub</system>
 	</issueManagement>
 	<scm>
 		<connection>scm:git:ssh://git@github.com:jasima-simulator/jasima-simcore.git</connection>
