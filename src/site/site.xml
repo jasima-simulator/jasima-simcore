@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="jasima">
+   <bannerLeft>
+        <name>jasima - JAva SImulator for MAnufacturing and logistics</name>
+        <src>images/logoSmall.png</src>
+        <href>http://jasima.net/</href>
+    </bannerLeft>
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.10.0</version>
+  </skin>
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>false</topBarEnabled>
+      <topBarIcon>
+        <name>jasima Simulator</name>
+        <alt>jasima Simulator</alt>
+        <src>/images/logoSmall.png</src>
+        <href>/index.html</href>
+      </topBarIcon>
+      <sideBarEnabled>true</sideBarEnabled>
+ <!--     <googleSearch>
+        <sitesearch/>
+      </googleSearch>
+ -->     <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+      <profile>pre-release</profile>
+      <gitHub>
+        <projectId>jasima-simulator/jasima-simcore</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>black</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
+ 
+   <body>
+      <menu ref="modules" />
+      <menu ref="reports" />
+   </body>
+ <!--  <body>
+ <!- -   <menu name="Maven 2.0">
+      <item name="Introduction" href="index.html"/>
+      <item name="Download" href="download.html"/>
+      <item name="Release Notes" href="release-notes.html" />
+      <item name="General Information" href="about.html"/>
+      <item name="For Maven 1.x Users" href="maven1.html"/>
+      <item name="Road Map" href="roadmap.html" />
+    </menu>- ->
+ 
+    <menu ref="reports"/>
+  </body>-->
+</project>
