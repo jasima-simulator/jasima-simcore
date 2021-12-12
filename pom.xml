@@ -204,12 +204,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>https://jasima.googlecode.com/svn/tags/jasima</tagBase>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
@@ -275,11 +269,11 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
-				<directory>src</directory>
+				<directory>src/main/java</directory>
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>**/*.java</exclude>
@@ -288,7 +282,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>test</directory>
+				<directory>src/test/java</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
