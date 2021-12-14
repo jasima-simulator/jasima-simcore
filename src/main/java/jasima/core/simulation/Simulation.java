@@ -135,11 +135,11 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		return SimContext.simulationOf(name, r);
 	}
 
-	public static Map<String, Object> of(SimEntity e) {
+	public static Map<String, Object> of(SimComponent e) {
 		return SimContext.simulationOf(e);
 	}
 
-	public static Map<String, Object> of(String name, SimEntity e) {
+	public static Map<String, Object> of(String name, SimComponent e) {
 		return SimContext.simulationOf(name, e);
 	}
 

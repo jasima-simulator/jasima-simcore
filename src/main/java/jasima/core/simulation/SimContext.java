@@ -221,12 +221,12 @@ public class SimContext {
 		return simulationOf(name, simAction(r));
 	}
 
-	public static Map<String, Object> simulationOf(SimEntity e) {
+	public static Map<String, Object> simulationOf(SimComponent e) {
 		return simulationOf(null, e);
 	}
 
-	public static Map<String, Object> simulationOf(String name, SimEntity e) {
-		return simulationOf(null, sim -> sim.activate(e));
+	public static Map<String, Object> simulationOf(String name, SimComponent e) {
+		return simulationOf(null, sim -> sim.addComponent(e));
 	}
 
 	public static Map<String, Object> simulationOf(SimAction a) {

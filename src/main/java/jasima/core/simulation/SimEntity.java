@@ -18,7 +18,7 @@ import jasima.core.util.SimProcessUtil.SimAction;
  * @author Torsten Hildebrandt
  * @since 3.0
  */
-public class SimEntity extends SimComponentBase {
+public class SimEntity extends SimComponentContainerBase {
 
 //	private final SimAction lifecycleActions;
 	private SimProcess<Void> lifecycleProcess = null;
