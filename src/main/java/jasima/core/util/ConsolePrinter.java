@@ -312,7 +312,7 @@ public class ConsolePrinter implements ExperimentListener {
 		}
 
 		out.println();
-		out.printf(I18n.DEF_LOCALE, "time needed:\t%fs%n", res.get(Experiment.RUNTIME));
+		out.printf(I18n.DEF_LOCALE, "time needed:\t%.1fs%n", res.get(Experiment.RUNTIME));
 
 		out.flush();
 	}
