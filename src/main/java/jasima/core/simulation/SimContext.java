@@ -221,12 +221,14 @@ public class SimContext {
 		return simulationOf(name, simAction(r));
 	}
 
-	public static Map<String, Object> simulationOf(SimComponent e) {
-		return simulationOf(null, e);
+	public static Map<String, Object> simulationOf(SimComponent... components) {
+		return simulationOf(null, components);
 	}
 
-	public static Map<String, Object> simulationOf(String name, SimComponent e) {
-		return simulationOf(null, sim -> sim.addComponent(e));
+	public static Map<String, Object> simulationOf(String name, SimComponent... components) {
+		if (components==null || components.length==0)
+			throw new IllegalArgumentException();
+		return simulationOf(null, sim -> sim.addComponents(components));
 	}
 
 	public static Map<String, Object> simulationOf(SimAction a) {

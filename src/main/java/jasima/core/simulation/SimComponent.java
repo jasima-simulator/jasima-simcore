@@ -143,6 +143,22 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 		throw new UnsupportedOperationException("Can only add components to a container.");
 	}
 
+	/**
+	 * Add a result to the simulation's result Map. If the given name starts with a
+	 * dot, then the full component name (see {@link #getHierarchicalName()}) will
+	 * be added as a name prefix.
+	 */
+	@Override
+	default void addResult(String name, Object value) {
+		String fullName;
+		if (name.startsWith("."))
+			fullName = getHierarchicalName() + name;
+		else
+			fullName = name;
+
+		SimOperations.super.addResult(fullName, value);
+	}
+
 	// event notification, delegate to adapter
 
 	/**

@@ -135,8 +135,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		return SimContext.simulationOf(name, r);
 	}
 
-	public static Map<String, Object> of(SimComponent e) {
-		return SimContext.simulationOf(e);
+	public static Map<String, Object> of(SimComponent... components) {
+		return SimContext.simulationOf(components);
 	}
 
 	public static Map<String, Object> of(String name, SimComponent e) {
@@ -209,8 +209,9 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	private Set<SimProcess<?>> runnableProcesses;
 	private SimProcess<?> currentProcess;
 	private SimProcess<?> eventLoopProcess;
-	
+
 	private Map<String, Object> additionalResults;
+	private Map<String, Object> res; // set only temporarily during produceResults
 
 	public Simulation() {
 		super();
@@ -500,8 +501,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			afterRun();
 			done();
 
-			runTimeReal =  System.currentTimeMillis() - runTimeReal;
-			
+			runTimeReal = System.currentTimeMillis() - runTimeReal;
+
 			Map<String, Object> res = new LinkedHashMap<>();
 			res.put(Experiment.RUNTIME, runTimeReal / 1000.0);
 			produceResults(res);
@@ -868,19 +869,30 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * Populates the given HashMap with results produced in the simulation run.
 	 */
 	public void produceResults(Map<String, Object> res) {
-		res.putAll(additionalResults);
-		res.put(SIM_TIME, simTime());
-		rootComponent.produceResults(res);
+		this.res = res;
+		try {
+			res.putAll(additionalResults);
+			res.put(SIM_TIME, simTime());
+			rootComponent.produceResults(res);
+		} finally {
+			res = null;
+		}
 	}
-	
-	/** Adds a certain result to the simulation's result Map.
+
+	/**
+	 * Adds a certain result to the simulation's result Map.
 	 * 
-	 * @param name Name of the result.
+	 * @param name  Name of the result.
 	 * @param value Result value.
 	 */
 	@Override
 	public void addResult(String name, Object value) {
-		additionalResults.put(name, value);
+		if (res!=null)
+			// called during produceResults()
+			res.put(name, value);
+		else
+			// anytime else
+			additionalResults.put(name, value);
 	}
 
 	/**
