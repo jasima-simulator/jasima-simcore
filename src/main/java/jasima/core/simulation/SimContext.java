@@ -226,8 +226,6 @@ public class SimContext {
 	}
 
 	public static Map<String, Object> simulationOf(String name, SimComponent... components) {
-		if (components==null || components.length==0)
-			throw new IllegalArgumentException();
 		return simulationOf(null, sim -> sim.addComponents(components));
 	}
 
