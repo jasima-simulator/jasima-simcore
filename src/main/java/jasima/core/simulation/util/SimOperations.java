@@ -30,23 +30,11 @@ public interface SimOperations {
 	}
 
 	/**
-	 * Convenience method to add a new component to the root component of this
-	 * simulation.
-	 * 
-	 * @return the context this method is invoked in to allow chaining
+	 * Convenience method to add a one or more new component(s) to the root
+	 * component of this simulation.
 	 */
-	default <T extends SimComponent> SimOperations addComponent(T sc) {
-		getRootComponent().addChild(sc);
-		return this;
-	}
-
-	/**
-	 * Convenience method to add multiple components at once.
-	 */
-	default void addComponents(SimComponent... scs) {
-		for (SimComponent sc : scs) {
-			addComponent(sc);
-		}
+	default void addComponent(SimComponent... scs) {
+		getRootComponent().addChild(scs);
 	}
 
 	/**
@@ -300,7 +288,7 @@ public interface SimOperations {
 	default double toSimTime(long numUnits, TemporalUnit u) {
 		return getSim().toSimTime(numUnits, u);
 	}
-	
+
 	/**
 	 * @see Simulation#addResult(String, Object)
 	 */

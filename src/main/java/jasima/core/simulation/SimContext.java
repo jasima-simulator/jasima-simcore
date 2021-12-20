@@ -226,7 +226,7 @@ public class SimContext {
 	}
 
 	public static Map<String, Object> simulationOf(String name, SimComponent... components) {
-		return simulationOf(null, sim -> sim.addComponents(components));
+		return simulationOf(null, sim -> sim.addComponent(components));
 	}
 
 	public static Map<String, Object> simulationOf(SimAction a) {

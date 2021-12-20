@@ -22,11 +22,11 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 	List<SimComponent> getChildren();
 
 	/**
-	 * Adds a child node to the container.
+	 * Adds one or more child nodes to the container.
 	 * 
 	 * @return the container itself (to allow chaining calls)
 	 */
-	SimComponentContainer addChild(SimComponent sc);
+	SimComponentContainer addChild(SimComponent... scs);
 
 	/**
 	 * Removes a child from this container.

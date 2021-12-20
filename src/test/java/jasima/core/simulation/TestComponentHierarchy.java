@@ -91,7 +91,7 @@ public class TestComponentHierarchy {
 		SimComponentContainerBase c = new SimComponentContainerBase("main");
 		c.addComponent(new SimComponentBase("sub1"));
 		SimComponentContainerBase sub2 = new SimComponentContainerBase("sub2");
-		sub2.addComponent(new SimComponentBase("a")).addComponent(new SimComponentBase("b"));
+		sub2.addComponent(new SimComponentBase("a"), new SimComponentBase("b"));
 		c.addComponent(sub2);
 
 		SimComponent cmp = c.getByHierarchicalName("main.sub2.b");

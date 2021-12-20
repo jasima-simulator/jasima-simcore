@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import jasima.core.simulation.Simulation.SimExecState;
-import jasima.core.simulation.util.SimOperations;
 
 /**
  * Simple implementation of a {@link SimComponentContainer}.
@@ -78,31 +77,32 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public SimComponentContainerBase addChild(SimComponent sc) {
-		// name has to be unique
-		if (getChildByName(sc.getName()) != null) {
-			throw new IllegalArgumentException(String.format("Container '%s' already contains a component '%s'.",
-					getHierarchicalName(), sc.getName()));
+	public SimComponentContainerBase addChild(SimComponent... scs) {
+		for (SimComponent sc : scs) {
+			// name has to be unique
+			if (getChildByName(sc.getName()) != null) {
+				throw new IllegalArgumentException(String.format("Container '%s' already contains a component '%s'.",
+						getHierarchicalName(), sc.getName()));
+			}
+
+			// map was initialized by calling getChildByName
+			componentsByName.put(sc.getName(), sc);
+
+			components.add(sc);
+			sc.setParent(this);
+			sc.setSim(sim); // no getSim() here because it throws an exception on null
 		}
 
-		// map was initalized by calling getChildByName
-		componentsByName.put(sc.getName(), sc);
-
-		components.add(sc);
-		sc.setParent(this);
-		sc.setSim(sim); // no getSim() here because it throws an exception on null
-
 		if (sim != null && sim.state() != SimExecState.INITIAL) {
-			sim.activate(sc);
+			sim.activateAll(scs);
 		}
 
 		return this;
 	}
 
 	@Override // inherited from SimOperations
-	public <T extends SimComponent> SimOperations addComponent(T sc) {
-		addChild(sc);
-		return this;
+	public void addComponent(SimComponent... scs) {
+		addChild(scs);
 	}
 
 	@Override

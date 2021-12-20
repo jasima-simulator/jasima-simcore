@@ -139,8 +139,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		return SimContext.simulationOf(components);
 	}
 
-	public static Map<String, Object> of(String name, SimComponent e) {
-		return SimContext.simulationOf(name, e);
+	public static Map<String, Object> of(String name, SimComponent... components) {
+		return SimContext.simulationOf(name, components);
 	}
 
 	public static Map<String, Object> of(SimAction a) {
@@ -887,7 +887,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 */
 	@Override
 	public void addResult(String name, Object value) {
-		if (res!=null)
+		if (res != null)
 			// called during produceResults()
 			res.put(name, value);
 		else
@@ -904,27 +904,39 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * @return same as parameter {@code sc} to allow chaining
 	 */
 	<T extends SimComponent> T activate(T sc) {
+		activateAll(sc);
+		return sc;
+	}
+
+	void activateAll(SimComponent... scs) {
 		requireAllowedState(state.get(), INIT, BEFORE_RUN, RUNNING, PAUSED);
-		sc.setSim(this);
+		for (SimComponent sc : scs)
+			sc.setSim(this);
 		switch (state.get()) {
 		case INITIAL:
 			break; // do nothing
 		case INIT:
-			sc.init();
+			for (SimComponent sc : scs)
+				sc.init();
 			break;
 		case BEFORE_RUN:
-			sc.init();
-			sc.simStart();
+			// whenever more than one event is triggered it is important to call all init()s
+			// first before calling simStart()
+			for (SimComponent sc : scs)
+				sc.init();
+			for (SimComponent sc : scs)
+				sc.simStart();
 			break;
 		case RUNNING:
 		case PAUSED:
-			sc.init();
-			sc.simStart();
+			for (SimComponent sc : scs)
+				sc.init();
+			for (SimComponent sc : scs)
+				sc.simStart();
 			break;
 		default:
 			throw new AssertionError();
 		}
-		return sc;
 	}
 
 	/**
