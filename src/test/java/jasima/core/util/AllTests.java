@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ I18nTest.class, StringUtilTest.class, TypeUtilTest.class, jasima.core.util.converter.AllTests.class })
+@SuiteClasses({ I18nTest.class, StringUtilTest.class, TypeUtilTest.class, jasima.core.util.converter.AllTests.class,
+		ValueStoreImplTest.class, ValueStoreDelegationTest.class })
 public class AllTests {
 
 }

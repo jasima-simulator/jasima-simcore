@@ -1,6 +1,7 @@
 package jasima.core.util;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -22,13 +23,14 @@ public class ValueStoreImpl implements ValueStore, Cloneable {
 	 * of global data store. This can be used as a simple extension mechanism.
 	 * 
 	 * @param key   The key name.
-	 * @param value value to assign to {@code key}.
+	 * @param value value to assign to {@code key}. Mustn't be null (otherwise a
+	 *              {@link NullPointerException} is thrown).
 	 * @return returns {@code value}
 	 * @see #valueStoreGet(Object)
 	 */
 	@Override
-	public Object valueStorePut(Object key, Object value) {
-		valueStore.put(key, value);
+	public <T> T valueStorePut(Object key, T value) {
+		valueStore.put(key, Objects.requireNonNull(value));
 		return value;
 	}
 

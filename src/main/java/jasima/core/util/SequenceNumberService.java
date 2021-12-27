@@ -26,11 +26,10 @@ public class SequenceNumberService {
 	 */
 	public static SequenceNumberService getFor(Simulation sim) {
 		String serviceName = SequenceNumberService.class.getName();
-		SequenceNumberService s = (SequenceNumberService) sim.valueStoreGet(serviceName);
-		if (s == null) {
-			s = (SequenceNumberService) sim.valueStorePut(serviceName, new SequenceNumberService());
-		}
-		return s;
+
+		// create new instance on first use
+		return (SequenceNumberService) sim.valueStoreUpdate(serviceName,
+				oldService -> oldService != null ? oldService : new SequenceNumberService());
 	}
 
 	private final Map<String, AtomicInteger> values;

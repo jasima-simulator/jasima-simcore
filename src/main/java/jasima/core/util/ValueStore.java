@@ -22,12 +22,12 @@ package jasima.core.util;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * This interface provides a simple get/put-mechanism to store a value
  * associated with a key object, similar to a @link {@link Map}.
  * <p>
- * 
  * 
  * @author Torsten Hildebrandt
  */
@@ -39,10 +39,10 @@ public interface ValueStore {
 	 * 
 	 * @param key   The key name.
 	 * @param value value to assign to {@code key}.
-	 * @return returns {@code value}
+	 * @return returns {@code value} to allow chaining calls.
 	 * @see #valueStoreGet(Object)
 	 */
-	default Object valueStorePut(Object key, Object value) {
+	default <T> T valueStorePut(Object key, T value) {
 		return valueStoreImpl().valueStorePut(key, value);
 	}
 
@@ -73,6 +73,26 @@ public interface ValueStore {
 	default Object valueStoreGet(Object key, Object defaultValue) {
 		Object value = valueStoreGet(key);
 		return value != null ? value : defaultValue;
+	}
+
+	/**
+	 * Applies the given function to the old value associated with {@code key} (null
+	 * if not existing), and stores the new, computed value in the value store.
+	 * 
+	 * @param key  The key to access.
+	 * @param func The function to apply to the old value, calculating the new one.
+	 * @return The new value as produced by {@code func}.
+	 */
+	default Object valueStoreUpdate(Object key, Function<Object, Object> func) {
+		Object oldValue = valueStoreGet(key);
+		Object newValue = func.apply(oldValue);
+		if (newValue != null)
+			valueStorePut(key, newValue);
+		else {
+			valueStoreRemove(key);
+		}
+
+		return newValue;
 	}
 
 	/**
