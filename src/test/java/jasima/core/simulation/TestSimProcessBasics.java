@@ -13,12 +13,12 @@ import static org.junit.Assert.fail;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -31,128 +31,127 @@ import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
 
 public class TestSimProcessBasics {
-	
+
 	@Rule
 	public Timeout globalTimeout = new Timeout(60000);
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private Simulation sim;
-
-	@Before
-	public void setUp() throws Exception {
-		sim = new Simulation();
-		sim.setPrintLevel(MsgCategory.ALL);
-		sim.addPrintListener(System.out::println);
-	}
-
 	@Test
 	public void testGeneratorMethod() {
-		new SimProcess<>(sim, TestSimProcessBasics::generatorProcess, "generator").awakeIn(0.0);
-		sim.performRun();
-		assertEquals(6.6, sim.simTime(), 1e-6);
+		Map<String, Object> res = Simulation.of(sim -> {
+			sim.activate("generator", TestSimProcessBasics::generatorProcess);
+		});
+		assertEquals("simTime", 6.6, (Double) res.get("simTime"), 1e-6);
 	}
 
 	@Test
 	public void testBasicExecution() {
-		new SimProcess<>(sim, () -> TestSimProcessBasics.simpleProcess("p1"), "p1").awakeIn(0.0);
-		sim.performRun();
-
-		assertEquals(3.6, sim.simTime(), 1e-6);
+		Map<String, Object> res = Simulation.of(sim -> {
+			sim.activate("p1", () -> TestSimProcessBasics.simpleProcess("p1"));
+		});
+		assertEquals("simTime", 3.6, (Double) res.get("simTime"), 1e-6);
 	}
 
 	@Test
 	public void testSuspendResumeByEvent() {
-		SimProcess<Void> p = new SimProcess<>(sim, () -> TestSimProcessBasics.suspendingProcess());
-		p.awakeIn(0.0);
-		sim.scheduleAt(2.0, SimEvent.EVENT_PRIO_NORMAL, () -> p.resume());
-
-		sim.performRun();
-		assertEquals(3.0, sim.simTime(), 1e-6);
+		Map<String, Object> res = Simulation.of(sim -> {
+			SimProcess<Void> p = sim.activate(TestSimProcessBasics::suspendingProcess);
+			sim.scheduleAt(2.0, SimEvent.EVENT_PRIO_NORMAL, () -> p.resume());
+		});
+		assertEquals("simTime", 3.0, (Double) res.get("simTime"), 1e-6);
 	}
 
 	@Test
 	public void testSuspendResumeByProcess() {
-		SimProcess<Void> p = new SimProcess<>(sim, () -> TestSimProcessBasics.suspendingProcess());
-//		p.awakeIn(0.0);
-		new SimProcess<>(sim, () -> {
-			SimProcess<?> simProcess = SimContext.currentProcess();
-			simProcess.waitFor(2.0);
-			p.resume();
-		}).awakeIn(0.0);
+		Map<String, Object> res = Simulation.of(sim -> {
+			SimProcess<Void> p = sim.activate(TestSimProcessBasics::suspendingProcess);
 
-		sim.performRun();
-		assertEquals(3.0, sim.simTime(), 1e-6);
+			sim.activate(() -> {
+				SimContext.waitFor(2.0);
+				p.resume();
+			});
+		});
+		assertEquals("simTime", 3.0, (Double) res.get("simTime"), 1e-6);
 	}
 
 	@Test
 	public void testLambdaProcess() {
-		new SimProcess<>(sim, () -> {
-			SimProcess<?> simProcess = SimContext.currentProcess();
-			simProcess.waitFor(2.0);
-		}).awakeIn(0.0);
-
-		sim.performRun();
-		assertEquals(2.0, sim.simTime(), 1e-6);
+		Map<String, Object> res = Simulation.of(sim -> {
+			sim.activate(() -> {
+				SimContext.waitFor(2.0);
+			});
+		});
+		assertEquals("simTime", 2.0, (Double) res.get("simTime"), 1e-6);
 	}
 
 	@Test
 	public void testProcessJoin() {
-		SimProcess<Integer> p1 = new SimProcess<>(sim, () -> {
-			SimProcess<?> simProcess = SimContext.currentProcess();
+		AtomicInteger processResult = new AtomicInteger(0);
 
-			simProcess.waitFor(1.0);
+		Map<String, Object> res = Simulation.of(sim -> {
+			SimProcess<Integer> p1 = sim.activateCallable(() -> {
+				waitFor(1.0);
 
-			SimProcess<Integer> p2 = new SimProcess<>(sim, () -> {
-				SimProcess<?> p = SimContext.currentProcess();
-				p.waitFor(5.0);
-				return 42;
+				SimProcess<Integer> p2 = sim.activateCallable(() -> {
+					SimProcess<?> p = SimContext.currentProcess();
+					p.waitFor(5.0);
+					return 42;
+				});
+
+				p2.join();
+
+				int procRes = p2.get();
+				assertEquals(42, procRes);
+
+				waitFor(1.0);
+
+				return 23;
 			});
-			p2.awakeIn(0.0);
 
-			p2.join();
-			int procRes = p2.get();
-			assertEquals(42, procRes);
-
-			simProcess.waitFor(1.0);
-
-			return 23;
+			processResult.set(p1.join().get());
 		});
-		p1.awakeIn(0.0);
+		assertEquals(23, processResult.get());
+		assertEquals("simTime", 7.0, (Double) res.get("simTime"), 1e-6);
+	}
 
-		sim.performRun();
+	@Test
+	public void testGetFromUnfinishedProcessShouldRaiseException() {
+		expectedException.expect(SimulationFailed.class);
+		expectedException.expectCause(isA(IllegalStateException.class));
 
-		assertEquals(23, p1.get().intValue());
-		assertEquals(7.0, sim.simTime(), 1e-6);
+		Simulation.of(sim -> {
+			SimProcess<?> p1 = sim.activate(() -> {
+				waitFor(23.0);
+			});
+			p1.get(); // triggers an IllegalStateException
+		});
+
+		fail("should never be reached");
 	}
 
 	@Test
 	public void testJoinTerminatedProcess() {
-		new SimProcess<>(sim, () -> {
-			SimProcess<?> simProcess = SimContext.currentProcess();
-
-			SimProcess<String> p2 = new SimProcess<>(sim, () -> {
+		Map<String, Object> res = Simulation.of(sim -> {
+			SimProcess<String> p2 = sim.activateCallable(() -> {
 				waitFor(5.0);
 				return "test";
 			});
-			p2.awakeIn(0.0);
 
-			simProcess.waitFor(4);
+			waitFor(4);
 
 			assertEquals(ProcessState.SCHEDULED, p2.processState());
 
-			simProcess.waitFor(2);
+			waitFor(2);
 
 			assertEquals(ProcessState.TERMINATED, p2.processState());
 			assertEquals("test", p2.get());
 
-			simProcess.waitFor(1);
-		}).awakeIn(0.0);
+			waitFor(1);
+		});
 
-		sim.performRun();
-
-		assertEquals(7.0, sim.simTime(), 1e-6);
+		assertEquals("simTime", 7.0, (Double) res.get("simTime"), 1e-6);
 	}
 
 	@Test
@@ -240,6 +239,7 @@ public class TestSimProcessBasics {
 
 	@Test
 	public void testProcessNames() throws MightBlock {
+		Simulation sim = createSim();
 		sim.setName("theSimulation");
 
 		SimComponentContainerBase cs = new SimComponentContainerBase("a");
@@ -258,7 +258,7 @@ public class TestSimProcessBasics {
 
 		sim.addComponent(cs);
 
-		sim.setMainProcessActions(sim -> {
+		sim.setMainProcessActions(() -> {
 			checkProcessName("theSimulation.simMain");
 
 			activate("process", () -> {
@@ -267,6 +267,13 @@ public class TestSimProcessBasics {
 		});
 
 		sim.performRun();
+	}
+
+	private Simulation createSim() {
+		Simulation sim = new Simulation();
+		sim.setPrintLevel(MsgCategory.ALL);
+		sim.addPrintListener(System.out::println);
+		return sim;
 	}
 
 	private void checkProcessName(String expected) {

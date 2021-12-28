@@ -155,6 +155,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 	private double simulationLength = 0.0d;
 	private double initialSimTime = 0.0d;
+	private int initialEventPriority = SimEvent.EVENT_PRIO_NORMAL;
 	private double statsResetTime = 0.0d;
 	private RandomFactory rndStreamFactory;
 	private String name = null;
@@ -196,7 +197,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	private int eventNum;
 	private int numAppEvents;
 
-	ObservableValue<SimExecState> state;
+	final ObservableValue<SimExecState> state;
 	private volatile boolean endRequested;
 
 	private AtomicInteger pauseRequests;
@@ -216,8 +217,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	public Simulation() {
 		super();
 
-		state = new ObservableValue<>();
-		state.set(INITIAL);
+		state = new ObservableValue<>(INITIAL);
 
 		pauseRequests = new AtomicInteger(0);
 		runInSimThread = new ConcurrentLinkedQueue<>();
@@ -230,12 +230,13 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 		events = createEventQueue();
 		// set to dummy event
-		currEvent = new SimEvent(Double.NEGATIVE_INFINITY, SimEvent.EVENT_PRIO_MIN) {
+		currEvent = new SimEvent(Double.NEGATIVE_INFINITY, SimEvent.EVENT_PRIO_MAX) {
 			@Override
 			public void handle() {
 			}
 		};
-		currPrio = SimEvent.EVENT_PRIO_MAX;
+		currPrio = currEvent.getPrio();
+		simTime = currEvent.getTime();
 		eventNum = Integer.MIN_VALUE;
 		numAppEvents = 0;
 		numEventsProcessed = 0;
@@ -270,6 +271,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		requireAllowedState(state.get(), INITIAL);
 		state.set(SimExecState.INIT);
 		simTime = getInitialSimTime();
+		currPrio = getInitialEventPriority();
 		additionalResults = new LinkedHashMap<String, Object>();
 		initComponentTree(null, rootComponent);
 		rootComponent.init();
@@ -321,8 +323,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		checkInitialEventTime();
 
 		// dummy event so we have enough time to process runInSimThread list
-		scheduleIn(0.0, currentPrio() + 1, () -> {
-		});
+//		scheduleIn(0.0, currentPrio() + 1, () -> {
+//		});
 
 		// we have to call run() to initialize 'mainProcess' properly in order to start
 		// executing the main event loop
@@ -431,7 +433,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		requireAllowedState(state.get(), SimExecState.INIT);
 		state.set(SimExecState.BEFORE_RUN);
 
-		simEndEvent = new SimEvent(getInitialSimTime() + getSimulationLength(), SimEvent.EVENT_PRIO_LOWEST) {
+		simEndEvent = new SimEvent(getInitialSimTime() + getSimulationLength(), SimEvent.EVENT_PRIO_MIN) {
 			@Override
 			public void handle() {
 				// check again because simLength might have changed during the simulation run
@@ -440,7 +442,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 				}
 			}
 		};
-
 		if (getSimulationLength() > 0.0) {
 			schedule(simEndEvent);
 		}
@@ -710,6 +711,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	/** Returns the current simulation time. */
 	@Override
 	public double simTime() {
+		if (state.get() == INITIAL)
+			throw new IllegalStateException("simTime() is undefined for an uninitialized simulation.");
 		return simTime;
 	}
 
@@ -830,6 +833,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * Returns the priority of the currently processed event.
 	 */
 	public int currentPrio() {
+		if (state.get() == INITIAL)
+			throw new IllegalStateException("currentPrio() is undefined for an uninitialized simulation.");
 		return currPrio;
 	}
 
@@ -1071,11 +1076,13 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 		this.simulationLength = simulationLength;
 
-		double simEndTime = simTime() + getSimulationLength();
-		if (simEndEvent != null && simEndTime != simEndEvent.getTime()) {
-			// schedule another invocation at the correct time
-			simEndEvent.setTime(simEndTime);
-			schedule(simEndEvent);
+		if (simEndEvent != null) {
+			double simEndTime = simTime() + getSimulationLength();
+			if (simEndTime != simEndEvent.getTime()) {
+				// schedule another invocation at the correct time
+				simEndEvent.setTime(simEndTime);
+				schedule(simEndEvent);
+			}
 		}
 	}
 
@@ -1162,6 +1169,18 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	public void setInitialSimTime(double initialSimTime) {
 		requireAllowedState(state.get(), SimExecState.INIT, SimExecState.INITIAL);
 		this.initialSimTime = initialSimTime;
+	}
+
+	public int getInitialEventPriority() {
+		return initialEventPriority;
+	}
+
+	/**
+	 * Sets the initial priority value (default=0, i.e.,
+	 * {@code SimEvent.EVENT_PRIO_NORMAL}).
+	 */
+	public void setInitialEventPriority(int initialEventPriority) {
+		this.initialEventPriority = initialEventPriority;
 	}
 
 	/**
