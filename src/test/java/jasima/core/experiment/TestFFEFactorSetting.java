@@ -170,7 +170,7 @@ public class TestFFEFactorSetting {
 		ffe.addFactor("exceptionDuringExecution", false, true);
 		ffe.addFactor("bool1", true, false, null);
 
-		Map<String, Object> res = ConsoleRunner.runWithArgs(ffe);
+		Map<String, Object> res = ConsoleRunner.run(ffe);
 
 		assertThat("main abort state", res.get("expAborted"), is(0));
 
@@ -191,7 +191,7 @@ public class TestFFEFactorSetting {
 		ffe.addFactor("exceptionDuringExecution", false, true);
 		ffe.addFactor("bool1", true, false, null);
 
-		Map<String, Object> res = ConsoleRunner.runWithArgs(ffe);
+		Map<String, Object> res = ConsoleRunner.run(ffe);
 
 		assertThat("main abort state", res.get("expAborted"), is(1));
 

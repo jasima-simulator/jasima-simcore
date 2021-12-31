@@ -411,17 +411,17 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 
 	// static members below
 
-	public static Map<String, Object> runWithArgs(@Nullable Experiment template, String... args) {
+	public static Map<String, Object> run(@Nullable Experiment template, String... args) {
 		ConsoleRunner cr = new ConsoleRunner(template);
 		return cr.runWith(args);
 	}
 
-	public static Map<String, Object> runWithArgs(String... args) {
-		return runWithArgs(null, args);
+	public static Map<String, Object> run(String... args) {
+		return run(null, args);
 	}
 
 	public static void main(String... args) {
-		runWithArgs(args);
+		run(args);
 	}
 
 }

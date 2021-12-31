@@ -1,6 +1,6 @@
 package jasima.core.run;
 
-import static jasima.core.run.ConsoleRunner.runWithArgs;
+import static jasima.core.run.ConsoleRunner.run;
 import static jasima.core.util.converter.ArgListTokenizer.quoteString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -95,7 +95,7 @@ public class ConsoleRunnerTest {
 
 	@Test
 	public void normalExecutionWithFullClassnameShouldAllowSettingParameters() {
-		Map<String, Object> res = runWithArgs(ExpTestControlFlow.class.getCanonicalName(), "--dummy=23",
+		Map<String, Object> res = run(ExpTestControlFlow.class.getCanonicalName(), "--dummy=23",
 				"--fail=false");
 
 		assertThat("result value", res.get("results"), is(23 * 23));
@@ -106,7 +106,7 @@ public class ConsoleRunnerTest {
 		String className = ExpTestControlFlow.class.getSimpleName();
 		String packageName = ExpTestControlFlow.class.getPackage().getName();
 
-		Map<String, Object> res = runWithArgs(className, //
+		Map<String, Object> res = run(className, //
 				"--dummy=23", //
 				"--fail=false", //
 				"--p=" + packageName);
@@ -116,7 +116,7 @@ public class ConsoleRunnerTest {
 
 	@Test
 	public void testNormalExecutionFromTemplateExperiment() {
-		Map<String, Object> res = runWithArgs(new ExpTestControlFlow(), "--dummy=23", "--fail=false");
+		Map<String, Object> res = run(new ExpTestControlFlow(), "--dummy=23", "--fail=false");
 
 		assertThat("result value", res.get("results"), is(23 * 23));
 	}
@@ -142,7 +142,7 @@ public class ConsoleRunnerTest {
 
 	@Test
 	public void normalExecutionShouldAllowSettingComplexParameters() {
-		Map<String, Object> res = runWithArgs(new DynamicShopExperiment(),
+		Map<String, Object> res = run(new DynamicShopExperiment(),
 				"--sequencingRule=ATC(k=2; tieBreaker=TieBreakerFASFS)");
 		assertThat("numTardy", res.get("numTardy"), is(610));
 	}
@@ -209,7 +209,7 @@ public class ConsoleRunnerTest {
 
 	@Test
 	public void abortingExperimentShouldProduceNoError() {
-		Map<String, Object> res = runWithArgs(fullPathExpSuccess, "--abort=true", "--dummy=21");
+		Map<String, Object> res = run(fullPathExpSuccess, "--abort=true", "--dummy=21");
 
 		assertThat("result value", res.get("results"), is(21 * 21));
 		assertThat("aborted", res.get(Experiment.EXP_ABORTED), is(1));
