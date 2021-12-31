@@ -19,7 +19,7 @@ import jasima.core.util.SimProcessUtil.SimRunnable;
 public interface ProcessActivator {
 
 	Simulation getSim();
-	
+
 	static final Logger log = LogManager.getLogger(ProcessActivator.class);
 
 	public default SimProcess<Void> activate(SimRunnable r) {
@@ -62,7 +62,7 @@ public interface ProcessActivator {
 			p.awakeIn(0.0);
 			return p;
 		});
-		
+
 		if (ctxSim == null) {
 			// called from some external thread
 			getSim().runInSimThread(() -> f.run());
@@ -71,7 +71,7 @@ public interface ProcessActivator {
 			f.run();
 		}
 
-		if (ctxSim!=null) {
+		if (ctxSim != null) {
 			try {
 				f.get();
 			} catch (InterruptedException | ExecutionException e) {
@@ -79,7 +79,7 @@ public interface ProcessActivator {
 				throw new RuntimeException(e);
 			}
 		}
-			
+
 		return p;
 	}
 

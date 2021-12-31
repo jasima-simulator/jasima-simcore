@@ -1,6 +1,6 @@
 package examples.processes.servers;
 
-import static jasima.core.simulation.SimContext.activate;
+//import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.waitFor;
 
 import java.util.Map;
@@ -90,7 +90,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 		trace("simulation start");
 
 		scheduleProcess(SimEvent.EVENT_PRIO_NORMAL, () -> {
-			activate(new Customer());
+			activateEntity(new Customer());
 			return simTime() + arrivals.nextDbl();
 		});
 	}

@@ -94,7 +94,7 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 		}
 
 		if (sim != null && sim.state() != SimExecState.INITIAL) {
-			sim.activateAll(scs);
+			sim.activateComponents(scs);
 		}
 
 		return this;

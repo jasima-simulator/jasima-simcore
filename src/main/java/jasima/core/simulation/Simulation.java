@@ -901,19 +901,42 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	}
 
 	/**
+	 * Activates the given entity but does not add it to the components tree.
+	 * Therefore they will not be notified of any future simulation lifecycle events
+	 * such as {@code produceResults}. It is therefore intended for temporary
+	 * {@code SimEntity}s only.
+	 */
+	@Override
+	public <T extends SimEntity> T activateEntity(T e) {
+		return activateComponent(e);
+	}
+
+	/**
 	 * Calls all lifecycle events on "sc" to be in sync with the simulation it is
 	 * added to. This should happen automatically if a component was added to the
-	 * simulation before the run, but has to be called when components are added
-	 * dynamically while the simulation is ongoing.
+	 * simulation before the run or using the {@link #addComponent(SimComponent...)}
+	 * method, but has to be called manually when components are added dynamically
+	 * while the simulation is ongoing.
+	 * <p>
+	 * This method is primarily intended to be used by temporary components, in
+	 * particular non-permanent {@link SimEntity}s. As they are not added to the
+	 * component tree, they will not be notified of any future simulation lifecycle
+	 * events such as {@code produceResults}.
 	 * 
 	 * @return same as parameter {@code sc} to allow chaining
 	 */
-	<T extends SimComponent> T activate(T sc) {
-		activateAll(sc);
+	<T extends SimComponent> T activateComponent(T sc) {
+		activateComponents(sc);
 		return sc;
 	}
 
-	void activateAll(SimComponent... scs) {
+	/**
+	 * Same as {@link #activateComponent(SimComponent)}, but adds multiple
+	 * components simultaneously.
+	 * 
+	 * @param scs The components to add.
+	 */
+	void activateComponents(SimComponent... scs) {
 		requireAllowedState(state.get(), INIT, BEFORE_RUN, RUNNING, PAUSED);
 		for (SimComponent sc : scs)
 			sc.setSim(this);

@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import org.junit.rules.Timeout;
 
 import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.simulation.Simulation.SimulationFailed;
-import junit.framework.Assert;
 
 public class TestSimulationControlFlow {
 	@Rule

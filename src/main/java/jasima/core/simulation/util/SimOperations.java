@@ -11,6 +11,7 @@ import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponentContainer;
+import jasima.core.simulation.SimEntity;
 import jasima.core.simulation.SimEvent;
 import jasima.core.simulation.Simulation;
 
@@ -35,6 +36,14 @@ public interface SimOperations {
 	 */
 	default void addComponent(SimComponent... scs) {
 		getRootComponent().addChild(scs);
+	}
+
+	/**
+	 * @see Simulation#activateEntity(SimEntity)
+	 */
+	default <T extends SimEntity> T activateEntity(T e) {
+		getSim().activateEntity(e);
+		return e;
 	}
 
 	/**
