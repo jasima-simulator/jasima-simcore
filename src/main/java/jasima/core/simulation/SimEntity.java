@@ -20,35 +20,15 @@ import jasima.core.util.SimProcessUtil.SimAction;
  */
 public class SimEntity extends SimComponentContainerBase {
 
-//	private final SimAction lifecycleActions;
 	private SimProcess<Void> lifecycleProcess = null;
 
 	public SimEntity() {
-//		this(null, (SimAction) null);
 		this(null);
 	}
 
-//	public SimEntity(SimRunnable lifecycleActions) {
-//		this(null, SimProcessUtil.simAction(lifecycleActions));
-//	}
-//
-//	public SimEntity(SimAction lifecycleActions) {
-//		this(null, lifecycleActions);
-//	}
-
 	public SimEntity(String name) {
-//		this(name, (SimAction) null);
 		super(name);
 	}
-
-//	public SimEntity(String name, SimRunnable lifecycleActions) {
-//		this(name, SimProcessUtil.simAction(lifecycleActions));
-//	}
-//
-//	public SimEntity(String name, SimAction lifecycleActions) {
-//		super(name);
-//		this.lifecycleActions = lifecycleActions;
-//	}
 
 	@Override
 	public void init() {
@@ -75,10 +55,6 @@ public class SimEntity extends SimComponentContainerBase {
 	 * @throws MightBlock
 	 */
 	protected void lifecycle() throws MightBlock {
-		// TODO: make SimEntity abstract?
-//		if (lifecycleActions != null) {
-//			lifecycleActions.run(getSim());
-//		}
 	}
 
 	public SimProcess<Void> getLifecycleProcess() {
@@ -153,41 +129,6 @@ public class SimEntity extends SimComponentContainerBase {
 		getLifecycleProcess().awakeAt(instant);
 	}
 
-//	/**
-//	 * @see SimProcess#waitFor(double)
-//	 */
-//	public SimProcess<Void> waitFor(double deltaT) throws MightBlock {
-//		return getLifecycleProcess().waitFor(deltaT);
-//	}
-//
-//	/**
-//	 * @see SimProcess#waitFor(long, TemporalUnit)
-//	 */
-//	public SimProcess<Void> waitFor(long amount, TemporalUnit u) throws MightBlock {
-//		return getLifecycleProcess().waitFor(amount, u);
-//	}
-//
-//	/**
-//	 * @see SimProcess#waitFor(Duration)
-//	 */
-//	public SimProcess<Void> waitFor(Duration d) throws MightBlock {
-//		return getLifecycleProcess().waitFor(d);
-//	}
-//
-//	/**
-//	 * @see SimProcess#waitUntil(double)
-//	 */
-//	public SimProcess<Void> waitUntil(double tAbs) throws MightBlock {
-//		return getLifecycleProcess().waitUntil(tAbs);
-//	}
-//
-//	/**
-//	 * @see SimProcess#waitUntil(Instant)
-//	 */
-//	public SimProcess<Void> waitUntil(Instant instant) throws MightBlock {
-//		return getLifecycleProcess().waitUntil(instant);
-//	}
-
 	/**
 	 * @see SimProcess#cancel()
 	 */
@@ -202,12 +143,6 @@ public class SimEntity extends SimComponentContainerBase {
 		if (sim == null)
 			setSim(SimContext.currentSimulation());
 		lifecycleProcess = new SimProcess<>(getSim(), this::lifecycle, "lifecycle");
-	}
-
-	@Override
-	public SimEntity setName(String name) {
-		super.setName(name);
-		return this;
 	}
 
 }
