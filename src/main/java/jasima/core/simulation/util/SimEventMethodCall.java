@@ -8,15 +8,26 @@ import jasima.core.simulation.SimEvent;
  */
 public final class SimEventMethodCall extends SimEvent {
 	public final Runnable m;
+	public final boolean isAppEvent;
 
 	public SimEventMethodCall(double time, int prio, String description, Runnable method) {
+		this(time, prio, description, method, true);
+	}
+
+	public SimEventMethodCall(double time, int prio, String description, Runnable method, boolean isAppEvent) {
 		super(time, prio, description);
-		m = method;
+		this.m = method;
+		this.isAppEvent = isAppEvent;
 	}
 
 	@Override
 	public void handle() {
 		m.run();
+	}
+
+	@Override
+	public boolean isAppEvent() {
+		return isAppEvent;
 	}
 
 	@Override
