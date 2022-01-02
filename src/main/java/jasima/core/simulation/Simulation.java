@@ -121,7 +121,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		}
 	}
 
-	public static enum SimExecState {
+	public enum SimExecState {
 		INITIAL, INIT, BEFORE_RUN, RUNNING, PAUSED, TERMINATING, FINISHED, ERROR
 	}
 
@@ -868,6 +868,14 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 */
 	public long numEventsProcessed() {
 		return numEventsProcessed;
+	}
+
+	public long numAppEvents() {
+		return numAppEvents;
+	}
+
+	public long numEvents() {
+		return ((EventHeap) events).size();
 	}
 
 	/**

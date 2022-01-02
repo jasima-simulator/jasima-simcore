@@ -1,5 +1,8 @@
 package jasima.core.simulation.util;
 
+import static jasima.core.simulation.util.SimOperations.SimEventType.APP_EVENT;
+import static jasima.core.simulation.util.SimOperations.SimEventType.UTILITY_EVENT;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalUnit;
@@ -26,6 +29,15 @@ import jasima.core.simulation.Simulation;
  * reduce its size.
  */
 public interface SimOperations {
+
+	/**
+	 * Whether an event is a normal/app event or a utility event. The simulation
+	 * continues while there are app events in the event queue, utility events are
+	 * ignored in this respect.
+	 */
+	public enum SimEventType {
+		APP_EVENT, UTILITY_EVENT;
+	}
 
 	Simulation getSim();
 
@@ -153,7 +165,7 @@ public interface SimOperations {
 	 *         usage in, e.g., {@link Simulation#unschedule(SimEvent)}).
 	 */
 	default SimEvent scheduleAt(@Nullable String description, double time, int prio, Runnable action) {
-		return scheduleAt(description, time, prio, action, true);
+		return scheduleAt(description, time, prio, action, APP_EVENT);
 	}
 
 	/**
@@ -164,17 +176,17 @@ public interface SimOperations {
 	}
 
 	/**
-	 * @see #scheduleAt(String, double, int, Runnable, boolean)
+	 * @see #scheduleAt(String, double, int, Runnable, SimEventType)
 	 */
-	default SimEvent scheduleAt(double time, int prio, Runnable method, boolean isAppEvent) {
-		return scheduleAt(null, time, prio, method, isAppEvent);
+	default SimEvent scheduleAt(double time, int prio, Runnable method, SimEventType eventType) {
+		return scheduleAt(null, time, prio, method, eventType);
 	}
 
 	/**
-	 * @see #scheduleAt(double, int, Runnable, boolean)
+	 * @see #scheduleAt(double, int, Runnable, SimEventType)
 	 */
-	default SimEvent scheduleAt(double time, Runnable method, boolean isAppEvent) {
-		return scheduleAt(time, currentPrio(), method, isAppEvent);
+	default SimEvent scheduleAt(double time, Runnable method, SimEventType eventType) {
+		return scheduleAt(time, currentPrio(), method, eventType);
 	}
 
 	/**
@@ -186,24 +198,22 @@ public interface SimOperations {
 	 * @param prio        Priority of the event (to deterministically sequence
 	 *                    events at the same time).
 	 * @param action      The method to call at the given moment.
-	 * @param isAppEvent  If true (default), an event is an app event, otherwise a
-	 *                    utility event. The simulation continues while there are
-	 *                    app events in the event queue, utility events are ignored
-	 *                    in this respect.
+	 * @param eventType   Whether the event is a normal/app event or a utility
+	 *                    event. {@code null} is treated like an app event.
 	 * @return The {@link SimEvent} that was added to the event queue (to allow
 	 *         usage in, e.g., {@link Simulation#unschedule(SimEvent)}).
 	 */
 	default SimEvent scheduleAt(@Nullable String description, double time, int prio, Runnable action,
-			boolean isAppEvent) {
-		SimEvent e = new SimEventMethodCall(time, prio, description, action, isAppEvent);
+			@Nullable SimEventType eventType) {
+		SimEvent e = new SimEventMethodCall(time, prio, description, action, eventType != UTILITY_EVENT);
 		return schedule(e);
 	}
 
 	/**
-	 * @see #scheduleAt(String, double, int, Runnable, boolean)
+	 * @see #scheduleAt(String, double, int, Runnable, SimEventType)
 	 */
-	default SimEvent scheduleAt(@Nullable String description, double time, Runnable action, boolean isAppEvent) {
-		return scheduleAt(description, time, currentPrio(), action, isAppEvent);
+	default SimEvent scheduleAt(@Nullable String description, double time, Runnable action, SimEventType eventType) {
+		return scheduleAt(description, time, currentPrio(), action, eventType);
 	}
 
 	/**
@@ -336,17 +346,17 @@ public interface SimOperations {
 	}
 
 	/**
-	 * @see #scheduleIn(String, double, int, Runnable, boolean)
+	 * @see #scheduleIn(String, double, int, Runnable, SimEventType)
 	 */
-	default SimEvent scheduleIn(double time, int prio, Runnable method, boolean isAppEvent) {
-		return scheduleIn(null, time, prio, method, isAppEvent);
+	default SimEvent scheduleIn(double time, int prio, Runnable method, SimEventType eventType) {
+		return scheduleIn(null, time, prio, method, eventType);
 	}
 
 	/**
-	 * @see #scheduleIn(double, int, Runnable, boolean)
+	 * @see #scheduleIn(double, int, Runnable, SimEventType)
 	 */
-	default SimEvent scheduleIn(double time, Runnable method, boolean isAppEvent) {
-		return scheduleIn(time, currentPrio(), method, isAppEvent);
+	default SimEvent scheduleIn(double time, Runnable method, SimEventType eventType) {
+		return scheduleIn(time, currentPrio(), method, eventType);
 	}
 
 	/**
@@ -364,7 +374,7 @@ public interface SimOperations {
 	 *         usage in, e.g., {@link Simulation#unschedule(SimEvent)}).
 	 */
 	default SimEvent scheduleIn(@Nullable String description, double time, int prio, Runnable method) {
-		return scheduleIn(description, time, prio, method, true);
+		return scheduleIn(description, time, prio, method, APP_EVENT);
 	}
 
 	/**
@@ -385,23 +395,21 @@ public interface SimOperations {
 	 * @param prio        Priority of the event (to deterministically sequence
 	 *                    events at the same time).
 	 * @param method      The method to call at the given moment.
-	 * @param isAppEvent  If true (default), an event is an app event, otherwise a
-	 *                    utility event. The simulation continues while there are
-	 *                    app events in the event queue, utility events are ignored
-	 *                    in this respect.
+	 * @param eventType   Whether the event is a normal/app event or a utility
+	 *                    event.
 	 * @return The {@link SimEvent} that was added to the event queue (to allow
 	 *         usage in, e.g., {@link Simulation#unschedule(SimEvent)}).
 	 */
 	default SimEvent scheduleIn(@Nullable String description, double time, int prio, Runnable method,
-			boolean isAppEvent) {
-		return scheduleAt(description, simTime() + time, prio, method, isAppEvent);
+			SimEventType eventType) {
+		return scheduleAt(description, simTime() + time, prio, method, eventType);
 	}
 
 	/**
 	 * @see #scheduleIn(String, double, int, Runnable, boolean)
 	 */
-	default SimEvent scheduleIn(@Nullable String description, double time, Runnable method, boolean isAppEvent) {
-		return scheduleIn(description, time, currentPrio(), method, isAppEvent);
+	default SimEvent scheduleIn(@Nullable String description, double time, Runnable method, SimEventType eventType) {
+		return scheduleIn(description, time, currentPrio(), method, eventType);
 	}
 
 	/**
