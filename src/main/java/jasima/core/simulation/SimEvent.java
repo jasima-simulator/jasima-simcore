@@ -20,6 +20,8 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import jasima.core.simulation.util.SimOperations.SimEventType;
+
 /**
  * Abstract base class for all simulation events. Events are sequenced by an
  * {@link EventQueue} according to their time, priority and event number (to
@@ -77,7 +79,6 @@ public abstract class SimEvent implements Comparable<SimEvent>, Runnable {
 		return time;
 	}
 
-	
 	public int getPrio() {
 		return prio;
 	}
@@ -86,16 +87,14 @@ public abstract class SimEvent implements Comparable<SimEvent>, Runnable {
 		this.prio = newPrio;
 	}
 
-	
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String newDescription) {
 		this.description = newDescription;
 	}
 
-	
 	/**
 	 * An application event is the usual event type in a simulation. A simulation is
 	 * terminated if the event queue is empty or does not contain any application
@@ -103,6 +102,10 @@ public abstract class SimEvent implements Comparable<SimEvent>, Runnable {
 	 */
 	public boolean isAppEvent() {
 		return true;
+	}
+
+	public SimEventType eventType() {
+		return isAppEvent() ? SimEventType.APP_EVENT : SimEventType.UTILITY_EVENT;
 	}
 
 	@Override

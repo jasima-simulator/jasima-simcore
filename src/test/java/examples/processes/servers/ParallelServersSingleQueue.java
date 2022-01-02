@@ -22,7 +22,7 @@ public class ParallelServersSingleQueue extends SimEntity {
 
 	public static void main(String[] args) throws Exception {
 		Map<String, Object> res = SimContext.simulationOf(sim -> sim.addComponent(new ParallelServersSingleQueue()));
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 	}
 
 	// parameters

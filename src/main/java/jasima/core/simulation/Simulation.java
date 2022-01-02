@@ -104,8 +104,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	public static final String SIM_TIME = "simTime";
 
 	public static final String QUEUE_IMPL_KEY = "jasima.core.simulation.Simulation.queueImpl";
-	public static final Class<? extends EventHeap> queueImpl = TypeUtil.getClassFromSystemProperty(QUEUE_IMPL_KEY,
-			EventHeap.class, EventHeap.class);
+	public static final Class<? extends EventQueue> queueImpl = TypeUtil.getClassFromSystemProperty(QUEUE_IMPL_KEY,
+			EventQueue.class, EventHeap.class);
 
 	@FunctionalInterface
 	public interface ErrorHandler extends Predicate<Exception> {
@@ -870,12 +870,29 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		return numEventsProcessed;
 	}
 
+	/**
+	 * Returns the number of normal, i.e., application events currently contained in
+	 * the event queue.
+	 */
 	public long numAppEvents() {
 		return numAppEvents;
 	}
 
+	/**
+	 * Returns the total number of events (both application and utility events)
+	 * currently contained in the event queue.
+	 */
 	public long numEvents() {
-		return ((EventHeap) events).size();
+		return events.size();
+	}
+
+	/**
+	 * Returns an ordered list of all events currently in the event queue. Use with
+	 * care, this is an expensive operation. The list does not include the current
+	 * event {@link #currentEvent()}.
+	 */
+	public List<SimEvent> scheduledEvents() {
+		return events.allEvents();
 	}
 
 	/**

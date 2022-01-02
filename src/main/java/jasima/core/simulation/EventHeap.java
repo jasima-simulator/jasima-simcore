@@ -20,12 +20,13 @@
  *******************************************************************************/
 package jasima.core.simulation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * An implementation of {@link jasima.core.simulation.EventQueue}
- * using an array-based heap.
+ * An implementation of {@link jasima.core.simulation.EventQueue} using an
+ * array-based heap.
  * 
  * @author Torsten Hildebrandt
  */
@@ -51,6 +52,16 @@ public final class EventHeap implements EventQueue {
 		if (capacity <= 0)
 			throw new IllegalArgumentException();
 		nodes = new SimEvent[capacity];
+	}
+
+	/**
+	 * Copy constructor.
+	 */
+	protected EventHeap(EventHeap copyFrom) {
+		this(copyFrom.size() + 2);
+		invalidRoot = copyFrom.invalidRoot;
+		count = copyFrom.count;
+		System.arraycopy(copyFrom.nodes, 0, nodes, 0, Math.min(count + 2, copyFrom.nodes.length));
 	}
 
 	/**
@@ -170,8 +181,25 @@ public final class EventHeap implements EventQueue {
 	}
 
 	/** Return number of elements * */
+	@Override
 	public int size() {
 		return count;
+	}
+
+	/**
+	 * Returns all events as an ordered list.
+	 * 
+	 * @return All events.
+	 */
+	@Override
+	public ArrayList<SimEvent> allEvents() {
+		ArrayList<SimEvent> res = new ArrayList<>();
+
+		EventHeap copy = new EventHeap(this);
+		for (int i = 0; i < count; i++)
+			res.add(copy.extract());
+
+		return res;
 	}
 
 	private void setCapacity(int newCap) {

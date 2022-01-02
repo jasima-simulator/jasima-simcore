@@ -1,13 +1,15 @@
 package jasima.core.simulation;
 
+import java.util.List;
+
 /** Public interface of event queue implementations. */
 public interface EventQueue {
 
 	/** Insert an event in the queue. */
-	public void insert(SimEvent e);
+	void insert(SimEvent e);
 
 	/** Extract the (chronologically) next event from the queue. */
-	public SimEvent extract();
+	SimEvent extract();
 
 	/**
 	 * Removes the given element from the queue.
@@ -16,5 +18,19 @@ public interface EventQueue {
 	 * @return {@code true} if the element was contained in the heap and
 	 *         successfully removed, {@code false} otherwise
 	 */
-	public boolean remove(SimEvent element);
+	boolean remove(SimEvent element);
+
+	/**
+	 * Returns the number of events currently contained in the event queue.
+	 */
+	int size();
+
+	/**
+	 * Returns all events as an ordered list. Use carefully, this is an expensive
+	 * operation.
+	 * 
+	 * @return All events.
+	 */
+	List<SimEvent> allEvents();
+
 }

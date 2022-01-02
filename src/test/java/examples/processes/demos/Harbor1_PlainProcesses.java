@@ -39,7 +39,7 @@ public class Harbor1_PlainProcesses {
 	}
 
 	public static void main(String... args) {
-		ConsolePrinter.printResults(null, Simulation.of("harbor1", new Harbor1_PlainProcesses()::harborLifecycle));
+		ConsolePrinter.printResults(Simulation.of("harbor1", new Harbor1_PlainProcesses()::harborLifecycle));
 	}
 
 }

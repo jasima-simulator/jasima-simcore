@@ -27,13 +27,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import jasima.core.experiment.AbstractMultiExperiment;
 import jasima.core.experiment.Experiment;
 import jasima.core.experiment.ExperimentListener;
 import jasima.core.experiment.ExperimentMessage.ExpPrintMessage;
+import jasima.core.simulation.SimEvent;
+import jasima.core.simulation.Simulation;
 import jasima.core.statistics.SummaryStat;
 import jasima.core.util.i18n.I18n;
 
@@ -231,13 +236,23 @@ public class ConsolePrinter implements ExperimentListener {
 	 * @param e   The experiment that was executed.
 	 * @param res The list of results.
 	 */
-	public static void printResults(Experiment e, Map<String, Object> res) {
+	public static void printResults(@Nullable Experiment e, Map<String, Object> res) {
 		PrintWriter pw = new PrintWriter(System.out, true);
 		try {
 			printResults(pw, e, res);
 		} finally {
 			pw.flush();
 		}
+	}
+
+	/**
+	 * Static method to prints the results <code>res</code> of an experiment or
+	 * {@link Simulation} to {@link System#out}.
+	 * 
+	 * @param res The map of results.
+	 */
+	public static void printResults(Map<String, Object> res) {
+		printResults((Experiment) null, res);
 	}
 
 	/**
@@ -248,7 +263,7 @@ public class ConsolePrinter implements ExperimentListener {
 	 * @param e   The experiment that was executed.
 	 * @param res The list of results.
 	 */
-	public static void printResults(PrintWriter out, Experiment e, Map<String, Object> res) {
+	public static void printResults(PrintWriter out, @Nullable Experiment e, Map<String, Object> res) {
 		out.println();
 		if (e != null) {
 			out.println(getDescription(e));
@@ -315,6 +330,45 @@ public class ConsolePrinter implements ExperimentListener {
 		out.printf(I18n.DEF_LOCALE, "time needed:\t%.1fs%n", res.get(Experiment.RUNTIME));
 
 		out.flush();
+	}
+
+	/**
+	 * Static method to print the results <code>res</code> of an experiment or
+	 * {@link Simulation} to a {@link PrintWriter}.
+	 * 
+	 * @param out The {@link PrintWriter} to use for printing.
+	 * @param res The map of results.
+	 */
+	public static void printResults(PrintWriter out, Map<String, Object> res) {
+		printResults(out, null, res);
+	}
+
+	/**
+	 * Prints the current event list (including the current event) to the given
+	 * {@code PrintWriter}.
+	 */
+	public static void printEventList(PrintWriter out, Simulation sim) {
+		SimEvent curr = sim.currentEvent();
+		List<SimEvent> nextEvents = sim.scheduledEvents();
+
+		out.println();
+		out.printf(I18n.DEF_LOCALE, "events (*-current, %d future):\n", nextEvents.size());
+		out.println("time\tprio\ttype\tdescription");
+		out.printf(I18n.DEF_LOCALE, "%s*\t%d\t%s\t%s\n", curr.getTime(), curr.getPrio(), curr.eventType(),
+				curr.toString());
+		for (SimEvent evt : nextEvents) {
+			out.printf(I18n.DEF_LOCALE, "%s\t%d\t%s\t%s\n", evt.getTime(), evt.getPrio(), evt.eventType(),
+					evt.toString());
+		}
+		out.println();
+		out.flush();
+	}
+
+	/**
+	 * Prints the current event list (including the current event) to the console.
+	 */
+	public static void printEventList(Simulation sim) {
+		printEventList(new PrintWriter(System.out, true), sim);
 	}
 
 	/**

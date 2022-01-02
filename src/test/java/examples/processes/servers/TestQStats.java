@@ -23,7 +23,7 @@ public class TestQStats {
 			Q<String> q = new Q<>("q");
 			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 		});
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 		checkCountMeanMinMaxWeightSum(stats, 2, 0.0, 0.0, 0.0, 0.0);
@@ -37,7 +37,7 @@ public class TestQStats {
 			QLengthStatsCollector qColl = new QLengthStatsCollector(q, sim);
 			waitFor(1.0);
 		});
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q1.numItems");
 		checkCountMeanMinMaxWeightSum(stats, 2, 0.0, 0.0, 0.0, 1.0);
@@ -55,7 +55,7 @@ public class TestQStats {
 		});
 		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		checkCountMeanMinMaxWeightSum(stats, 2 + 1, (0.0 * 100.0 + 1.0 * 100.0) / 200.0, 0.0, 1.0, 200.0);
 
@@ -74,7 +74,7 @@ public class TestQStats {
 		});
 		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		checkCountMeanMinMaxWeightSum(stats, 2 + 1, (0.0 * 100.0 + 1.0 * 100.0) / 200.0, 0.0, 1.0, 200.0);
 
@@ -92,7 +92,7 @@ public class TestQStats {
 		});
 		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("q.numItems");
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		checkCountMeanMinMaxWeightSum(stats, 2, (1.0 * 100.0) / 100.0, 1.0, 1.0, 100.0);
 
@@ -114,7 +114,7 @@ public class TestQStats {
 		});
 		TimeWeightedSummaryStat stats = (TimeWeightedSummaryStat) res.get("daQueue.numItems");
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		checkCountMeanMinMaxWeightSum(stats, 3 + 2, (0.0 * 1.0 + 1.0 * 2.0 + 2.0 * 1.0) / 4.0, 0.0, 2.0, 4.0);
 

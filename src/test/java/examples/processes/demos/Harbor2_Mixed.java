@@ -61,7 +61,7 @@ public class Harbor2_Mixed extends SimEntity {
 	}
 
 	public static void main(String... args) throws Exception {
-		ConsolePrinter.printResults(null, Simulation.of("harbor2", new Harbor2_Mixed()));
+		ConsolePrinter.printResults(Simulation.of("harbor2", new Harbor2_Mixed()));
 	}
 
 }

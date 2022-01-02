@@ -67,7 +67,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		assertEquals("simTime", 23.0, sim.simTime(), 1e-6);
 		assertEquals("simState", SimExecState.FINISHED, sim.state());
@@ -97,7 +97,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (500 + 3000 + 2000);
 		assertTrue("realTimeMin", timeDiff >= 0); // can't be smaller
@@ -122,7 +122,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (500 + 3000);
 		assertTrue("realTimeMin", timeDiff >= 0); // can't be smaller
@@ -157,7 +157,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (500 + 500 + 3000 + 2000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
@@ -188,7 +188,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (500 + 500 + 3000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
@@ -219,7 +219,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (3000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
@@ -261,7 +261,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (300 + 3000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
@@ -294,7 +294,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (500 + 1000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller
@@ -319,7 +319,7 @@ public class TestSimulationPausing {
 
 		t = System.currentTimeMillis() - t;
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		long timeDiff = t - (2000);
 		assertTrue("realTimeMin, diff=" + timeDiff, timeDiff >= 0); // can't be smaller

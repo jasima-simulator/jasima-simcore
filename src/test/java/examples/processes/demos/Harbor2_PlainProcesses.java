@@ -62,7 +62,7 @@ public class Harbor2_PlainProcesses {
 	}
 
 	public static void main(String... args) throws Exception {
-		ConsolePrinter.printResults(null, Simulation.of("harbor2", new Harbor2_PlainProcesses()::harborLifecycle));
+		ConsolePrinter.printResults(Simulation.of("harbor2", new Harbor2_PlainProcesses()::harborLifecycle));
 	}
 
 }

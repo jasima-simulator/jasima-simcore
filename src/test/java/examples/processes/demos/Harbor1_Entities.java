@@ -39,7 +39,7 @@ public class Harbor1_Entities extends SimEntity {
 	}
 
 	public static void main(String... args) throws Exception {
-		ConsolePrinter.printResults(null, Simulation.of("harbor1", new Harbor1_Entities()));
+		ConsolePrinter.printResults(Simulation.of("harbor1", new Harbor1_Entities()));
 	}
 
 }
