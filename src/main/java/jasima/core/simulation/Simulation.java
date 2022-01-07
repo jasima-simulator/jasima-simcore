@@ -378,7 +378,17 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		}
 		numEventsProcessed++;
 
-		// run event handler
+		runEventHandler(evt);
+	}
+
+	/**
+	 * Runs the handle-method of {@code evt} (see {@link SimEvent#handle()}. This
+	 * method exists to allow executing custom code before and after each event by
+	 * sub-classing {@link Simulation}.
+	 * 
+	 * @param evt The event to execute
+	 */
+	protected void runEventHandler(SimEvent evt) {
 		evt.handle();
 	}
 
@@ -564,6 +574,10 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			printFmt(MsgCategory.ERROR, msg);
 			throw new IllegalArgumentException(msg);
 		}
+
+//		if (onNewEvent != null)
+//			onNewEvent.accept(this, event);
+
 		event.eventNum = eventNum++;
 		if (event.isAppEvent())
 			numAppEvents++;
@@ -1415,4 +1429,5 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		requireAllowedState(state.get(), INITIAL, INIT);
 		this.mainProcessActions = mainProcessActions;
 	}
+
 }
