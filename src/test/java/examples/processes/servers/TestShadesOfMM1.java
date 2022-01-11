@@ -70,7 +70,7 @@ public class TestShadesOfMM1 {
 				}
 			});
 		});
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		assertEquals("numCreated", 10, numCreated.get());
 		assertEquals("numServed", 6, numServed.get());
@@ -116,7 +116,7 @@ public class TestShadesOfMM1 {
 				end();
 			});
 		});
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		assertEquals("numCreated", 10, numCreated.get());
 		assertEquals("numServed", 6, numServed.get());
@@ -193,7 +193,7 @@ public class TestShadesOfMM1 {
 		sim.addComponent(new MM1Model());
 		Map<String, Object> res = sim.performRun();
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		assertEquals("numCreated", 10, (int) res.get("numCreated"));
 		assertEquals("numServed", 6, (int) res.get("numServed"));
@@ -201,6 +201,8 @@ public class TestShadesOfMM1 {
 	}
 
 	static class MM1Experiment extends SimulationExperiment {
+		private static final long serialVersionUID = 1L;
+
 		// parameters
 		private int numJobs = 10;
 		private double trafficIntensity = 0.85;
@@ -297,7 +299,7 @@ public class TestShadesOfMM1 {
 		exp.setInitialSeed(23);
 		Map<String, Object> res = exp.runExperiment();
 
-		ConsolePrinter.printResults(null, res);
+		ConsolePrinter.printResults(res);
 
 		assertEquals("numCreated", 10, (int) res.get("numCreated"));
 		assertEquals("numServed", 6, (int) res.get("numServed"));
@@ -310,7 +312,7 @@ public class TestShadesOfMM1 {
 		exp.setInitialSeed(23);
 		exp.setNumJobs(10);
 
-		Map<String, Object> res = ConsoleRunner.runWithArgs(exp);
+		Map<String, Object> res = ConsoleRunner.run(exp);
 
 		assertEquals("numCreated", 10, (int) res.get("numCreated"));
 		assertEquals("numServed", 6, (int) res.get("numServed"));
