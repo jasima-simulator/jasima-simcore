@@ -1,7 +1,5 @@
 package jasima.core.simulation;
 
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -14,62 +12,7 @@ import jasima.core.util.StringUtil;
  * interface is usually not implemented directly, but by deriving from
  * {@link SimComponentContainerBase}.
  */
-public interface SimComponentContainer extends SimComponent, Iterable<SimComponent> {
-
-	/**
-	 * Returns a list of all child components of this container.
-	 */
-	List<SimComponent> getChildren();
-
-	/**
-	 * Adds one or more child nodes to the container.
-	 * 
-	 * @return the container itself (to allow chaining calls)
-	 */
-	SimComponentContainer addChild(SimComponent... scs);
-
-	/**
-	 * Removes a child from this container.
-	 * 
-	 * @param sc the child to remove
-	 * @return true, if the child was removed; false otherwise
-	 */
-	boolean removeChild(SimComponent sc);
-
-	/**
-	 * Returns {@code true}, if this container contains the node given as a
-	 * parameter.
-	 */
-	default boolean containsChild(SimComponent sc) {
-		return sc.getParent() == this;
-	}
-
-	/**
-	 * Removes all child nodes from this container.
-	 */
-	void removeChildren();
-
-	/**
-	 * Returns the number of children currently contained in this container.
-	 */
-	int numChildren();
-
-	/**
-	 * Returns the child identified by {@code index}.
-	 * 
-	 * @param index the child's index (0-based; range: [0, numChildren-1])
-	 * @return The child.
-	 */
-	SimComponent getChild(int index);
-
-	/**
-	 * Returns the child identified by {@code name}.
-	 * 
-	 * @param name The child's name.
-	 * @return The child; {@code null} if not found.
-	 */
-	@Nullable
-	SimComponent getChildByName(String name);
+public interface SimComponentContainer extends SimComponent {
 
 	/**
 	 * Tries to find a component using the relative names given in the parameter.
@@ -96,7 +39,7 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 		if (!StringUtil.equals(thisName, getName())) {
 			return null;
 		}
-		if (hierarchicalName.length()==0) {
+		if (hierarchicalName.length() == 0) {
 			return this;
 		}
 
@@ -106,43 +49,6 @@ public interface SimComponentContainer extends SimComponent, Iterable<SimCompone
 
 		SimComponent comp = getChildByName(childName);
 		return comp != null ? comp.getByHierarchicalName(hierarchicalName) : null;
-	}
-
-	// code below is forwarding lifecycle events to children
-
-	@Override
-	default void simStart() {
-		SimComponent.super.simStart();
-
-		getChildren().forEach(c -> c.simStart());
-	}
-
-	@Override
-	default void resetStats() {
-		SimComponent.super.resetStats();
-
-		getChildren().forEach(c -> c.resetStats());
-	}
-
-	@Override
-	default void simEnd() {
-		SimComponent.super.simEnd();
-
-		getChildren().forEach(c -> c.simEnd());
-	}
-
-	@Override
-	default void done() {
-		SimComponent.super.done();
-
-		getChildren().forEach(c -> c.done());
-	}
-
-	@Override
-	default void produceResults(Map<String, Object> res) {
-		SimComponent.super.produceResults(res);
-
-		getChildren().forEach(c -> c.produceResults(res));
 	}
 
 	default <T extends SimComponent> void componentSetHelper(T newValue, Supplier<T> getter, Consumer<T> setter) {

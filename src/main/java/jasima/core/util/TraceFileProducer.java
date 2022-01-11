@@ -26,11 +26,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import jasima.core.simulation.SimComponent;
-import jasima.core.simulation.SimComponentLifeCycleListener;
+import jasima.core.simulation.SimComponentLifecycleListener;
 import jasima.core.simulation.SimPrintMessage;
 import jasima.core.simulation.Simulation;
 
@@ -41,13 +40,13 @@ import jasima.core.simulation.Simulation;
  * <p>
  * This class can either be added as a listener to a {@link SimComponent}
  * (usually the root component) as it implements
- * {@link SimComponentLifeCycleListener}. Alternatively it can be directly added
+ * {@link SimComponentLifecycleListener}. Alternatively it can be directly added
  * as a print listener of a {@link Simulation} (it therefore implements
  * {@code Consumer<SimPrintMessage>}).
  * 
  * @author Torsten Hildebrandt
  */
-public class TraceFileProducer implements SimComponentLifeCycleListener, Consumer<SimPrintMessage> {
+public class TraceFileProducer implements SimComponentLifecycleListener, Consumer<SimPrintMessage> {
 
 	// parameters
 
@@ -69,17 +68,14 @@ public class TraceFileProducer implements SimComponentLifeCycleListener, Consume
 	}
 
 	@Override
-	public void init(SimComponent c) {
-		SimComponentLifeCycleListener.super.init(c);
-
-		c.getSim().addPrintListener(this);
-		c.getSim().setPrintLevel(MsgCategory.TRACE);
+	public void init(SimComponent sc) {
+		Simulation sim = sc.getSim();
+		sim.addPrintListener(this);
+		sim.setPrintLevel(MsgCategory.TRACE);
 	}
 
 	@Override
-	public void produceResults(SimComponent c, Map<String, Object> resultMap) {
-		SimComponentLifeCycleListener.super.produceResults(c, resultMap);
-
+	public void done(SimComponent sc) {
 		if (log != null) {
 			log.close();
 			log = null;

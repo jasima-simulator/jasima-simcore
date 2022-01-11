@@ -2,7 +2,6 @@ package jasima.core.simulation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import jasima.core.simulation.Simulation.SimulationFailed;
+import jasima.core.simulation.Simulation.StdSimLifecycleEvents;
 
 public class TestComponentHierarchy {
 //	@Rule
@@ -177,7 +177,7 @@ public class TestComponentHierarchy {
 
 		public EventTracer(String name) {
 			super(name);
-			addListener(new SimComponentLifeCycleListener() {
+			addListener(new SimComponentLifecycleListener() {
 				@Override
 				public void inform(SimComponent o, SimComponentEvent msg) {
 					eventCalls.add(msg.toString());
@@ -188,37 +188,31 @@ public class TestComponentHierarchy {
 		@Override
 		public void init() {
 			lifecycleCalls.add("INIT");
-			super.init();
 		}
 
 		@Override
 		public void simStart() {
 			lifecycleCalls.add("SIM_START");
-			super.simStart();
 		}
 
 		@Override
 		public void resetStats() {
 			lifecycleCalls.add("RESET_STATS");
-			super.resetStats();
 		}
 
 		@Override
 		public void simEnd() {
 			lifecycleCalls.add("SIM_END");
-			super.simEnd();
 		}
 
 		@Override
 		public void done() {
 			lifecycleCalls.add("DONE");
-			super.done();
 		}
 
 		@Override
 		public void produceResults(Map<String, Object> res) {
 			lifecycleCalls.add("PRODUCE_RESULTS");
-			super.produceResults(res);
 
 			res.put(getHierarchicalName() + ".lifecycleCalls", new ArrayList<>(lifecycleCalls));
 			res.put(getHierarchicalName() + ".eventCalls", new ArrayList<>(eventCalls));
@@ -234,15 +228,11 @@ public class TestComponentHierarchy {
 
 	}
 
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void component__initializedTwice__raiseException() {
 		SimComponentBase c = new SimComponentBase();
-		c.init();
-		try {
-			c.init();
-			fail();
-		} catch (IllegalStateException expected) {
-		}
+		c.inform(null, StdSimLifecycleEvents.INIT);
+		c.inform(null, StdSimLifecycleEvents.INIT);
 	}
 
 	@Test

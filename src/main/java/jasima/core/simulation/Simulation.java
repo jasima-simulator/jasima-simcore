@@ -67,6 +67,7 @@ import jasima.core.experiment.Experiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.Simulation.SimLifecycleEvent;
 import jasima.core.simulation.util.ProcessActivator;
 import jasima.core.simulation.util.SimComponentRoot;
 import jasima.core.simulation.util.SimOperations;
@@ -80,6 +81,8 @@ import jasima.core.util.Util;
 import jasima.core.util.ValueStore;
 import jasima.core.util.ValueStoreImpl;
 import jasima.core.util.i18n.I18n;
+import jasima.core.util.observer.Notifier;
+import jasima.core.util.observer.NotifierImpl;
 import jasima.core.util.observer.ObservableValue;
 
 /**
@@ -98,7 +101,46 @@ import jasima.core.util.observer.ObservableValue;
  * 
  * @author Torsten Hildebrandt
  */
-public class Simulation implements ValueStore, SimOperations, ProcessActivator {
+public class Simulation
+		implements ValueStore, SimOperations, ProcessActivator, Notifier<Simulation, SimLifecycleEvent> {
+
+	public interface SimLifecycleEvent {
+	}
+
+	public enum StdSimLifecycleEvents implements SimLifecycleEvent {
+		INIT, SIM_START, RESET_STATS, SIM_END, DONE
+	}
+
+	/**
+	 * Message send when all {@link SimComponent}s are requested to produce results.
+	 * 
+	 * @author Torsten Hildebrandt
+	 */
+	public static class ProduceResultsMessage implements SimLifecycleEvent {
+
+		public final Map<String, Object> resultMap;
+
+		public ProduceResultsMessage(Map<String, Object> resultMap) {
+			this.resultMap = resultMap;
+		}
+
+		@Override
+		public String toString() {
+			return "ProduceResultsMsg";
+		}
+
+	}
+
+	// event notification
+	private NotifierImpl<Simulation, SimLifecycleEvent> notifierAdapter;
+
+	@Override
+	public NotifierImpl<Simulation, SimLifecycleEvent> notifierImpl() {
+		if (notifierAdapter == null)
+			notifierAdapter = new NotifierImpl<>(this);
+
+		return notifierAdapter;
+	}
 
 	// result value name for simulation time at end of simulation run
 	public static final String SIM_TIME = "simTime";
@@ -166,7 +208,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	// delegate ValueStore functionality
 	private ValueStoreImpl valueStore;
 
-	private SimComponentContainer rootComponent;
+	private SimComponentRoot rootComponent;
 
 	private MsgCategory printLevel = MsgCategory.INFO;
 	private ArrayList<Consumer<SimPrintMessage>> printListener;
@@ -244,7 +286,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		LocalDate yearBeg = LocalDate.of(Year.now(Clock.systemUTC()).getValue(), 1, 1);
 		simTimeStartInstant = yearBeg.atStartOfDay(ZoneOffset.UTC).toInstant();
 
-		setRootComponent(new SimComponentRoot());
+		rootComponent = new SimComponentRoot();
+		addListener(rootComponent);
 	}
 
 	public void addPrintListener(Consumer<SimPrintMessage> listener) {
@@ -273,8 +316,9 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		simTime = getInitialSimTime();
 		currPrio = getInitialEventPriority();
 		additionalResults = new LinkedHashMap<String, Object>();
+
 		initComponentTree(null, rootComponent);
-		rootComponent.init();
+		fire(StdSimLifecycleEvents.INIT);
 	}
 
 	/**
@@ -284,14 +328,11 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * @param parent
 	 * @param child
 	 */
-	protected void initComponentTree(SimComponentContainer parent, SimComponent child) {
+	protected void initComponentTree(SimComponent parent, SimComponent child) {
 		child.setParent(parent);
 		child.setSim(this);
 
-		if (child instanceof SimComponentContainer) {
-			SimComponentContainer scc = (SimComponentContainer) child;
-			scc.getChildren().forEach(c -> initComponentTree(scc, c));
-		}
+		child.getChildren().forEach(c -> initComponentTree(child, c));
 	}
 
 	/**
@@ -456,7 +497,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			schedule(simEndEvent);
 		}
 
-		rootComponent.simStart();
+		fire(StdSimLifecycleEvents.SIM_START);
 	}
 
 	/**
@@ -471,11 +512,13 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 
 		// schedule statistics reset
 		if (getStatsResetTime() > getInitialSimTime()) {
-			scheduleAt(getStatsResetTime(), SimEvent.EVENT_PRIO_LOWEST, rootComponent::resetStats);
+			// TODO: change prio to HIGHEST?
+			scheduleAt("statsReset", getStatsResetTime(), SimEvent.EVENT_PRIO_LOWEST,
+					() -> fire(StdSimLifecycleEvents.RESET_STATS));
 		}
 
 		// call once for each run
-		rootComponent.resetStats();
+		fire(StdSimLifecycleEvents.RESET_STATS);
 	}
 
 	/**
@@ -484,14 +527,14 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * the {@link #run()} method.
 	 */
 	public void afterRun() {
-		rootComponent.simEnd();
+		fire(StdSimLifecycleEvents.SIM_END);
 	}
 
 	/**
 	 * Performs clean-up etc., after a simulation's {@link #run()} method finished.
 	 */
 	public void done() {
-		rootComponent.done();
+		fire(StdSimLifecycleEvents.DONE);
 	}
 
 	/**
@@ -574,9 +617,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			printFmt(MsgCategory.ERROR, msg);
 			throw new IllegalArgumentException(msg);
 		}
-
-//		if (onNewEvent != null)
-//			onNewEvent.accept(this, event);
 
 		event.eventNum = eventNum++;
 		if (event.isAppEvent())
@@ -903,7 +943,6 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	/**
 	 * Returns an ordered list of all events currently in the event queue. Use with
 	 * care, this is an expensive operation. The list does not include the current
-	 * event {@link #currentEvent()}.
 	 */
 	public List<SimEvent> scheduledEvents() {
 		return events.allEvents();
@@ -917,7 +956,8 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 		try {
 			res.putAll(additionalResults);
 			res.put(SIM_TIME, simTime());
-			rootComponent.produceResults(res);
+
+			fire(new ProduceResultsMessage(res));
 		} finally {
 			res = null;
 		}
@@ -984,22 +1024,22 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 			break; // do nothing
 		case INIT:
 			for (SimComponent sc : scs)
-				sc.init();
+				sc.inform(this, StdSimLifecycleEvents.INIT);
 			break;
 		case BEFORE_RUN:
 			// whenever more than one event is triggered it is important to call all init()s
 			// first before calling simStart()
 			for (SimComponent sc : scs)
-				sc.init();
+				sc.inform(this, StdSimLifecycleEvents.INIT);
 			for (SimComponent sc : scs)
-				sc.simStart();
+				sc.inform(this, StdSimLifecycleEvents.SIM_START);
 			break;
 		case RUNNING:
 		case PAUSED:
 			for (SimComponent sc : scs)
-				sc.init();
+				sc.inform(this, StdSimLifecycleEvents.INIT);
 			for (SimComponent sc : scs)
-				sc.simStart();
+				sc.inform(this, StdSimLifecycleEvents.SIM_START);
 			break;
 		default:
 			throw new AssertionError();
@@ -1204,7 +1244,7 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 *         simulation.
 	 */
 	@Override
-	public SimComponentContainer getRootComponent() {
+	public SimComponentRoot getRootComponent() {
 		return rootComponent;
 	}
 
@@ -1214,14 +1254,14 @@ public class Simulation implements ValueStore, SimOperations, ProcessActivator {
 	 * 
 	 * @param rootComponent The new root component.
 	 */
-	protected void setRootComponent(SimComponentContainer rootComponent) {
-		if (this.rootComponent != null) {
-			this.rootComponent.setSim(null);
-		}
-
-		this.rootComponent = rootComponent;
-		rootComponent.setSim(this);
-	}
+//	protected void setRootComponent(SimComponentContainer rootComponent) {
+//		if (this.rootComponent != null) {
+//			this.rootComponent.setSim(null);
+//		}
+//
+//		this.rootComponent = rootComponent;
+//		rootComponent.setSim(this);
+//	}
 
 	public double getInitialSimTime() {
 		return initialSimTime;

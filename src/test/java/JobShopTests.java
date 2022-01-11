@@ -62,11 +62,7 @@ public class JobShopTests {
 		s.setSimulationLength(8 * 365.0f);
 		s.addComponent(js);
 
-		s.init();
-		s.beforeRun();
-		s.run();
-		s.afterRun();
-		s.done();
+		s.performRun();
 
 		js.report();
 
@@ -134,11 +130,7 @@ public class JobShopTests {
 		s.setSimulationLength(8 * 100 * 365f);
 		s.addComponent(js);
 
-		s.init();
-		s.beforeRun();
-		s.run();
-		s.afterRun();
-		s.done();
+		s.performRun();
 
 		js.report();
 

@@ -16,14 +16,14 @@ import jasima.core.util.observer.NotifierImpl;
  */
 public class SimComponentBase implements SimComponent {
 
-	private transient SimComponentContainer parent;
+	private transient SimComponent parent;
 	private transient String hierarchicalName;
 	protected transient Simulation sim;
 	private transient boolean initialized;
 
 	private String name;
 
-	// delegate Notifier functionality
+//	 delegate Notifier functionality
 	private NotifierImpl<SimComponent, SimComponentEvent> notifierAdapter;
 
 	// delegate ValueStore functionality
@@ -54,12 +54,12 @@ public class SimComponentBase implements SimComponent {
 	}
 
 	@Override
-	public @Nullable SimComponentContainer getParent() {
+	public @Nullable SimComponent getParent() {
 		return parent;
 	}
 
 	@Override
-	public void setParent(@Nullable SimComponentContainer parent) {
+	public void setParent(@Nullable SimComponent parent) {
 		this.hierarchicalName = null;
 		this.parent = parent;
 	}
@@ -72,9 +72,15 @@ public class SimComponentBase implements SimComponent {
 		}
 		return hierarchicalName;
 	}
-	
+
+	@Override
 	public boolean isInitialized() {
 		return initialized;
+	}
+
+	@Override
+	public void setInitialized(boolean initStatus) {
+		initialized = initStatus;
 	}
 
 	@Override
@@ -151,14 +157,6 @@ public class SimComponentBase implements SimComponent {
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public void init() {
-		if (initialized)
-			throw new IllegalStateException("Component already initialized: " + toString());
-		initialized = true;
-		fire(SimComponentLifeCycleMessage.INIT);
 	}
 
 }

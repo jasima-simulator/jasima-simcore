@@ -1,10 +1,15 @@
 package jasima.core.simulation;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import jasima.core.simulation.SimComponent.SimComponentEvent;
+import jasima.core.simulation.Simulation.ProduceResultsMessage;
+import jasima.core.simulation.Simulation.SimLifecycleEvent;
+import jasima.core.simulation.Simulation.StdSimLifecycleEvents;
 import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.StringUtil;
 import jasima.core.util.ValueStore;
@@ -16,7 +21,8 @@ import jasima.core.util.observer.Notifier;
  * @author Torsten Hildebrandt
  * @see Simulation
  */
-public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>, ValueStore, Cloneable, SimOperations {
+public interface SimComponent
+		extends Notifier<SimComponent, SimComponentEvent>, SimLifecycleListener, ValueStore, Cloneable, SimOperations {
 
 	interface SimComponentEvent {
 	}
@@ -35,11 +41,11 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	 * 
 	 * @author Torsten Hildebrandt
 	 */
-	public static class ProduceResultsMessage implements SimComponentEvent {
+	public static class ProduceResultsEvent implements SimComponentEvent {
 
 		public final Map<String, Object> resultMap;
 
-		public ProduceResultsMessage(Map<String, Object> resultMap) {
+		public ProduceResultsEvent(Map<String, Object> resultMap) {
 			this.resultMap = resultMap;
 		}
 
@@ -64,12 +70,12 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	 * Returns the container this component is contained in.
 	 */
 	@Nullable
-	SimComponentContainer getParent();
+	SimComponent getParent();
 
 	/**
 	 * Sets the container this component is contained in.
 	 */
-	void setParent(@Nullable SimComponentContainer p);
+	void setParent(@Nullable SimComponent p);
 
 	/**
 	 * Gets the name of this component (must not be changed once set).
@@ -82,28 +88,73 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 		return name != null && name.length() > 0 && name.indexOf(NAME_SEPARATOR) < 0;
 	}
 
-	// default implementations of lifecycle messages/events
+	boolean isInitialized();
 
-	void init();
+	void setInitialized(boolean initStatus);
 
+	// default implementation of simulation lifecycle messages/events
+
+	@Override
+	default void init() {
+	}
+
+	@Override
 	default void simStart() {
-		fire(SimComponentLifeCycleMessage.SIM_START);
 	}
 
+	@Override
 	default void resetStats() {
-		fire(SimComponentLifeCycleMessage.RESET_STATS);
 	}
 
+	@Override
 	default void simEnd() {
-		fire(SimComponentLifeCycleMessage.SIM_END);
 	}
 
+	@Override
 	default void done() {
-		fire(SimComponentLifeCycleMessage.DONE);
 	}
 
+	@Override
 	default void produceResults(Map<String, Object> res) {
-		fire(new ProduceResultsMessage(res));
+	}
+
+	@Override
+	default void handleOther(Simulation sim, SimLifecycleEvent event) {
+	}
+
+	@Override
+	default void inform(Simulation sim, SimLifecycleEvent event) {
+		// give component a chance to handle event itself
+		if (event == StdSimLifecycleEvents.INIT) {
+			if (isInitialized())
+				throw new IllegalStateException("Component already initialized: " + toString());
+			fire(SimComponentLifeCycleMessage.INIT);
+			init();
+			setInitialized(true);
+		} else if (event == StdSimLifecycleEvents.SIM_START) {
+			fire(SimComponentLifeCycleMessage.SIM_START);
+			simStart();
+		} else if (event == StdSimLifecycleEvents.RESET_STATS) {
+			fire(SimComponentLifeCycleMessage.RESET_STATS);
+			resetStats();
+		} else if (event == StdSimLifecycleEvents.SIM_END) {
+			fire(SimComponentLifeCycleMessage.SIM_END);
+			simEnd();
+		} else if (event == StdSimLifecycleEvents.DONE) {
+			fire(SimComponentLifeCycleMessage.DONE);
+			done();
+		} else if (event instanceof ProduceResultsMessage) {
+			ProduceResultsMessage pe = (ProduceResultsMessage) event;
+			fire(new ProduceResultsEvent(pe.resultMap));
+			produceResults(pe.resultMap);
+		} else {
+			handleOther(sim, event);
+		}
+
+		// propagate to all children
+		for (SimComponent c : getChildren()) {
+			c.inform(sim, event);
+		}
 	}
 
 	/**
@@ -113,7 +164,7 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	 */
 	default String getHierarchicalName() {
 		StringBuilder sb = new StringBuilder();
-		SimComponentContainer p = getParent();
+		SimComponent p = getParent();
 		if (p != null) {
 			sb.append(p.getHierarchicalName()).append(NAME_SEPARATOR);
 		} else {
@@ -141,6 +192,73 @@ public interface SimComponent extends Notifier<SimComponent, SimComponentEvent>,
 	@Override // inherited from SimOperations
 	default void addComponent(SimComponent... scs) {
 		throw new UnsupportedOperationException("Can only add components to a container.");
+	}
+
+	/**
+	 * Returns a list of all child components of this container.
+	 */
+	default List<SimComponent> getChildren() {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Adds one or more child nodes to the container.
+	 * 
+	 * @return the container itself (to allow chaining calls)
+	 */
+	default SimComponentContainer addChild(SimComponent... scs) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Removes a child from this container.
+	 * 
+	 * @param sc the child to remove
+	 * @return true, if the child was removed; false otherwise
+	 */
+	default boolean removeChild(SimComponent sc) {
+		return false;
+	}
+
+	/**
+	 * Returns {@code true}, if this container contains the node given as a
+	 * parameter.
+	 */
+	default boolean containsChild(SimComponent sc) {
+		return sc.getParent() == this;
+	}
+
+	/**
+	 * Removes all child nodes from this container.
+	 */
+	default void removeChildren() {
+	}
+
+	/**
+	 * Returns the number of children currently contained in this container.
+	 */
+	default int numChildren() {
+		return 0;
+	}
+
+	/**
+	 * Returns the child identified by {@code index}.
+	 * 
+	 * @param index the child's index (0-based; range: [0, numChildren-1])
+	 * @return The child.
+	 */
+	default SimComponent getChild(int index) {
+		return getChildren().get(index);
+	}
+
+	/**
+	 * Returns the child identified by {@code name}.
+	 * 
+	 * @param name The child's name.
+	 * @return The child; {@code null} if not found.
+	 */
+	default @Nullable SimComponent getChildByName(String name) {
+		return null;
 	}
 
 	/**

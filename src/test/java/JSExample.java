@@ -22,8 +22,12 @@
 import java.util.HashMap;
 import java.util.Random;
 
+import org.junit.Ignore;
+
 import jasima.core.simulation.Simulation;
+import jasima.core.simulation.Simulation.ProduceResultsMessage;
 import jasima.core.statistics.SummaryStat;
+import jasima.core.util.ConsolePrinter;
 import jasima.core.util.Util;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobSource;
@@ -38,6 +42,7 @@ import jasima.shopSim.util.MachineStatCollector;
  * 
  * @author Torsten Hildebrandt
  */
+@Ignore
 public class JSExample extends Shop {
 	final Random streamService = new Random(1234234535);
 	final Random streamInterarrival = new Random(28437);
@@ -79,11 +84,8 @@ public class JSExample extends Shop {
 		js.route = new WorkStation[][] { { ws[2], ws[0], ws[1], ws[4] }, { ws[3], ws[0], ws[2] },
 				{ ws[1], ws[4], ws[0], ws[3], ws[2] } };
 
-		s.init();
-		s.beforeRun();
-		s.run();
-		s.afterRun();
-		s.done();
+		s.performRun();
+
 		js.report();
 	} // End of main
 
@@ -95,7 +97,6 @@ public class JSExample extends Shop {
 	@Override
 	public void init() {
 		installMachineListener(new WorkStationListener() {
-
 			@Override
 			public void operationStarted(WorkStation m, PrioRuleTarget b, int oldSetupState, int newSetupState,
 					double setupTime) {
@@ -106,8 +107,6 @@ public class JSExample extends Shop {
 			}
 		}, false);
 		installMachineListener(new MachineStatCollector(), true);
-
-		super.init();
 
 		addJobSource(new JobSource() {
 			@Override
@@ -157,34 +156,39 @@ public class JSExample extends Shop {
 		double sumProbs = (double) 0.0;
 		for (int i = 0; i < NUM_JOB_TYPES; i++) {
 			/*
-			 * average job total delay = average delay for job type for each
-			 * task times the number of tasks
+			 * average job total delay = average delay for job type for each task times the
+			 * number of tasks
 			 */
 			ajtd = (jobTypeDelay[i].mean() * route[i].length);
 			addRecord(String.valueOf(ajtd));
 			/*
-			 * oajtd is a weighted average of the total time a job waits in
-			 * queue. Total waits (ojtd) are multiplied by the probability job
-			 * being of a particular type. Oajtd would be the typical total wait
+			 * oajtd is a weighted average of the total time a job waits in queue. Total
+			 * waits (ojtd) are multiplied by the probability job being of a particular
+			 * type. Oajtd would be the typical total wait
 			 */
 			oajtd += (probDistribJobType[i] - sumProbs) * ajtd;
 			sumProbs = probDistribJobType[i];
 		}
 		addRecord("Overall average job total delay: " + String.valueOf(oajtd));
 		/*
-		 * Compute the average number in queue, the average utilization, and the
-		 * average delay in queue for each station
+		 * Compute the average number in queue, the average utilization, and the average
+		 * delay in queue for each station
 		 */
 		addRecord("\n\nWork     Average Number     Average       Average Delay");
 		addRecord("Station    in Queue        Utilization       in queue ");
 
 		HashMap<String, Object> res = new HashMap<String, Object>();
 		produceResults(res);
+		ConsolePrinter.printResults(res);
+		getSim().fire(new ProduceResultsMessage(res));
+		ConsolePrinter.printResults(res);
+
 		int i = 0;
 		for (WorkStation m : getMachines()) {
 			SummaryStat aniq = (SummaryStat) res.get(m.getName() + ".qLen");
 			SummaryStat aveMachinesBusy = (SummaryStat) res.get(m.getName() + ".util");
 			SummaryStat stationDelay = (SummaryStat) res.get(m.getName() + ".qWait");
+
 			addRecord(String.valueOf(i) + "        " + String.valueOf(aniq.mean()) + "        "
 					+ String.valueOf(aveMachinesBusy.mean() / m.numInGroup()) + "        "
 					+ String.valueOf(stationDelay.mean()));

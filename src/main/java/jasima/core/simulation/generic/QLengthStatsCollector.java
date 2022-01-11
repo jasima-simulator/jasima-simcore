@@ -1,12 +1,14 @@
 package jasima.core.simulation.generic;
 
-import jasima.core.simulation.SimComponentLifeCycleListener.ResultsListener;
+import jasima.core.simulation.SimLifecycleListener.ResultsListener;
 import jasima.core.simulation.Simulation;
 import jasima.core.simulation.generic.Q.QEvents;
 import jasima.core.statistics.TimeWeightedSummaryStat;
 
 public class QLengthStatsCollector {
 	// TODO: make this a SimComponent, so we can use lifecycle events?
+
+	// TODO: handle resetStats properly
 
 	private final Q<?> q;
 	private final Simulation sim;
@@ -29,7 +31,7 @@ public class QLengthStatsCollector {
 
 		recordValue(); // record initial value
 
-		sim.getRootComponent().addListener(ResultsListener.class, (sc, res) -> {
+		sim.addListener(ResultsListener.class, res -> {
 			res.put(q.toString() + ".qLength", statsNumItems());
 		});
 	}

@@ -28,7 +28,7 @@ import static jasima.shopSim.core.WorkStation.WorkStationMessage.WS_JOB_SELECTED
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponent.SimComponentEvent;
-import jasima.core.simulation.SimComponentLifeCycleListener;
+import jasima.core.simulation.SimComponentLifecycleListener;
 
 /**
  * Possible base class for workstation listeners. Delegates all events to
@@ -37,7 +37,7 @@ import jasima.core.simulation.SimComponentLifeCycleListener;
  * 
  * @author Torsten Hildebrandt
  */
-public interface WorkStationListener extends SimComponentLifeCycleListener {
+public interface WorkStationListener extends SimComponentLifecycleListener {
 
 	default void inform(SimComponent o, SimComponentEvent event) {
 		WorkStation m = (WorkStation) o;
@@ -53,7 +53,7 @@ public interface WorkStationListener extends SimComponentLifeCycleListener {
 		} else if (event == WS_DEACTIVATED) {
 			deactivated(m, m.currMachine);
 		} else {
-			SimComponentLifeCycleListener.super.inform(o, event);
+			SimComponentLifecycleListener.super.inform(o, event);
 		}
 	}
 

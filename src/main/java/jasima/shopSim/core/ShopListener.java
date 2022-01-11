@@ -22,7 +22,7 @@ package jasima.shopSim.core;
 
 import jasima.core.simulation.SimComponent;
 import jasima.core.simulation.SimComponent.SimComponentEvent;
-import jasima.core.simulation.SimComponentLifeCycleListener;
+import jasima.core.simulation.SimComponentLifecycleListener;
 import jasima.shopSim.core.Shop.ShopMessage;
 import jasima.shopSim.util.BasicJobStatCollector;
 import jasima.shopSim.util.ExtendedJobStatCollector;
@@ -36,7 +36,7 @@ import jasima.shopSim.util.ExtendedJobStatCollector;
  * @see BasicJobStatCollector
  * @see ExtendedJobStatCollector
  */
-public interface ShopListener extends SimComponentLifeCycleListener, Cloneable {
+public interface ShopListener extends SimComponentLifecycleListener, Cloneable {
 
 	/**
 	 * Inform method to be notified of shop events.
@@ -50,7 +50,7 @@ public interface ShopListener extends SimComponentLifeCycleListener, Cloneable {
 			Shop shop = (Shop) c;
 			jobFinished(shop, shop.lastJobFinished);
 		} else {
-			SimComponentLifeCycleListener.super.inform(c, msg);
+			SimComponentLifecycleListener.super.inform(c, msg);
 		}
 	}
 

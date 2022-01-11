@@ -3,7 +3,6 @@ package jasima.core.simulation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -38,27 +37,8 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 	}
 
 	@Override
-	public void setSim(Simulation s) {
-		super.setSim(s);
-
-		components.forEach(c -> c.setSim(s));
-	}
-
-	@Override
-	public void init() {
-		super.init();
-
-		components.forEach(c -> c.init());
-	}
-
-	@Override
 	public List<SimComponent> getChildren() {
 		return Collections.unmodifiableList(components);
-	}
-
-	@Override
-	public Iterator<SimComponent> iterator() {
-		return components.iterator();
 	}
 
 	@Override
@@ -93,7 +73,7 @@ public class SimComponentContainerBase extends SimComponentBase implements SimCo
 			sc.setSim(sim); // no getSim() here because it throws an exception on null
 		}
 
-		if (sim != null && sim.state() != SimExecState.INITIAL) {
+		if (sim != null && sim.state() != SimExecState.INITIAL && isInitialized()) {
 			sim.activateComponents(scs);
 		}
 
