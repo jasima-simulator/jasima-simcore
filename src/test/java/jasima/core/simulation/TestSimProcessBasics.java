@@ -2,10 +2,13 @@ package jasima.core.simulation;
 
 import static jasima.core.simulation.SimContext.activate;
 import static jasima.core.simulation.SimContext.activateCallable;
+import static jasima.core.simulation.SimContext.activateEntity;
 import static jasima.core.simulation.SimContext.end;
 import static jasima.core.simulation.SimContext.suspend;
 import static jasima.core.simulation.SimContext.trace;
+import static jasima.core.simulation.SimContext.waitCondition;
 import static jasima.core.simulation.SimContext.waitFor;
+import static jasima.core.util.observer.ObservableValues.isEqual;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,8 +30,10 @@ import org.junit.rules.Timeout;
 import jasima.core.simulation.SimProcess.MightBlock;
 import jasima.core.simulation.SimProcess.ProcessState;
 import jasima.core.simulation.Simulation.SimulationFailed;
+import jasima.core.util.ConsolePrinter;
 import jasima.core.util.MsgCategory;
 import jasima.core.util.SimProcessUtil;
+import jasima.core.util.observer.ObservableValue;
 
 public class TestSimProcessBasics {
 
@@ -84,6 +89,33 @@ public class TestSimProcessBasics {
 			});
 		});
 		assertEquals("simTime", 2.0, (Double) res.get("simTime"), 1e-6);
+	}
+
+	@Test
+	public void testWaitCondition() {
+		Map<String, Object> res = Simulation.of(sim -> {
+			// the value we want to wait upon later
+			ObservableValue<Integer> myValue = new ObservableValue<>(0);
+
+			// some (parallel) process that eventually changes "myValue"
+			activateEntity(new SimEntity() {
+				@Override
+				protected void lifecycle() throws MightBlock {
+					waitFor(23.0);
+					myValue.set(42);
+				}
+			});
+
+			// main process waits until myValue is 42
+			waitCondition(isEqual(myValue, 42));
+
+			// after the wait: add myValue to the simulation results
+			sim.addResult("myValue", myValue.get());
+		});
+		ConsolePrinter.printResults(res);
+
+		assertEquals("simTime", 23.0, (Double) res.get("simTime"), 1e-6);
+		assertEquals("myValue", 42, res.get("myValue"));
 	}
 
 	@Test
