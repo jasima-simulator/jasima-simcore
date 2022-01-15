@@ -102,7 +102,8 @@ public final class ObservableValues {
 		Objects.requireNonNull(ov);
 		Objects.requireNonNull(action);
 
-		boolean currentValue = ov.get().booleanValue();
+		Boolean v = ov.get();
+		boolean currentValue = v == null ? false : v.booleanValue();
 
 		// already true?
 		if (currentValue) {
@@ -113,7 +114,10 @@ public final class ObservableValues {
 		// currently false, so install listener and run action once it becomes true
 		AtomicReference<ObservableListener<Boolean>> listener = new AtomicReference<>();
 		listener.set(ov.addListener((ob, evt) -> {
-			if (ov.get().booleanValue()) {
+			Boolean v2Orig = ov.get();
+			boolean v2 = v2Orig == null ? false : v2Orig.booleanValue();
+
+			if (v2) {
 				try {
 					action.run();
 				} finally {

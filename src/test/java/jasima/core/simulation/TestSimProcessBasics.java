@@ -119,6 +119,89 @@ public class TestSimProcessBasics {
 	}
 
 	@Test
+	public void testWaitConditionObservableIsNull() {
+		Map<String, Object> res = Simulation.of(sim -> {
+			ObservableValue<Boolean> boolValue = new ObservableValue<>(null);
+
+			// some (parallel) process that eventually changes "myValue"
+			activateEntity(new SimEntity() {
+				@Override
+				protected void lifecycle() throws MightBlock {
+					waitFor(21.0);
+					boolValue.set(false);
+					waitFor(21.0);
+					boolValue.set(true);
+					waitFor(21.0);
+				}
+			});
+
+			// main process waits until boolValue is true, then ends simulation
+			waitCondition(boolValue);
+			end();
+		});
+		ConsolePrinter.printResults(res);
+
+		assertEquals("simTime", 42.0, (Double) res.get("simTime"), 1e-6);
+	}
+
+	@Test
+	public void testWaitConditionExpression1() {
+		Map<String, Object> res = Simulation.of(sim -> {
+			// the value we want to wait upon later
+			ObservableValue<Integer> myValue = new ObservableValue<>(0);
+
+			// some (parallel) process that changes "myValue"
+			activateEntity(new SimEntity() {
+				@Override
+				protected void lifecycle() throws MightBlock {
+					for (int i = 0; i < 100; i++) {
+						waitFor(1.0);
+						myValue.update(n -> n + 1);
+					}
+				}
+			});
+
+			// main process waits until myValue is >=7
+			waitCondition(v -> v >= 7, myValue);
+			end();
+		});
+		ConsolePrinter.printResults(res);
+
+		assertEquals("simTime", 7.0, (Double) res.get("simTime"), 1e-6);
+	}
+
+	@Test
+	public void testWaitConditionExpression2() {
+		Map<String, Object> res = Simulation.of(sim -> {
+			ObservableValue<Integer> valueDecreased = new ObservableValue<>(10);
+			ObservableValue<Integer> valueIncreased = new ObservableValue<>(0);
+
+			// some (parallel) process that increases "valueIncreased"
+			activate(() -> {
+				for (int i = 0; i < 100; i++) {
+					waitFor(1.0);
+					valueIncreased.update(n -> n + 1);
+				}
+			});
+
+			// some (parallel) process that decreases "valueDecreased"
+			activate(() -> {
+				for (int i = 0; i < 100; i++) {
+					waitFor(1.0);
+					valueDecreased.update(n -> n - 1);
+				}
+			});
+
+			// main process waits until product of valueIncreased and valueDecreased is 25
+			waitCondition((v1, v2) -> v1 * v2 == 25, valueDecreased, valueIncreased);
+			end();
+		});
+		ConsolePrinter.printResults(res);
+
+		assertEquals("simTime", 5.0, (Double) res.get("simTime"), 1e-6);
+	}
+
+	@Test
 	public void testProcessJoin() {
 		AtomicInteger processResult = new AtomicInteger(0);
 

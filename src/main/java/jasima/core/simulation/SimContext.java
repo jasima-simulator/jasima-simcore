@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import jasima.core.random.continuous.DblSequence;
 import jasima.core.simulation.SimProcess.MightBlock;
@@ -125,8 +127,20 @@ public class SimContext {
 		currentProcess().waitUntil(instant);
 	}
 
+	/**
+	 * Waits (possibly forever) until some condition, represented by an
+	 * ObservableValue<Boolean>, evaluates to {@code true}. The condition is first
+	 * checked immediately upon calling this method and might therefore return
+	 * immediately.
+	 * 
+	 * @param triggerCondition The condition to wait for.
+	 * @return {@code true} if the condition was initially true (so no wait
+	 *         happened), {@code false} otherwise.
+	 * @throws MightBlock To mark potentially blocking behavior.
+	 */
 	public static boolean waitCondition(ObservableValue<Boolean> triggerCondition) throws MightBlock {
-		if (!triggerCondition.get()) {
+		// complicated formulation of true check below to interpret NULL value as false
+		if (!Boolean.TRUE.equals(triggerCondition.get())) {
 			SimProcess<?> p = currentProcess();
 			ObservableValues.whenTrueExecuteOnce(triggerCondition, p::resume);
 			p.suspend(); // wait until condition is true
@@ -134,6 +148,40 @@ public class SimContext {
 		} else {
 			return true;
 		}
+	}
+
+	/**
+	 * Waits until some condition becomes true. The condition can be an arbitrary
+	 * function returning a boolean value, taking the value of an observable as its
+	 * parameter. The condition (usually a lambda expression) is evaluated each time
+	 * the observable value changes.
+	 * 
+	 * @param triggerCondition A function/expression producing a boolean result.
+	 * @param observable       The value used in {@code triggerCondition}.
+	 * @return {@code true} if the condition was initially true (so no wait
+	 *         happened), {@code false} otherwise.
+	 * @throws MightBlock To mark potentially blocking behavior.
+	 * 
+	 * @see #waitCondition(ObservableValue)
+	 * @see #waitCondition(BiFunction, ObservableValue, ObservableValue)
+	 */
+	public static <T> boolean waitCondition(Function<T, Boolean> triggerCondition,
+			ObservableValue<? extends T> observable) throws MightBlock {
+		ObservableValue<Boolean> c = ObservableValues.fromUnaryOperation(triggerCondition, observable);
+		return waitCondition(c);
+	}
+
+	/**
+	 * Same as {@link #waitCondition(Function, ObservableValue)}, but condition can
+	 * depend of two values instead of just one.
+	 * 
+	 * @see #waitCondition(Function, ObservableValue)
+	 * @see #waitCondition(ObservableValue)
+	 */
+	public static <T1, T2> boolean waitCondition(BiFunction<T1, T2, Boolean> triggerCondition,
+			ObservableValue<? extends T1> obs1, ObservableValue<? extends T2> obs2) throws MightBlock {
+		ObservableValue<Boolean> c = ObservableValues.fromBinaryOperation(triggerCondition, obs1, obs2);
+		return waitCondition(c);
 	}
 
 	public static void suspend() throws MightBlock {
