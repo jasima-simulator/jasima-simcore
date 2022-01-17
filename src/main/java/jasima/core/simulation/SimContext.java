@@ -24,7 +24,6 @@ import jasima.core.util.SimProcessUtil.SimCallable;
 import jasima.core.util.SimProcessUtil.SimRunnable;
 import jasima.core.util.i18n.I18n;
 import jasima.core.util.observer.ObservableValue;
-import jasima.core.util.observer.ObservableValues;
 
 public class SimContext {
 
@@ -128,60 +127,26 @@ public class SimContext {
 	}
 
 	/**
-	 * Waits (possibly forever) until some condition, represented by an
-	 * ObservableValue<Boolean>, evaluates to {@code true}. The condition is first
-	 * checked immediately upon calling this method and might therefore return
-	 * immediately.
-	 * 
-	 * @param triggerCondition The condition to wait for.
-	 * @return {@code true} if the condition was initially true (so no wait
-	 *         happened), {@code false} otherwise.
-	 * @throws MightBlock To mark potentially blocking behavior.
+	 * @see SimProcess#waitCondition(ObservableValue)
 	 */
 	public static boolean waitCondition(ObservableValue<Boolean> triggerCondition) throws MightBlock {
-		// complicated formulation of true check below to interpret NULL value as false
-		if (!Boolean.TRUE.equals(triggerCondition.get())) {
-			SimProcess<?> p = currentProcess();
-			ObservableValues.whenTrueExecuteOnce(triggerCondition, p::resume);
-			p.suspend(); // wait until condition is true
-			return false;
-		} else {
-			return true;
-		}
+		return currentProcess().waitCondition(triggerCondition);
 	}
 
 	/**
-	 * Waits until some condition becomes true. The condition can be an arbitrary
-	 * function returning a boolean value, taking the value of an observable as its
-	 * parameter. The condition (usually a lambda expression) is evaluated each time
-	 * the observable value changes.
-	 * 
-	 * @param triggerCondition A function/expression producing a boolean result.
-	 * @param observable       The value used in {@code triggerCondition}.
-	 * @return {@code true} if the condition was initially true (so no wait
-	 *         happened), {@code false} otherwise.
-	 * @throws MightBlock To mark potentially blocking behavior.
-	 * 
-	 * @see #waitCondition(ObservableValue)
-	 * @see #waitCondition(BiFunction, ObservableValue, ObservableValue)
+	 * @see SimProcess#waitCondition(Function, ObservableValue)
 	 */
 	public static <T> boolean waitCondition(Function<T, Boolean> triggerCondition,
 			ObservableValue<? extends T> observable) throws MightBlock {
-		ObservableValue<Boolean> c = ObservableValues.fromUnaryOperation(triggerCondition, observable);
-		return waitCondition(c);
+		return currentProcess().waitCondition(triggerCondition, observable);
 	}
 
 	/**
-	 * Same as {@link #waitCondition(Function, ObservableValue)}, but condition can
-	 * depend of two values instead of just one.
-	 * 
-	 * @see #waitCondition(Function, ObservableValue)
-	 * @see #waitCondition(ObservableValue)
+	 * @see SimProcess#waitCondition(BiFunction, ObservableValue, ObservableValue)
 	 */
 	public static <T1, T2> boolean waitCondition(BiFunction<T1, T2, Boolean> triggerCondition,
 			ObservableValue<? extends T1> obs1, ObservableValue<? extends T2> obs2) throws MightBlock {
-		ObservableValue<Boolean> c = ObservableValues.fromBinaryOperation(triggerCondition, obs1, obs2);
-		return waitCondition(c);
+		return currentProcess().waitCondition(triggerCondition, obs1, obs2);
 	}
 
 	public static void suspend() throws MightBlock {
