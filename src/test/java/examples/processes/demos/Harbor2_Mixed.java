@@ -48,7 +48,7 @@ public class Harbor2_Mixed extends SimEntity {
 		jetties = new Resource("jetties", 2);
 		tugs = new Resource("tugs", 3);
 
-		next = initRndGen(new DblExp(0.1), "iat");
+		next = initRndGen(new DblExp(10.0), "iat");
 		discharge = initRndGen(new DblNormal(14.0, 3), "discharge");
 
 		activate(this::boatLifecycle); // schedule first arrival
