@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
-		<log4j2.version>2.17.0</log4j2.version>
+		<log4j2.version>2.17.1</log4j2.version>
 		<versionName>${project.version} (${maven.build.timestamp}, ${git.branch}@${git.commit.id.abbrev})</versionName>
 		<jasima-cli.main.class>jasima.core.run.ConsoleRunner</jasima-cli.main.class>
 	</properties>
