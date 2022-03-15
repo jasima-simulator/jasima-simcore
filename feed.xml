@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>jasima</title>
-    <link>http://jasima.net</link>
-    <atom:link href="http://jasima.net/feed.xml" rel="self" type="application/rss+xml" />
+    <link>https://jasima.net</link>
+    <atom:link href="https://jasima.net/feed.xml" rel="self" type="application/rss+xml" />
     <description>jasima, the Java simulator for manufacturing and logistics</description>
     <language>en-gb</language>
-    <pubDate>Di., 15 März 2022 14:53:47 +0100</pubDate>
-    <lastBuildDate>Di., 15 März 2022 14:53:47 +0100</lastBuildDate>
+    <pubDate>Di., 15 März 2022 14:57:39 +0100</pubDate>
+    <lastBuildDate>Di., 15 März 2022 14:57:39 +0100</lastBuildDate>
 
     <item>
       <title>Oliver&amp;#8217;s Post</title>
-      <link>http://jasima.net/blog/2022/fifth-post.html</link>
+      <link>https://jasima.net/blog/2022/fifth-post.html</link>
       <pubDate>Mo., 11 Nov. 2013 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2022/fifth-post.html</guid>
       	<description>
@@ -31,7 +31,7 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>Fourth Post</title>
-      <link>http://jasima.net/blog/2022/fourth-post.html</link>
+      <link>https://jasima.net/blog/2022/fourth-post.html</link>
       <pubDate>Do., 17 Okt. 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/fourth-post.html</guid>
       	<description>
@@ -66,7 +66,7 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>Third Post</title>
-      <link>http://jasima.net/blog/2022/third-post.html</link>
+      <link>https://jasima.net/blog/2022/third-post.html</link>
       <pubDate>Do., 26 Sep. 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/third-post.html</guid>
       	<description>
@@ -96,7 +96,7 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>Second Post</title>
-      <link>http://jasima.net/blog/2022/second-post.html</link>
+      <link>https://jasima.net/blog/2022/second-post.html</link>
       <pubDate>So., 25 Aug. 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/second-post.html</guid>
       	<description>
@@ -117,7 +117,7 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>First Post</title>
-      <link>http://jasima.net/blog/2022/first-post.html</link>
+      <link>https://jasima.net/blog/2022/first-post.html</link>
       <pubDate>Mi., 24 Juli 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/first-post.html</guid>
       	<description>
