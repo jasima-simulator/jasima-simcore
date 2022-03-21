@@ -13,8 +13,9 @@
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/asciidoctor.css" rel="stylesheet">
     <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/prettify.css" rel="stylesheet">
-
+ <!--   <link href="../css/prettify.css" rel="stylesheet">-->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+	
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.min.js"></script>
@@ -49,19 +50,22 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/documentation/gettingStarted.html">Getting Started</a></li>
+                <li><a href="../documentation/gettingStarted.html">Getting Started</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Basics</li>
-                <li><a href="/documentation/runningExperiments.html">Experiments</a></li>
-                <li><a href="/documentation/simulationBasics.html">Simulation Basics</a></li>
+                <li><a href="../documentation/runningExperiments.html">Experiments</a></li>
+                <li><a href="../documentation/simulationBasics.html">Simulation Basics</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Key concepts</li>
-                <li><a href="#">Generating Random Numbers</a></li>
-                <li><a href="#">Collecting Statistics</a></li>
-                <li><a href="#">Simulation Components</a></li>
+                <li><a href="../documentation/simulationComponents.html">Simulation Components</a></li>
+                <li><a href="../documentation/eventOriented.html">Event-Oriented Simulation</a></li>
+                <li><a href="../documentation/processOriented.html">Process-Oriented Simulation</a></li>
+                <li><a href="../documentation/randomNumbers.html">Generating Random Numbers</a></li>
+                <li><a href="../documentation/statistics.html">Collecting Statistics</a></li>
+                <li><a href="../documentation/stateBased.html">State-Based Events</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Advanced Topics</li>
-                <li><a href="#">Creating Custom Experiments</a></li>
+                <li><a href="../documentation/customExperiments.html">Creating Custom Experiments</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -83,13 +87,14 @@
 
 <!--	<p><em>18 Januar 2022</em></p> -->
 
-	<p><div id="toc" class="toc">
+		<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_step_1_cloning_the_project_template_from_github">Step 1: Cloning the Project Template from GitHub</a></li>
 <li><a href="#_step_2_locate_example_class">Step 2: Locate Example Class</a></li>
 <li><a href="#_step_3_run_the_simulation">Step 3: Run the Simulation</a></li>
+<li><a href="#_getting_further">Getting Further</a></li>
 </ul>
 </div>
 <div class="sect1">
@@ -218,7 +223,31 @@ fastClock() executed at: 18.0</pre>
 </div>
 </div>
 </div>
-</div></p>
+</div>
+<div class="sect1">
+<h2 id="_getting_further">Getting Further</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Additional sources of information?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://jasima.net/documentation/simulationBasics.html">simulationBasics</a> and additional documentation on this website</p>
+</li>
+<li>
+<p>jasima&#8217;s JavaDoc, either to be accessed via a Java IDE, or having a look at the online version (see link above in the navigation bar)</p>
+</li>
+<li>
+<p>checkout and inspect jasima&#8217;s source code on <a href="https://github.com/jasima-simulator/jasima-simcore">GitHub</a>. There is the source code itself in the folder <code>src/main/java</code>, but also the JUnit tests in the folder <code>src/test/java</code></p>
+</li>
+<li>
+<p>use the <a href="https://github.com/jasima-simulator/jasima-simcore/issues">Issue Tracker</a> can be used to report potential bugs, submit feature requests and ask general questions about jasima</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 
 	<hr />
 
@@ -242,7 +271,10 @@ fastClock() executed at: 18.0</pre>
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="../js/jquery-1.11.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/prettify.js"></script>
-    
-  </body>
+   <!-- <script src="../js/prettify.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+ 
+    <script>hljs.highlightAll();</script>
+ 
+   </body>
 </html>

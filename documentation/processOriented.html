@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>jasima</title>
+    <title>Process-oriented Simulation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Homepage of jasima, the Java Simulator for Manufacturing and Logistics.">
     <meta name="author" content="Torsten Hildebrandt">
@@ -10,15 +10,15 @@
     <meta name="generator" content="JBake">
 
     <!-- Le styles -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/asciidoctor.css" rel="stylesheet">
-    <link href="css/base.css" rel="stylesheet">
- <!--   <link href="css/prettify.css" rel="stylesheet">-->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/asciidoctor.css" rel="stylesheet">
+    <link href="../css/base.css" rel="stylesheet">
+ <!--   <link href="../css/prettify.css" rel="stylesheet">-->
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
 	
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="js/html5shiv.min.js"></script>
+      <script src="../js/html5shiv.min.js"></script>
     <![endif]-->
 
     <!-- Fav and touch icons -->
@@ -26,7 +26,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="shortcut icon" href="../favicon.ico">
   </head>
   <body onload="prettyPrint()">
     <div id="wrap">
@@ -46,26 +46,26 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="news.html">News</a></li>
+            <li><a href="../news.html">News</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="documentation/gettingStarted.html">Getting Started</a></li>
+                <li><a href="../documentation/gettingStarted.html">Getting Started</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Basics</li>
-                <li><a href="documentation/runningExperiments.html">Experiments</a></li>
-                <li><a href="documentation/simulationBasics.html">Simulation Basics</a></li>
+                <li><a href="../documentation/runningExperiments.html">Experiments</a></li>
+                <li><a href="../documentation/simulationBasics.html">Simulation Basics</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Key concepts</li>
-                <li><a href="documentation/simulationComponents.html">Simulation Components</a></li>
-                <li><a href="documentation/eventOriented.html">Event-Oriented Simulation</a></li>
-                <li><a href="documentation/processOriented.html">Process-Oriented Simulation</a></li>
-                <li><a href="documentation/randomNumbers.html">Generating Random Numbers</a></li>
-                <li><a href="documentation/statistics.html">Collecting Statistics</a></li>
-                <li><a href="documentation/stateBased.html">State-Based Events</a></li>
+                <li><a href="../documentation/simulationComponents.html">Simulation Components</a></li>
+                <li><a href="../documentation/eventOriented.html">Event-Oriented Simulation</a></li>
+                <li><a href="../documentation/processOriented.html">Process-Oriented Simulation</a></li>
+                <li><a href="../documentation/randomNumbers.html">Generating Random Numbers</a></li>
+                <li><a href="../documentation/statistics.html">Collecting Statistics</a></li>
+                <li><a href="../documentation/stateBased.html">State-Based Events</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Advanced Topics</li>
-                <li><a href="documentation/customExperiments.html">Creating Custom Experiments</a></li>
+                <li><a href="../documentation/customExperiments.html">Creating Custom Experiments</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -80,38 +80,50 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-    <div class="container">	
+    <div class="container">
 	<div class="page-header">
-		<h1>Blog Archive</h1>
+		<h1>Process-oriented Simulation</h1>
 	</div>
-	
-	<!--<ul>-->
-			<h4>November 2013</h4>
-			<ul>
-		
-		<li>11 - <a href="blog/2022/fifth-post.html">Oliver&#8217;s Post</a></li>
-				</ul>
-				<h4>Oktober 2013</h4>
-				<ul>
-		
-		<li>17 - <a href="blog/2022/fourth-post.html">Fourth Post</a></li>
-				</ul>
-				<h4>September 2013</h4>
-				<ul>
-		
-		<li>26 - <a href="blog/2022/third-post.html">Third Post</a></li>
-				</ul>
-				<h4>August 2013</h4>
-				<ul>
-		
-		<li>25 - <a href="blog/2022/second-post.html">Second Post</a></li>
-				</ul>
-				<h4>Juli 2013</h4>
-				<ul>
-		
-		<li>24 - <a href="blog/2022/first-post.html">First Post</a></li>
-	</ul>
-	
+
+<!--	<p><em>19 März 2022</em></p> -->
+
+		<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Most important classes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jasima.core.simulation.SimEntity</code></p>
+</li>
+<li>
+<p><code>jasima.core.simulation.SimProcess</code></p>
+</li>
+<li>
+<p><code>jasima.core.simulation.SimContext</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_process_states">Process States</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Main state chart is shown in Figure <a href="#state-chart">Main Process States and Transitions</a>.</p>
+</div>
+<div id="state-chart" class="imageblock">
+<div class="content">
+<img src="processStates.svg" alt="processStates" width="577" height="585">
+</div>
+<div class="title">Figure 1. Main Process States and Transitions</div>
+</div>
+</div>
+</div>
+
+	<hr />
+
 		</div>
 		<div id="push"></div>
     </div>
@@ -130,9 +142,9 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery-1.11.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-   <!-- <script src="js/prettify.js"></script>-->
+    <script src="../js/jquery-1.11.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+   <!-- <script src="../js/prettify.js"></script>-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
  
     <script>hljs.highlightAll();</script>

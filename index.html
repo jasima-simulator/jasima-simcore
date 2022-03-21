@@ -13,8 +13,9 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/asciidoctor.css" rel="stylesheet">
     <link href="css/base.css" rel="stylesheet">
-    <link href="css/prettify.css" rel="stylesheet">
-
+ <!--   <link href="css/prettify.css" rel="stylesheet">-->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+	
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.min.js"></script>
@@ -49,19 +50,22 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/documentation/gettingStarted.html">Getting Started</a></li>
+                <li><a href="documentation/gettingStarted.html">Getting Started</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Basics</li>
-                <li><a href="/documentation/runningExperiments.html">Experiments</a></li>
-                <li><a href="/documentation/simulationBasics.html">Simulation Basics</a></li>
+                <li><a href="documentation/runningExperiments.html">Experiments</a></li>
+                <li><a href="documentation/simulationBasics.html">Simulation Basics</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Key concepts</li>
-                <li><a href="#">Generating Random Numbers</a></li>
-                <li><a href="#">Collecting Statistics</a></li>
-                <li><a href="#">Simulation Components</a></li>
+                <li><a href="documentation/simulationComponents.html">Simulation Components</a></li>
+                <li><a href="documentation/eventOriented.html">Event-Oriented Simulation</a></li>
+                <li><a href="documentation/processOriented.html">Process-Oriented Simulation</a></li>
+                <li><a href="documentation/randomNumbers.html">Generating Random Numbers</a></li>
+                <li><a href="documentation/statistics.html">Collecting Statistics</a></li>
+                <li><a href="documentation/stateBased.html">State-Based Events</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Advanced Topics</li>
-                <li><a href="#">Creating Custom Experiments</a></li>
+                <li><a href="documentation/customExperiments.html">Creating Custom Experiments</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -111,7 +115,10 @@ A software library for discrete-event simulation and computer experiments with a
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/prettify.js"></script>
-    
-  </body>
+   <!-- <script src="js/prettify.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+ 
+    <script>hljs.highlightAll();</script>
+ 
+   </body>
 </html>

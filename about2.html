@@ -13,8 +13,9 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/asciidoctor.css" rel="stylesheet">
     <link href="css/base.css" rel="stylesheet">
-    <link href="css/prettify.css" rel="stylesheet">
-
+ <!--   <link href="css/prettify.css" rel="stylesheet">-->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+	
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.min.js"></script>
@@ -49,19 +50,22 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/documentation/gettingStarted.html">Getting Started</a></li>
+                <li><a href="documentation/gettingStarted.html">Getting Started</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Basics</li>
-                <li><a href="/documentation/runningExperiments.html">Experiments</a></li>
-                <li><a href="/documentation/simulationBasics.html">Simulation Basics</a></li>
+                <li><a href="documentation/runningExperiments.html">Experiments</a></li>
+                <li><a href="documentation/simulationBasics.html">Simulation Basics</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Key concepts</li>
-                <li><a href="#">Generating Random Numbers</a></li>
-                <li><a href="#">Collecting Statistics</a></li>
-                <li><a href="#">Simulation Components</a></li>
+                <li><a href="documentation/simulationComponents.html">Simulation Components</a></li>
+                <li><a href="documentation/eventOriented.html">Event-Oriented Simulation</a></li>
+                <li><a href="documentation/processOriented.html">Process-Oriented Simulation</a></li>
+                <li><a href="documentation/randomNumbers.html">Generating Random Numbers</a></li>
+                <li><a href="documentation/statistics.html">Collecting Statistics</a></li>
+                <li><a href="documentation/stateBased.html">State-Based Events</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Advanced Topics</li>
-                <li><a href="#">Creating Custom Experiments</a></li>
+                <li><a href="documentation/customExperiments.html">Creating Custom Experiments</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -83,13 +87,13 @@
 
 <!--	<p><em>18 Oktober 2018</em></p> -->
 
-	<p><div class="sect1">
+		<div class="sect1">
 <h2 id="_about_the_project">About the Project</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre># This program prints Hello, world!
-print('Hello, world!')</pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"># This program prints Hello, world!
+print('Hello, world!')</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -98,29 +102,32 @@ print('Hello, world!')</pre>
 <div class="listingblock">
 <div class="title">Code mit Erklärungen</div>
 <div class="content">
-<pre>import org.harryp.Voldemort; // <b class="conum">(1)</b>
-import org.harryp.Harry; // <b class="conum">(2)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.harryp.Voldemort; <i class="conum" data-value="1"></i><b>(1)</b>
+import org.harryp.Harry; <i class="conum" data-value="2"></i><b>(2)</b>
 
 public class Stakeholder {
 
-    public String wandName; // <b class="conum">(3)</b>
+    public String wandName; <i class="conum" data-value="3"></i><b>(3)</b>
 
     // ...
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
-<ol>
-<li>
-<p>diesen Namen besser vermeiden</p>
-</li>
-<li>
-<p>der Knabe mit der Brille</p>
-</li>
-<li>
-<p>Zauberstäbe tragen Namen</p>
-</li>
-</ol>
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>diesen Namen besser vermeiden</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>der Knabe mit der Brille</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Zauberstäbe tragen Namen</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -145,7 +152,7 @@ DiagramBlock &lt;|-- PlantUmlBlock
 </div>
 </div>
 </div>
-</div></p>
+</div>
 
 	<hr />
 
@@ -169,7 +176,10 @@ DiagramBlock &lt;|-- PlantUmlBlock
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/prettify.js"></script>
-    
-  </body>
+   <!-- <script src="js/prettify.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+ 
+    <script>hljs.highlightAll();</script>
+ 
+   </body>
 </html>
