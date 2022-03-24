@@ -271,7 +271,7 @@ public class SimContext {
 
 	// schedule simulation events, delegated to the simulation
 
-	/** @see Simulation#scheduleAt(SimEvent) */
+	/** @see Simulation#schedule(SimEvent) */
 	public static SimEvent schedule(SimEvent event) {
 		return requireSimContext().schedule(event);
 	}
@@ -281,9 +281,19 @@ public class SimContext {
 		return requireSimContext().scheduleAt(time, prio, method);
 	}
 
+	/** @see Simulation#scheduleAt(double, Runnable) */
+	public static SimEvent scheduleAt(double time, Runnable method) {
+		return requireSimContext().scheduleAt(time, method);
+	}
+
 	/** @see Simulation#scheduleAt(String, double, int, Runnable) */
 	public static SimEvent scheduleAt(String description, double time, int prio, Runnable action) {
 		return requireSimContext().scheduleAt(description, time, prio, action);
+	}
+
+	/** @see Simulation#scheduleAt(String, double, Runnable) */
+	public static SimEvent scheduleAt(String description, double time, Runnable action) {
+		return requireSimContext().scheduleAt(description, time, action);
 	}
 
 	/** @see Simulation#scheduleAt(Instant, int, Runnable) */
@@ -291,9 +301,19 @@ public class SimContext {
 		return requireSimContext().scheduleAt(time, prio, method);
 	}
 
+	/** @see Simulation#scheduleAt(Instant, int, Runnable) */
+	public static SimEvent scheduleAt(Instant time, Runnable method) {
+		return requireSimContext().scheduleAt(time, method);
+	}
+
 	/** @see Simulation#scheduleAt(String, Instant, int, Runnable) */
 	public static SimEvent scheduleAt(String description, Instant time, int prio, Runnable method) {
 		return requireSimContext().scheduleAt(description, time, prio, method);
+	}
+
+	/** @see Simulation#scheduleAt(String, Instant, Runnable) */
+	public static SimEvent scheduleAt(String description, Instant time, Runnable method) {
+		return requireSimContext().scheduleAt(description, time, method);
 	}
 
 	/** @see Simulation#scheduleIn(double, int, Runnable) */
@@ -301,9 +321,19 @@ public class SimContext {
 		return requireSimContext().scheduleIn(time, prio, method);
 	}
 
+	/** @see Simulation#scheduleIn(double, Runnable) */
+	public static SimEvent scheduleIn(double time, Runnable method) {
+		return requireSimContext().scheduleIn(time, method);
+	}
+
 	/** @see Simulation#scheduleIn(String, double, int, Runnable) */
 	public static SimEvent scheduleIn(String description, double time, int prio, Runnable method) {
 		return requireSimContext().scheduleIn(description, time, prio, method);
+	}
+
+	/** @see Simulation#scheduleIn(String, double, Runnable) */
+	public static SimEvent scheduleIn(String description, double time, Runnable method) {
+		return requireSimContext().scheduleIn(description, time, method);
 	}
 
 	/** @see Simulation#scheduleIn(Duration, int, Runnable) */
@@ -311,9 +341,19 @@ public class SimContext {
 		return requireSimContext().scheduleIn(duration, prio, method);
 	}
 
+	/** @see Simulation#scheduleIn(Duration, Runnable) */
+	public static SimEvent scheduleIn(Duration duration, Runnable method) {
+		return requireSimContext().scheduleIn(duration, method);
+	}
+
 	/** @see Simulation#scheduleIn(String, Duration, int, Runnable) */
 	public static SimEvent scheduleIn(String description, Duration duration, int prio, Runnable method) {
 		return requireSimContext().scheduleIn(description, duration, prio, method);
+	}
+
+	/** @see Simulation#scheduleIn(String, Duration, Runnable) */
+	public static SimEvent scheduleIn(String description, Duration duration, Runnable method) {
+		return requireSimContext().scheduleIn(description, duration, method);
 	}
 
 	/** @see Simulation#scheduleIn(long, TemporalUnit, int, Runnable) */
@@ -321,9 +361,19 @@ public class SimContext {
 		return requireSimContext().scheduleIn(numUnits, unit, prio, method);
 	}
 
+	/** @see Simulation#scheduleIn(long, TemporalUnit, Runnable) */
+	public static SimEvent scheduleIn(long numUnits, TemporalUnit unit, Runnable method) {
+		return requireSimContext().scheduleIn(numUnits, unit, method);
+	}
+
 	/** @see Simulation#scheduleIn(String, long, TemporalUnit, int, Runnable) */
 	public static SimEvent scheduleIn(String description, long numUnits, TemporalUnit unit, int prio, Runnable method) {
 		return requireSimContext().scheduleIn(description, numUnits, unit, prio, method);
+	}
+
+	/** @see Simulation#scheduleIn(String, long, TemporalUnit, Runnable) */
+	public static SimEvent scheduleIn(String description, long numUnits, TemporalUnit unit, Runnable method) {
+		return requireSimContext().scheduleIn(description, numUnits, unit, method);
 	}
 
 	/** @see Simulation#initRndGen(DblSequence, String) */
