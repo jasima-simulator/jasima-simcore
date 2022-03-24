@@ -629,7 +629,7 @@ public class Util {
 	 * Returns a descriptive String showing name, current version and project URL.
 	 */
 	public static String getIdString() {
-		return "JASIMA, v" + getVersion() + "; http://jasima.org/";
+		return "JASIMA, v" + getVersion() + "; http://jasima.net/";
 	}
 
 	/**
