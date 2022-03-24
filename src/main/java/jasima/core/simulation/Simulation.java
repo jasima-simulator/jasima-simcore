@@ -63,6 +63,8 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
+
 import jasima.core.experiment.Experiment;
 import jasima.core.random.RandomFactory;
 import jasima.core.random.continuous.DblSequence;
@@ -899,7 +901,10 @@ public class Simulation
 		return currEvent;
 	}
 
-	public SimProcess<?> currentProcess() {
+	/**
+	 * Returns the currently active {@link SimProcess}.
+	 */
+	public @Nullable SimProcess<?> currentProcess() {
 		return currentProcess;
 	}
 
@@ -1248,12 +1253,12 @@ public class Simulation
 		return rootComponent;
 	}
 
-	/**
-	 * Sets the root component containing all permanent {@link SimComponent}s
-	 * contained in this simulation.
-	 * 
-	 * @param rootComponent The new root component.
-	 */
+//	/**
+//	 * Sets the root component containing all permanent {@link SimComponent}s
+//	 * contained in this simulation.
+//	 * 
+//	 * @param rootComponent The new root component.
+//	 */
 //	protected void setRootComponent(SimComponentContainer rootComponent) {
 //		if (this.rootComponent != null) {
 //			this.rootComponent.setSim(null);
@@ -1286,9 +1291,10 @@ public class Simulation
 	}
 
 	/**
-	 * Returns the {@link Instant} corresponding to simulation time 0.
+	 * Returns the {@link Instant} corresponding to the initial simulation time.
 	 * 
 	 * @see #setSimTimeStartInstant(Instant)
+	 * @see #getInitialSimTime()
 	 */
 	public Instant getSimTimeStartInstant() {
 		return simTimeStartInstant;
@@ -1343,10 +1349,33 @@ public class Simulation
 	}
 
 	/**
-	 * 
+	 * Sets the current {@code Locale}.
 	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	public ZoneId getZoneId() {
+		return zoneId;
+	}
+
+	/**
+	 * Sets the current time zone (used by {@link #simTimeToLocalDateTime()}.
+	 */
+	public void setZoneId(ZoneId zone) {
+		this.zoneId = zone;
+	}
+
+	public String message(Enum<?> key) {
+		return I18n.message(getLocale(), key);
+	}
+
+	public String message(String keyName) {
+		return I18n.message(getLocale(), keyName);
+	}
+
+	public String formattedMessage(Enum<?> key, Object... params) {
+		return I18n.formattedMessage(getLocale(), key, params);
 	}
 
 	public ErrorHandler getErrorHandler() {
@@ -1422,14 +1451,6 @@ public class Simulation
 	@Override
 	public Simulation getSim() {
 		return this;
-	}
-
-	public ZoneId getZoneId() {
-		return zoneId;
-	}
-
-	public void setZoneId(ZoneId zone) {
-		this.zoneId = zone;
 	}
 
 	void processTerminated(SimProcess<?> simProcess) {
