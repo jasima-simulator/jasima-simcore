@@ -87,8 +87,63 @@
 
 <!--	<p><em>19 März 2022</em></p> -->
 
-		<div class="paragraph">
-<p>Intro to event- and process-oriented versions of M/M/1 examples from <code>examples.simulation</code>.</p>
+		<h1 id="_simulation" class="sect0">Simulation</h1>
+<div class="paragraph">
+<p>To describe the general setup of a simulation in jasima we will use the example of a single server queue model.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="https://en.wikipedia.org/wiki/M/M/1_queue"><img src="img/Mm1_queue.svg" alt="M/M/1 queuing system"></a>
+</div>
+<div class="title">Figure 1. Schematics of a M/M/1 single server queue (source <a href="https://en.wikipedia.org/wiki/M/M/1_queue">Wikipedia</a>)</div>
+</div>
+<div class="paragraph">
+<p>In this model there is a single server processing incoming jobs/service requests. The server can process at most one job at a time, if it is busy, incoming requests have to wait in a queue (of unlimited capacity) until they can be served. Service times and also the arrival process of new jobs are characterized by an <a href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.</p>
+</div>
+<div class="paragraph">
+<p>Exponential distributions are characterized by a single parameter, hence our model is characterized by the two parameters &mu; for the service time and &lambda; for the interarrival times, i.e., the time between the arrival of two consecutive jobs.</p>
+</div>
+<div class="paragraph">
+<p>To explain the most important aspects of creating a simulation in jasima we use this M/M/1 model as an example. In the <a href="https://github.com/jasima-simulator/project_template_standalone">project_template_standalone</a> there are two versions of this model. A first version in the package <code>examples.simulation.events</code> uses a purely event-based approach. Process-oriented simulation features are used in the example available in the package <code>examples.simulation.process</code>. Both modelling styles are supported in jasima and can be freely mixed, i.e., certain simulated components can use event-oriented, others process-oriented modelling. The two styles can even be mixed in a certain component: an event-oriented <code>SimComponent</code> can activate its own <code>SimProcess</code>es if it wants to and still react to plain simulation events.</p>
+</div>
+<div class="paragraph">
+<p>Both versions of the model do the same thing: they have two parameters. One is the number of jobs to be created, defining the simulation length. After the last job was created, the simulation is stopped. The second parameter is the so-called traffic intensity. We don&#8217;t parameterize the model using &mu; and &lambda;. Instead we fix &mu; at 1 and use the traffic intensity to specify &lambda;. The traffic intensity is a value in the interval (0, 1). A traffic intensity of say 0.85 will lead to a server that is utilized 85% of the time in the long run. For shorter simulation runs server utilization can deviate considerably from this value due to the random influences in the model.</p>
+</div>
+<div class="paragraph">
+<p>The following topics are demonstrated in the examples and further explained on separate pages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>basic elements and features of <a href="eventOriented.html">event-based models and simulation components</a></p>
+</li>
+<li>
+<p>basic elements and features of <a href="processOriented.html">process-oriented models and components</a></p>
+</li>
+<li>
+<p><a href="randomNumbers.html">random number handling</a>, i.e., creating and using random number streams usually derived from <code>jasima.core.random.continuous.DblSequence</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additional concepts not used in M/M/1 example but frequently used in simulation models are explained on separate pages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>waiting on certain conditions, also known as <a href="stateBased.html">state-base events</a></p>
+</li>
+<li>
+<p>collecting <a href="statistics.html#statistics">statistics.html</a> with <code>jasima.core.statistics.SummaryStat</code> and <code>jasima.core.statistics.TimeWeightedSummaryStat</code></p>
+</li>
+</ul>
+</div>
+<h1 id="_experiments" class="sect0">Experiments</h1>
+<div class="paragraph">
+<p>Besides simulations, experiments are usually an important component in a jasima project. An experiment is basically a function: it has parameters, gets executed and produces results. Experiments can be used independently of simulations; there is a <code>SimulationExperiment</code>, but this is just one particular type of experiment.</p>
+</div>
+<div class="paragraph">
+<p>The most important types and uses of <code>Experiment</code>s are explained in <a href="runningExperiments.html">Running Experiments</a>. Creating <a href="customExperiments.html">custom experiments</a> is also explained using the example of a very simple Monte-carlo simulation.</p>
 </div>
 
 	<hr />
