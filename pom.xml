@@ -9,7 +9,7 @@
 
 	<groupId>net.jasima</groupId>
 	<artifactId>jasima-main</artifactId>
-	<version>3.0.0-RC1</version>
+	<version>3.0.0-RC1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jasima</name>
@@ -359,10 +359,6 @@
 			<id>github</id>
 			<url>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</url>
 		</site>
-<!--   <repository> -->
-<!--     <id>gitlab-maven</id> -->
-<!--     <url>https://gitlab.simplan.intra/api/v4/groups/AnyLogic/-/packages/maven</url> -->
-<!--   </repository> -->
 		<repository>
 			<id>github</id>
 			<name>GitHub OWNER Apache Maven Packages</name>
