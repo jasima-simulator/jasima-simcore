@@ -365,10 +365,10 @@
 		<!-- <id>ossrh</id> -->
 		<!-- <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> -->
 		<!-- </repository> -->
-		<site>
-			<id>github</id>
-			<url>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</url>
-		</site>
+<!-- 		<site> -->
+<!-- 			<id>github</id> -->
+<!-- 			<url>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</url> -->
+<!-- 		</site> -->
 		<repository>
 			<id>github</id>
 			<name>GitHub OWNER Apache Maven Packages</name>
@@ -383,7 +383,6 @@
 		<connection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</connection>
 		<developerConnection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 		<url>https://github.com/jasima-simulator/jasima-simcore</url>
-		<tag>jasima-main-3.0.0-RC1</tag>
 	</scm>
 
 	<profiles>
