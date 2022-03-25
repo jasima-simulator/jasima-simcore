@@ -370,10 +370,10 @@
 		<system>GitHub</system>
 	</issueManagement>
 	<scm>
-		<connection>scm:git:ssh://git@github.com:jasima-simulator/jasima-simcore.git</connection>
+		<connection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</connection>
+		<developerConnection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 		<url>https://github.com/jasima-simulator/jasima-simcore</url>
 		<tag>jasima-main-3.0.0-RC1</tag>
-		<developerConnection>scm:git:ssh://git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 	</scm>
 
 	<profiles>
