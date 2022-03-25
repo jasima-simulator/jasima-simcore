@@ -9,7 +9,7 @@
 
 	<groupId>net.jasima</groupId>
 	<artifactId>jasima-main</artifactId>
-	<version>3.0.0-RC4-SNAPSHOT</version>
+	<version>3.0.0-RC4</version>
 	<packaging>jar</packaging>
 
 	<name>jasima</name>
@@ -383,7 +383,7 @@
 		<connection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</connection>
 		<developerConnection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 		<url>https://github.com/jasima-simulator/jasima-simcore</url>
-		<tag>jasima-main-3.0.0-RC1</tag>
+		<tag>jasima-main-3.0.0-RC4</tag>
 	</scm>
 
 	<profiles>
