@@ -99,6 +99,9 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
+<p>This page describes how to implement the <a href="simulationBasics.html">M/M/1 model</a> using jasima&#8217;s event-oriented features. It uses the <code>MM1ModelEvents</code> class as an example, available in package <code>examples.simulation.events</code> of <code>project_template_standalone</code>.</p>
+</div>
+<div class="paragraph">
 <p>In order to run a simulation in jasima, you have to create an instance of <code>jasima.core.simulation.Simulation</code>, set its parameters and add simulation components to it. The simulation is then ready to be executed by calling its <code>performRun()</code> method. A simulation can return results in a Map as name/value-pairs.</p>
 </div>
 <div class="paragraph">
@@ -192,7 +195,7 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ProduceResults</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>produceResults(Map&lt;String, Object&gt;)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">called to add the component&#8217;s  results to the simulation results</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">called to add the component&#8217;s results to the simulation results</p></td>
 </tr>
 </tbody>
 </table>
@@ -208,7 +211,7 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>MM1ModelEvents</code> is extending <code>SimComponentBase</code></td>
+<td><code>MM1ModelEvents</code> is extending <code>jasima.core.simulation.SimComponentBase</code></td>
 </tr>
 </table>
 </div>
@@ -336,7 +339,7 @@ public void init() {
 </tbody>
 </table>
 <div class="paragraph">
-<p>These method of <code>Q</code> can be used when using the event-oriented modeling style. If using process-orientation there are additional methods (like blocking versions of <code>put()</code> and <code>take()</code>), specifically supporting this modeling style. Especially when using event-oriented modeling we can also easily use standard Java collection classes such as <code>ArrayList</code> or <code>PriorityQueue</code> instead  of jasima`s <code>Q</code> (or mix the as required).</p>
+<p>These method of <code>Q</code> can be used when using the event-oriented modeling style. If using process-orientation there are additional methods (like blocking versions of <code>put()</code> and <code>take()</code>), specifically supporting this modeling style. Especially when using event-oriented modeling we can also easily use standard Java collection classes such as <code>ArrayList</code> or <code>PriorityQueue</code> instead  of jasima`s <code>Q</code> (or mix them as required).</p>
 </div>
 </div>
 </div>

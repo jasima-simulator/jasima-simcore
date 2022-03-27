@@ -87,23 +87,44 @@
 
 <!--	<p><em>19 März 2022</em></p> -->
 
-		<div id="preamble">
+		<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_mightblock_marker_exception"><code>MightBlock</code> marker Exception</a></li>
+<li><a href="#_process_states">Process States</a></li>
+<li><a href="#_process_oriented_mm1_example">Process-oriented M/M/1 example</a></li>
+</ul>
+</div>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Most important classes:</p>
+<p>This page describes how to implement the <a href="simulationBasics.html">M/M/1 model</a> using jasima&#8217;s process-oriented features. The code accompanying this page can be found in the <code>MM1ModelProcesses.java</code>, available in package <code>examples.simulation.process</code> of <code>project_template_standalone</code>. This page assumes that the reader is already familiar with the event-oriented version and simulation basics as described in <a href="eventOriented.html#Event-oriented Simulation">eventOriented.html</a>.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>jasima.core.simulation.SimEntity</code></p>
-</li>
-<li>
-<p><code>jasima.core.simulation.SimProcess</code></p>
-</li>
-<li>
-<p><code>jasima.core.simulation.SimContext</code></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Depending on the model, sometimes an event-oriented or process-oriented modeling can lead to more "natural" and concise models. They are equivalent in what can be modeled, so they are only different "flavors" of discrete-event simulation.</p>
+</div>
+<div class="paragraph">
+<p>Comparing <code>MM1ModelProcesses.java</code> and <code>MM1ModelEvents.java</code> the following important differences can be seen. First, our simulation component is derived from <code>SimEntity</code> instead of <code>SimComponentBase</code>. In fact <code>SimEntity</code> inherits from <code>SimComponentBase</code> and adds a "lifecycle process" to it. This process describes the whole lifetime of a <code>SimEntity</code> in the method <code>lifecycle()</code>.</p>
+</div>
+<div class="paragraph">
+<p>The main difference between process- and event-orientation is whether or not the simulation time can change while executing a method. In the event-oriented version this can never happen, the simulation time can only change after the current event-handling method was fully executed. This is different when using process-orientation: a method can stop execution somewhere in its control flow by calling special methods such as <code>waitFor(double)</code>. This will stop executing the method and only resume after the waiting time has elapsed. Therefore calling <code>simTime()</code> before the <code>waitFor()</code> call will return a different simulation time than calling it after the wait. A simulation process can also <code>suspend()</code> its execution, waiting for some unspecified time and only resuming execution when some other process is resuming its execution calling the <code>resume()</code> method.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mightblock_marker_exception"><code>MightBlock</code> marker Exception</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All methods in jasima that are using process-oriented features have to be marked by declaring them to throw the checked Exception <code>MightBlock</code>. An example for this is the <code>lifecycle()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Override
+ protected void lifecycle() throws MightBlock {</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This Exception <code>MightBlock</code> is never actually thrown and should never be caught by simulation code. It merely marks some code to use process-oriented features, which is important to document and to bear in mind when creating simulation components. It is a checked exception, so the compiler forces us to re-throw it whenever another process-oriented method is called.</p>
 </div>
 </div>
 </div>
@@ -111,13 +132,88 @@
 <h2 id="_process_states">Process States</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Main state chart is shown in Figure <a href="#state-chart">Main Process States and Transitions</a>.</p>
+<p>A simulation process can be in one of multiple states. When is is executing it is in <code>RUNNING</code> state. It can also be <code>PASSIVE</code> or <code>SCHEDULED</code> when waiting to be activated again. After the process finished, i.e., the method implementing it returned, the process can be in one of the terminal states <code>TERMINATED</code> or <code>ERROR</code>. A state chart of theses states and the methods triggering transitions between them is shown in the figure <a href="#state-chart">Main Process States and Transitions</a> below.</p>
 </div>
 <div id="state-chart" class="imageblock">
 <div class="content">
 <img src="processStates.svg" alt="processStates" width="577" height="585">
 </div>
 <div class="title">Figure 1. Main Process States and Transitions</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_process_oriented_mm1_example">Process-oriented M/M/1 example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Coming back to <code>MM1ModelProcesses.java</code> we can see that there are actually two <code>SimEntities</code> involved, on one hand the class <code>MM1ModelProcesses</code> itself, but now the server is modeled as a separate entity in the inner class <code>Server</code>. The initialization of the simulation and the arrival of new jobs is taken care of by <code>MM1ModelProcesses</code>. It is also maintaining the queue of waiting jobs.</p>
+</div>
+<div class="paragraph">
+<p>Looking at the server&#8217;s <code>lifecycle()</code> method shows some typical pattern. It starts with some initializations and then there is an endless loop. Each iteration of the loop models the processing of a single job. In this loop there are two methods used that make use of process-oriented features (and are hence marked with <code>MightBlock</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+protected void lifecycle() throws MightBlock {
+	// init
+	DblSequence serviceTimes = initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
+	numServed = 0;
+
+	// endless processing loop
+	while (true) {
+		Integer job = q.take(); <i class="conum" data-value="1"></i><b>(1)</b>
+		System.out.println("start processing job " + job + " at time=" + simTime());
+		double st = serviceTimes.nextDbl();
+		waitFor(st); <i class="conum" data-value="2"></i><b>(2)</b>
+		numServed++;
+		System.out.println("finished processing job " + job + " at time=" + simTime());
+	}
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>q.take()</code> is blocking until there is a job to be taken</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>waitFor(st)</code> is waiting until the service time has elapsed</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Processing consists of taking a waiting job from the queue. If non is available, the server becomes <code>PASSIVE</code>, so execution is paused until the next job was added to the queue by the main process <code>MM1ModelProcesses</code> (<code>q.put()</code> in line 76).  The server&#8217;s print statement is therefore only executed when there is a job. Processing the job consists of calculating the service time and waiting until it has elapsed. After that the server is incrementing a statistics counter prints some message and then tries to continue with the next job.</p>
+</div>
+<div class="paragraph">
+<p>The <code>lifecycle()</code> method of <code>MM1ModelProcesses</code> is structured similarly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+protected void lifecycle() throws MightBlock {
+	// init
+	q = new Q&lt;&gt;();
+	addComponent(new Server());
+	numCreated = 0;
+	DblSequence iats = initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
+
+	// creation of jobs
+	for (int n = 0; n &lt; numJobs; n++) {
+		waitFor(iats.nextDbl());
+		System.out.println("created job " + n + " at time=" + simTime());
+		q.put(n);
+		numCreated++;
+	}
+
+	// terminate simulation
+	end();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It also starts with initialization statements (including creating the server). The main part this time consists of a for-loop. Each iteration waits for the inter-arrival time, then creates a new job and adds it to the queue (to be picked up by the server). When enough jobs were created, the simulation is terminated by calling <code>end()</code>. It&#8217;s not necessary to call this method in all simulation models. A simulation also terminates automatically if there are no more events to process or the defined simulation length (which can be set using the <code>setSimulationLength()</code> method) is over.</p>
 </div>
 </div>
 </div>
