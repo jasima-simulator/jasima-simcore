@@ -87,24 +87,273 @@
 
 <!--	<p><em>19 März 2022</em></p> -->
 
-		<div id="preamble">
+		<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_basic_anatomy_of_a_simulation">Basic Anatomy of a Simulation</a></li>
+<li><a href="#_scheduling_events_and_the_simulation_time">Scheduling Events and the Simulation Time</a></li>
+<li><a href="#_waiting_queue">Waiting Queue</a></li>
+<li><a href="#_scheduling_new_events">Scheduling New Events</a></li>
+</ul>
+</div>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Most important classes:</p>
+<p>In order to run a simulation in jasima, you have to create an instance of <code>jasima.core.simulation.Simulation</code>, set its parameters and add simulation components to it. The simulation is then ready to be executed by calling its <code>performRun()</code> method. A simulation can return results in a Map as name/value-pairs.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>jasima.core.simulation.Simulation</code></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>This basic procedure can be seen in the <code>main()</code> method of <code>MM1ModelEvents</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>main()</code> method of <code>MM1ModelEvents</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">	public static void main(String... args) {
+		// create and parameterize simulation
+		Simulation sim = new Simulation(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+		MM1ModelEvents mainComponent = new MM1ModelEvents(); <i class="conum" data-value="2"></i><b>(2)</b>
+		sim.addComponent(mainComponent);
+
+		// run simulation
+		Map&lt;String, Object&gt; res = sim.performRun(); <i class="conum" data-value="3"></i><b>(3)</b>
+
+		// show results on console
+		ConsolePrinter.printResults(res); <i class="conum" data-value="4"></i><b>(4)</b>
+	}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>create new simulation instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>add components to it</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>run the simulation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>do something with the results, here: print on console</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_scheduling_events">Scheduling Events</h2>
+<h2 id="_basic_anatomy_of_a_simulation">Basic Anatomy of a Simulation</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Simulated components in jasima are instances of Java classes derived (directly or indirectly) from <code>jasima.core.simulation.SimComponent</code>. <code>SimComponent</code> is an interface which is normally not used directly. Instead simulation components are usually implemented by classes inherited from <code>jasima.core.simulation.SimComponentBase</code>. <code>SimComponentBase</code> already offers meaningful default implementations of all methods. While a <code>SimComponentBase</code> can be added to a simulation, it doesn&#8217;t do anything. To specify the behaviour of a component, you usually override a single or multiple of its lifecycle methods (usually at least <code>init</code>). Lifecycle methods are called by the simulation at the occurrence of a certain lifecycle event. These methods are available:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Event</th>
+<th class="tableblock halign-left valign-top">Method to Override</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>init()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">simulation initializing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SIM_START</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>simStart()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usually used to schedule initial events; called after <code>init()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RESET_STATS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>resetStats()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">called upon a statistics reset; there is at least one statistics reset at the beginning of a simulation run</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SIM_END</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>simEnd()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">called on simulation end to do any clean-up</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>done()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">additional event triggered after <code>simEnd()</code> but before <code>produceResults()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ProduceResults</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>produceResults(Map&lt;String, Object&gt;)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">called to add the component&#8217;s  results to the simulation results</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Lets now see how all of this is used to implement the event-oriented version of the M/M/1 model in <code>MM1ModelEvents.java</code>. The model consists of only a single component, the class <code>MM1ModelEvents</code>. Besides the static <code>main()</code> method to run the model (see above), it is defining attributes to hold parameters and additional variables as required during a simulation run. We the override the two lifecycle methods <code>init()</code> and <code>produceResults(Map&lt;String, Object&gt;)</code>. To implement the desired behaviour of our M/M/1 model, the class contains three additional methods that are called during the simulation run at the right moments to handle the component-specific events.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class MM1ModelEvents extends SimComponentBase { <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>MM1ModelEvents</code> is extending <code>SimComponentBase</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Parameters and additional variables are standard Java fields. For parameters there are usually getter and setter methods (not used in the example to keep it as short as possible).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">	// parameters
+	private int numJobs = 1000;
+	private double trafficIntensity = 0.85;
 
+	// fields used during simulation run
+	private Q&lt;Integer&gt; q; // queue for waiting jobs
+	private DblSequence iats; // inter-arrival times
+	private DblSequence serviceTimes; // service times
+	private Integer currentJob; // job currently processed by the server
+	private int numServed = 0; // counter for number of serviced jobs
+	private int numCreated = 0; // counter for total number of jobs created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>init()</code> method performs anything to initialize the component. In the example it creates the queue for waiting jobs, initializes the <a href="randomNumbers.html"><code>DblSequence</code> objects</a> for the inter-arrival and service times. In addition we also schedule the first event, which is the arrival of the first job.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+public void init() {
+	// create new queue
+	q = new Q&lt;&gt;();
+
+	// initialize random number streams/sequences
+	iats = initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
+	serviceTimes = initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
+
+	// schedule first arrival
+	scheduleIn(iats.nextDbl(), this::createNext);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scheduling_events_and_the_simulation_time">Scheduling Events and the Simulation Time</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Discrete-event simulation is all about processing events in the right temporal and logical order as required by the model. The simulation time of a model in jasima is a Double value, accessible by the <code>simTime()</code> method. There is also a <code>simTimeAbs()</code> method converting this double-valued simulation time to an absolute time value (an instance of Java&#8217;s built in <code>java.time.Instant</code>).</p>
+</div>
+<div class="paragraph">
+<p>In <code>MM1ModelEvents</code> there are 3 types of events. One is the arrival of a new job (method <code>createNext()</code>), a second one for a service start (method <code>checkStartService()</code>) and finally the end of a service time (method <code>finishedService()</code>). Each method models how a certain event should be handled. Handling an event usually involves changing some state variables and potentially scheduling new events. Besides that, event-handling methods are normal Java methods. As such they can be called directly. This will work as expected, but the simulation time in this case will not change. If we want the method to be executed at some other point time, we have to use the <code>scheduleIn/scheduleAt</code> methods of the simulation. This will schedule a new event in the simulation&#8217;s event queue and call the event handler method when the simulation reaches the intended simulation time.</p>
+</div>
+<div class="paragraph">
+<p>We can see this in the <code>finishedService()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void finishedService() {
+	System.out.println("finished processing job " + currentJob + " at time=" + simTime());
+	currentJob = null;
+	numServed++;
+
+	// immediately check processing of next job
+	checkStartService();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The method is called whenever the server finished processing a job (it is scheduled by the <code>checkStartService()</code> event/method). When it is executed by the simulation at the right simulation time, we first print some message, then change the simulation&#8217;s state to mark the server as free and increment a statistics counter. Our server is now free so we have to check if we can immediately start processing the next jobs.  We do so by calling <code>checkStartService()</code>. As we want to check immediately, we are not using <code>scheduleIn</code> but a  normal Java method invocation. Therefore the simulation time stays the same.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_waiting_queue">Waiting Queue</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void checkStartService() {
+	if (q.numItems() == 0 || currentJob != null) {
+		// nothing to do because either "q" is empty or server is currently busy
+		return;
+	}
+
+	// take next job from queue
+	currentJob = q.tryTake();
+	System.out.println("start processing job " + currentJob + " at time=" + simTime());
+
+	// schedule service end event
+	scheduleIn(serviceTimes.nextDbl(), this::finishedService);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Inspecting the <code>checkStartService()</code> event-handling method more closely there first is a check if we can actually start the next job. If the server is currently busy (<code>currentJob!=null</code>) or the waiting queue is empty (<code>q.numItems()==0</code>), the method does nothing and immediately returns.</p>
+</div>
+<div class="paragraph">
+<p>The class to implement the waiting queue is an instance of <code>jasima.core.simulation.generic.Q&lt;T&gt;</code>. It stores a list of objects and allows to retrieve them in FIFO (First In First Out) or LIFO (Last In First Out) order. By default a <code>Q</code> has infinite capacity, but this can be changed if required.</p>
+</div>
+<div class="paragraph">
+<p>The most important methods of a <code>Q</code> are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>numItems()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">returns the number of items currently contained in the <code>Q</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tryTake()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">returns the next element from the <code>Q</code>; returns <code>null</code> if there is no such element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tryPut(T)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tries to put the element given as a parameter into the <code>Q</code>. If there was enough space in the queue to store it, the method returns <code>true</code>, <code> false</code> otherwise. As the queue in the example has unlimited capacity, a put will always succeed.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>These method of <code>Q</code> can be used when using the event-oriented modeling style. If using process-orientation there are additional methods (like blocking versions of <code>put()</code> and <code>take()</code>), specifically supporting this modeling style. Especially when using event-oriented modeling we can also easily use standard Java collection classes such as <code>ArrayList</code> or <code>PriorityQueue</code> instead  of jasima`s <code>Q</code> (or mix the as required).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scheduling_new_events">Scheduling New Events</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Having a look at the last line of <code>checkStartService()</code> gives an example of how to schedule an event in the simulation&#8217;s event queue.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> scheduleIn(serviceTimes.nextDbl(), this::finishedService);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This call of the <code>scheduleIn</code> method tells jasima to call the method <code>finishedService</code> when a certain amount of simulation time has elapsed. The event handler method to call is passed as a Java method reference (<code>this::finishedService</code>). The first parameter <code>serviceTimes.nextDbl()</code> calculates the next service time (details on using <code>DblSequence</code>s and random numbers are given in <a href="randomNumbers.html">Creating Random Numbers</a>).</p>
+</div>
 </div>
 </div>
 

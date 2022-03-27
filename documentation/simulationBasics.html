@@ -107,7 +107,7 @@
 <p>To explain the most important aspects of creating a simulation in jasima we use this M/M/1 model as an example. In the <a href="https://github.com/jasima-simulator/project_template_standalone">project_template_standalone</a> there are two versions of this model. A first version in the package <code>examples.simulation.events</code> uses a purely event-based approach. Process-oriented simulation features are used in the example available in the package <code>examples.simulation.process</code>. Both modelling styles are supported in jasima and can be freely mixed, i.e., certain simulated components can use event-oriented, others process-oriented modelling. The two styles can even be mixed in a certain component: an event-oriented <code>SimComponent</code> can activate its own <code>SimProcess</code>es if it wants to and still react to plain simulation events.</p>
 </div>
 <div class="paragraph">
-<p>Both versions of the model do the same thing: they have two parameters. One is the number of jobs to be created, defining the simulation length. After the last job was created, the simulation is stopped. The second parameter is the so-called traffic intensity. We don&#8217;t parameterize the model using &mu; and &lambda;. Instead we fix &mu; at 1 and use the traffic intensity to specify &lambda;. The traffic intensity is a value in the interval (0, 1). A traffic intensity of say 0.85 will lead to a server that is utilized 85% of the time in the long run. For shorter simulation runs server utilization can deviate considerably from this value due to the random influences in the model.</p>
+<p>Both versions of the model do the same thing, both have two parameters. One is the number of jobs to be created, defining the simulation length. After the last job was created, the simulation is stopped. The second parameter is the so-called traffic intensity. We don&#8217;t parameterize the model using &mu; and &lambda;. Instead we fix &mu; at 1 and use the traffic intensity to specify &lambda;. The traffic intensity is a value in the interval (0, 1). A traffic intensity of say 0.85 will lead to a server that is utilized 85% of the time in the long run. For shorter simulation runs server utilization can deviate considerably from this value due to the random influences in the model.</p>
 </div>
 <div class="paragraph">
 <p>The following topics are demonstrated in the examples and further explained on separate pages:</p>
@@ -126,7 +126,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>Additional concepts not used in M/M/1 example but frequently used in simulation models are explained on separate pages:</p>
+<p>Additional concepts not used in the M/M/1 example but frequently used in simulation models are explained on separate pages:</p>
 </div>
 <div class="ulist">
 <ul>
