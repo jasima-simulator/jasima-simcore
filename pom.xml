@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.jasima</groupId>
@@ -346,7 +348,7 @@
 		<connection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</connection>
 		<developerConnection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 		<url>https://github.com/jasima-simulator/jasima-simcore</url>
-		<tag>jasima-main-3.0.0-RC2</tag>
+		<tag>jasima-main-3.0.0-RC1</tag>
 	</scm>
 
 	<profiles>
