@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Statebased Events</title>
+    <title>State-based Events</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Homepage of jasima, the Java Simulator for Manufacturing and Logistics.">
     <meta name="author" content="Torsten Hildebrandt">
@@ -81,23 +81,144 @@
     </div>
     <div class="container">
 	<div class="page-header">
-		<h1>Statebased Events</h1>
+		<h1>State-based Events</h1>
 	</div>
 
 <!--	<p><em>19 März 2022</em></p> -->
 
-		<div class="paragraph">
-<p>How to use observable values. Most important classes:</p>
+		<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the introduction to <a href="processOriented.html">process-oriented simulation</a>  in jasima we already came across the <code>waitFor/waitUntil</code> methods that allow simulation processes to wait for some time or until some absolute point in time before their execution continues. Sometimes it is necessary to wait for some indefinite amount of time until a certain condition becomes true.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>jasima.core.util.observer.ObservableValue&lt;T&gt;</code></p>
-</li>
-<li>
-<p><code>jasima.core.util.observer.ObservableValues</code></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>This is possible with the <code>waitCondition</code> method. This method always has to be used with <code>ObervableValue</code>s. An observable value stores some value. There are <code>get()</code> and <code>set(T)</code> methods to retrieve or set its current value. What makes them special is, that they also offer a notification mechanism that can be used register a listener. The listener is notified whenever the stored value changes. This is used in <code>waitCondition</code> to be able to continue a process whenever a certain condition becomes true.</p>
+</div>
+<div class="paragraph">
+<p>In addition to the <code>ObservableValue&lt;T&gt;</code> class itself there is also a class <code>ObservableValues</code>. It offers certain static helper function that can be used to create and combine <code>ObservableValue</code>s more easily. Combining <code>ObservableValue</code>s leads to new, derived <code>ObservableValue</code>s.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example">Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To demonstrate the use, let&#8217;s look at the <code>HelloConditions.java</code> example, available in package <code>examples.simulation.process</code> of <code>project_template_standalone</code>. The general setup of this class is similar to the hello world example from <a href="gettingStarted.html">Getting Started</a>: There is a main <code>SimEntity</code> with its lifecycle method and two simulation processes ("incrementer" and "printer"), activated by it. The class contains a counter <code>callCounter</code> implemented as an Observable, containing an Integer value. The counter is incremented by the simulation process "incrementer". The second process "printer" prints a message after 3 increments before printing some message (mathematically it waits until the counter modulus 3 is 0). Furthermore the main process also waits on a condition involving the counter. Only if it reaches 13 the simulation is ended. The example in full is shown below, explaining the most important lines.</p>
+</div>
+<div class="listingblock">
+<div class="title">Main process</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Override
+ protected void lifecycle() throws MightBlock {
+ 	// init
+ 	System.out.println("simulation main process started at: " + simTime());
+ 	callCounter = new ObservableValue&lt;&gt;(0); <i class="conum" data-value="1"></i><b>(1)</b>
+ 	activate(this::incrementer);
+ 	activate(this::printer);
+
+ 	// main process waiting until counter reaches 13
+ 	ObservableValue&lt;Boolean&gt; counterEquals13 = ObservableValues.isEqual(callCounter, 13); <i class="conum" data-value="2"></i><b>(2)</b>
+ 	waitCondition(counterEquals13); <i class="conum" data-value="3"></i><b>(3)</b>
+
+ 	// end simulation
+ 	System.out.println("simulation main process finished at: " + simTime());
+ 	end();
+ }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>create a new observable value with an initial value of 0</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>create a derived observable that becomes true once <code>callCounter</code> is equal to 13</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>wait until the condition becomes true</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Incrementer process</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> void incrementer() throws MightBlock {
+ 	System.out.println("incrementor() starting at: " + simTime());
+ 	while (true) {
+ 		waitFor(3.0);
+
+ 		// increment counter
+ 		callCounter.set(callCounter.get() + 1); <i class="conum" data-value="1"></i><b>(1)</b>
+ 		// instead of get/set we could also have used: callCounter.update(n -&gt; n+1);
+
+ 		System.out.println("incrementor() executed at: " + simTime() + ", counter = " + callCounter.get());
+ 	}
+ }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>increment the counter by 1</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Printer process</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> void printer() throws MightBlock {
+ 	System.out.println("printer() starting at: " + simTime());
+ 	while (true) {
+ 		waitCondition(n -&gt; n % 3 == 0, callCounter); <i class="conum" data-value="1"></i><b>(1)</b>
+ 		System.out.println("printer() executed at: t=" + simTime() + ", counter = " + callCounter.get());
+ 		waitFor(5.0);
+ 	}
+ }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>wait on a condition derived from <code>callCounter</code>; the condition is a lambda expression taking an Integer as a parameter and returning a Boolean value</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Running the example, the following output should be visible:</p>
+</div>
+<div class="literalblock">
+<div class="title">Output of HelloConditions.java</div>
+<div class="content">
+<pre>simulation main process started at: 0.0
+incrementor() starting at: 0.0
+printer() starting at: 0.0
+printer() executed at: t=0.0, counter = 0
+incrementor() executed at: 3.0
+incrementor() executed at: 6.0
+incrementor() executed at: 9.0
+printer() executed at: t=9.0, counter = 3
+incrementor() executed at: 12.0
+incrementor() executed at: 15.0
+incrementor() executed at: 18.0
+printer() executed at: t=18.0, counter = 6
+incrementor() executed at: 21.0
+incrementor() executed at: 24.0
+incrementor() executed at: 27.0
+printer() executed at: t=27.0, counter = 9
+incrementor() executed at: 30.0
+incrementor() executed at: 33.0
+incrementor() executed at: 36.0
+printer() executed at: t=36.0, counter = 12
+incrementor() executed at: 39.0
+simulation main process finished at: 39.0</pre>
+</div>
+</div>
+</div>
 </div>
 
 	<hr />
