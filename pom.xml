@@ -348,7 +348,6 @@
 		<connection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</connection>
 		<developerConnection>scm:git:git@github.com:jasima-simulator/jasima-simcore.git</developerConnection>
 		<url>https://github.com/jasima-simulator/jasima-simcore</url>
-		<tag>jasima-main-3.0.0-RC1</tag>
 	</scm>
 
 	<profiles>
