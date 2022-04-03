@@ -114,4 +114,29 @@ public class ObservableValueTest {
 		assertEquals("not executed twice", 1, actionExecutedCounter.get());
 	}
 
+	@Test
+	public void deferredRemoveListShouldBeCleared() {
+		ObservableValue<Integer> v1 = new ObservableValue<Integer>(2);
+		ObservableListener<Integer> dummyListener = v1.addListener((ov,evt)->{});
+		// trigges removal while firing
+		ObservableListener<Integer> deferredRemove = v1.addListener((ov,evt)->v1.removeListener(dummyListener));
+		
+		assertEquals("numListener", 2, v1.numListener());
+		
+		// trigger removal
+		v1.set(3);
+		v1.removeListener(deferredRemove);
+		assertEquals("numListener", 0, v1.numListener());
+
+		ObservableListener<Integer> dummyListener2 = v1.addListener((ov,evt)->{});
+		// referred removal
+		v1.addListener((ov,evt)->v1.removeListener(dummyListener2));
+		assertEquals("numListener", 2, v1.numListener());
+		
+		// trigger removal2
+		v1.set(4);
+		
+		// everything worked if this point is reached without Exception
+	}
+
 }

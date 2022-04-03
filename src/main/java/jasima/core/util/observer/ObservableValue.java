@@ -262,6 +262,7 @@ public class ObservableValue<VALUE> {
 				boolean removeRes = removeListener(l);
 				assert removeRes;
 			}
+			removeWhileFiring.clear();
 		}
 	}
 
