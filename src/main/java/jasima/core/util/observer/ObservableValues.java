@@ -31,10 +31,6 @@ public final class ObservableValues {
 		return new ObservableValue<T>(initialValue);
 	}
 
-	public static <T> ObservableValue<T> observable(String name, T initialValue) {
-		return new ObservableValue<T>(initialValue);
-	}
-
 	/**
 	 * Creates a new observable value with a value as calculated by some functional
 	 * expression. Shorthand for calling the constructor
@@ -45,12 +41,7 @@ public final class ObservableValues {
 	 * @param dependencies All observable values used in the expression.
 	 * @return The new derived observable value.
 	 */
-	public static <T> DerivedObservable<T> derived(Supplier<T> expression, ObservableValue<?>... dependencies) {
-		return new DerivedObservable<T>(expression, dependencies);
-	}
-
-	public static <T> DerivedObservable<T> derived(String name, Supplier<T> expression,
-			ObservableValue<?>... dependencies) {
+	public static <T> ObservableValue<T> derived(Supplier<T> expression, ObservableValue<?>... dependencies) {
 		return new DerivedObservable<T>(expression, dependencies);
 	}
 
@@ -64,7 +55,7 @@ public final class ObservableValues {
 	 * @return A derived observable of type {@code Boolean} containing the result of
 	 *         comparing both values.
 	 */
-	public static <T> DerivedObservable<Boolean> isEqual(ObservableValue<? extends T> v1,
+	public static <T> ObservableValue<Boolean> isEqual(ObservableValue<? extends T> v1,
 			ObservableValue<? extends T> v2) {
 		Objects.requireNonNull(v1);
 		Objects.requireNonNull(v2);
@@ -75,7 +66,7 @@ public final class ObservableValues {
 	 * Same as {@link #isEqual(ObservableValue, ObservableValue)}, but comparing an
 	 * observable value directly to a constant value.
 	 */
-	public static <T, T2 extends T> DerivedObservable<Boolean> isEqual(ObservableValue<? extends T> v1, T2 v2) {
+	public static <T, T2 extends T> ObservableValue<Boolean> isEqual(ObservableValue<? extends T> v1, T2 v2) {
 		Objects.requireNonNull(v1);
 		return derived(() -> v1.equals(v2), v1);
 	}
@@ -84,9 +75,57 @@ public final class ObservableValues {
 	 * Same as {@link #isEqual(ObservableValue, ObservableValue)}, but comparing an
 	 * observable value directly to a constant value.
 	 */
-	public static <T, T2 extends T> DerivedObservable<Boolean> isEqual(T2 v1, ObservableValue<? extends T> v2) {
+	public static <T, T2 extends T> ObservableValue<Boolean> isEqual(T2 v1, ObservableValue<? extends T> v2) {
 		return isEqual(v2, v1);
 	}
+
+	/**
+	 * Creates a derived observable of type {@code Boolean} containing a logical
+	 * 'and' between two other observable values.
+	 */
+	public static ObservableValue<Boolean> and(ObservableValue<Boolean> v1, ObservableValue<Boolean> v2) {
+		return fromBinaryOperation((b1, b2) -> b1 && b2, v1, v2);
+	}
+
+	/**
+	 * Creates a derived observable of type {@code Boolean} containing a logical
+	 * 'or' between two other observable values.
+	 */
+	public static ObservableValue<Boolean> or(ObservableValue<Boolean> v1, ObservableValue<Boolean> v2) {
+		return fromBinaryOperation((b1, b2) -> b1 || b2, v1, v2);
+	}
+
+	/**
+	 * Creates a derived observable of type {@code Boolean} containing a logical
+	 * 'not' of another observable value.
+	 */
+	public static ObservableValue<Boolean> not(ObservableValue<Boolean> v) {
+		return fromUnaryOperation(b -> !b, v);
+	}
+
+	/**
+	 * Creates a new DerivedObservable by applying a certain binary function to two
+	 * other observable values.
+	 */
+	public static <T1, T2, R> ObservableValue<R> fromBinaryOperation(BiFunction<T1, T2, R> operation,
+			ObservableValue<? extends T1> v1, ObservableValue<? extends T2> v2) {
+		Objects.requireNonNull(v1);
+		Objects.requireNonNull(v2);
+		return derived(() -> operation.apply(v1.get(), v2.get()), v1, v2);
+	}
+
+	/**
+	 * Creates a new DerivedObservable by applying a certain unary function to
+	 * another observable value.
+	 */
+	public static <T, R> ObservableValue<R> fromUnaryOperation(Function<T, R> operation,
+			ObservableValue<? extends T> v) {
+		Objects.requireNonNull(v);
+		return derived(() -> operation.apply(v.get()), v);
+	}
+
+	public static final ObservableValue<Boolean> TRUE = new ConstValue<>(Boolean.TRUE);
+	public static final ObservableValue<Boolean> FALSE = new ConstValue<>(Boolean.FALSE);
 
 	/**
 	 * Runs the given action when the value of the given observable becomes true.
@@ -128,54 +167,6 @@ public final class ObservableValues {
 		}));
 		return listener.get();
 	}
-
-	/**
-	 * Creates a derived observable of type {@code Boolean} containing a logical
-	 * 'and' between two other observable values.
-	 */
-	public static DerivedObservable<Boolean> and(ObservableValue<Boolean> v1, ObservableValue<Boolean> v2) {
-		return fromBinaryOperation((b1, b2) -> b1 && b2, v1, v2);
-	}
-
-	/**
-	 * Creates a derived observable of type {@code Boolean} containing a logical
-	 * 'or' between two other observable values.
-	 */
-	public static DerivedObservable<Boolean> or(ObservableValue<Boolean> v1, ObservableValue<Boolean> v2) {
-		return fromBinaryOperation((b1, b2) -> b1 || b2, v1, v2);
-	}
-
-	/**
-	 * Creates a derived observable of type {@code Boolean} containing a logical
-	 * 'not' of another observable value.
-	 */
-	public static DerivedObservable<Boolean> not(ObservableValue<Boolean> v) {
-		return fromUnaryOperation(b -> !b, v);
-	}
-
-	/**
-	 * Creates a new DerivedObservable by applying a certain binary function to two
-	 * other observable values.
-	 */
-	public static <T1, T2, R> DerivedObservable<R> fromBinaryOperation(BiFunction<T1, T2, R> operation,
-			ObservableValue<? extends T1> v1, ObservableValue<? extends T2> v2) {
-		Objects.requireNonNull(v1);
-		Objects.requireNonNull(v2);
-		return derived(() -> operation.apply(v1.get(), v2.get()), v1, v2);
-	}
-
-	/**
-	 * Creates a new DerivedObservable by applying a certain unary function to
-	 * another observable value.
-	 */
-	public static <T, R> DerivedObservable<R> fromUnaryOperation(Function<T, R> operation,
-			ObservableValue<? extends T> v) {
-		Objects.requireNonNull(v);
-		return derived(() -> operation.apply(v.get()), v);
-	}
-
-	public static final ObservableValue<Boolean> TRUE = new ConstValue<>(Boolean.TRUE);
-	public static final ObservableValue<Boolean> FALSE = new ConstValue<>(Boolean.FALSE);
 
 	/**
 	 * prevent instantiation
