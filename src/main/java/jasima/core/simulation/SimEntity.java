@@ -145,4 +145,12 @@ public class SimEntity extends SimComponentContainerBase {
 		lifecycleProcess = new SimProcess<>(getSim(), this::lifecycle, "lifecycle");
 	}
 
+	@Override
+	public SimEntity clone() {
+		if (lifecycleProcess != null)
+			// can't clone if already executed
+			throw new IllegalStateException();
+		return (SimEntity) super.clone();
+	}
+
 }

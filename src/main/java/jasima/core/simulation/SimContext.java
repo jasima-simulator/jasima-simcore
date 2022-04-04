@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -379,6 +380,11 @@ public class SimContext {
 	/** @see Simulation#initRndGen(DblSequence, String) */
 	public static <T extends DblSequence> T initRndGen(T s, String streamName) {
 		return requireSimContext().initRndGen(s, streamName);
+	}
+
+	/** @see Simulation#initRndGen(String) */
+	public static Random initRndGen(String streamName) {
+		return requireSimContext().initRndGen(streamName);
 	}
 
 //	public static String formatMsg(Object... params) {

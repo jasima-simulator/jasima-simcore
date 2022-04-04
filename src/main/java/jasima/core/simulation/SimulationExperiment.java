@@ -14,7 +14,9 @@ import java.util.function.Consumer;
 import jasima.core.experiment.Experiment;
 import jasima.core.simulation.util.SimOperations;
 import jasima.core.util.MsgCategory;
+import jasima.core.util.SimProcessUtil;
 import jasima.core.util.SimProcessUtil.SimAction;
+import jasima.core.util.SimProcessUtil.SimRunnable;
 
 public class SimulationExperiment extends Experiment implements SimOperations {
 
@@ -35,13 +37,44 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 
 	protected transient Simulation sim;
 
+	/**
+	 * Create a new SimulationExperiment.
+	 */
 	public SimulationExperiment() {
-		this(null);
+		super();
 	}
 
+	/**
+	 * Creates a new SimulationExperiment with the given {@link SimAction} as its
+	 * main process.
+	 * 
+	 * {@link #setMainProcess(SimAction)}
+	 */
 	public SimulationExperiment(SimAction mainProcess) {
-		super();
+		this();
 		setMainProcess(mainProcess);
+	}
+
+	/**
+	 * Creates a new SimulationExperiment with the given {@link SimRunnable} as its
+	 * main process.
+	 * 
+	 * {@link #setMainProcess(SimAction)}
+	 */
+	public SimulationExperiment(SimRunnable mainProcess) {
+		this();
+		setMainProcess(SimProcessUtil.simAction(mainProcess));
+	}
+
+	/**
+	 * Creates a new SimulationExperiment with the given SimComponent as its main
+	 * component.
+	 * 
+	 * {@link #setModelRoot(SimComponent)}
+	 */
+	public SimulationExperiment(SimComponent modelRoot) {
+		this();
+		setModelRoot(modelRoot);
 	}
 
 	@Override
