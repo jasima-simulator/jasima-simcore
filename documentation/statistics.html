@@ -86,18 +86,287 @@
 
 <!--	<p><em>19 März 2022</em></p> -->
 
-		<div class="paragraph">
-<p>Most important classes:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>jasima.core.statistics.SummaryStat</code></p>
-</li>
-<li>
-<p><code>jasima.core.statistics.TimeWeightedSummaryStat</code></p>
-</li>
+		<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_general_setup">General Setup</a></li>
+<li><a href="#_queuing_time_using_summarystat">Queuing Time / Using <code>SummaryStat</code></a></li>
+<li><a href="#_avg_queue_length_using_timeweightedsummarystat">Avg. Queue Length / Using <code>TimeWeightedSummaryStat</code></a></li>
+<li><a href="#_track_server_utilization_using_timeweightedsummarystat">Track Server Utilization using <code>TimeWeightedSummaryStat</code></a></li>
+<li><a href="#_putting_it_all_together">Putting it all together</a></li>
 </ul>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The outcome of a simulation run usually generates various result values. Such results can be simple counters or more complex quantities like for instance average/min/max queuing times.</p>
+</div>
+<div class="paragraph">
+<p>Results in jasima are usually returned as a set of name/value-pairs contained in a Map. In a <code>SimComponent</code> or <code>SimEntity</code> you can add values to this map in two ways. One is to override the <code>produceResults</code> <a href="eventOriented.html#sim-basics">lifecycle method</a> and add them to the Map passed as an argument. The other way is to call the <code>addResult</code> method at any time during a simulation run.</p>
+</div>
+<div class="paragraph">
+<p>To collect certain summary statistics like mean/min/max/variance/count of values during a simulation run in an efficient way, the classes <code>SummaryStat</code> and <code>TimeWeightedSummaryStat</code> can be used. But lets look at an example to see how exactly they are used.</p>
+</div>
+<div class="paragraph">
+<p>For this we look at an extended version of the event-oriented M/M/1 model already used in <a href="eventOriented.html">Event-oriented Simulation</a>. The source code of the example is contained in the class <code>MM1ModelEventsExtendedStatistics</code>, available in package <code>examples.simulation.events</code> of <code>project_template_standalone</code>.</p>
+</div>
+<div class="paragraph">
+<p>The original version already contained the two counters <code>numServed</code> and <code>numCreated</code>. They were passed back as the result of the simulation by overriding the <code>produceResults</code> lifecycle method of our <code>SimComponent</code>. In this example we will add additional statistics to collect information on</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>the queuing time of a job (using a <code>SummaryStat</code> object),</p>
+</li>
+<li>
+<p>the average queue length (using a <code>TimeWeightedSummaryStat</code> object)</p>
+</li>
+<li>
+<p>the server&#8217;s utilization (using a <code>TimeWeightedSummaryStat</code> object).</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_general_setup">General Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To be able to collect this information, we have to start by introducing a <code>Job</code> class. In the old version, a job was just represented by a number. We are introducing the <code>Job</code> class containing an attribute to store the time when the job entered its queue. Also note that instead of using Integers (the job&#8217;s number), our waiting queue <code>q</code> now contains <code>Job</code> objects.</p>
+</div>
+<div class="listingblock">
+<div class="title">New Job class holding additional attributes.</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// Job contains additional job data; here we only add an attribute to record
+// record a Job's number and when queuing started
+public class Job {
+	public int jobId;
+	public double startQueuing;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The queuing time and queue length/utilization values are collected in objects of type <code>SummaryStat</code> / <code>TimeWeightedSummaryStat</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // field used for additional stats collection
+ private SummaryStat queuingTimes;
+ private TimeWeightedSummaryStat queueLength;
+ private TimeWeightedSummaryStat serverUtilization;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>They are initialized at the end of the <code>init()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">	// initialize statistics
+	numServed = 0;
+	numCreated = 0;
+	queuingTimes = new SummaryStat();
+	queueLength = new TimeWeightedSummaryStat();
+	serverUtilization = new TimeWeightedSummaryStat();
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_queuing_time_using_summarystat">Queuing Time / Using <code>SummaryStat</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To keep track of the queuing time we first have to remember when a job entered the queue. Therefore we first create a Job object in the   beginning of the <code>createNext</code> method and record the queuing time start:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void createNext() {
+	numCreated++;
+	Job j = new Job();
+	j.jobId = numCreated;
+	j.startQueuing = simTime();
+
+	q.tryPut(j);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now all we have to do is to calculate a job&#8217;s queuing time and call the <code>SummaryStat</code>'s <code>value</code> method of our statistics object. The right place to do this is in the <code>checkStartService()</code> method. We add the following lines there:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // record queuing time
+ double queuingTime = simTime() - currentJob.startQueuing;
+ queuingTimes.value(queuingTime);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all there is to it, <code>SummaryStat</code> takes care of remembering the number of values encountered, their means, min/max and variance/standard deviation. These summary statistics can be accessed whenever needed by using the methods <code>mean()</code>, <code>min()</code>, <code>max()</code> etc. of <code>SummaryStat</code>. Now all that is left is to add the statistics object to the result map in the <code>produceResults</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+public void produceResults(Map&lt;String, Object&gt; res) {
+	res.put("numCreated", numCreated);
+	res.put("numServed", numServed);
+	res.put("queuingTime", queuingTimes);
+	res.put("queueLength", queueLength);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_avg_queue_length_using_timeweightedsummarystat">Avg. Queue Length / Using <code>TimeWeightedSummaryStat</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>TimeWeightedSummaryStat</code> works similar. The main difference is, that we are now using a value-method that has two arguments. The first is the value we are interested in (like the queue length), the second is always the current simulation time. We usually call this method whenever the underlying value changes, closing a time interval starting with the last call of <code>value()</code> and starting a new interval where our underlying quantity has a new value.</p>
+</div>
+<div class="paragraph">
+<p>To record the average queue length we have to add a call when our queue length increases in the method <code>createNext</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> q.tryPut(j);
+ queueLength.value(q.numItems(), simTime());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We have to make another call whenever the queue length decreases in the method <code>checkStartService</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // take next job from queue
+ currentJob = q.tryTake();
+ // update queue length statistics
+ queueLength.value(q.numItems(), simTime());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As a last step besides adding our statics variables to the simulation results we have to properly close the last time interval. The simplest way of doing this is in the <code>simEnd</code> method. The value passed as the first argument to the <code>value</code> method doesn&#8217;t matter in this case:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+public void simEnd() {
+	// properly close time-weighted statistis values
+	serverUtilization.value(0.0, simTime());
+	queueLength.value(0.0, simTime());</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_track_server_utilization_using_timeweightedsummarystat">Track Server Utilization using <code>TimeWeightedSummaryStat</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To keep track of the server utilization we can also use <code>TimeWeightedSummaryStat</code> assuming that a value of 0 means an idle server and 1 means a busy server. The calls to <code>value()</code> should now be towards the end of <code>checkStartService</code> (server is getting busy):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // update utilization statistics, server is busy now
+ serverUtilization.value(1.0, simTime());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The server is getting idle again in the method <code>finishedService</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // update utilization statistics, server is idle now
+ serverUtilization.value(0.0, simTime());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For the server utilization we are also using the second way of adding a result value to the simulation. We can do this by calling the <code>addResult</code> method of each <code>SimComponent</code> or <code>SimEntity</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+public void simEnd() {
+	// properly close time-weighted statistis values
+	serverUtilization.value(0.0, simTime());
+	queueLength.value(0.0, simTime());
+
+	// we can also call addResult() at any time during a simulation run instead of
+	// or in addition to overriding produceResults(); this is useful for instance
+	// when using process-oriented modelling
+	addResult("serverUtilization", serverUtilization);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_putting_it_all_together">Putting it all together</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If we run the example code, the following output should be produced:</p>
+</div>
+<div class="literalblock">
+<div class="title">Output of MM1ModelEventsExtendedStatistics</div>
+<div class="content">
+<pre>********************************************************************************
+JASIMA, v3.0.0-RC2-SNAPSHOT (2022-03-28T10:27:55Z, develop@fc0f8a7); http://jasima.net/
+
+SimulationExperiment: exp@2af004b
+
+java: v12.0.1, Java HotSpot(TM) 64-Bit Server VM (Oracle Corporation)
+os: Windows 10 (amd64, v10.0)
+dir: C:\Users\Torsten.Hildebrandt\eclipse21-09_workspace\jasima-site
+********************************************************************************
+
+10:33:23.377	exp@2af004b	INFO	starting...
+10:33:23.409	exp@2af004b	INFO	initializing...
+10:33:23.409	exp@2af004b	INFO	running...
+10:33:23.429	exp@2af004b	INFO	terminating...
+10:33:23.429	exp@2af004b	INFO	collecting results...
+10:33:23.430	exp@2af004b	INFO	finished.
+
+Results of SimulationExperiment
+
+Name	Mean	Min	Max	StdDev	Count	Sum
+queueLength	2.7395	0.0000	17.0000	NaN	1984	2800.4034
+queuingTime	2.7183	0.0000	14.1050	2.6697	983	2672.0879
+serverUtilization	0.8111	0.0000	1.0000	NaN	1966	829.1237
+
+Name	Value
+expAborted	0
+numCreated	1000
+numServed	982
+simTime	1023.158662528794
+
+time needed:	0.1s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As can be seen in the results section, our new statistics <code>queueLength</code>, <code>queuingTime</code>, and <code>serverUtilization</code> are shown in a separate section showing their means/min/max&#8230;&#8203; value.</p>
+</div>
+<div class="paragraph">
+<p>You can also try out a different version of the <code>main</code> method. To do this, comment out the line to run the simulation experiment directly  and instead uncoment the three following line wrappeing the simulation experiment in a <code>MultipleReplicationExperiment</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> 		// try also using the 3 lines commented out below
+ 		ConsoleRunner.run(se);
+ //		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(se, 100);
+ //		mre.addListener(new ExcelSaver());
+ //		ConsoleRunner.run(mre);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you do this, 100 independent replications of the simulation experiment will be performed. The resulting Excel file will list the results of each individual replication on the sheet "sub-exp. value|mean". As can be seen, the M/M/1 model has a high variance. Even for the moderate utilization of 85% the results differ substantially just by changing the random numbers used.</p>
+</div>
+<div class="openblock">
+<div class="title">Results of running multiple independent replications</div>
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="img/mreExcelResults.png" alt="MreExcelResults" width="800">
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 	<hr />

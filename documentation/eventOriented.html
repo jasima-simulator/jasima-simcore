@@ -89,7 +89,7 @@
 		<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_basic_anatomy_of_a_simulation">Basic Anatomy of a Simulation</a></li>
+<li><a href="#sim-basics">Basic Anatomy of a Simulation</a></li>
 <li><a href="#_scheduling_events_and_the_simulation_time">Scheduling Events and the Simulation Time</a></li>
 <li><a href="#_waiting_queue">Waiting Queue</a></li>
 <li><a href="#_scheduling_new_events">Scheduling New Events</a></li>
@@ -147,7 +147,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_basic_anatomy_of_a_simulation">Basic Anatomy of a Simulation</h2>
+<h2 id="sim-basics">Basic Anatomy of a Simulation</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Simulated components in jasima are instances of Java classes derived (directly or indirectly) from <code>jasima.core.simulation.SimComponent</code>. <code>SimComponent</code> is an interface which is normally not used directly. Instead simulation components are usually implemented by classes inherited from <code>jasima.core.simulation.SimComponentBase</code>. <code>SimComponentBase</code> already offers meaningful default implementations of all methods. While a <code>SimComponentBase</code> can be added to a simulation, it doesn&#8217;t do anything. To specify the behaviour of a component, you usually override a single or multiple of its lifecycle methods (usually at least <code>init</code>). Lifecycle methods are called by the simulation at the occurrence of a certain lifecycle event. These methods are available:</p>
