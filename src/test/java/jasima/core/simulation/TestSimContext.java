@@ -2,11 +2,13 @@ package jasima.core.simulation;
 
 import static jasima.core.simulation.SimContext.waitFor;
 import static jasima.core.simulation.Simulation.SIM_TIME;
+import static jasima.core.util.observer.ObservableValues.isEqual;
+import static jasima.core.util.observer.ObservableValues.whenTrueExecuteOnce;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -14,16 +16,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import jasima.core.simulation.SimProcess.MightBlock;
+import jasima.core.simulation.Simulation.SimExecState;
 import jasima.core.simulation.Simulation.SimulationFailed;
+import jasima.core.util.observer.ObservableValue;
 
 public class TestSimContext {
-//	@Rule
-	public Timeout globalTimeout = new Timeout(5000);
+	@Rule
+	public Timeout globalTimeout = new Timeout(5000, TimeUnit.MILLISECONDS);
 
 	@Test
 	public void testSequentialSimulation() {
@@ -291,6 +297,165 @@ public class TestSimContext {
 			assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
 			assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
 		});
+	}
+
+	@Test
+	public void testCreateSimFromSimAction() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		Simulation sim = SimContext.createSim("sim1", s -> {
+			s.setSimTimeStartInstant(startInstant);
+			waitFor(5, DAYS);
+			// sim terminates after 5 days, there are no further events
+		});
+
+		sim.performRun();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
+	}
+
+	@Test
+	public void testCreateSimFromSimAction2() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		Simulation sim = SimContext.createSim(s -> {
+			s.setSimTimeStartInstant(startInstant);
+			waitFor(5, DAYS);
+			// sim terminates after 5 days, there are no further events
+		});
+
+		sim.performRun();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
+	}
+
+	@Test
+	public void testCreateSimFromSimComponent() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		Simulation sim = SimContext.createSim("sim1", createDummyComponent(startInstant));
+		sim.performRun();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
+		assertEquals("eventCounter", 1, sim.numEventsProcessed());
+	}
+
+	@Test
+	public void testCreateSimFromSimComponent2() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		Simulation sim = SimContext.createSim(createDummyComponent(startInstant));
+		sim.performRun();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, sim.simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
+		assertEquals("eventCounter", 1, sim.numEventsProcessed());
+	}
+
+	@Test
+	public void testCreateSimFromSimComponentWithMainProcess() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		Simulation sim = SimContext.createSim("sim1", createDummyComponent(startInstant));
+		sim.setMainProcessActions(s -> s.addResult("testResult", 42));
+		Map<String, Object> res = sim.performRun();
+
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
+		assertEquals("testResult", 42, res.get("testResult"));
+//		assertEquals("eventCounter", 2, sim.numEventsProcessed());
+	}
+
+	@Test
+	public void testCreateSimFromSimComponentWithMainProcess2() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		Simulation sim = SimContext.createSim("sim1", createDummyComponent(startInstant));
+		sim.setMainProcessActions(s -> {
+			s.addResult("testResult1", 42);
+			System.out.println("running in Thread: " + Thread.currentThread());
+		});
+
+		ObservableValue<Boolean> simTerminating = isEqual(sim.observableState(), SimExecState.TERMINATING);
+		whenTrueExecuteOnce(simTerminating, () -> {
+			sim.addResult("testResult2", 23);
+			System.out.println("observble action running in Thread: " + Thread.currentThread());
+		});
+
+		Map<String, Object> res = sim.performRun();
+
+		System.out.println("main Thread: " + Thread.currentThread());
+
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), sim.simTimeAbs());
+		assertEquals("testResult1", 42, res.get("testResult1"));
+		assertEquals("testResult2", 23, res.get("testResult2"));
+	}
+
+	private SimComponentBase createDummyComponent(Instant startInstant) {
+		return new SimComponentBase() {
+			@Override
+			public void init() {
+				getSim().setSimTimeStartInstant(startInstant);
+				// schedule some dummy event so simulation runs 5 days
+				scheduleAt(5, DAYS, () -> {
+					System.out.println("dummy event handler running in Thread: " + Thread.currentThread());
+				});
+			}
+		};
+	}
+
+	@Test
+	public void testCreateSimExperimentFromSimAction() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		SimulationExperiment se = SimContext.createSimExperiment("se1", s -> {
+			s.setSimTimeStartInstant(startInstant);
+			waitFor(5, DAYS);
+			// sim terminates after 5 days, there are no further events
+		});
+		se.runExperiment();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, se.getSim().simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), se.getSim().simTimeAbs());
+	}
+
+	@Test
+	public void testCreateSimExperimentFromSimAction2() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		SimulationExperiment se = SimContext.createSimExperiment(s -> {
+			s.setSimTimeStartInstant(startInstant);
+			waitFor(5, DAYS);
+			// sim terminates after 5 days, there are no further events
+		});
+		se.runExperiment();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, se.getSim().simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), se.getSim().simTimeAbs());
+	}
+
+	@Test
+	public void testCreateSimExperimentFromSimComponent() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		SimulationExperiment se = SimContext.createSimExperiment("se1", createDummyComponent(startInstant));
+		se.runExperiment();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, se.getSim().simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), se.getSim().simTimeAbs());
+	}
+
+	@Test
+	public void testCreateSimExperimentFromSimComponent2() throws Exception {
+		Instant startInstant = Instant.parse("2020-01-01T15:00:00Z");
+
+		SimulationExperiment se = SimContext.createSimExperiment(createDummyComponent(startInstant));
+		se.runExperiment();
+
+		assertEquals("simTimeAtEnd", 5 * 24 * 60.0, se.getSim().simTime(), 1e-6);
+		assertEquals("simTimeAbsAtEnd", startInstant.plus(5, DAYS), se.getSim().simTimeAbs());
 	}
 
 	private <R> R rethrowUnchecked(Callable<R> c) {

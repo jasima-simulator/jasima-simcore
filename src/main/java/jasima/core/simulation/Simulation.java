@@ -948,6 +948,7 @@ public class Simulation
 	/**
 	 * Returns an ordered list of all events currently in the event queue. Use with
 	 * care, this is an expensive operation. The list does not include the current
+	 * event.
 	 */
 	public List<SimEvent> scheduledEvents() {
 		return events.allEvents();

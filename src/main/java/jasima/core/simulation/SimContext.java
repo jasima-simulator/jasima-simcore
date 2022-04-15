@@ -495,15 +495,98 @@ public class SimContext {
 	/**
 	 * Create a new simulation, but does not yet execute it.
 	 * 
-	 * @param name The simulation's name (can be null)
-	 * @param a    {@link SimAction} defining the simulation's behavior.
+	 * @param mainProcess {@link SimAction} defining the simulation's behavior (main
+	 *                    process).
 	 * @return The new simulation.
 	 */
-	public static Simulation createSim(@Nullable String name, SimAction a) {
+	public static Simulation createSim(SimAction mainProcess) {
+		return createSim(null, mainProcess);
+	}
+
+	/**
+	 * Create a new simulation, but does not yet execute it.
+	 * 
+	 * @param name        The simulation's name (can be null)
+	 * @param mainProcess {@link SimAction} defining the simulation's behavior.
+	 * @return The new simulation.
+	 */
+	public static Simulation createSim(@Nullable String name, SimAction mainProcess) {
 		Simulation sim = new Simulation();
 		sim.setName(name);
-		sim.setMainProcessActions(a);
+		sim.setMainProcessActions(mainProcess);
 		return sim;
+	}
+
+	/**
+	 * Create a new simulation, but does not yet execute it.
+	 * 
+	 * @param mainComponent Main {@link SimComponent} of the model tree.
+	 * @return The new simulation.
+	 */
+	public static Simulation createSim(SimComponent mainComponent) {
+		return createSim(null, mainComponent);
+	}
+
+	/**
+	 * Create a new simulation experiment, but does not yet execute it.
+	 * 
+	 * @param name      The simulation's name (can be null)
+	 * @param mainComponent Main {@link SimComponent} of the model tree.
+	 * @return The new simulation.
+	 */
+	public static Simulation createSim(@Nullable String name, SimComponent mainComponent) {
+		Simulation sim = new Simulation();
+		sim.setName(name);
+		sim.addComponent(mainComponent);
+		return sim;
+	}
+
+	/**
+	 * Create a new simulation experiment, but does not yet execute it.
+	 * 
+	 * @param mainProcess {@link SimAction} defining the simulation's behavior.
+	 * @return The new simulation.
+	 */
+	public static SimulationExperiment createSimExperiment(SimAction mainProcess) {
+		return createSimExperiment(null, mainProcess);
+	}
+
+	/**
+	 * Create a new simulation experiment, but does not yet execute it.
+	 * 
+	 * @param name        The simulation's name (can be null)
+	 * @param mainProcess {@link SimAction} defining the simulation's behavior.
+	 * @return The new simulation.
+	 */
+	public static SimulationExperiment createSimExperiment(@Nullable String name, SimAction mainProcess) {
+		SimulationExperiment sim = new SimulationExperiment();
+		sim.setName(name);
+		sim.setMainProcess(mainProcess);
+		return sim;
+	}
+
+	/**
+	 * Create a new simulation experiment, but does not yet execute it.
+	 * 
+	 * @param mainComponent Main {@link SimComponent} of the model tree.
+	 * @return The new simulation.
+	 */
+	public static SimulationExperiment createSimExperiment(SimComponent mainComponent) {
+		return createSimExperiment(null, mainComponent);
+	}
+
+	/**
+	 * Create a new simulation experiment, but does not yet execute it.
+	 * 
+	 * @param name      The simulation's name (can be null)
+	 * @param modelRoot Main {@link SimComponent} of the model tree.
+	 * @return The new simulation.
+	 */
+	public static SimulationExperiment createSimExperiment(@Nullable String name, SimComponent mainComponent) {
+		SimulationExperiment se = new SimulationExperiment();
+		se.setName(name);
+		se.setModelRoot(mainComponent);
+		return se;
 	}
 
 	/** Internal method to set the current Thread's simulation. */
