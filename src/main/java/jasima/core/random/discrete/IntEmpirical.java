@@ -40,38 +40,25 @@ public class IntEmpirical extends IntSequence {
 	private static final long serialVersionUID = -8591371451392742035L;
 
 	public IntEmpirical() {
-		this(null, null, null, null);
+		this(null, null, null);
 	}
 
 	public IntEmpirical(double[] probs) {
-		this(null, null, probs, null);
+		this(null, probs, null);
 	}
 
 	public IntEmpirical(Random rnd, double[] probs) {
-		this(rnd, null, probs, null);
-	}
-
-	public IntEmpirical(String name, double[] probs) {
-		this(null, name, probs, null);
+		this(rnd, probs, null);
 	}
 
 	public IntEmpirical(double[] probs, int[] values) {
-		this(null, null, probs, values);
+		this(null, probs, values);
 	}
 
 	public IntEmpirical(Random rnd, double[] probs, int[] values) {
-		this(rnd, null, probs, values);
-	}
-
-	public IntEmpirical(String name, double[] probs, int[] values) {
-		this(null, name, probs, values);
-	}
-
-	public IntEmpirical(Random rnd, String name, double[] probs, int[] values) {
 		super();
 		setProbabilities(probs, values);
 		setRndGen(rnd);
-		setName(name);
 	}
 
 	private double[] probs = null;

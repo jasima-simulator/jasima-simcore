@@ -36,21 +36,12 @@ public class IntUniformAllInts extends IntSequence {
 	private static final long serialVersionUID = -2235431750818257710L;
 
 	public IntUniformAllInts() {
-		this(null, null);
+		this(null);
 	}
 
 	public IntUniformAllInts(Random random) {
-		this(random, null);
-	}
-
-	public IntUniformAllInts(String name) {
-		this(null, name);
-	}
-
-	public IntUniformAllInts(Random random, String name) {
 		super();
 		setRndGen(random);
-		setName(name);
 	}
 
 	@Override

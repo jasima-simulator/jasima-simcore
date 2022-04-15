@@ -23,7 +23,6 @@ package jasima.core.random.continuous;
 import java.io.Serializable;
 import java.util.Random;
 
-import jasima.core.random.RandomFactory;
 import jasima.core.util.Pair;
 import jasima.shopSim.util.modelDef.streams.DblStreamDef;
 
@@ -38,7 +37,6 @@ public abstract class DblSequence implements Serializable, Cloneable {
 	private static final long serialVersionUID = 7236623667061348954L;
 
 	protected Random rndGen;
-	private String name;
 
 	public DblSequence() {
 		super();
@@ -112,7 +110,7 @@ public abstract class DblSequence implements Serializable, Cloneable {
 		if (rndGen != null) {
 			throw new IllegalStateException("Only a DblStream without a rndGen set can be cloned.");
 		}
-		
+
 		try {
 			return (DblSequence) super.clone();
 		} catch (CloneNotSupportedException cantHappen) {
@@ -133,24 +131,6 @@ public abstract class DblSequence implements Serializable, Cloneable {
 	 */
 	public void setRndGen(Random rndGen) {
 		this.rndGen = rndGen;
-	}
-
-	/**
-	 * Returns the stream's name.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets an optional name for this stream. The name can be used to, e.g.,
-	 * initialize the random number generator as in
-	 * {@link RandomFactory#initRndGen(DblSequence, String)}.
-	 * 
-	 * @param name The stream's name.
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 }

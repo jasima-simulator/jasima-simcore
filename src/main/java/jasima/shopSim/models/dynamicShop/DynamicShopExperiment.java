@@ -36,6 +36,7 @@ import jasima.core.util.Pair;
 import jasima.core.util.TypeUtil;
 import jasima.core.util.Util;
 import jasima.shopSim.core.DynamicJobSource;
+import jasima.shopSim.core.DynamicJobSourceOldStreamNames;
 import jasima.shopSim.core.Job;
 import jasima.shopSim.core.JobSource;
 import jasima.shopSim.core.Operation;
@@ -58,6 +59,7 @@ import jasima.shopSim.util.BasicJobStatCollector;
  * @author Torsten Hildebrandt
  * @see BasicJobStatCollector
  */
+@SuppressWarnings("deprecation")
 public class DynamicShopExperiment extends ShopExperiment {
 
 	private static final long serialVersionUID = -7289579158397939550L;
@@ -138,7 +140,7 @@ public class DynamicShopExperiment extends ShopExperiment {
 	}
 
 	protected JobSource createJobSource() {
-		DynamicJobSource src = new DynamicJobSource() {
+		DynamicJobSource src = new DynamicJobSourceOldStreamNames() {
 
 			@Override
 			protected Operation[] createRoute() {
@@ -185,7 +187,6 @@ public class DynamicShopExperiment extends ShopExperiment {
 
 		ArrivalsStationary arrivals = new ArrivalsStationary();
 		arrivals.setInterArrivalTimes(new DblDistribution(new ExponentialDistribution(iaMean)));
-		arrivals.setName("arrivalStream");
 		src.setArrivalProcess(arrivals);
 
 		int min = getNumOpsMin() > 0 ? getNumOpsMin() : getNumMachines();
@@ -196,14 +197,13 @@ public class DynamicShopExperiment extends ShopExperiment {
 		if (max > getNumMachines())
 			throw new IllegalArgumentException(
 					defFormat("Can't have more operations (%d) than there are machines (%d).", max, getNumMachines()));
-		IntUniformRange numOps = new IntUniformRange("numOpsStream", min, max);
+		IntUniformRange numOps = new IntUniformRange(min, max);
 		src.setNumOps(numOps);
 
 		DblSequence procTimes2 = TypeUtil.cloneIfPossible(getProcTimes());
-		procTimes2.setName("procTimesStream");
 		src.setProcTimes(procTimes2);
 
-		src.setMachIdx(new IntUniformRange("machIdxStream", 0, getNumMachines() - 1));
+		src.setMachIdx(new IntUniformRange(0, getNumMachines() - 1));
 
 		src.setDueDateFactors(TypeUtil.cloneIfPossible(getDueDateFactor()));
 
@@ -350,8 +350,8 @@ public class DynamicShopExperiment extends ShopExperiment {
 	 * Sets the weights to be used for each job. The default setting is to assign a
 	 * weight of 1 for each job when this attribute is {@code null}.
 	 * 
-	 * @param weights A {@link DblSequence} to determine job weight. Default: each job
-	 *                gets a weight of 1.
+	 * @param weights A {@link DblSequence} to determine job weight. Default: each
+	 *                job gets a weight of 1.
 	 */
 	public void setWeights(DblSequence weights) {
 		this.weights = weights;

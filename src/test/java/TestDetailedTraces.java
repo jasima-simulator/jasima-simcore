@@ -19,10 +19,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import jasima.core.random.RandomFactory;
 import jasima.core.util.ExperimentTest;
 import jasima.core.util.TraceFileProducer;
 import jasima.shopSim.core.PR;

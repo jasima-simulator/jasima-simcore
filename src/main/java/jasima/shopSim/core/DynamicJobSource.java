@@ -57,7 +57,7 @@ public class DynamicJobSource extends JobSource {
 
 	@Override
 	public void init() {
-		String prefix = "source" + index + ".";
+		String prefix = streamNamePrefix();
 
 		super.init();
 
@@ -68,6 +68,10 @@ public class DynamicJobSource extends JobSource {
 		init(getMachIdx(), prefix + "machIdxStream", fact);
 		init(getProcTimes(), prefix + "procTimesStream", fact);
 		init(getNumOps(), prefix + "numOpsStream", fact);
+	}
+
+	protected String streamNamePrefix() {
+		return "source" + index + ".";
 	}
 
 	static protected void init(DblSequence dblStream, String streamName, RandomFactory fact) {

@@ -38,22 +38,13 @@ public class DblUniformRange extends DblSequence {
 	private double min = 0.0d, max = 1.0d, range = 1.0d;
 
 	public DblUniformRange(double min, double max) {
-		this(null, null, min, max);
+		this(null, min, max);
 	}
 
 	public DblUniformRange(Random random, double min, double max) {
-		this(random, null, min, max);
-	}
-
-	public DblUniformRange(String name, double min, double max) {
-		this(null, name, min, max);
-	}
-
-	public DblUniformRange(Random random, String name, double min, double max) {
 		super();
 		setRange(min, max);
 		setRndGen(random);
-		setName(name);
 	}
 
 	public void setRange(double min, double max) {

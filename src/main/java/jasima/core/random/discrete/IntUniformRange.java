@@ -37,22 +37,13 @@ public class IntUniformRange extends IntSequence {
 	private int min, max, range;
 
 	public IntUniformRange(int min, int max) {
-		this(null, null, min, max);
+		this(null, min, max);
 	}
 
 	public IntUniformRange(Random random, int min, int max) {
-		this(random, null, min, max);
-	}
-
-	public IntUniformRange(String name, int min, int max) {
-		this(null, name, min, max);
-	}
-
-	public IntUniformRange(Random random, String name, int min, int max) {
 		super();
 		setRange(min, max);
 		setRndGen(random);
-		setName(name);
 	}
 
 	@Override
@@ -100,8 +91,7 @@ public class IntUniformRange extends IntSequence {
 	/**
 	 * Sets the minimum value returned by this number stream.
 	 * 
-	 * @param min
-	 *            The minimum to use.
+	 * @param min The minimum to use.
 	 */
 	public void setMin(int min) {
 		this.min = min;
@@ -114,8 +104,7 @@ public class IntUniformRange extends IntSequence {
 	/**
 	 * Sets the maximum value returned by this number stream.
 	 * 
-	 * @param max
-	 *            The maximum to use.
+	 * @param max The maximum to use.
 	 */
 	public void setMax(int max) {
 		this.max = max;

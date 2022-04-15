@@ -215,10 +215,7 @@ public class RandomFactory implements Serializable {
 		if (stream == null || stream.getRndGen() != null)
 			return stream;
 
-		String name = stream.getName();
-		if (name == null)
-			name = defaultName;
-
+		String name = defaultName;
 		if (name == null) {
 			throw new IllegalArgumentException("No stream name provided.");
 		}

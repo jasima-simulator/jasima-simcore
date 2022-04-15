@@ -35,21 +35,12 @@ public class DblUniformZeroOne extends DblSequence {
 	private static final long serialVersionUID = -5917490656405705668L;
 
 	public DblUniformZeroOne() {
-		this(null, null);
+		this(null);
 	}
 
 	public DblUniformZeroOne(Random random) {
-		this(random, null);
-	}
-
-	public DblUniformZeroOne(String name) {
-		this(null, name);
-	}
-
-	public DblUniformZeroOne(Random random, String name) {
 		super();
 		setRndGen(random);
-		setName(name);
 	}
 
 	@Override

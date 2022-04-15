@@ -42,26 +42,18 @@ public class DblDistribution extends DblSequence {
 	private RealDistribution distribution;
 
 	public DblDistribution() {
-		this(null, null, null);
+		this(null, null);
 	}
 
 	public DblDistribution(RealDistribution distribution) {
-		this(null, null, distribution);
+		this(null, distribution);
 	}
 
 	public DblDistribution(Random random, RealDistribution distribution) {
-		this(random, null, distribution);
-	}
-
-	public DblDistribution(String name, RealDistribution distribution) {
-		this(null, name, distribution);
-	}
-
-	public DblDistribution(Random random, String name, RealDistribution distribution) {
 		super();
 		setRndGen(random);
 		setDistribution(distribution);
-		setName(name);
+//		setName(name);
 	}
 
 	public RealDistribution getDistribution() {
