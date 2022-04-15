@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
@@ -16,8 +18,8 @@ import jasima.core.simulation.Simulation.SimulationFailed;
 import jasima.core.simulation.Simulation.StdSimLifecycleEvents;
 
 public class TestComponentHierarchy {
-//	@Rule
-	public Timeout globalTimeout = new Timeout(5000);
+	@Rule
+	public Timeout globalTimeout = new Timeout(5000, TimeUnit.DAYS);
 
 	@Test
 	public void testGetComponentByName() {

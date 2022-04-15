@@ -28,7 +28,7 @@ import jasima.core.util.Util;
 /**
  * Returns a constant set of integer numbers, as passed to the constructor or
  * via {@link #setValues(int...)}. This value sequence is repeated if all values
- * are returned once. Optionally the order of items is permuted if
+ * were returned once. Optionally the order of items is permuted if
  * {@code randomizeOrder} was set to true.
  * 
  * @author Torsten Hildebrandt
