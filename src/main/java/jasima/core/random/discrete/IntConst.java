@@ -21,6 +21,7 @@
 package jasima.core.random.discrete;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import jasima.core.util.Pair;
 import jasima.core.util.Util;
@@ -55,20 +56,23 @@ public class IntConst extends IntSequence {
 	}
 
 	private void nextIteration() {
-		next = 0;
 		if (isRandomizeOrder()) {
+			if (valuesRnd == null)
+				valuesRnd = values.clone();
 			Util.shuffle(valuesRnd, rndGen);
+		} else {
+			valuesRnd = values;
 		}
+		next = 0;
 	}
 
 	@Override
 	public int nextInt() {
-		if (next >= valuesRnd.length) {
+		if (valuesRnd == null || next >= valuesRnd.length) {
 			nextIteration();
 		}
 
 		int v = valuesRnd[next];
-
 		next++;
 
 		return v;
@@ -106,6 +110,12 @@ public class IntConst extends IntSequence {
 	}
 
 	@Override
+	public void setRndGen(Random rndGen) {
+		valuesRnd = null;
+		super.setRndGen(rndGen);
+	}
+
+	@Override
 	public String toString() {
 		return "IntConst" + Arrays.toString(values);
 	}
@@ -114,11 +124,8 @@ public class IntConst extends IntSequence {
 	public IntConst clone() {
 		IntConst c = (IntConst) super.clone();
 
-		if (values != null)
-			c.values = values.clone();
-
-		if (valuesRnd != null)
-			c.valuesRnd = valuesRnd.clone();
+		c.values = values; // safe to only copy the reference, values is not changed/ directly accessible
+		c.valuesRnd = null;
 
 		return c;
 	}
@@ -133,15 +140,9 @@ public class IntConst extends IntSequence {
 	 * @param vs The values to use.
 	 */
 	public void setValues(int... vs) {
-		this.mean = null;
-
-		if (vs == null) {
-			values = null;
-			valuesRnd = null;
-		} else {
-			values = vs.clone();
-			valuesRnd = vs.clone();
-		}
+		mean = null;
+		values = vs == null ? null : vs.clone();
+		valuesRnd = null;
 	}
 
 	public boolean isRandomizeOrder() {

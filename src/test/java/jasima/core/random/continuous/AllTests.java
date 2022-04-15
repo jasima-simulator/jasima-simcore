@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ DblTruncatedSimpleTest.class })
+@SuiteClasses({ DblTruncatedSimpleTest.class, DblConstTest.class, IntConstTest.class })
 public class AllTests {
 
 }
