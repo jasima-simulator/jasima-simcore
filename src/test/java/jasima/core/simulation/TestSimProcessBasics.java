@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,7 +39,7 @@ import jasima.core.util.observer.ObservableValue;
 public class TestSimProcessBasics {
 
 	@Rule
-	public Timeout globalTimeout = new Timeout(60000);
+	public Timeout globalTimeout = new Timeout(60, TimeUnit.SECONDS);
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();

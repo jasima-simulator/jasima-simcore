@@ -107,7 +107,7 @@ public class SimProcess<R> implements Runnable {
 	private Exception execFailure;
 
 	final SimEvent activateProcessEvent;
-	Thread executor;
+	volatile Thread executor;
 
 	private volatile boolean wasSignaled;
 	private boolean reactivated;
