@@ -9,6 +9,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import jasima.core.experiment.Experiment;
@@ -184,6 +185,21 @@ public class SimulationExperiment extends Experiment implements SimOperations {
 		if (sim == null)
 			throw new IllegalStateException("no simulation.");
 		return sim;
+	}
+
+	@Override // inherited from Experiment as well as SimOperations/Simulation
+	public void addResult(String name, Object value) {
+		SimOperations.super.addResult(name, value); // delegate to simulation's implementation
+	}
+
+	@Override // inherited from Experiment as well as SimOperations/Simulation
+	public void addResults(Map<String, Object> map) {
+		SimOperations.super.addResults(map); // delegate to simulation's implementation
+	}
+
+	@Override // inherited from Experiment as well as SimOperations/Simulation
+	public void addResults(Map<String, Object> map, String namePrefix) {
+		SimOperations.super.addResults(map, namePrefix); // delegate to simulation's implementation
 	}
 
 	/**

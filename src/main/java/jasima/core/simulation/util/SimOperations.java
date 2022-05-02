@@ -6,6 +6,7 @@ import static jasima.core.simulation.util.SimOperations.SimEventType.UTILITY_EVE
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalUnit;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -591,6 +592,20 @@ public interface SimOperations {
 	 */
 	default void addResult(String name, Object value) {
 		getSim().addResult(name, value);
+	}
+
+	/**
+	 * @see Simulation#addResults(Map<String, Object>)
+	 */
+	default void addResults(Map<String, Object> map) {
+		getSim().addResults(map);
+	}
+
+	/**
+	 * @see Simulation#addResults(Map<String, Object>, String)
+	 */
+	default void addResults(Map<String, Object> map, String namePrefix) {
+		getSim().addResults(map, namePrefix);
 	}
 
 	// event tracing

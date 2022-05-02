@@ -986,6 +986,30 @@ public class Simulation
 	}
 
 	/**
+	 * Adds all entries from {@code map} to the simulation's result Map.
+	 * 
+	 * @param map All result entries to add.
+	 */
+	@Override
+	public void addResults(Map<String, Object> map) {
+		addResults(map, null);
+	}
+
+	/**
+	 * Adds all entries from {@code map} to the simulation's result Map using the
+	 * given name prefix. If for example "map" contains an entry called "a" and
+	 * namePrefix is "sub", then the given value will be added to the simulation's
+	 * results map as "sub.a".
+	 * 
+	 * @param map        All result entries to add.
+	 * @param namePrefix Prefix for all entries.
+	 */
+	@Override
+	public void addResults(Map<String, Object> map, @Nullable String namePrefix) {
+		map.forEach((n, v) -> addResult(namePrefix==null ? n : namePrefix + "." + n, v));
+	}
+
+	/**
 	 * Activates the given entity but does not add it to the components tree.
 	 * Therefore they will not be notified of any future simulation lifecycle events
 	 * such as {@code produceResults}. It is therefore intended for temporary

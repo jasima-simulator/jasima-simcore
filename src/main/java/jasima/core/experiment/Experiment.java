@@ -413,6 +413,22 @@ public abstract class Experiment implements Notifier<Experiment, ExperimentEvent
 		resultMap.put(Experiment.EXCEPTION, Util.exceptionToString(error));
 	}
 
+	protected void addResult(String name, Object value) {
+		resultMap.put(name, value);
+	}
+
+	protected void addResults(Map<String, Object> map) {
+		addResults(map, null);
+	}
+
+	protected void addResults(Map<String, Object> map, String namePrefix) {
+		if (namePrefix == null) {
+			resultMap.putAll(map);
+		} else {
+			map.forEach((n, v) -> resultMap.put(namePrefix + "." + n, v));
+		}
+	}
+
 	/**
 	 * Requests the experiment to cancel its execution prematurely. This also
 	 * implies aborting it.
