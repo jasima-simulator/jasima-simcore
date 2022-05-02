@@ -5,7 +5,7 @@
 #   Industrial Scheduling, Prentice Hall, Englewood Cliffs, New Jersey,
 #   225-251 */
 #
-#   The optimal solution is 55
+#   The optimal solution is 54
 
 #number of machines
 6
