@@ -74,7 +74,11 @@ public class Util {
 	 * {@link ForkJoinPool#commonPool()} but without the potential problems the work
 	 * stealing algorithm can create.
 	 */
-	public static final ExecutorService DEF_POOL = Executors.newCachedThreadPool();
+	public static final ExecutorService DEF_POOL = Executors.newCachedThreadPool(r -> {
+		Thread t = Executors.defaultThreadFactory().newThread(r);
+		t.setDaemon(true);
+		return t;
+	});
 
 	// TODO: make this list expandable using the plugin mechanism
 	/**
