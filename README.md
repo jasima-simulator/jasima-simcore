@@ -158,7 +158,7 @@ Contributions are what make the open source community such an amazing place to b
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the Apache License 2.0. See `LICENSE.txt` for more information.
 
 
 
@@ -180,7 +180,15 @@ Project Link: [https://github.com/jasima-simulator/jasima-simcore](https://githu
 
 
 
+## Release
 
+New versions are released with the Maven release plugin to Maven Central via Sonatype Nexus.
+
+```
+mvnw release:clean release:prepare release:perform -P release-to-central
+```
+
+Tests can be skipped during a release build using ``-DskipTests -Darguments="-DskipTests"``
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -196,3 +204,5 @@ Project Link: [https://github.com/jasima-simulator/jasima-simcore](https://githu
 [license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/torsten-hildebrandt-2535b7ab
+
+
