@@ -26,8 +26,8 @@
 	</organization>
 	<licenses>
 		<license>
-			<name>GNU Affero General Public License v3.0 or later</name>
-			<url>http://www.gnu.org/licenses/agpl.txt</url>
+			<name>Apache-2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>

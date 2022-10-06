@@ -28,7 +28,7 @@ Portions copyright (c) 1993 by Michael Lecuyer.
 All rights reserved. 
 
 --------------------------------------------------------------------------------
-JOpt Simple, version 4.8 (https://pholser.github.io/jopt-simple/index.html)
+JOpt Simple, version 5.0.4 (https://pholser.github.io/jopt-simple/index.html)
 
 Copyright (c) 2004-2014 Paul R. Holser, Jr.
 
@@ -747,8 +747,8 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
-License of JOpt Simple, version 4.8 
-(https://pholser.github.io/jopt-simple/index.html)
+License of JOpt Simple, version 5.0.4 
+(http://jopt-simple.github.io/jopt-simple/)
 
 The MIT License
 
