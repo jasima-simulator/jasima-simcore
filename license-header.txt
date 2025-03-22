@@ -1,7 +1,7 @@
 /*
 This file is part of jasima, the Java simulator for manufacturing and logistics.
  
-Copyright 2010-2022 jasima contributors (see license.txt)
+Copyright 2010-2022 jasima contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
