@@ -3,7 +3,7 @@
    <bannerLeft>
         <name>jasima - JAva SImulator for MAnufacturing and logistics</name>
         <src>images/logoSmall.png</src>
-        <href>http://jasima.net/</href>
+        <href>https://jasima-simulator.github.io</href>
     </bannerLeft>
   <skin>
     <groupId>org.apache.maven.skins</groupId>

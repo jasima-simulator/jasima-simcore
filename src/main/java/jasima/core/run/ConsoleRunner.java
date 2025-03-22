@@ -395,7 +395,7 @@ public class ConsoleRunner extends AbstractExperimentRunner {
 
 	private String getHelpFooterText() {
 		String res = lineSeparator() + "All parameter names are CASE-SENSITIVE. For detailed information see "
-				+ lineSeparator() + "http://jasima.net/.";
+				+ lineSeparator() + "https://jasima-simulator.github.io";
 		if (expTemplate == null) {
 			res = "<expSpec>                    Class name of an Experiment or file name " + lineSeparator()
 					+ "                             of an XML-serialized Experiment or" + lineSeparator()

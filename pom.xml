@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.jasima</groupId>
+	<groupId>io.github.jasima-simulator</groupId>
 	<artifactId>jasima-main</artifactId>
 	<version>3.0.0-RC4-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -13,12 +13,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<doclint>none</doclint>
 		<target-jdk>8</target-jdk>
-		<log4j2.version>2.17.2</log4j2.version>
+		<log4j2.version>2.24.3</log4j2.version>
 		<versionName>${project.version} (${maven.build.timestamp}, ${git.branch}@${git.commit.id.abbrev})</versionName>
 		<jasima-cli.main.class>jasima.core.run.ConsoleRunner</jasima-cli.main.class>
 	</properties>
 
-	<url>https://jasima.net/</url>
+	<url>https://jasima-simulator.github.io/</url>
 	<inceptionYear>2011</inceptionYear>
 	<organization>
 		<name>SimPlan AG</name>
@@ -35,7 +35,7 @@
 		<developer>
 			<id>hil</id>
 			<name>Torsten Hildebrandt</name>
-			<email>torsten@jasima.net</email>
+			<email>jasima-pom@thildebrandt.de</email>
 		</developer>
 	</developers>
 	<dependencies>
@@ -78,12 +78,12 @@
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
-			<version>1.4.1</version>
+			<version>1.5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.19</version>
+			<version>1.4.21</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
