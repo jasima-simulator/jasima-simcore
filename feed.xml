@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>jasima</title>
-    <link>https://jasima.net</link>
-    <atom:link href="https://jasima.net/feed.xml" rel="self" type="application/rss+xml" />
+    <link>https://jasima-simulator.github.io</link>
+    <atom:link href="https://jasima-simulator.github.io/feed.xml" rel="self" type="application/rss+xml" />
     <description>jasima, the Java simulator for manufacturing and logistics</description>
     <language>en-gb</language>
-    <pubDate>Do., 14 Apr. 2022 11:05:12 +0200</pubDate>
-    <lastBuildDate>Do., 14 Apr. 2022 11:05:12 +0200</lastBuildDate>
+    <pubDate>So, 23 Mär 2025 12:46:46 +0100</pubDate>
+    <lastBuildDate>So, 23 Mär 2025 12:46:46 +0100</lastBuildDate>
 
     <item>
       <title>Oliver&amp;#8217;s Post</title>
-      <link>https://jasima.net/blog/2022/fifth-post.html</link>
-      <pubDate>Mo., 11 Nov. 2013 00:00:00 +0100</pubDate>
+      <link>https://jasima-simulator.github.io/blog/2022/fifth-post.html</link>
+      <pubDate>Mo, 11 Nov 2013 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2022/fifth-post.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -31,8 +31,8 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>Fourth Post</title>
-      <link>https://jasima.net/blog/2022/fourth-post.html</link>
-      <pubDate>Do., 17 Okt. 2013 00:00:00 +0200</pubDate>
+      <link>https://jasima-simulator.github.io/blog/2022/fourth-post.html</link>
+      <pubDate>Do, 17 Okt 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/fourth-post.html</guid>
       	<description>
 	&lt;div class=&quot;imageblock&quot;&gt;
@@ -66,8 +66,8 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>Third Post</title>
-      <link>https://jasima.net/blog/2022/third-post.html</link>
-      <pubDate>Do., 26 Sep. 2013 00:00:00 +0200</pubDate>
+      <link>https://jasima-simulator.github.io/blog/2022/third-post.html</link>
+      <pubDate>Do, 26 Sep 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/third-post.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -96,8 +96,8 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>Second Post</title>
-      <link>https://jasima.net/blog/2022/second-post.html</link>
-      <pubDate>So., 25 Aug. 2013 00:00:00 +0200</pubDate>
+      <link>https://jasima-simulator.github.io/blog/2022/second-post.html</link>
+      <pubDate>So, 25 Aug 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/second-post.html</guid>
       	<description>
 	&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
@@ -117,8 +117,8 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
     </item>
     <item>
       <title>First Post</title>
-      <link>https://jasima.net/blog/2022/first-post.html</link>
-      <pubDate>Mi., 24 Juli 2013 00:00:00 +0200</pubDate>
+      <link>https://jasima-simulator.github.io/blog/2022/first-post.html</link>
+      <pubDate>Mi, 24 Jul 2013 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2022/first-post.html</guid>
       	<description>
 	

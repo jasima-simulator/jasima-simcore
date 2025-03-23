@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
-        <loc>https://jasima.net/news.html</loc>
-        <lastmod>2022-03-24</lastmod>
+        <loc>https://jasima-simulator.github.io/news.html</loc>
+        <lastmod>2025-03-23</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/statistics.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/statistics.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/stateBased.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/stateBased.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/simulationComponents.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/simulationComponents.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/simulationBasics.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/simulationBasics.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/randomNumbers.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/randomNumbers.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/processOriented.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/processOriented.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/eventOriented.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/eventOriented.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/customExperiments.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/customExperiments.html</loc>
         <lastmod>2022-03-19</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/runningExperiments.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/runningExperiments.html</loc>
         <lastmod>2022-01-18</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/documentation/gettingStarted.html</loc>
+        <loc>https://jasima-simulator.github.io/documentation/gettingStarted.html</loc>
         <lastmod>2022-01-18</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/architecture.html</loc>
+        <loc>https://jasima-simulator.github.io/architecture.html</loc>
         <lastmod>2018-10-18</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/about2.html</loc>
+        <loc>https://jasima-simulator.github.io/about2.html</loc>
         <lastmod>2018-10-18</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/about.html</loc>
+        <loc>https://jasima-simulator.github.io/about.html</loc>
         <lastmod>2013-09-24</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/blog/2022/fifth-post.html</loc>
+        <loc>https://jasima-simulator.github.io/blog/2022/fifth-post.html</loc>
         <lastmod>2013-11-11</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/blog/2022/fourth-post.html</loc>
+        <loc>https://jasima-simulator.github.io/blog/2022/fourth-post.html</loc>
         <lastmod>2013-10-17</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/blog/2022/third-post.html</loc>
+        <loc>https://jasima-simulator.github.io/blog/2022/third-post.html</loc>
         <lastmod>2013-09-26</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/blog/2022/second-post.html</loc>
+        <loc>https://jasima-simulator.github.io/blog/2022/second-post.html</loc>
         <lastmod>2013-08-25</lastmod>
     </url>
     <url>
-        <loc>https://jasima.net/blog/2022/first-post.html</loc>
+        <loc>https://jasima-simulator.github.io/blog/2022/first-post.html</loc>
         <lastmod>2013-07-24</lastmod>
     </url>
 </urlset>

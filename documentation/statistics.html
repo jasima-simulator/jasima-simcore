@@ -137,12 +137,7 @@
 <div class="listingblock">
 <div class="title">New Job class holding additional attributes.</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// Job contains additional job data; here we only add an attribute to record
-// record a Job's number and when queuing started
-public class Job {
-	public int jobId;
-	public double startQueuing;
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=jobClass]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -150,10 +145,7 @@ public class Job {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // field used for additional stats collection
- private SummaryStat queuingTimes;
- private TimeWeightedSummaryStat queueLength;
- private TimeWeightedSummaryStat serverUtilization;</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=newFields]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -161,13 +153,7 @@ public class Job {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">	// initialize statistics
-	numServed = 0;
-	numCreated = 0;
-	queuingTimes = new SummaryStat();
-	queueLength = new TimeWeightedSummaryStat();
-	serverUtilization = new TimeWeightedSummaryStat();
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=init]</code></pre>
 </div>
 </div>
 </div>
@@ -180,13 +166,7 @@ public class Job {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void createNext() {
-	numCreated++;
-	Job j = new Job();
-	j.jobId = numCreated;
-	j.startQueuing = simTime();
-
-	q.tryPut(j);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=createJob]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -194,9 +174,7 @@ public class Job {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // record queuing time
- double queuingTime = simTime() - currentJob.startQueuing;
- queuingTimes.value(queuingTime);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=calcQueuingTime]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -204,13 +182,7 @@ public class Job {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
-public void produceResults(Map&lt;String, Object&gt; res) {
-	res.put("numCreated", numCreated);
-	res.put("numServed", numServed);
-	res.put("queuingTime", queuingTimes);
-	res.put("queueLength", queueLength);
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=produceResults]</code></pre>
 </div>
 </div>
 </div>
@@ -226,8 +198,7 @@ public void produceResults(Map&lt;String, Object&gt; res) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> q.tryPut(j);
- queueLength.value(q.numItems(), simTime());</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=queueLength1]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -235,10 +206,7 @@ public void produceResults(Map&lt;String, Object&gt; res) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // take next job from queue
- currentJob = q.tryTake();
- // update queue length statistics
- queueLength.value(q.numItems(), simTime());</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=queueLength2]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -246,11 +214,7 @@ public void produceResults(Map&lt;String, Object&gt; res) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
-public void simEnd() {
-	// properly close time-weighted statistis values
-	serverUtilization.value(0.0, simTime());
-	queueLength.value(0.0, simTime());</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=simEnd1]</code></pre>
 </div>
 </div>
 </div>
@@ -263,8 +227,7 @@ public void simEnd() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // update utilization statistics, server is busy now
- serverUtilization.value(1.0, simTime());</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=serverUtil1]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -272,8 +235,7 @@ public void simEnd() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> // update utilization statistics, server is idle now
- serverUtilization.value(0.0, simTime());</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=serverUtil2]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -281,17 +243,7 @@ public void simEnd() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
-public void simEnd() {
-	// properly close time-weighted statistis values
-	serverUtilization.value(0.0, simTime());
-	queueLength.value(0.0, simTime());
-
-	// we can also call addResult() at any time during a simulation run instead of
-	// or in addition to overriding produceResults(); this is useful for instance
-	// when using process-oriented modelling
-	addResult("serverUtilization", serverUtilization);
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=simEnd2]</code></pre>
 </div>
 </div>
 </div>
@@ -306,7 +258,7 @@ public void simEnd() {
 <div class="title">Output of MM1ModelEventsExtendedStatistics</div>
 <div class="content">
 <pre>********************************************************************************
-JASIMA, v3.0.0-RC2-SNAPSHOT (2022-03-28T10:27:55Z, develop@fc0f8a7); http://jasima.net/
+JASIMA, v3.0.0-RC2-SNAPSHOT (2022-03-28T10:27:55Z, develop@fc0f8a7); https://jasima-simulator.github.io/
 
 SimulationExperiment: exp@2af004b
 
@@ -346,11 +298,7 @@ time needed:	0.1s</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> 		// try also using the 3 lines commented out below
- 		ConsoleRunner.run(se);
- //		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(se, 100);
- //		mre.addListener(new ExcelSaver());
- //		ConsoleRunner.run(mre);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEventsExtendedStatistics.java[tag=main]</code></pre>
 </div>
 </div>
 <div class="paragraph">

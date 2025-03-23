@@ -108,22 +108,7 @@
 <div class="listingblock">
 <div class="title">Main process</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Override
- protected void lifecycle() throws MightBlock {
- 	// init
- 	System.out.println("simulation main process started at: " + simTime());
- 	callCounter = new ObservableValue&lt;&gt;(0); <i class="conum" data-value="1"></i><b>(1)</b>
- 	activate(this::incrementer);
- 	activate(this::printer);
-
- 	// main process waiting until counter reaches 13
- 	ObservableValue&lt;Boolean&gt; counterEquals13 = ObservableValues.isEqual(callCounter, 13); <i class="conum" data-value="2"></i><b>(2)</b>
- 	waitCondition(counterEquals13); <i class="conum" data-value="3"></i><b>(3)</b>
-
- 	// end simulation
- 	System.out.println("simulation main process finished at: " + simTime());
- 	end();
- }</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/process/HelloConditions.java[lines=31..46]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -145,18 +130,7 @@
 <div class="listingblock">
 <div class="title">Incrementer process</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> void incrementer() throws MightBlock {
- 	System.out.println("incrementor() starting at: " + simTime());
- 	while (true) {
- 		waitFor(3.0);
-
- 		// increment counter
- 		callCounter.set(callCounter.get() + 1); <i class="conum" data-value="1"></i><b>(1)</b>
- 		// instead of get/set we could also have used: callCounter.update(n -&gt; n+1);
-
- 		System.out.println("incrementor() executed at: " + simTime() + ", counter = " + callCounter.get());
- 	}
- }</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/process/HelloConditions.java[lines=48..59]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -170,14 +144,7 @@
 <div class="listingblock">
 <div class="title">Printer process</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> void printer() throws MightBlock {
- 	System.out.println("printer() starting at: " + simTime());
- 	while (true) {
- 		waitCondition(n -&gt; n % 3 == 0, callCounter); <i class="conum" data-value="1"></i><b>(1)</b>
- 		System.out.println("printer() executed at: t=" + simTime() + ", counter = " + callCounter.get());
- 		waitFor(5.0);
- 	}
- }</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/process/HelloConditions.java[lines=61..68]</code></pre>
 </div>
 </div>
 <div class="colist arabic">

@@ -118,8 +118,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Override
- protected void lifecycle() throws MightBlock {</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/process/MM1ModelProcesses.java[lines=64..65]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -152,22 +151,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
-protected void lifecycle() throws MightBlock {
-	// init
-	DblSequence serviceTimes = initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
-	numServed = 0;
-
-	// endless processing loop
-	while (true) {
-		Integer job = q.take(); <i class="conum" data-value="1"></i><b>(1)</b>
-		System.out.println("start processing job " + job + " at time=" + simTime());
-		double st = serviceTimes.nextDbl();
-		waitFor(st); <i class="conum" data-value="2"></i><b>(2)</b>
-		numServed++;
-		System.out.println("finished processing job " + job + " at time=" + simTime());
-	}
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/process/MM1ModelProcesses.java[lines=33..48]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -190,25 +174,7 @@ protected void lifecycle() throws MightBlock {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
-protected void lifecycle() throws MightBlock {
-	// init
-	q = new Q&lt;&gt;();
-	addComponent(new Server());
-	numCreated = 0;
-	DblSequence iats = initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
-
-	// creation of jobs
-	for (int n = 0; n &lt; numJobs; n++) {
-		waitFor(iats.nextDbl());
-		System.out.println("created job " + n + " at time=" + simTime());
-		q.put(n);
-		numCreated++;
-	}
-
-	// terminate simulation
-	end();
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/process/MM1ModelProcesses.java[lines=64..82]</code></pre>
 </div>
 </div>
 <div class="paragraph">

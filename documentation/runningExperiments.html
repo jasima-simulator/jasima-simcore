@@ -115,25 +115,7 @@
 <div class="listingblock">
 <div class="title">Running an existing experiment (see <code>RunExistingExperiment.java</code>)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">		// create experiment and set parameter
-		DynamicShopExperiment dse = new DynamicShopExperiment();
-		dse.setInitialSeed(23);
-		dse.setNumMachines(10);
-		dse.setUtilLevel(0.85);
-
-		// run experiment
-		Map&lt;String, Object&gt; res = dse.runExperiment();
-
-		// show results on the console, SummaryStats first, then normal values
-		dse.printResults();
-
-		// we can also access individual results by their name and so something with
-		// them
-		SummaryStat flowtimes = (SummaryStat) res.get("flowtime");
-		String msg = String.format(ENGLISH, "experiment finished %d jobs with an average flowtime of %.1f minutes.",
-				flowtimes.numObs(), flowtimes.mean());
-		System.out.println();
-		System.out.println(msg);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/experiments/running/RunExistingExperiment.java[tags=MainMethod]</code></pre>
 </div>
 </div>
 </div>
@@ -144,20 +126,7 @@
 <div class="listingblock">
 <div class="title">Add a listener to create Excel output (see <code>RunExistingExperimentExcelOutput.java</code>)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">		// create experiment and set parameter
-		DynamicShopExperiment dse = new DynamicShopExperiment();
-		dse.setInitialSeed(23);
-		dse.setNumMachines(10);
-		dse.setUtilLevel(0.85);
-		
-		// NEW: add ExcelSaver
-		dse.addListener(new ExcelSaver("dseResults")); <i class="conum" data-value="1"></i><b>(1)</b>
-
-		// run experiment
-		dse.runExperiment();
-
-		// show results on the console, SummaryStats first, then normal values
-		dse.printResults();</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/experiments/running/RunExistingExperimentExcelOutput.java[tags=MainMethod]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -176,22 +145,7 @@
 <div class="listingblock">
 <div class="title">Running multiple independent replications (see <code>RunMultipleReplications.java</code>)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">		// create base experiment, set default parameters; initialSeed is varied
-		// automatically by the MultipleReplicationExperiment created below
-		DynamicShopExperiment dse = new DynamicShopExperiment();
-		dse.setNumMachines(10);
-		dse.setUtilLevel(0.85);
-
-		// create a MultipleReplicationExperiment executing the base experiment "dse" 10
-		// times
-		MultipleReplicationExperiment mre = new MultipleReplicationExperiment(dse, 10);
-
-		// report results as Excel file
-		mre.addListener(new ExcelSaver("mreResults"));
-
-		// run and print averaged results over all 10 replications
-		mre.runExperiment();
-		mre.printResults();</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/experiments/running/RunMultipleReplications.java[tags=MainMethod]</code></pre>
 </div>
 </div>
 </div>
@@ -202,22 +156,7 @@
 <div class="listingblock">
 <div class="title">Running different parameter configurations (see <code>RunParameterCombinations.java</code>)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">		// create base experiment, set default parameters; initialSeed and created below
-		DynamicShopExperiment dse = new DynamicShopExperiment(); 
-		dse.setNumMachines(10);
-
-		// create a MultipleReplicationExperiment executing the base experiment "dse" 15
-		// times (all combinations of utilLevel and initialSeed)
-		FullFactorialExperiment ffe = new FullFactorialExperiment(dse);
-		ffe.addFactor("utilLevel", 0.8, 0.85, 0.9);
-		ffe.addFactor("initialSeed", 1, 2, 3, 4, 5);
-
-		// report results as Excel file
-		ffe.addListener(new ExcelSaver("ffeResults"));
-
-		// run and print averaged results over all 10 replications
-		ffe.runExperiment();
-		ffe.printResults(); </code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/experiments/running/RunParameterCombinations.java[tags=MainMethod]</code></pre>
 </div>
 </div>
 </div>

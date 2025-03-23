@@ -109,19 +109,7 @@
 <div class="listingblock">
 <div class="title"><code>main()</code> method of <code>MM1ModelEvents</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">	public static void main(String... args) {
-		// create and parameterize simulation
-		Simulation sim = new Simulation(); <i class="conum" data-value="1"></i><b>(1)</b>
-
-		MM1ModelEvents mainComponent = new MM1ModelEvents(); <i class="conum" data-value="2"></i><b>(2)</b>
-		sim.addComponent(mainComponent);
-
-		// run simulation
-		Map&lt;String, Object&gt; res = sim.performRun(); <i class="conum" data-value="3"></i><b>(3)</b>
-
-		// show results on console
-		ConsolePrinter.printResults(res); <i class="conum" data-value="4"></i><b>(4)</b>
-	}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=20..32]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -203,7 +191,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class MM1ModelEvents extends SimComponentBase { <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=18]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -219,17 +207,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">	// parameters
-	private int numJobs = 1000;
-	private double trafficIntensity = 0.85;
-
-	// fields used during simulation run
-	private Q&lt;Integer&gt; q; // queue for waiting jobs
-	private DblSequence iats; // inter-arrival times
-	private DblSequence serviceTimes; // service times
-	private Integer currentJob; // job currently processed by the server
-	private int numServed = 0; // counter for number of serviced jobs
-	private int numCreated = 0; // counter for total number of jobs created</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=36..46]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -237,18 +215,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
-public void init() {
-	// create new queue
-	q = new Q&lt;&gt;();
-
-	// initialize random number streams/sequences
-	iats = initRndGen(new DblExp(INTER_ARRIVAL_TIME), "arrivals");
-	serviceTimes = initRndGen(new DblExp(INTER_ARRIVAL_TIME * trafficIntensity), "services");
-
-	// schedule first arrival
-	scheduleIn(iats.nextDbl(), this::createNext);
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=48..59]</code></pre>
 </div>
 </div>
 </div>
@@ -267,14 +234,7 @@ public void init() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void finishedService() {
-	System.out.println("finished processing job " + currentJob + " at time=" + simTime());
-	currentJob = null;
-	numServed++;
-
-	// immediately check processing of next job
-	checkStartService();
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=91..98]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -287,19 +247,7 @@ public void init() {
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">void checkStartService() {
-	if (q.numItems() == 0 || currentJob != null) {
-		// nothing to do because either "q" is empty or server is currently busy
-		return;
-	}
-
-	// take next job from queue
-	currentJob = q.tryTake();
-	System.out.println("start processing job " + currentJob + " at time=" + simTime());
-
-	// schedule service end event
-	scheduleIn(serviceTimes.nextDbl(), this::finishedService);
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=77..89]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -350,7 +298,7 @@ public void init() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> scheduleIn(serviceTimes.nextDbl(), this::finishedService);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> Unresolved directive in &lt;stdin&gt; - include::/Users/Torsten.Hildebrandt/eclipse21-09_workspace/jasima-site/src/main/java/examples/simulation/events/MM1ModelEvents.java[lines=88]</code></pre>
 </div>
 </div>
 <div class="paragraph">
