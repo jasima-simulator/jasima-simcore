@@ -1,6 +1,7 @@
 <p align="center">
-    <img src="images/logo.png" alt="Jasima Logo" width="30em">
+    <img src="images/logo.png" alt="Jasima Logo" width="300">
 </p>
+<hr>
 
 # jasima - JAva SImulator for MAnufacturing and logistics
 
