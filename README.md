@@ -1,208 +1,72 @@
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** github_username, repo_name, twitter_handle, email, project_title, project_description
--->
+# jasima - JAva SImulator for MAnufacturing and logistics
 
+`jasima-simcore` is the core simulation engine for the jasima project (Java Simulator for Manufacturing and Logistics), a framework for developing and analyzing discrete-event simulations, particularly in the context of manufacturing and logistics. It provides the essential building blocks for creating custom simulation models and computer experiments in Java as free and Open Source software (Apache 2.0 license).
 
+## Prerequisites
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+* Java Development Kit (JDK) 8 or higher – jasima requires Java 8 or later to compile and run. Ensure you have a compatible JDK installed.
+* A build tool such as Maven or Gradle – This is optional but recommended for managing the library as a dependency or building from source. Jasima SimCore is distributed via Maven Central, which makes it easy to include in projects using Maven or Gradle. Maven wrapper is included in this project, so a JDK/JRE is the only real prerequisite.
 
+## Installation
 
+### Use as a Dependency
 
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/jasima-simulator/jasima-simcore">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+Jasima SimCore is published to Maven Central under the coordinates `net.jasima:jasima-main:<version>`. Replace `<version>` with the latest release (e.g., `3.0.0-RC3`).
 
-  <h3 align="center">jasima - JAva SImulator for MAnufacturing and logistics</h3>
+#### Maven
 
-  <p align="center">
-    A Java framework for discrete-event simulation and computer experiments with a main focus on modelling and analyzing logistics/manufacturing systems.
-    <br />
-    <a href="https://github.com/jasima-simulator/jasima-simcore"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/jasima-simulator/jasima-simcore">View Demo</a>
-    ·
-    <a href="https://github.com/jasima-simulator/jasima-simcore/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/jasima-simulator/jasima-simcore/issues">Request Feature</a>
-  </p>
-</p>
+To use `jasima-simcore` in your Java project, add the following dependency to your `pom.xml` file:
 
+```xml
+<dependency>
+    <groupId>net.jasima</groupId>
+    <artifactId>jasima-main</artifactId>
+    <version>3.0.0-RC3</version>
+</dependency>
+```
 
+#### Gradle (Groovy DSL)
 
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
-  </ol>
-</details>
+```groovy
+dependencies {
+    implementation 'net.jasima:jasima-main:3.0.0-RC3'
+}
+```
 
+### Build from Source
 
+If you want to build or modify Jasima SimCore:
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+1. Clone the repository:
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+    ```sh
+    git clone https://github.com/jasima-simulator/jasima-simcore.git
+    ```
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo_name`, `twitter_handle`, `email`, `project_title`, `project_description`
+1. Build using Maven (via the Maven Wrapper):
 
+    ```sh
+    cd jasima-simcore
+    ./mvnw clean package
+    ```
 
-### Built With
+1. (Optional) Install locally:
 
-* []()
-* []()
-* []()
+    ```sh
+    ./mvnw install
+    ```
 
+1. (Optional) Import into your IDE as a Maven project.
 
+## Examples and Documentation
 
-<!-- GETTING STARTED -->
-## Getting Started
+For more in-depth guides and examples, please refer to the official jasima documentation site: [https://jasima-simulator.github.io/](https://jasima-simulator.github.io/). The documentation provides a comprehensive Getting Started tutorial, explanations of key concepts (such as event-oriented vs. process-oriented simulation), and example models (like an M/M/1 queue and job shop simulations). It also includes a detailed API reference (Javadoc) for all jasima classes and methods.
 
-To get a local copy up and running follow these simple steps.
+If you're new to jasima, the documentation's Getting Started section is a great next step after this README. It walks through setting up a project and running more elaborate examples. You’ll also find information on how to create custom experiments, generate random variates for input modeling, and analyze output data.
 
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/jasima-simulator/jasima-simcore.git
-   ```
-2. Install NPM packages
-   ```sh
-   npm install
-   ```
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/jasima-simulator/jasima-simcore/issues) for a list of proposed features (and known issues).
-
-
-
-<!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+We welcome contributions! If you find a bug or want to suggest an improvement:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the Apache License 2.0. See `LICENSE.txt` for more information.
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-
-Project Link: [https://github.com/jasima-simulator/jasima-simcore](https://github.com/jasima-simulator/jasima-simcore)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
-* []()
-* []()
-* []()
-
-
-
-## Release
-
-New versions are released with the Maven release plugin to Maven Central via Sonatype Nexus.
-
-```
-mvnw release:clean release:prepare release:perform -P release-to-central
-```
-
-Tests can be skipped during a release build using ``-DskipTests -Darguments="-DskipTests"``
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/torsten-hildebrandt-2535b7ab
-
-
+1) Open an Issue: Describe what you found or what you propose.
+2) Fork and Submit a Pull Request: Make your changes on a separate branch and open a PR. Please run tests before submitting (./mvnw test).
