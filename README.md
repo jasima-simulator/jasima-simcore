@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="images/logo.png" alt="Jasima Logo" width="30em">
+</p>
+
 # jasima - JAva SImulator for MAnufacturing and logistics
 
 `jasima-simcore` is the core simulation engine for the jasima project (Java Simulator for Manufacturing and Logistics), a framework for developing and analyzing discrete-event simulations, particularly in the context of manufacturing and logistics. It provides the essential building blocks for creating custom simulation models and computer experiments in Java as free and Open Source software (Apache 2.0 license).
