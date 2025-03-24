@@ -14,6 +14,12 @@
 
 ## Installation
 
+### Try Online / Project Template
+
+Examples from the [project template](https://github.com/jasima-simulator/project_template_standalone) can be executed online via [JDoodle](https://www.jdoodle.com/ga/HxrDxfvFpN%2BkbJTqEYUZHg%3D%3D). Fork the project on JDoodle and give it a try!
+
+[project template](https://github.com/jasima-simulator/project_template_standalone) is a standalone project with all required dependencies to be used without a build tool (not recommended for serious use).
+
 ### Use as a Dependency
 
 Jasima SimCore is published to Maven Central under the coordinates `net.jasima:jasima-main:<version>`. Replace `<version>` with the latest release (e.g., `3.0.0-RC3`).
