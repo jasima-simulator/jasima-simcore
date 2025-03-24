@@ -81,3 +81,12 @@ We welcome contributions! If you find a bug or want to suggest an improvement:
 
 1) Open an Issue: Describe what you found or what you propose.
 2) Fork and Submit a Pull Request: Make your changes on a separate branch and open a PR. Please run tests before submitting (./mvnw test).
+   
+## Contact
+
+If you have questions, need help, or want to report a bug, please use our 
+[issue tracker](https://github.com/YourOrganization/YourRepo/issues). We also welcome
+feature requests and suggestions there.
+
+For inquiries you’d prefer not to post publicly, you can send an email to:
+`jasima [at] thildebrandt [dot] de`
